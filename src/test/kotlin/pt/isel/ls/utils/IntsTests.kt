@@ -20,10 +20,10 @@ class IntsTests {
         val v = intArrayOf(1, 2, 3)
 
         // Act
-        val ix: Int = indexOfBinary(v, 0, 3, 4)
+        val ix: Int = indexOfBinary(v, 0, 2, 3)
 
         // Assert
-        assertTrue(ix < 0)
+        assertTrue(ix > 0)
     }
 
     @Test
