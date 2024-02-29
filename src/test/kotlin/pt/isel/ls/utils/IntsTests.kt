@@ -23,7 +23,7 @@ class IntsTests {
         val ix: Int = indexOfBinary(v, 0, 2, 3)
 
         // Assert
-        assertTrue(ix > 0)
+        assertTrue(ix < 0)
     }
 
     @Test
