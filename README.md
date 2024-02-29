@@ -1,2 +1,5 @@
-# 2324-2-common
-Software Laboratory, 2023/2024, Spring semester
+# Grupo - 10 / LEIC 41 - D
+- Rodrigo Meneses - 50542
+- Rafael Nicolau - 50546
+- Mário Carvalho - 50561
+
