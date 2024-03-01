@@ -1,3 +1,5 @@
-insert into courses(name) values ('LEIC');
-insert into students(course, number, name) values (1, 12345, 'Alice');
-insert into students(course, number, name) select cid as course, 12346 as number, 'Bob' as name from courses where name = 'LEIC'
+begin;
+
+insert into players(player_name, email, token) values ('test', 'test@gmail.com', 550e8400-e29b-41d4-a716-446655440000);
+
+commit;
