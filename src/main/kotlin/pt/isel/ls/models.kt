@@ -26,7 +26,7 @@ data class Game(
 )
 
 @Serializable
-data class GamingSessions(
+data class GamingSession(
     val ID: Int,
     val game: Int,
     val capacity: Int,
