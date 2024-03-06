@@ -8,6 +8,13 @@ CREATE TABLE players(
     PRIMARY KEY (player_id)
 );
 
+CREATE TABLE tokens(
+    token UUID,
+    player integer,
+    PRIMARY KEY(token),
+    FOREIGN KEY (player) REFERENCES players(player_id)
+);
+
 CREATE TABLE genres(
     genre varchar(100),
     PRIMARY KEY (genre)
