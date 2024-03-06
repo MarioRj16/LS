@@ -1,12 +1,11 @@
 package pt.isel.ls.models
 
-import kotlinx.serialization.Serializable
+import java.util.*
 
-@Serializable
 data class GamingSession(
     val ID: Int,
     val game: Int,
     val capacity: Int,
-    val firstDate: String,
+    val startingDate: Date,
     val isOpen: Boolean
 )
