@@ -37,3 +37,10 @@ fun indexOfBinary(a: IntArray, fromIndex: Int, toIndex: Int, n: Int): Int {
     }
     return -1
 }
+
+
+data class storageTable<K, V>(val counter: Int, val hashmap: HashMap<K, V>){
+    init {
+        require(counter >= 1){"counter has to be higher than 1"}
+    }
+}
