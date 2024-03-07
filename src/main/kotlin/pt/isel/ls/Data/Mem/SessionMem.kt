@@ -1,7 +1,7 @@
 package pt.isel.ls.Data.Mem
 
 import pt.isel.ls.Data.SessionStorage
-import pt.isel.ls.models.GamingSession
+import pt.isel.ls.Domain.GamingSession
 import java.util.*
 
 class SessionMem(val schema: DataMemSchema): SessionStorage {

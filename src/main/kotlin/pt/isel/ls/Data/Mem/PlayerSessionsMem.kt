@@ -1,7 +1,7 @@
 package pt.isel.ls.Data.Mem
 
 import pt.isel.ls.Data.PlayerSessionsStorage
-import pt.isel.ls.models.PlayerSession
+import pt.isel.ls.Domain.PlayerSession
 
 class PlayerSessionsMem(val schema: DataMemSchema): PlayerSessionsStorage {
     override fun create(playerId: Int, sessionId: Int): PlayerSession {

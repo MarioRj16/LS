@@ -8,5 +8,4 @@ interface Storage {
     val gameGenres: GameGenresStorage
     val genres: GenreStorage
     val playerSessions: PlayerSessionsStorage
-    val tokens: TokenStorage
 }

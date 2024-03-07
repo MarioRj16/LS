@@ -1,10 +1,10 @@
 package pt.isel.ls.Data
 
-import pt.isel.ls.models.GameAndGenre
+import pt.isel.ls.Domain.GameAndGenre
 
 interface GameGenresStorage {
     fun create(gameId: Int, genre: String): GameAndGenre
 
-    fun search(genre: String, gameID: Int): Set<GameAndGenre>
+    fun search(genre: String?, gameID: Int?): List<GameAndGenre>
 
 }

@@ -1,7 +1,6 @@
 package pt.isel.ls.Data.Mem
 
-import pt.isel.ls.models.*
-import java.util.*
+import pt.isel.ls.Domain.*
 
 class DataMemSchema {
     val playersDB = HashMap<Int, Player>()
@@ -13,12 +12,9 @@ class DataMemSchema {
     val gamingSessionsDB = HashMap<Int, GamingSession>()
     var gamingSessionsNextId = 1
 
-    val genresDB = setOf<Genre>()
+    val genresDB = mutableSetOf<Genre>()
 
-    val tokensDB = HashMap<UUID, Token>()
+    val gamesGenresDB = mutableSetOf<GameAndGenre>()
 
-    val gamesGenresDB = setOf<GameAndGenre>()
-
-    val playersSessionsDB = setOf<PlayerSession>()
-
+    val playersSessionsDB = mutableSetOf<PlayerSession>()
 }
