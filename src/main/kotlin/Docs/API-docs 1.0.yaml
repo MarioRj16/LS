@@ -1,0 +1,521 @@
+openapi: 3.0.1
+info:
+  title: Group Events API
+  description: This is a simple API for managing events
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+servers:
+  - description: Localhost server for testing API
+    url: http://localhost:3000
+security:
+  - bearerAuth: []
+tags:
+  - name: Player
+  - name: Games
+  - name: Sessions
+
+paths:
+  /player:
+    post:
+      tags:
+        - Player
+      summary: Resource that creates a new player.
+      description: Creates a new player.
+      operationId: createPlayer
+      security:
+        - bearerAuth: []
+      parameters:
+        - name : Name
+          in: query
+          description: Name of the user to be added.
+          required: true
+          schema:
+            type: string
+        - name: Email
+          in: query
+          description: Email of the user to be added.
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: User to be added
+        content:
+          application/json:
+            schema:
+              required:
+                - name
+                - email
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: examplename
+                email:
+                  type: string
+                  example: examplename@gmail.com
+        required: true
+      responses:
+        201:
+          description: Player created.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Player"
+        400:
+          $ref: "#/components/responses/400BadRequest"
+        409:
+          $ref: "#/components/responses/409AlreadyExists"
+    description: Resource that handles players.
+  /player/{playerID}:
+    get:
+      tags:
+        - Player
+      summary: Resource that gets a player info through its identifier.
+      description: Get a player info through its identifier.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: playerID
+          in: path
+          description: ID of the player
+          required: true
+          schema:
+            type: integer
+            minimum: 0
+      responses:
+        200:
+          description: Got the player with identifier {PlayerId}
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                $ref: "#/components/schemas/Player"
+        404:
+          $ref: "#/components/responses/404NotFound"
+
+  /games:
+    description: Resources that handles games.
+    get:
+      tags:
+        - Games
+      summary: Resource that gets all games in the database.
+      description: Get all games from database.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: genre
+          in: query
+          description: Game genre
+          schema:
+            type: string
+            example: examplegamegenre
+        - name: developer
+          in: query
+          description: Game developer
+          schema:
+            type: string
+            example: examplegamedeveloper
+      responses:
+        200:
+          description: Got all games from database.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Game"
+        400:
+          $ref: "#/components/responses/400BadRequest"
+        404:
+          $ref: "#/components/responses/404NotFound"
+    post:
+      tags:
+        - Games
+      summary: Resource that creates a new game
+      description: Creates a new game in the database
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: Game to be created
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Game"
+      responses:
+        201:
+          description: Game created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Game'
+        400:
+          $ref: "#/components/responses/400BadRequest"
+        409:
+          $ref: "#/components/responses/409AlreadyExists"
+  /games/{gameID}:
+    description: Resources that handle games by ID
+    get:
+      tags:
+        - Games
+      summary: Get a game given its ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name : gameID
+          in: path
+          description: ID of game
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Got game matching the given ID
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Game"
+        400:
+          $ref: "#/components/responses/400BadRequest"
+        404:
+          $ref: "#/components/responses/404NotFound"
+  /sessions:
+    description: Resources that handle sessions
+    get:
+      tags:
+        - Sessions
+      summary: Get sessions based on parameters given
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: gid
+          in: query
+          description: Game Identifier
+          required: true
+          schema:
+            type: integer
+            minimum: 0
+            example: 1
+        - name: Date
+          in: query
+          description: Date
+          required: false
+          schema:
+            type: string
+            format: YYYY/MM/DD HH:MM:SS
+        - name: State
+          in: query
+          description: State
+          required: false
+          schema:
+            type: string
+        - name: pid
+          in: query
+          description: Player ID
+          required: false
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Got sessions that match the given parameteres
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Session"
+        400:
+          $ref: "#/components/responses/400BadRequest"
+        404:
+          $ref: "#/components/responses/404NotFound"
+    post:
+      tags:
+        - Sessions
+      summary: Create a new session
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: capacity
+          in: query
+          description: Session maximum capacity
+          required: true
+          schema:
+            type: integer
+            minimum: 0
+        - name: gid
+          in: query
+          description: GameId
+          required: true
+          schema:
+            type: integer
+            minimum: 0
+        - name: date
+          in: query
+          description: Session date
+          required: true
+          schema:
+            type: string
+      responses:
+        201:
+          description: Session created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Session"
+        400:
+          $ref: "#/components/responses/400BadRequest"
+  /sessions/{sessionID}:
+    description: Resource that handles sessions given their ID
+    get:
+      tags:
+        - Sessions
+      summary: Get a sessions given its ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: sessionID
+          in: path
+          description: ID of the session
+          required: true
+          schema:
+            type: integer
+            minimum: 0
+      responses:
+        200:
+          description: Got session matching the given ID
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Session"
+        400:
+          $ref: "#/components/responses/400BadRequest"
+        404:
+          $ref: "#/components/responses/404NotFound"
+    post:
+      tags:
+        - Sessions
+      summary: Add player to session
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: sessionID
+          in : path
+          description: ID of the session
+          required: true
+          schema:
+            type: integer
+            minimum: 0
+        - name: playerID
+          in: query
+          description: ID of the player to be added
+          required: true
+          schema:
+            type: integer
+            minimum: 0
+      responses:
+        200:
+          description: A player was successfully added
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Session"
+        400:
+          $ref: "#/components/responses/400BadRequest"
+        401:
+          $ref: "#/components/responses/401Unauthorized"
+        404:
+          $ref: "#/components/responses/404NotFound"
+        409:
+          $ref: "#/components/responses/409AlreadyExists"
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+  schemas:
+    Player:
+      required:
+        - name
+        - email
+      type: object
+      properties:
+        name:
+          type: string
+          example: Example
+        email:
+          type: string
+          example: examplename@gmail.com
+        id:
+          type: integer
+          minimum: 0
+          example: 1
+        token:
+          type: object
+          minimum: 0
+          example: 550e8400-e29b-41d4-a716-446655440000
+    Game:
+      required:
+        - name
+        - developer
+        - genres
+      type: object
+      properties:
+        name:
+          type: string
+          example: game name
+        developer:
+          type: string
+          example: developer name
+        genres:
+          type: array
+          example: [genre1,genre2,genre3,...]
+          items:
+            type: string
+        id:
+          type: integer
+          example: 1
+    Session:
+      required:
+        - gid
+        - date
+        - state
+        - pid
+      type: object
+      properties:
+        gid:
+          type: integer
+          example: 1
+        date:
+          type: string
+          example: "07/03/2024 17:48:00"
+        state:
+          type: string
+          example: state
+        pid:
+          type: integer
+          example: 1
+    AlreadyExists:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "Already exists in the system"
+        code:
+          type: integer
+          default: 6
+    MissingParameter:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "Missing required parameter"
+        code:
+          type: integer
+          default: 5
+
+    InvalidBody:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "Invalid body content"
+        code:
+          type: integer
+          default: 1
+    NotFound:
+      type: object
+      properties:
+        uri:
+          type: string
+          format: uri
+          example: "/item/1"
+        error:
+          type: string
+          example: " id 1 not found"
+        code:
+          type: integer
+          default: 2
+    ServerError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "Error related to the server "
+    Gateway:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "Wrong gateway, please check your PORT"
+    Success:
+      type: object
+      properties:
+        uri:
+          type: string
+          format: uri
+          example: "Done with Success"
+        description:
+          type: string
+          example: "Done"
+    Unauthorized:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Unauthorized token
+        code:
+          type: integer
+          default: 4
+
+  responses:
+    401Unauthorized:
+      description: Missing or invalid authentication token
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Unauthorized"
+    404NotFound:
+      description: "Resource not found"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/NotFound"
+
+    400BadRequest:
+      description: "Invalid Request because of a missing Parameter or invalid body content"
+      content:
+        application/json:
+          schema:
+            oneOf:
+              - $ref: "#/components/schemas/MissingParameter"
+              - $ref: "#/components/schemas/InvalidBody"
+
+    409AlreadyExists:
+      description: "Invalid Request because there is one already in the system"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/AlreadyExists"
+
+    500ServerError:
+      description: Server Error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ServerError"
+
+    502GatewayProblem:
+      description: Server Error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Gateway"
+
+
+
+
+
+
