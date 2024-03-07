@@ -1,6 +1,8 @@
 package pt.isel.ls.Data.Mem
 
-import pt.isel.ls.Domain.*
+import pt.isel.ls.Domain.Game
+import pt.isel.ls.Domain.GamingSession
+import pt.isel.ls.Domain.Player
 
 class DataMemSchema {
     val playersDB = HashMap<Int, Player>()
@@ -11,10 +13,4 @@ class DataMemSchema {
 
     val gamingSessionsDB = HashMap<Int, GamingSession>()
     var gamingSessionsNextId = 1
-
-    val genresDB = mutableSetOf<Genre>()
-
-    val gamesGenresDB = mutableSetOf<GameAndGenre>()
-
-    val playersSessionsDB = mutableSetOf<PlayerSession>()
 }

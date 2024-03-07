@@ -6,5 +6,6 @@ import kotlinx.serialization.Serializable
 data class Game(
     val id: Int,
     val name: String,
-    val developer: String
+    val developer: String,
+    val genres: Set<Genre>
 )

@@ -4,11 +4,11 @@ import pt.isel.ls.Domain.Game
 import pt.isel.ls.Domain.Genre
 
 interface GameStorage {
-    fun create(name: String, developer: String, genres: Set<Genre>): Int
+    fun create(name: String, developer: String, genres: Set<Genre>): Game?
 
     fun get(name: String): Game?
 
     fun list(): List<Game>
 
-    fun search(developer: String, genres: Set<Genre>): List<Game>
+    fun search(developer: String?, genres: Set<String>?): List<Game>
 }
