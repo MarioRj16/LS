@@ -13,8 +13,10 @@ import pt.isel.ls.utils.httpStatus
 
 fun createPlayer(request: Request):Response{
     try {
+        //TODO could IllegalArgumentException if there isn't the required parameters and so we could
+        // add it to the httpResponse utils
         return httpResponse(
-            serviceCreatePlayer(Json.decodeFromString<PlayerInput>(request.bodyString())),
+            serviceCreatePlayer(request.bodyString()),
             httpStatus("201")
         )
     }catch (e:Exception){
@@ -25,7 +27,7 @@ fun createPlayer(request: Request):Response{
 fun getPlayer(request: Request):Response{
     try{
         return httpResponse(
-            serviceGetPlayer(request.path("playerId")),
+            serviceGetPlayer(request.path("playerId").toString()),
             httpStatus("200")
         )
     }catch (e:Exception){
