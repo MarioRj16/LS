@@ -1,8 +1,7 @@
-package pt.isel.ls
+package pt.isel.ls.server
 
 import kotlinx.datetime.Clock
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.http4k.core.Method.GET
@@ -72,10 +71,12 @@ fun logRequest(request: Request) {
 }
 
 fun main() {
+    //TODO could add more routes
+    //TODO add swagger with .yaml file
     val playerRoutes =
         routes(
-            "player" bind GET to ::getPlayer,
-            "player" bind POST to ::createPlayer
+            "player" bind POST to ::createPlayer,
+            "player/{playerId}" bind GET to ::getPlayer
         )
     val gameRoutes=
         routes(
@@ -96,8 +97,7 @@ fun main() {
             gameRoutes,
             sessionRoutes
         )
-
-    val jettyServer = app.asServer(Jetty(8080)).start()
+    val jettyServer = app.asServer(Jetty(8000)).start()
     logger.info("server started listening")
 
     readln()
