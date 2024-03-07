@@ -17,7 +17,7 @@ import org.http4k.server.Jetty
 import org.http4k.server.asServer
 import org.slf4j.LoggerFactory
 
-private val logger = LoggerFactory.getLogger("pt.isel.ls.http.HTTPServer")
+private val logger = LoggerFactory.getLogger("pt.isel.ls.server")
 
 @Serializable
 data class Student(val name: String, val number: Int)
