@@ -72,23 +72,29 @@ fun logRequest(request: Request) {
 }
 
 fun main() {
-    val PlayerRoutes =
+    val playerRoutes =
         routes(
-            "player" bind POST to ::createPlayer,
-            "player" bind GET to ::getPlayer
+            "player" bind GET to ::getPlayer,
+            "player" bind POST to ::createPlayer
         )
-    val GameRoutes=
+    val gameRoutes=
         routes(
-            "game" bind POST to ::createGame,
-            "game" bind GET to ::getGame,
-            "games" bind GET to::getGamesByGenreOrDeveloper
+            "games" bind GET to ::getGamesByGenreOrDeveloper,
+            "games" bind POST to ::createGame,
+            "games/{gameId}" bind GET to ::getGame
         )
-    val
-
+    val sessionRoutes=
+        routes(
+            "sessions" bind GET to ::getSessions,
+            "sessions" bind POST to ::createSession,
+            "sessions/{sessionId}" bind GET to ::getSession,
+            "sessions/{sessionId}" bind POST to ::addPlayertoSession
+        )
     val app =
         routes(
-            Routes,
-            "date" bind GET to ::getDate,
+            playerRoutes,
+            gameRoutes,
+            sessionRoutes
         )
 
     val jettyServer = app.asServer(Jetty(8080)).start()
