@@ -8,13 +8,6 @@ CREATE TABLE players(
     PRIMARY KEY (player_id)
 );
 
-CREATE TABLE tokens(
-    token UUID,
-    player integer,
-    PRIMARY KEY(token),
-    FOREIGN KEY (player) REFERENCES players(player_id)
-);
-
 CREATE TABLE genres(
     genre varchar(100),
     PRIMARY KEY (genre)
@@ -23,7 +16,6 @@ CREATE TABLE genres(
 CREATE TABLE games(
     game_id serial,
     game_name varchar(50) NOT NULL UNIQUE,
-    max_capacity integer NOT NULL CHECK (max_capacity > 1),
     developer varchar(100) NOT NULL,
     PRIMARY KEY (game_id)
 );
@@ -32,7 +24,6 @@ CREATE TABLE gaming_sessions(
     gaming_session_id serial,
     capacity integer NOT NULL CHECK (capacity > 1),
     starting_date timestamp NOT NULL,
-    game_state boolean NOT NULL,
     game integer,
     PRIMARY KEY (gaming_session_id),
     FOREIGN KEY (game) REFERENCES games(game_id)

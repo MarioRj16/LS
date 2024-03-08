@@ -6,6 +6,5 @@ delete * from gaming_sessions;
 delete * from games;
 delete * from genres;
 delete * from players;
-delete * from tokens;
 
 commit;

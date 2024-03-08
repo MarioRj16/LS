@@ -1,12 +1,8 @@
 begin;
 
-insert into players(player_name, email) values
-    ('test', 'test@gmail.com'),
-    ('test2', 'test2@gmail.com');
-
-insert into tokens(token, player) values
-    ('550e8400-e29b-41d4-a716-446655440000', 1),
-    ('08f39e13-8596-46be-9d81-ff866b4dd200', 2);
+insert into players(player_name, email, token) values
+    ('test', 'test@gmail.com', '550e8400-e29b-41d4-a716-446655440000'),
+    ('test2', 'test2@gmail.com', '08f39e13-8596-46be-9d81-ff866b4dd200');
 
 insert into genres(genre) values
     ('rpg'),
@@ -15,14 +11,14 @@ insert into genres(genre) values
     ('adventure'),
     ('simulation');
 
-insert into games(game_name, max_capacity, developer) values
-    ('game1', 4, 'developer1'),
-    ('game2', 64, 'developer1'),
-    ('game3', 4, 'developer2');
+insert into games(game_name, developer) values
+    ('game1', 'developer1'),
+    ('game2', 'developer1'),
+    ('game3', 'developer2');
 
-insert into gaming_sessions(capacity, starting_date, game_state, game) values
-    (4, CURRENT_DATE, FALSE, 1),
-    (4, CURRENT_DATE, FALSE, 1);
+insert into gaming_sessions(capacity, starting_date, game) values
+    (4, CURRENT_DATE, 1),
+    (4, CURRENT_DATE, 2);
 
 insert into games_genres(game, genre) values
     (1, 'rpg'),
