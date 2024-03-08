@@ -6,6 +6,8 @@ import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.routing.path
 import pt.isel.ls.server.logRequest
+import pt.isel.ls.server.services.serviceCreatePlayer
+import pt.isel.ls.server.services.serviceGetPlayer
 import pt.isel.ls.utils.httpError
 import pt.isel.ls.utils.httpResponse
 import pt.isel.ls.utils.httpStatus

@@ -7,4 +7,7 @@ fun serviceCreatePlayer(input:String){
 
 }
 
-fun serviceGetPlayer(id:)
+fun serviceGetPlayer(id:String){
+
+    
+}
