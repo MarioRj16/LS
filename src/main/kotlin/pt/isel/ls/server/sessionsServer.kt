@@ -16,6 +16,8 @@ import org.http4k.routing.routes
 import org.http4k.server.Jetty
 import org.http4k.server.asServer
 import org.slf4j.LoggerFactory
+import pt.isel.ls.server.API.createPlayer
+import pt.isel.ls.server.API.getPlayer
 
 private val logger = LoggerFactory.getLogger("pt.isel.ls.server")
 
