@@ -5,10 +5,10 @@ import pt.isel.ls.Data.GamingSessionStorage
 import pt.isel.ls.Data.PlayerStorage
 import pt.isel.ls.Data.Storage
 
-class DataMem(schema: DataMemSchema): Storage {
-    override val players: PlayerStorage = PlayersMem(schema)
+open class DataMem: Storage, DataMemSchema() {
+    override val players: PlayerStorage = PlayersMem(playersDB)
 
-    override val gamingSessions: GamingSessionStorage = GamingSessionMem(schema)
+    override val gamingSessions: GamingSessionStorage = GamingSessionMem(gamingSessionsDB, playersDB, gamesDB)
 
-    override val games: GameStorage = GamesMem(schema)
+    override val games: GameStorage = GamesMem(gamesDB)
 }

@@ -3,26 +3,26 @@ package pt.isel.ls.data
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import pt.isel.ls.Data.Mem.DataMem
-import pt.isel.ls.Data.Mem.DataMemSchema
 import kotlin.test.assertEquals
 
-class PlayerTests {
-    val db = DataMem(DataMemSchema())
+class PlayerTests: DataMem() {
     @Test
     fun `User can be created`(){
-        val player = db.players.create("name", "email@email.com")
-        assertEquals(db.players.search(1), player)
+        val player = players.create("name", "email@email.com")
+        val expected = players.search(1)
+        assertEquals(expected, player)
     }
 
     @Test
     fun `Integrity Restrictions are enforced`(){
-        val player1 = db.players.create("name", "email2@email.com")
+        players.create("name", "email2@email.com")
+
         assertThrows<IllegalArgumentException> {
-            db.players.create("name", "email2@email.com")
+            players.create("name", "email2@email.com")
         }
 
         assertThrows<IllegalArgumentException> {
-            db.players.create("name", "email.com")
+            players.create("name", "email.com")
         }
     }
 }
