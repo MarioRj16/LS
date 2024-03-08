@@ -1,15 +1,15 @@
 package pt.isel.ls.Data.Mem
 
 import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.toJavaLocalDateTime
 import pt.isel.ls.Data.GamingSessionStorage
 import pt.isel.ls.Domain.GamingSession
 import pt.isel.ls.Domain.Player
+import pt.isel.ls.utils.currentLocalDateTime
 
 class GamingSessionMem(val schema: DataMemSchema): GamingSessionStorage {
     override fun create(capacity: Int, game: Int, date: LocalDateTime): GamingSession {
         require(capacity >= 1){"The session capacity has to be at least 1"}
-        require(date.toJavaLocalDateTime() < java.time.LocalDateTime.now()){
+        require(date >= currentLocalDateTime()){
             "The session starting date cannot precede the current LocalDateTime"
         }
         require(schema.gamesDB.containsKey(game)){"The provided game does not exist"}
