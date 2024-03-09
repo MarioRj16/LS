@@ -21,47 +21,14 @@ import pt.isel.ls.server.API.*
 
 private val logger = LoggerFactory.getLogger("pt.isel.ls.server")
 
-@Serializable
-data class Student(val name: String, val number: Int)
-
-val students =
-    mutableListOf(
-        Student("Filipe", 10),
-        Student("Luis", 20),
-        Student("Daniel", 30),
-    )
-
-fun getStudents(request: Request): Response {
-    logRequest(request)
-    val limit = request.query("limit")?.toInt() ?: 2
-    return Response(OK)
-        .header("content-type", "application/json")
-        .body(Json.encodeToString(students.take(limit)))
-}
-
-fun getStudent(request: Request): Response {
-    logRequest(request)
-    val stdNumber = request.path("number")?.toInt()
-    return Response(OK)
-        .header("content-type", "application/json")
-        .body(Json.encodeToString(students.find { it.number == stdNumber }))
-}
-
-fun postStudent(request: Request): Response {
-    logRequest(request)
-    val std = Json.decodeFromString<Student>(request.bodyString())
-    students.add(std)
-    return Response(CREATED)
-        .header("content-type", "application/json")
-        .body(Json.encodeToString(std))
-}
-
+/**
 fun getDate(request: Request): Response {
     return Response(OK)
         .header("content-type", "text/plain")
         .body(Clock.System.now().toString())
 }
 
+*/
 fun logRequest(request: Request) {
     logger.info(
         "incoming request: method={}, uri={}, content-type={} accept={}",
@@ -75,7 +42,7 @@ fun logRequest(request: Request) {
 fun main() {
     //TODO could add more routes
     //TODO add swagger with .yaml file
-    val data=
+  //  val data=
     val playerRoutes =
         routes(
             "player" bind POST to ::createPlayer,
