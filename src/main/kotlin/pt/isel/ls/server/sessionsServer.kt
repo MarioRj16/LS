@@ -16,8 +16,8 @@ import org.http4k.routing.routes
 import org.http4k.server.Jetty
 import org.http4k.server.asServer
 import org.slf4j.LoggerFactory
-import pt.isel.ls.server.API.createPlayer
-import pt.isel.ls.server.API.getPlayer
+import pt.isel.ls.Data.Storage
+import pt.isel.ls.server.API.*
 
 private val logger = LoggerFactory.getLogger("pt.isel.ls.server")
 
@@ -75,6 +75,7 @@ fun logRequest(request: Request) {
 fun main() {
     //TODO could add more routes
     //TODO add swagger with .yaml file
+    val data=
     val playerRoutes =
         routes(
             "player" bind POST to ::createPlayer,
@@ -82,7 +83,7 @@ fun main() {
         )
     val gameRoutes=
         routes(
-            "games" bind GET to ::getGamesByGenreOrDeveloper,
+            "games" bind GET to ::searchGames,
             "games" bind POST to ::createGame,
             "games/{gameId}" bind GET to ::getGame
         )

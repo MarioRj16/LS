@@ -1,11 +1,8 @@
 package pt.isel.ls.server.API
 
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.routing.path
-import pt.isel.ls.server.logRequest
 import pt.isel.ls.server.services.serviceCreatePlayer
 import pt.isel.ls.server.services.serviceGetPlayer
 import pt.isel.ls.utils.httpError
@@ -29,7 +26,7 @@ fun createPlayer(request: Request):Response{
 fun getPlayer(request: Request):Response{
     try{
         return httpResponse(
-            serviceGetPlayer(request.path("playerId").toString()),
+            serviceGetPlayer(request.path("playerId")?.toInt()),
             httpStatus("200")
         )
     }catch (e:Exception){
