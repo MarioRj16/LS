@@ -16,8 +16,10 @@ import org.http4k.routing.routes
 import org.http4k.server.Jetty
 import org.http4k.server.asServer
 import org.slf4j.LoggerFactory
+import pt.isel.ls.Data.Mem.DataMem
 import pt.isel.ls.Data.Storage
 import pt.isel.ls.server.API.*
+import pt.isel.ls.server.services.SessionServices
 
 private val logger = LoggerFactory.getLogger("pt.isel.ls.server")
 
@@ -28,7 +30,7 @@ fun getDate(request: Request): Response {
         .body(Clock.System.now().toString())
 }
 
-*/
+*/z
 fun logRequest(request: Request) {
     logger.info(
         "incoming request: method={}, uri={}, content-type={} accept={}",
@@ -42,7 +44,9 @@ fun logRequest(request: Request) {
 fun main() {
     //TODO could add more routes
     //TODO add swagger with .yaml file
-  //  val data=
+    val db=DataMem()
+
+      val session=SessionsAPI(SessionServices(db))
     val playerRoutes =
         routes(
             "player" bind POST to ::createPlayer,
@@ -59,7 +63,7 @@ fun main() {
             "sessions" bind GET to ::getSessions,
             "sessions" bind POST to ::createSession,
             "sessions/{sessionId}" bind GET to ::getSession,
-            "sessions/{sessionId}" bind POST to ::addPlayertoSession
+            "sessions/{sessionId}" bind POST to ::addPlayerToSession
         )
     val app =
         routes(

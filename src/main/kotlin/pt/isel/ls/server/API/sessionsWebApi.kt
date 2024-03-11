@@ -8,46 +8,56 @@ import pt.isel.ls.utils.httpError
 import pt.isel.ls.utils.httpResponse
 import pt.isel.ls.utils.httpStatus
 
-fun getSessions(request: Request):Response{
-    try{
-        return httpResponse(
-            serviceGetSessions(request.bodyString()),
-            httpStatus("200")
-        )
-    }catch (e:Exception){
-        return httpError(e)
-    }
-}
 
-fun createSession(request: Request):Response{
-    try{
-        return httpResponse(
-            serviceCreateSession(request.bodyString()),
-            httpStatus("201")
-        )
-    }catch (e:Exception){
-        return httpError(e)
+class SessionsAPI(private val services:SessionServices) {
+    fun getSessions(request: Request): Response {
+        try {
+            return httpResponse(
+                services.getSessions(request.bodyString()),
+                httpStatus("200")
+            )
+        } catch (e: Exception) {
+            return httpError(e)
+        }
     }
-}
 
-fun getSession(request: Request):Response{
-    try{
-        return httpResponse(
-            serviceGetSession(request.path("sessionId")?.toInt()),
-            httpStatus("200")
-        )
-    }catch (e:Exception){
-        return httpError(e)
+    fun createSession(request: Request): Response {
+        try {
+            return httpResponse(
+                services.createSession(
+                    request.bodyString()
+                ),
+                httpStatus("201")
+            )
+        } catch (e: Exception) {
+            return httpError(e)
+        }
     }
-}
 
-fun addPlayertoSession(request: Request):Response{
-    try{
-        return httpResponse(
-            serviceAddPlayertoSession(request.path("sessionId")?.toInt(),request.bodyString()),
-            httpStatus("200")
-        )
-    }catch (e:Exception){
-        return httpError(e)
+    fun getSession(request: Request): Response {
+        try {
+            return httpResponse(
+                services.getSession(
+                    request.path("sessionId")?.toInt()
+                ),
+                httpStatus("200")
+            )
+        } catch (e: Exception) {
+            return httpError(e)
+        }
+    }
+
+    fun addPlayerToSession(request: Request): Response {
+        try {
+            return httpResponse(
+                services.addPlayerToSession(
+                    request.path("sessionId")?.toInt(),
+                    request.bodyString()
+                ),
+                httpStatus("201")
+            )
+        } catch (e: Exception) {
+            return httpError(e)
+        }
     }
 }

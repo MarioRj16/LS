@@ -13,6 +13,6 @@ fun serviceCreatePlayer(input:String){
 }
 
 fun serviceGetPlayer(id:Int?){
-    PlayersMem().search(id)
+    search(id)
     
 }

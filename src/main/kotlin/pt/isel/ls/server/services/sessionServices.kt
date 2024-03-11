@@ -1,17 +1,41 @@
 package pt.isel.ls.server.services
 
+import kotlinx.serialization.json.Json
+import pt.isel.ls.Data.Storage
+import pt.isel.ls.Domain.*
 
-fun serviceGetSessions(parameters:String){
+class SessionServices(private val db:Storage) {
 
-}
-fun serviceCreateSession(parameters:String){
+    fun getSessions(input: String):List<GamingSession> {
+        val sessionInput = Json.decodeFromString<SessionSearch>(input)
+        return db.gamingSessions.search(
+            sessionInput.game,
+            sessionInput.date,
+            sessionInput.state,
+            sessionInput.playerId
+        )
+    }
 
-}
+    fun createSession(input: String):GamingSession {
+        val sessionInput = Json.decodeFromString<SessionCreate>(input)
+        return db.gamingSessions.create(
+            sessionInput.capacity,
+            sessionInput.gameId,
+            sessionInput.startingDate
+            )
+    }
 
-fun serviceGetSession(id:Int?){
+    fun getSession(id: Int?):GamingSession? {
+        require(id!=null)
+        return db.gamingSessions.get(id)
+    }
 
-}
-
-fun serviceAddPlayertoSession(id:Int?,) {
-
+    fun addPlayerToSession(id: Int?, input: String?):Boolean {
+        require(id!=null && input !=null)
+        /**
+         * Maybe change sessionResponse since it really isn't the session response yet
+         */
+        val playerId = Json.decodeFromString<SessionResponse>(input).id
+        return db.gamingSessions.addPlayer(id,playerId)
+    }
 }
