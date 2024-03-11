@@ -8,6 +8,8 @@ interface GameStorage {
 
     fun get(name: String): Game?
 
+    fun getByID(id:Int): Game?
+
     fun list(): List<Game>
 
     fun search(developer: String?, genres: Set<String>?): List<Game>

@@ -1,20 +1,26 @@
 package pt.isel.ls.server.services
 
 import kotlinx.serialization.json.Json
+import pt.isel.ls.Data.Storage
 import pt.isel.ls.Domain.GameCreate
 import pt.isel.ls.Domain.GameSearch
 
+class GamesServices(private val db: Storage) {
+    fun searchGames(input: String) {
+        val gameInput = Json.decodeFromString<GameSearch>(input)
+        db.games.search(gameInput.developer, gameInput.genres)
+    }
 
-fun serviceSearchGames(input:String){
-    val gameInput= Json.decodeFromString<GameSearch>(input)
-    search(gameInput.genres,gameInput.developer)
-}
+    fun createGame(input: String) {
+        val gameInput = Json.decodeFromString<GameCreate>(input)
+        db.games.create(gameInput.name, gameInput.developer, gameInput.genres)
+    }
 
-fun serviceCreateGame(input:String){
-    val gameInput= Json.decodeFromString<GameCreate>(input)
-    create(gameInput.name,gameInput.genres,gameInput.developer)
-}
-
-fun serviceGetGame(id:Int?){
-     search(id)
+    fun getGame(id: Int?) {
+        require(id!=null)
+        db.games.getByID(id)
+        /**
+         * NEED TO ADD getByID function to GamesMEM
+         */
+    }
 }

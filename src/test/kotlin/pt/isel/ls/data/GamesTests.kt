@@ -16,8 +16,8 @@ class GamesTests: DataMem() {
             genres = setOf(Genre("genre"))
         )
 
-        assertEquals(game, games.get("name"))
-
+        //assertEquals(game, games.get("name"))
+        assertEquals(game, games.get(1))
     }
 
     @Test

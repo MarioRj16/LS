@@ -47,6 +47,7 @@ fun main() {
     val db=DataMem()
 
       val session=SessionsAPI(SessionServices(db))
+
     val playerRoutes =
         routes(
             "player" bind POST to ::createPlayer,
