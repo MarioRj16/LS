@@ -1,10 +1,12 @@
 begin;
 
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
 CREATE TABLE players(
     player_id serial,
     player_name varchar(50) NOT NULL,
     email varchar(50) NOT NULL CHECK (email LIKE ('%@%')) UNIQUE,
-    token uuid DEFAULT gen_random_uuid(),
+    token uuid NOT NULL DEFAULT uuid_generate_v4(),
     PRIMARY KEY (player_id)
 );
 
