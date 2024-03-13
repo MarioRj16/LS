@@ -6,6 +6,7 @@ import pt.isel.ls.Domain.Game
 import pt.isel.ls.Domain.GamingSession
 import pt.isel.ls.Domain.Player
 import pt.isel.ls.utils.currentLocalDateTime
+import pt.isel.ls.utils.getSublistLastIdx
 
 class GamingSessionMem(
     private val gamingSessions: DBTableMem<GamingSession>,
@@ -33,7 +34,14 @@ class GamingSessionMem(
         return gamingSessions.table[sessionId]
     }
 
-    override fun search(game: Int, date: LocalDateTime?, isOpen: Boolean?, player: Int?): List<GamingSession> {
+    override fun search(
+        game: Int,
+        date: LocalDateTime?,
+        isOpen: Boolean?,
+        player: Int?,
+        limit: Int,
+        skip: Int
+    ): List<GamingSession> {
         var sessions = gamingSessions.table.filter { (_, value) -> value.game == game }
         if(player is Int)
             sessions = sessions.filter { (_, value) -> value.players.find { it.id == player } is Player }
@@ -41,7 +49,7 @@ class GamingSessionMem(
         if(date is LocalDateTime)
             return sessions.values.filter { it.startingDate == date }
 
-        return sessions.values.toList()
+        return sessions.values.toList().subList(skip, sessions.values.getSublistLastIdx(skip, limit))
     }
 
 

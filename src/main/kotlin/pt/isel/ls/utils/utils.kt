@@ -22,3 +22,9 @@ object UUIDSerializer: KSerializer<UUID>{
 }
 
 fun currentLocalDateTime() = LocalDateTime.now().toKotlinLocalDateTime()
+
+fun <K, V> Map<K, V>.filterValuesNotNull() = mapNotNull { (k, v) -> v?.let { k to v } }.toMap()
+
+fun <T> Collection<T>.getSublistLastIdx(skip: Int, limit: Int): Int {
+    return if((skip + limit) > size) size-skip-1 else skip+limit-1
+}

@@ -6,6 +6,16 @@ import pt.isel.ls.Data.PlayerStorage
 import pt.isel.ls.Data.Storage
 
 open class DataMem: Storage, DataMemSchema() {
+    override fun reset() {
+        playersDB.table.clear()
+        gamingSessionsDB.table.clear()
+        gamesDB.table.clear()
+    }
+
+    override fun populate() {
+        TODO("Not yet implemented")
+    }
+
     override val players: PlayerStorage = PlayersMem(playersDB)
 
     override val gamingSessions: GamingSessionStorage = GamingSessionMem(gamingSessionsDB, playersDB, gamesDB)

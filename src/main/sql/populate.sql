@@ -1,8 +1,8 @@
 begin;
 
-insert into players(player_name, email, token) values
-    ('test', 'test@gmail.com', '550e8400-e29b-41d4-a716-446655440000'),
-    ('test2', 'test2@gmail.com', '08f39e13-8596-46be-9d81-ff866b4dd200');
+insert into players(player_name, email) values
+    ('test', 'test@gmail.com'),
+    ('test2', 'test2@gmail.com');
 
 insert into genres(genre) values
     ('rpg'),
