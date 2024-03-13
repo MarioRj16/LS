@@ -5,9 +5,12 @@ import pt.isel.ls.Data.GamingSessionStorage
 import pt.isel.ls.Domain.GamingSession
 import pt.isel.ls.Domain.Player
 import pt.isel.ls.utils.exceptions.ObjectDoesNotExistException
+import pt.isel.ls.utils.filterValuesNotNull
+import pt.isel.ls.utils.getSublistLastIdx
 import java.sql.Connection
 import java.sql.SQLException
 import java.sql.Statement
+import java.time.LocalDateTime
 import java.util.*
 
 class GamingSessionPostgres(private val conn: Connection): GamingSessionStorage {
@@ -85,8 +88,59 @@ class GamingSessionPostgres(private val conn: Connection): GamingSessionStorage 
         player: Int?,
         limit: Int,
         skip: Int
-    ): List<GamingSession> {
-        TODO("Not yet implemented")
+    ): List<GamingSession> = conn.use {
+        // TODO: refactor this
+        var query =
+            """"
+            select * from gaming_sessions left join players_sessions on gaming_session_id = game where game = $game
+            """".trimIndent()
+
+        if(date is LocalDateTime)
+            query += """and startingDate = $date"""
+
+        if(isOpen is Boolean)
+            query += """and startingDate <= CURRENT_TIMESTAMP"""
+
+        if(player is Int)
+            query += """and player = $player"""
+
+        val stm = it.prepareStatement(query)
+
+        val rs = stm.executeQuery()
+
+        val sessions = mutableSetOf<GamingSession>()
+        while(rs.next()){
+            val players = mutableSetOf<Player>()
+            val playersStm = it.prepareStatement(
+                """"
+                select * from players_sessions right join players on player = player_id where
+                """".trimIndent())
+
+            val playerRS = playersStm.executeQuery()
+            while (playerRS.next()){
+                players +=
+                    Player(
+                        id = playerRS.getInt(1),
+                        name = playerRS.getString(2),
+                        email = playerRS.getString(3),
+                        token = UUID.fromString(playerRS.getString(4))
+                    )
+            }
+
+            val session: GamingSession =
+                GamingSession(
+                    id = rs.getInt(1),
+                    game = rs.getInt(2),
+                    capacity = rs.getInt(3),
+                    startingDate = rs.getTimestamp(4),
+                    players = players
+                )
+
+
+            sessions.add(session)
+        }
+
+        return sessions.toList().subList(skip, sessions.getSublistLastIdx(skip, limit))
     }
 
     override fun addPlayer(session: Int, player: Int): Boolean = conn.use {
