@@ -1,5 +1,6 @@
 package pt.isel.ls.utils
 
+import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.datetime.toKotlinLocalDateTime
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.PrimitiveKind
@@ -7,6 +8,7 @@ import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
+import java.sql.Timestamp
 import java.time.LocalDateTime
 import java.util.*
 
@@ -31,3 +33,8 @@ fun <T> List<T>.paginate(skip: Int, limit: Int): List<T> {
     return subList(firstIndex, lastIndex)
 }
 
+fun kotlinx.datetime.LocalDateTime.toTimeStamp(): Timestamp = Timestamp.valueOf(toJavaLocalDateTime())
+fun emailIsValid(email: String): Boolean {
+    val emailRegex = Regex("^\\w+([.-]?\\w+)*@\\w+([.-]?\\w+)*(\\.\\w{2,})+$")
+    return emailRegex.matches(email)
+}

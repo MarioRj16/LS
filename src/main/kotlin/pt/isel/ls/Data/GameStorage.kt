@@ -8,7 +8,5 @@ interface GameStorage {
 
     fun get(name: String): Game
 
-    fun list(limit: Int = 30, skip: Int = 0): List<Game>
-
     fun search(developer: String?, genres: Set<String>?, limit: Int = 30, skip: Int = 0): List<Game>
 }

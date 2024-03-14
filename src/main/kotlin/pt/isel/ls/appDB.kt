@@ -5,7 +5,7 @@ import org.postgresql.ds.PGSimpleDataSource
 fun main(){
 
     val dataSource = PGSimpleDataSource().apply {
-        this.setURL(System.getenv("JDBC_DATABASE_URL"))
+        this.setURL(jdbcUrl)
     }
     val conn = dataSource.connection
     conn.autoCommit = true

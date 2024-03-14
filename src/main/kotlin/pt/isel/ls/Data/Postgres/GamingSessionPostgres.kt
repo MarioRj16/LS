@@ -2,18 +2,19 @@ package pt.isel.ls.Data.Postgres
 
 import kotlinx.datetime.LocalDateTime
 import pt.isel.ls.Data.GamingSessionStorage
-import pt.isel.ls.Data.Postgres.utils.toGamingSession
-import pt.isel.ls.Data.Postgres.utils.toPlayer
-import pt.isel.ls.Data.Postgres.utils.toTimeStamp
+import pt.isel.ls.utils.postgres.toGamingSession
+import pt.isel.ls.utils.postgres.toPlayer
+import pt.isel.ls.utils.toTimeStamp
 import pt.isel.ls.Domain.GamingSession
 import pt.isel.ls.Domain.Player
 import pt.isel.ls.utils.paginate
+import pt.isel.ls.utils.postgres.useWithRollback
 import java.sql.Connection
 import java.sql.SQLException
 import java.sql.Statement
 
 class GamingSessionPostgres(private val conn: Connection): GamingSessionStorage {
-    override fun create(capacity: Int, game: Int, date: LocalDateTime): GamingSession = conn.use {
+    override fun create(capacity: Int, game: Int, date: LocalDateTime): GamingSession = conn.useWithRollback {
         val statement = it.prepareStatement(
             """insert into gaming_sessions(capacity, starting_date, game) values (?, ?, ?)""",
             Statement.RETURN_GENERATED_KEYS
@@ -33,7 +34,7 @@ class GamingSessionPostgres(private val conn: Connection): GamingSessionStorage 
         throw SQLException("Creating gaming session failed, no ID was created")
     }
 
-    override fun get(sessionId: Int): GamingSession = conn.use {
+    override fun get(sessionId: Int): GamingSession = conn.useWithRollback {
         val statement =
             it.prepareStatement(
                 """
@@ -44,9 +45,10 @@ class GamingSessionPostgres(private val conn: Connection): GamingSessionStorage 
                 on players_sessions.player = players.player_id
                 where gaming_session_id = ?
                 """.trimIndent()
-            )
+            ).apply {
+                setInt(1, sessionId)
+            }
 
-        statement.setInt(1, sessionId)
         val resultSet = statement.executeQuery()
         val players = mutableSetOf<Player>()
 
@@ -66,7 +68,6 @@ class GamingSessionPostgres(private val conn: Connection): GamingSessionStorage 
         limit: Int,
         skip: Int
     ): List<GamingSession> = conn.use {
-        //TODO: Refactor this
         val query =
             """
             select * from gaming_sessions 
@@ -111,7 +112,7 @@ class GamingSessionPostgres(private val conn: Connection): GamingSessionStorage 
         return sessions.paginate(skip, limit)
     }
 
-    override fun addPlayer(session: Int, player: Int) = conn.use {
+    override fun addPlayer(session: Int, player: Int) = conn.useWithRollback {
         val stm = it.prepareStatement(
             """insert into players_sessions(player, gaming_session) values (?, ?)""",
             Statement.RETURN_GENERATED_KEYS

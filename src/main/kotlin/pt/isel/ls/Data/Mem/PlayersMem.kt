@@ -1,7 +1,7 @@
 package pt.isel.ls.Data.Mem
 
 import pt.isel.ls.Data.PlayerStorage
-import pt.isel.ls.Data.Postgres.utils.emailIsValid
+import pt.isel.ls.utils.emailIsValid
 import pt.isel.ls.Domain.Player
 import java.util.*
 import kotlin.NoSuchElementException

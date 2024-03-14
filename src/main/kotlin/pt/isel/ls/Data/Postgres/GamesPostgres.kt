@@ -1,9 +1,9 @@
 package pt.isel.ls.Data.Postgres
 
 import pt.isel.ls.Data.GameStorage
-import pt.isel.ls.Data.Postgres.utils.toGame
-import pt.isel.ls.Data.Postgres.utils.toGenre
-import pt.isel.ls.Data.Postgres.utils.useWithRollback
+import pt.isel.ls.utils.postgres.toGame
+import pt.isel.ls.utils.postgres.toGenre
+import pt.isel.ls.utils.postgres.useWithRollback
 import pt.isel.ls.Domain.Game
 import pt.isel.ls.Domain.Genre
 import pt.isel.ls.utils.paginate
@@ -16,7 +16,7 @@ class GamesPostgres(private val conn: Connection): GameStorage {
     override fun create(name: String, developer: String, genres: Set<Genre>): Game = conn.useWithRollback {
         val game: Game
 
-        var stm = it.prepareStatement(
+        var statement = it.prepareStatement(
             """insert into games(game_name, developer) values (?, ?)""".trimIndent(),
             Statement.RETURN_GENERATED_KEYS
         ).apply {
@@ -24,10 +24,10 @@ class GamesPostgres(private val conn: Connection): GameStorage {
             setString(2, developer)
         }
 
-        if(stm.executeUpdate() == 0)
+        if(statement.executeUpdate() == 0)
             throw SQLException("Creating game failed, no rows affected")
 
-        val generatedKeys = stm.generatedKeys
+        val generatedKeys = statement.generatedKeys
 
         if(generatedKeys.next())
             game = get(name)
@@ -35,102 +35,83 @@ class GamesPostgres(private val conn: Connection): GameStorage {
             throw SQLException("Creating game failed, no ID was created")
 
         // TODO: extract without causing any conflict
-        for(genre in genres){
-            stm = it.prepareStatement(
-                """insert into games_genres(game, genre) values (?, ?)""",
-                Statement.RETURN_GENERATED_KEYS
-            )
-            stm.setInt(1, game.id)
-            stm.setString(2, genre.genre)
+        if (genres.isNotEmpty()){
+            var query = """insert into games_genres(game, genre) values """
 
-            if(stm.executeUpdate() == 0 || !stm.generatedKeys.next())
+            for(idx in genres.indices){
+                query += "(?, ?)"
+                if(idx + 1 < genres.size)
+                    query += ", "
+            }
+
+            statement = it.prepareStatement(query, Statement.RETURN_GENERATED_KEYS).apply {
+                var counter = 1
+                for (genre in genres){
+                    setInt(counter++, game.id)
+                    setString(counter++, genre.genre)
+                }
+            }
+
+            if(statement.executeUpdate() == 0 || !statement.generatedKeys.next())
                 throw SQLException("Creating game and genre association failed, no rows affected")
         }
-
-
         return game
     }
 
     override fun get(name: String): Game = conn.useWithRollback {
-        val gameStm = it.prepareStatement("""select * from games where game_name = ?""".trimIndent())
-
-        gameStm.setString(1, name)
-        val gameRS = gameStm.executeQuery()
-
-        if(gameRS.next()){
-            val gameId = gameRS.getInt(1)
-
-            val genreStm = it.prepareStatement("""select * from games_genres where game = ?""".trimIndent())
-
-            genreStm.setInt(1, gameId)
-
-            val genreRS = genreStm.executeQuery()
-            val genres = mutableSetOf<Genre>()
-
-            while(genreRS.next()){
-                genres += genreRS.toGenre()
-            }
-
-            return gameRS.toGame(genres.toSet())
+        val statement = it.prepareStatement(
+            """
+            select * from games 
+            inner join games_genres
+            on games.game_id = games_genres.game
+            where game_name = ?
+            """.trimIndent()
+        ).apply {
+            setString(1, name)
         }
 
+        val resultSet = statement.executeQuery()
+        val genres = mutableSetOf<Genre>()
+
+        while(resultSet.next()){
+            genres += resultSet.toGenre()
+            if(resultSet.isLast)
+                return resultSet.toGame(genres.toSet())
+        }
         throw NoSuchElementException("Could not get Game, $name was not found")
     }
 
-
-    override fun list(limit: Int, skip: Int): List<Game> = conn.useWithRollback {
-        val games = mutableSetOf<Game>()
-
-        val gameStm = it.prepareStatement("""select * from games""")
-
-        val gameRS = gameStm.executeQuery()
-        while(gameRS.next()){
-            val gameId = gameRS.getInt(1)
-            val gameName = gameRS.getString(2)
-            val gameDeveloper = gameRS.getString(3)
-
-            val genreStm = it.prepareStatement("""select * from games_genres where game = ?""")
-            genreStm.setInt(1, gameId)
-            val genreRS = genreStm.executeQuery()
-            val genres = mutableSetOf<Genre>()
-
-            while(genreRS.next()){
-                genres += genreRS.toGenre()
-            }
-
-            games += Game(id = gameId, name = gameName, developer = gameDeveloper, genres = genres.toSet())
-        }
-
-
-
-        return games.toList().paginate(skip, limit)
-    }
-
     override fun search(developer: String?, genres: Set<String>?, limit: Int, skip: Int): List<Game> = conn.useWithRollback {
-        val games = mutableSetOf<Game>()
-        var query = """select * from games ${genres?.joinToString(separator = ", ", prefix = "(", postfix = ")")}"""
-        if(developer is String)
-            query += """ and developer = $developer"""
+        val query =
+            """
+            select * from games 
+            inner join games_genres
+            on games.game_id = games_genres.game where
+            ${genres?.joinToString(separator = "?, ", prefix = "genre in (", postfix = ")")}
+            ${developer?.let { """ and developer = ?""" }}
+            """.trimIndent()
 
-        val gameStm = it.prepareStatement(query)
 
-        val gameRS = gameStm.executeQuery()
-        while (gameRS.next()){
-            val gameId = gameRS.getInt(1)
-            val gameName = gameRS.getString(2)
-            val gameDeveloper = gameRS.getString(3)
-
-            val genreStm = it.prepareStatement("""select * from games_genres where game = ?""")
-            genreStm.setInt(1, gameId)
-            val genreRS = genreStm.executeQuery()
-            val foundGenres = mutableSetOf<Genre>()
-
-            while(genreRS.next()){
-                foundGenres.add(Genre(genreRS.getString(1)))
-            }
-
-            games.add(Game(id = gameId, name = gameName, developer = gameDeveloper, genres = foundGenres.toSet()))
+        val statement = it.prepareStatement(query).apply {
+            var parameterIdx = 1
+            genres?.forEach { genre -> setString(parameterIdx++, genre) }
+            developer?.let{ setString(parameterIdx, developer) }
         }
-        return games.toList().paginate(skip, limit)
+
+        val resultSet = statement.executeQuery()
+        val games = mutableListOf<Game>()
+        val foundGenres = mutableSetOf<Genre>()
+        var previousGameId: Int? = null
+        while (resultSet.next()){
+            foundGenres += resultSet.toGenre()
+            val currentGameId = resultSet.getInt("game_id")
+            if(previousGameId == currentGameId){
+                games += resultSet.toGame(foundGenres.toSet())
+                foundGenres.clear()
+                continue
+            }
+            previousGameId = currentGameId
+        }
+        return games.paginate(skip, limit)
     }
 }
