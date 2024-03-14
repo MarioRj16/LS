@@ -17,6 +17,10 @@ class GamesMem(private val games: DBTableMem<Game>): GameStorage{
         return games.table.values.find { it.name == name }
     }
 
+    override fun getByID(id: Int): Game? {
+        return games.table.values.find { it.id == id }
+    }
+
     override fun list(): List<Game> {
         return games.table.values.toList()
     }
