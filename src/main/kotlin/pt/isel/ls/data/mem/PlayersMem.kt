@@ -10,7 +10,6 @@ class PlayersMem(private val players: DBTableMem<Player>): PlayerStorage {
     override fun create(name: String, email: String): Player {
         require(emailIsValid(email)){"The given email is not in the right format"}
         require(!emailExists(email)){" The given email is not unique"}
-        // TODO: Find out if we can ignore token collisions
         val obj = Player(
             id = players.nextId,
             name = name,
@@ -26,7 +25,7 @@ class PlayersMem(private val players: DBTableMem<Player>): PlayerStorage {
     }
 
     private fun emailExists(email: String): Boolean {
-        return players.table.none { it.value.email == email }
+        return players.table.any { it.value.email == email }
     }
 
 }
