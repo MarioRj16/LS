@@ -1,7 +1,7 @@
 package pt.isel.ls.utils.postgres
 
 import kotlinx.datetime.*
-import pt.isel.ls.Domain.*
+import pt.isel.ls.domain.*
 import java.io.File
 import java.sql.Connection
 import java.sql.ResultSet

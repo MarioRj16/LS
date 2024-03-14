@@ -2,8 +2,8 @@ package pt.isel.ls.data
 
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import pt.isel.ls.Data.Mem.DataMem
-import pt.isel.ls.Domain.Genre
+import pt.isel.ls.data.mem.DataMem
+import pt.isel.ls.domain.Genre
 import kotlin.test.assertEquals
 
 class GamesTests: DataMem() {

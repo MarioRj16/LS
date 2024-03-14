@@ -2,7 +2,7 @@ package pt.isel.ls.data
 
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import pt.isel.ls.Data.Mem.DataMem
+import pt.isel.ls.data.mem.DataMem
 import kotlin.test.assertEquals
 
 class PlayerTests: DataMem() {

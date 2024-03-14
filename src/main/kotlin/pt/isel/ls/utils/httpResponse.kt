@@ -1,11 +1,9 @@
 package pt.isel.ls.utils
 
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.http4k.core.Response
 import org.http4k.core.Status
-import pt.isel.ls.Domain.PlayerResponse
 import pt.isel.ls.utils.exceptions.NotFoundException
 
 /*

@@ -5,8 +5,8 @@ import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import pt.isel.ls.Data.Mem.DataMem
-import pt.isel.ls.Domain.Genre
+import pt.isel.ls.data.mem.DataMem
+import pt.isel.ls.domain.Genre
 import pt.isel.ls.utils.currentLocalDateTime
 import kotlin.test.assertEquals
 
