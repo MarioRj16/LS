@@ -25,7 +25,7 @@ class PlayersMem(private val players: DBTableMem<Player>): PlayerStorage {
     }
 
     private fun emailExists(email: String): Boolean {
-        return players.table.none { it.value.email == email }
+        return players.table.any { it.value.email == email }
     }
 
 }
