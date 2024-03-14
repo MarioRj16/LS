@@ -32,16 +32,13 @@ inline fun <reified T> Response.json(body: T): Response{
         .header("content-type", "application/json")
         .body(Json.encodeToString(body))
 }
-/*
+
 fun httpError(e:Exception):Response{
     val message=e.message!!.split("-")
-  //  return httpResponse(message[1],httpStatus(message[0]))
-    return Response(httpStatus(message[0]))
-        .header("content-type", "application/json")
-        .body(Json.encodeToString(message[1]))
+    return Response(httpStatus(message[0])).json(message)
 }
 
- */
+
 
 fun httpStatus(code:String):Status{
     return when(code){

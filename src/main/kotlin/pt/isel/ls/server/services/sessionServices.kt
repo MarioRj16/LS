@@ -6,7 +6,7 @@ import pt.isel.ls.Domain.*
 
 class SessionServices(private val db:Storage) {
 
-    fun getSessions(input: String):List<GamingSession> {
+    fun searchSessions(input: String):List<GamingSession> {
         val sessionInput = Json.decodeFromString<SessionSearch>(input)
         return db.gamingSessions.search(
             sessionInput.game,
@@ -16,13 +16,14 @@ class SessionServices(private val db:Storage) {
         )
     }
 
-    fun createSession(input: String):GamingSession {
+    fun createSession(input: String):SessionResponse {
         val sessionInput = Json.decodeFromString<SessionCreate>(input)
-        return db.gamingSessions.create(
+        val session=db.gamingSessions.create(
             sessionInput.capacity,
             sessionInput.gameId,
             sessionInput.startingDate
-            )
+        )
+        return SessionResponse(session.id)
     }
 
     fun getSession(id: Int?):GamingSession? {

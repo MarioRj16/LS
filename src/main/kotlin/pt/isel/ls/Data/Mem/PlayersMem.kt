@@ -11,14 +11,12 @@ class PlayersMem(private val players: DBTableMem<Player>): PlayerStorage {
         require('@' in email){"The email has to contain a '@'"}
         require(players.table.none { it.value.email == email }){" The email has to be unique"}
         // TODO: Find out if we can ignore token collisions
-        println("cheguei")
         val obj = Player(
             id = players.nextId,
             name = name,
             email = email,
             token = UUID.randomUUID()
         )
-        println("acabei")
         players.table[players.nextId] = obj
         return obj
     }

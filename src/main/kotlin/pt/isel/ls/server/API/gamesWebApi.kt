@@ -3,19 +3,18 @@ package pt.isel.ls.server.API
 import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.routing.path
+import pt.isel.ls.Domain.GameResponse
 import pt.isel.ls.server.services.GamesServices
 import pt.isel.ls.utils.httpError
-import pt.isel.ls.utils.httpResponse
 import pt.isel.ls.utils.httpStatus
+import pt.isel.ls.utils.json
 
 
 class GamesAPI(private val services: GamesServices) {
     fun searchGames(request: Request): Response {
         try {
-            return httpResponse(
-                services.searchGames(request.bodyString()),
-                httpStatus("200")
-            )
+            return Response( httpStatus("200"))
+                .json(services.searchGames(request.bodyString()))
         } catch (e: Exception) {
             return httpError(e)
         }
@@ -23,10 +22,10 @@ class GamesAPI(private val services: GamesServices) {
 
     fun createGame(request: Request): Response {
         try {
-            return httpResponse(
-                services.createGame(request.bodyString()),
-                httpStatus("201")
-            )
+            val gameId=services.createGame(request.bodyString())
+            require(gameId!=null)
+            return Response(httpStatus("201"))
+                .json(GameResponse(gameId))
         } catch (e: Exception) {
             return httpError(e)
         }
@@ -34,10 +33,8 @@ class GamesAPI(private val services: GamesServices) {
 
     fun getGame(request: Request): Response {
         try {
-            return httpResponse(
-                services.getGame(request.path("gameId")?.toInt()),
-                httpStatus("200")
-            )
+            return Response(httpStatus("200"))
+                .json(services.getGame(request.path("gameId")?.toInt()))
         } catch (e: Exception) {
             return httpError(e)
         }

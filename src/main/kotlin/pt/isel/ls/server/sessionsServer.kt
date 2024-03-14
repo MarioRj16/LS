@@ -64,7 +64,7 @@ fun main() {
         )
     val sessionRoutes=
         routes(
-            "sessions" bind GET to session::getSessions,
+            "sessions" bind GET to session::searchSessions,
             "sessions" bind POST to session::createSession,
             "sessions/{sessionId}" bind GET to session::getSession,
             "sessions/{sessionId}" bind POST to session::addPlayerToSession
