@@ -1,10 +1,10 @@
 begin;
 
-drop table if exists players_sessions;
-drop table if exists games_genres;
-drop table if exists gaming_sessions;
-drop table if exists games;
-drop table if exists genres;
-drop table if exists players;
+delete * from players_sessions;
+delete * from games_genres;
+delete * from gaming_sessions;
+delete * from games;
+delete * from genres;
+delete * from players;
 
 commit;

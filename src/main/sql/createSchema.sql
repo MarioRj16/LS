@@ -1,10 +1,12 @@
 begin;
 
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
 CREATE TABLE players(
     player_id serial,
     player_name varchar(50) NOT NULL,
     email varchar(50) NOT NULL CHECK (email LIKE ('%@%')) UNIQUE,
-    token uuid NOT NULL UNIQUE,
+    token uuid NOT NULL DEFAULT uuid_generate_v4(),
     PRIMARY KEY (player_id)
 );
 
@@ -16,7 +18,6 @@ CREATE TABLE genres(
 CREATE TABLE games(
     game_id serial,
     game_name varchar(50) NOT NULL UNIQUE,
-    max_capacity integer NOT NULL CHECK (max_capacity > 1),
     developer varchar(100) NOT NULL,
     PRIMARY KEY (game_id)
 );
@@ -25,7 +26,6 @@ CREATE TABLE gaming_sessions(
     gaming_session_id serial,
     capacity integer NOT NULL CHECK (capacity > 1),
     starting_date timestamp NOT NULL,
-    game_state boolean NOT NULL,
     game integer,
     PRIMARY KEY (gaming_session_id),
     FOREIGN KEY (game) REFERENCES games(game_id)
