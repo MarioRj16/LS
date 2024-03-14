@@ -2,6 +2,7 @@ package pt.isel.ls.Domain
 
 import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.Serializable
+import pt.isel.ls.utils.currentLocalDateTime
 
 @Serializable
 data class GamingSession(
@@ -10,4 +11,7 @@ data class GamingSession(
     val capacity: Int,
     val startingDate: LocalDateTime,
     val players: Set<Player>
-)
+){
+    val state: Boolean
+        get() = startingDate >= currentLocalDateTime() && players.size < capacity
+}

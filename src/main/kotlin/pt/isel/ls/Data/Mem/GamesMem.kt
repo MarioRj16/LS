@@ -3,6 +3,7 @@ package pt.isel.ls.Data.Mem
 import pt.isel.ls.Data.GameStorage
 import pt.isel.ls.Domain.Game
 import pt.isel.ls.Domain.Genre
+import pt.isel.ls.utils.paginate
 
 class GamesMem(private val games: DBTableMem<Game>): GameStorage{
     override fun create(name: String, developer: String, genres: Set<Genre>): Game {
@@ -13,21 +14,22 @@ class GamesMem(private val games: DBTableMem<Game>): GameStorage{
         return obj
     }
 
-    override fun get(name: String): Game? {
-        return games.table.values.find { it.name == name }
-    }
+    override fun get(name: String): Game =
+        games.table.values.find { it.name == name } ?:
+            throw NoSuchElementException("No game with name $name was found")
 
-    override fun getByID(id: Int): Game? {
-        return games.table.values.find { it.id == id }
-    }
 
-    override fun list(): List<Game> {
-        return games.table.values.toList()
-    }
-
-    override fun search(developer: String?, genres: Set<String>?): List<Game> {
-        // TODO: Add Pagination and limit
-        return when{
+    /**
+     *  override fun getByID(id: Int): Game? {
+     *         return games.table.values.find { it.id == id }
+     *     }
+     *
+     *     override fun list(): List<Game> {
+     *         return games.table.values.toList()
+     *     }
+     */
+    override fun search(developer: String?, genres: Set<String>?, limit: Int, skip: Int): List<Game> {
+        val list = when{
             developer.isNullOrBlank() && genres.isNullOrEmpty() -> games.table.values.toList()
             genres.isNullOrEmpty() -> games.table.values.filter { it.developer == developer }
             developer.isNullOrBlank() -> games.table.values.filter { it.genres.intersect(genres).isNotEmpty() }
@@ -35,5 +37,7 @@ class GamesMem(private val games: DBTableMem<Game>): GameStorage{
                 it.genres.intersect(genres).isNotEmpty() && it.developer == developer
             }
         }
+
+        return list.paginate(skip, limit)
     }
 }

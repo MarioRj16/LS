@@ -9,7 +9,7 @@ class PlayerTests: DataMem() {
     @Test
     fun `User can be created`(){
         val player = players.create("name", "email@email.com")
-        val expected = players.search(1)
+        val expected = players.get(1)
         assertEquals(expected, player)
     }
 
