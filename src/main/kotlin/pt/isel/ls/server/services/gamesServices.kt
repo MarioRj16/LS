@@ -19,7 +19,7 @@ class GamesServices(private val db: Storage) {
     }
 
     fun getGame(id: Int?) :Game?{
-        require(id!=null)
+        require(id!=null){"id"}
         return db.games.getByID(id)
     }
 }

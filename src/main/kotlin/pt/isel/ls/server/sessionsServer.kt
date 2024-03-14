@@ -23,6 +23,7 @@ import pt.isel.ls.server.API.*
 import pt.isel.ls.server.services.GamesServices
 import pt.isel.ls.server.services.PlayerServices
 import pt.isel.ls.server.services.SessionServices
+import java.io.File
 
 private val logger = LoggerFactory.getLogger("pt.isel.ls.server")
 
@@ -47,10 +48,16 @@ fun logRequest(request: Request) {
 fun main() {
     //TODO could add more routes
     //TODO add swagger with .yaml file
-    val db=DataMem()
-    val player=PlayersAPI(PlayerServices(db))
-    val games=GamesAPI(GamesServices(db))
-    val session=SessionsAPI(SessionServices(db))
+    val db = DataMem()
+    val player = PlayersAPI(PlayerServices(db))
+    val games = GamesAPI(GamesServices(db))
+    val session = SessionsAPI(SessionServices(db))
+    /*
+    val yamlFile = File("API-docs 1.0.yaml")
+    val yamlContent = yamlFile.readText()
+    val docsAPI=Yaml.decodeFromString
+
+     */
     val playerRoutes =
         routes(
             "player" bind POST to player::createPlayer,

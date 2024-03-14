@@ -4,6 +4,7 @@ import kotlinx.serialization.json.Json
 import pt.isel.ls.Domain.PlayerCreate
 import pt.isel.ls.Data.Storage
 import pt.isel.ls.Domain.Player
+import pt.isel.ls.utils.exceptions.NotFoundException
 
 
 class PlayerServices(private val db:Storage) {
@@ -13,8 +14,8 @@ class PlayerServices(private val db:Storage) {
     }
 
     fun getPlayer(id: Int?):Player {
-        require(id!=null)
-        val player=db.players.search(id) ?: throw error("didn't Find")
+        require(id!=null){"id"}
+        val player=db.players.search(id) ?: throw NotFoundException("player")
         return player
     }
 

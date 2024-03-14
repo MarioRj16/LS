@@ -6,6 +6,8 @@ import kotlinx.serialization.json.Json
 import org.http4k.core.Response
 import org.http4k.core.Status
 import pt.isel.ls.Domain.PlayerResponse
+import pt.isel.ls.utils.exceptions.NotFoundException
+
 /*
 inline fun <reified T:Serializable>httpResponse(body: T ?, status:Status):Response{
     /**
@@ -35,7 +37,7 @@ inline fun <reified T> Response.json(body: T): Response{
 
 fun httpError(e:Exception):Response{
     val message=e.message!!.split("-")
-    return Response(httpStatus(message[0])).json(message)
+    return Response(httpStatus(message[0])).json(message[1])
 }
 
 
@@ -50,5 +52,13 @@ fun httpStatus(code:String):Status{
         "404" -> Status.NOT_FOUND
         "409" -> Status.CONFLICT
         else -> Status.INTERNAL_SERVER_ERROR
+    }
+}
+
+fun httpException(e: Exception):Response{
+    return when (e){
+        is NotFoundException -> Response(Status.NOT_FOUND).json("Didn't find" + e.message)
+        is IllegalArgumentException -> Response(Status.BAD_REQUEST).json("Illegal argument" + e.message)
+        else -> Response(Status.INTERNAL_SERVER_ERROR).json("Server Error")
     }
 }

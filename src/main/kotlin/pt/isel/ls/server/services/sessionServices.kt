@@ -32,7 +32,8 @@ class SessionServices(private val db:Storage) {
     }
 
     fun addPlayerToSession(id: Int?, input: String?):Boolean {
-        require(id!=null && input !=null)
+        require(id!=null){"id"}
+        require(input !=null){"input"}
         /**
          * Maybe change sessionResponse since it really isn't the session response yet
          */
