@@ -10,7 +10,7 @@ import kotlinx.serialization.encoding.Encoder
 import java.time.LocalDateTime
 import java.util.*
 
-object UUIDSerializer: KSerializer<UUID>{
+object UUIDSerializer : KSerializer<UUID> {
     override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("UUID", PrimitiveKind.STRING)
     override fun deserialize(decoder: Decoder): UUID {
         return UUID.fromString(decoder.decodeString())
@@ -23,8 +23,11 @@ object UUIDSerializer: KSerializer<UUID>{
 
 fun currentLocalDateTime() = LocalDateTime.now().toKotlinLocalDateTime()
 
-fun <K, V> Map<K, V>.filterValuesNotNull() = mapNotNull { (k, v) -> v?.let { k to v } }.toMap()
-
-fun <T> Collection<T>.getSublistLastIdx(skip: Int, limit: Int): Int {
-    return if((skip + limit) > size) size-skip-1 else skip+limit-1
+fun <T> List<T>.paginate(skip: Int, limit: Int): List<T> {
+    var firstIndex: Int = if (skip > size) size else skip
+    firstIndex--
+    var lastIndex: Int = if (size > skip + limit) skip + limit else size
+    lastIndex--
+    return subList(firstIndex, lastIndex)
 }
+

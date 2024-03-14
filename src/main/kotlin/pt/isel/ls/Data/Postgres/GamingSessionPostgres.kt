@@ -2,175 +2,125 @@ package pt.isel.ls.Data.Postgres
 
 import kotlinx.datetime.LocalDateTime
 import pt.isel.ls.Data.GamingSessionStorage
+import pt.isel.ls.Data.Postgres.utils.toGamingSession
+import pt.isel.ls.Data.Postgres.utils.toPlayer
+import pt.isel.ls.Data.Postgres.utils.toTimeStamp
 import pt.isel.ls.Domain.GamingSession
 import pt.isel.ls.Domain.Player
-import pt.isel.ls.utils.exceptions.ObjectDoesNotExistException
-import pt.isel.ls.utils.filterValuesNotNull
-import pt.isel.ls.utils.getSublistLastIdx
+import pt.isel.ls.utils.paginate
 import java.sql.Connection
 import java.sql.SQLException
 import java.sql.Statement
-import java.time.LocalDateTime
-import java.util.*
 
 class GamingSessionPostgres(private val conn: Connection): GamingSessionStorage {
     override fun create(capacity: Int, game: Int, date: LocalDateTime): GamingSession = conn.use {
-        val session: GamingSession
-
-        val stm = it.prepareStatement(
+        val statement = it.prepareStatement(
             """insert into gaming_sessions(capacity, starting_date, game) values (?, ?, ?)""",
             Statement.RETURN_GENERATED_KEYS
-        )
-        stm.setInt(1, capacity)
-        stm.setDate(2, date)
-        stm.setInt(3, game)
+        ).apply {
+            setInt(1, capacity)
+            setTimestamp(2, date.toTimeStamp())
+            setInt(3, game)
+        }
 
-        if(stm.executeUpdate() == 0)
+        if(statement.executeUpdate() == 0)
             throw SQLException("Creating gaming session failed, no rows affected")
 
-        val generatedKeys = stm.generatedKeys
+        val generatedKeys = statement.generatedKeys
 
         if(generatedKeys.next())
-            session = get(generatedKeys.getInt(1))!!
-        else
-            throw SQLException("Creating gaming session failed, no ID was created")
-
-        return session
+            return get(generatedKeys.getInt(1))
+        throw SQLException("Creating gaming session failed, no ID was created")
     }
 
-    override fun get(sessionId: Int): GamingSession? = conn.use {
-        val sessionStm = it.prepareStatement("""select * from gaming_sessions where gaming_session_id = ?""".trimIndent())
-
-        sessionStm.setInt(1, sessionId)
-
-        val sessionRS = sessionStm.executeQuery()
-
-        if(sessionRS.next()){
-            //val id = sessionRS.getInt(1)
-            val capacity = sessionRS.getInt(2)
-            val startingDate = sessionRS.getDate(3) // TODO: Find out how to get this as LocalDateTime
-            val game = sessionRS.getInt(4)
-
-            val players = mutableSetOf<Player>()
-            val playerStm = it.prepareStatement("""select * from players_sessions where gaming_session = ?""")
-
-            playerStm.setInt(1, sessionId)
-
-            val playerRS = playerStm.executeQuery()
-
-            while (playerRS.next()){
-                players.add(
-                    Player(
-                        id = playerRS.getInt(1),
-                        name = playerRS.getString(2),
-                        email = playerRS.getString(3),
-                        token = UUID.fromString(playerRS.getString(4))
-                    )
-                )
-            }
-
-            val session: GamingSession = GamingSession(
-                id = sessionId,
-                game = game,
-                capacity = capacity,
-                startingDate = startingDate,
-                players = players.toSet()
+    override fun get(sessionId: Int): GamingSession = conn.use {
+        val statement =
+            it.prepareStatement(
+                """
+                select * from gaming_sessions 
+                full outer join players_sessions 
+                on gaming_sessions.gaming_session_id = players_sessions.gaming_session
+                full outer join players
+                on players_sessions.player = players.player_id
+                where gaming_session_id = ?
+                """.trimIndent()
             )
-            return session
-        }
-        throw ObjectDoesNotExistException("Could not get gaming session, session with id $sessionId was not found")
+
+        statement.setInt(1, sessionId)
+        val resultSet = statement.executeQuery()
+        val players = mutableSetOf<Player>()
+
+        while(resultSet.next()){
+            players += resultSet.toPlayer()
+            if(resultSet.isLast)
+                return resultSet.toGamingSession(players)
+            }
+        throw NoSuchElementException("Could not get gaming session, session with id $sessionId was not found")
     }
 
     override fun search(
         game: Int,
         date: LocalDateTime?,
-        isOpen: Boolean?, // TODO: Write a condition for this
+        isOpen: Boolean?,
         player: Int?,
         limit: Int,
         skip: Int
     ): List<GamingSession> = conn.use {
-        // TODO: refactor this
-        var query =
-            """"
-            select * from gaming_sessions left join players_sessions on gaming_session_id = game where game = $game
-            """".trimIndent()
+        //TODO: Refactor this
+        val query =
+            """
+            select * from gaming_sessions 
+            full outer join players_sessions
+            on gaming_sessions.gaming_session_id = players_sessions.gaming_session
+            full outer join players
+            on players_sessions.player = players.player_id
+            where game = $game
+            ${if (date != null) " and startingDate = ?" else ""}
+            ${if (isOpen != null) " and startingDate <= CURRENT_TIMESTAMP" else ""}
+            ${if (player != null) " and player = ?" else ""}
+            order by gaming_sessions.gaming_session_id
+            """.trimIndent()
 
-        if(date is LocalDateTime)
-            query += """and startingDate = $date"""
-
-        if(isOpen is Boolean)
-            query += """and startingDate <= CURRENT_TIMESTAMP"""
-
-        if(player is Int)
-            query += """and player = $player"""
-
-        val stm = it.prepareStatement(query)
-
-        val rs = stm.executeQuery()
-
-        val sessions = mutableSetOf<GamingSession>()
-        while(rs.next()){
-            val players = mutableSetOf<Player>()
-            val playersStm = it.prepareStatement(
-                """"
-                select * from players_sessions right join players on player = player_id where
-                """".trimIndent())
-
-            val playerRS = playersStm.executeQuery()
-            while (playerRS.next()){
-                players +=
-                    Player(
-                        id = playerRS.getInt(1),
-                        name = playerRS.getString(2),
-                        email = playerRS.getString(3),
-                        token = UUID.fromString(playerRS.getString(4))
-                    )
+        val statement = it.prepareStatement(query).apply {
+            var parameterIndex = 1
+            setInt(parameterIndex++, game)
+            date?.let {
+                setTimestamp(parameterIndex++, date.toTimeStamp())
             }
-
-            val session: GamingSession =
-                GamingSession(
-                    id = rs.getInt(1),
-                    game = rs.getInt(2),
-                    capacity = rs.getInt(3),
-                    startingDate = rs.getTimestamp(4),
-                    players = players
-                )
-
-
-            sessions.add(session)
+            player?.let {
+                setInt(parameterIndex++, player)
+            }
         }
 
-        return sessions.toList().subList(skip, sessions.getSublistLastIdx(skip, limit))
+        val resultSet = statement.executeQuery()
+
+        val sessions = mutableListOf<GamingSession>()
+        val players = mutableSetOf<Player>()
+
+        var previousSessionId: Int? = null
+        while(resultSet.next()){
+            players += resultSet.toPlayer()
+            val currentSessionId = resultSet.getInt("gaming_session_id")
+            if(previousSessionId == currentSessionId){
+                sessions += resultSet.toGamingSession(players.toSet())
+                players.clear()
+                continue
+            }
+            previousSessionId = currentSessionId
+        }
+        return sessions.paginate(skip, limit)
     }
 
-    override fun addPlayer(session: Int, player: Int): Boolean = conn.use {
-        val sessionStm = it.prepareStatement("""select * from gaming_sessions where gaming_session_id = ?""")
-
-        sessionStm.setInt(1, session)
-        val sessionRS = sessionStm.executeQuery()
-
-        if(!sessionRS.next())
-            throw ObjectDoesNotExistException("Could not get gaming session, session with id $session was not found")
-
-        val playerStm = it.prepareStatement("""select * from players where player_id = ?""")
-
-        playerStm.setInt(1, player)
-        val playerRS = playerStm.executeQuery()
-
-        if(!playerRS.next())
-            throw ObjectDoesNotExistException("Could not get player, player with id $player was not found")
-
+    override fun addPlayer(session: Int, player: Int) = conn.use {
         val stm = it.prepareStatement(
-            """insert into players_sessions(players, gaming_session) values (?, ?)""",
+            """insert into players_sessions(player, gaming_session) values (?, ?)""",
             Statement.RETURN_GENERATED_KEYS
-        )
-
-        stm.setInt(1, player)
-        stm.setInt(2, session)
+        ).apply {
+            setInt(1, player)
+            setInt(2, session)
+        }
 
         if(stm.executeUpdate() == 0 || !stm.generatedKeys.next())
             throw SQLException("Adding player to session failed, no rows affected")
-
-        return true // TODO: Change this function return to Unit
     }
 }

@@ -6,7 +6,7 @@ import pt.isel.ls.Domain.Game
 import pt.isel.ls.Domain.GamingSession
 import pt.isel.ls.Domain.Player
 import pt.isel.ls.utils.currentLocalDateTime
-import pt.isel.ls.utils.getSublistLastIdx
+import pt.isel.ls.utils.paginate
 
 class GamingSessionMem(
     private val gamingSessions: DBTableMem<GamingSession>,
@@ -30,8 +30,9 @@ class GamingSessionMem(
         return obj
     }
 
-    override fun get(sessionId: Int): GamingSession? {
-        return gamingSessions.table[sessionId]
+    override fun get(sessionId: Int): GamingSession {
+        return gamingSessions.table[sessionId] ?:
+            throw NoSuchElementException("No gaming session with id $sessionId was found")
     }
 
     override fun search(
@@ -49,12 +50,11 @@ class GamingSessionMem(
         if(date is LocalDateTime)
             return sessions.values.filter { it.startingDate == date }
 
-        return sessions.values.toList().subList(skip, sessions.values.getSublistLastIdx(skip, limit))
+        return sessions.values.toList().paginate(skip, limit)
     }
 
 
-    override fun addPlayer(session: Int, player: Int): Boolean {
-        //TODO: Ask if we should be returning a boolean here
+    override fun addPlayer(session: Int, player: Int){
         gamingSessions.table[session] ?: throw NoSuchElementException("Session $session does not exist")
         require(gamingSessions.table[session]!!.players.size < gamingSessions.table[session]!!.capacity){
             "The session $session is already at maximum capacity"
@@ -62,9 +62,8 @@ class GamingSessionMem(
         val playerToAdd = players.table[player]
         playerToAdd ?: throw NoSuchElementException("Player $player does not exist")
         if(playerToAdd in gamingSessions.table[session]!!.players)
-            return false
+            throw Exception("Played could not be added to database")
        gamingSessions.table[session] =
             gamingSessions.table[session]!!.copy(players = (gamingSessions.table[session]!!.players + playerToAdd))
-        return true
     }
 }

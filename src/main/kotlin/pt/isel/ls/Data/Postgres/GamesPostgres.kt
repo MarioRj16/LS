@@ -1,25 +1,28 @@
 package pt.isel.ls.Data.Postgres
 
 import pt.isel.ls.Data.GameStorage
+import pt.isel.ls.Data.Postgres.utils.toGame
+import pt.isel.ls.Data.Postgres.utils.toGenre
+import pt.isel.ls.Data.Postgres.utils.useWithRollback
 import pt.isel.ls.Domain.Game
 import pt.isel.ls.Domain.Genre
-import pt.isel.ls.utils.exceptions.ObjectDoesNotExistException
-import pt.isel.ls.utils.getSublistLastIdx
+import pt.isel.ls.utils.paginate
 import java.sql.Connection
 import java.sql.SQLException
 import java.sql.Statement
 
 class GamesPostgres(private val conn: Connection): GameStorage {
 
-    override fun create(name: String, developer: String, genres: Set<Genre>): Game = conn.use {
+    override fun create(name: String, developer: String, genres: Set<Genre>): Game = conn.useWithRollback {
         val game: Game
 
         var stm = it.prepareStatement(
             """insert into games(game_name, developer) values (?, ?)""".trimIndent(),
             Statement.RETURN_GENERATED_KEYS
-        )
-        stm.setString(1, name)
-        stm.setString(2, developer)
+        ).apply {
+            setString(1, name)
+            setString(2, developer)
+        }
 
         if(stm.executeUpdate() == 0)
             throw SQLException("Creating game failed, no rows affected")
@@ -27,7 +30,7 @@ class GamesPostgres(private val conn: Connection): GameStorage {
         val generatedKeys = stm.generatedKeys
 
         if(generatedKeys.next())
-            game = get(name)!!
+            game = get(name)
         else
             throw SQLException("Creating game failed, no ID was created")
 
@@ -48,7 +51,7 @@ class GamesPostgres(private val conn: Connection): GameStorage {
         return game
     }
 
-    override fun get(name: String): Game? = conn.use {
+    override fun get(name: String): Game = conn.useWithRollback {
         val gameStm = it.prepareStatement("""select * from games where game_name = ?""".trimIndent())
 
         gameStm.setString(1, name)
@@ -56,33 +59,26 @@ class GamesPostgres(private val conn: Connection): GameStorage {
 
         if(gameRS.next()){
             val gameId = gameRS.getInt(1)
-            val gameName = gameRS.getString(2)
-            val gameDeveloper = gameRS.getString(3)
 
             val genreStm = it.prepareStatement("""select * from games_genres where game = ?""".trimIndent())
 
             genreStm.setInt(1, gameId)
+
             val genreRS = genreStm.executeQuery()
             val genres = mutableSetOf<Genre>()
 
             while(genreRS.next()){
-                genres.add(Genre(genreRS.getString(1)))
+                genres += genreRS.toGenre()
             }
 
-
-            return Game(
-                id = gameId,
-                name = gameName,
-                developer = gameDeveloper,
-                genres = genres.toSet()
-            )
+            return gameRS.toGame(genres.toSet())
         }
 
-        throw ObjectDoesNotExistException("Could not get Game, $name was not found")
+        throw NoSuchElementException("Could not get Game, $name was not found")
     }
 
 
-    override fun list(limit: Int, skip: Int): List<Game> = conn.use {
+    override fun list(limit: Int, skip: Int): List<Game> = conn.useWithRollback {
         val games = mutableSetOf<Game>()
 
         val gameStm = it.prepareStatement("""select * from games""")
@@ -99,18 +95,18 @@ class GamesPostgres(private val conn: Connection): GameStorage {
             val genres = mutableSetOf<Genre>()
 
             while(genreRS.next()){
-                genres.add(Genre(genreRS.getString(1)))
+                genres += genreRS.toGenre()
             }
 
-            games.add(Game(id = gameId, name = gameName, developer = gameDeveloper, genres = genres.toSet()))
+            games += Game(id = gameId, name = gameName, developer = gameDeveloper, genres = genres.toSet())
         }
 
 
 
-        return games.toList().subList(skip, games.getSublistLastIdx(skip, limit))
+        return games.toList().paginate(skip, limit)
     }
 
-    override fun search(developer: String?, genres: Set<String>?, limit: Int, skip: Int): List<Game> = conn.use {
+    override fun search(developer: String?, genres: Set<String>?, limit: Int, skip: Int): List<Game> = conn.useWithRollback {
         val games = mutableSetOf<Game>()
         var query = """select * from games ${genres?.joinToString(separator = ", ", prefix = "(", postfix = ")")}"""
         if(developer is String)
@@ -135,6 +131,6 @@ class GamesPostgres(private val conn: Connection): GameStorage {
 
             games.add(Game(id = gameId, name = gameName, developer = gameDeveloper, genres = foundGenres.toSet()))
         }
-        return games.toList().subList(skip, games.getSublistLastIdx(skip, limit))
+        return games.toList().paginate(skip, limit)
     }
 }
