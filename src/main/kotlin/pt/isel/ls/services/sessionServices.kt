@@ -11,11 +11,14 @@ class SessionServices(private val db:Storage) {
 
     fun searchSessions(input: String):List<GamingSession> {
         val sessionInput = Json.decodeFromString<SessionSearch>(input)
+        if (sessionInput.skip > sessionInput.limit) throw IllegalArgumentException("limit must be higher than skip")
         return db.gamingSessions.search(
             sessionInput.game,
             sessionInput.date,
             sessionInput.state,
-            sessionInput.playerId
+            sessionInput.playerId,
+            sessionInput.limit,
+            sessionInput.skip
         )
     }
 

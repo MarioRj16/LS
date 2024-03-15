@@ -9,7 +9,8 @@ import pt.isel.ls.api.models.GameSearch
 class GamesServices(private val db: Storage) {
     fun searchGames(input: String):List<Game> {
         val gameInput = Json.decodeFromString<GameSearch>(input)
-        return db.games.search(gameInput.developer, gameInput.genres)
+        if (gameInput.skip > gameInput.limit) throw IllegalArgumentException("limit must be higher than skip")
+        return db.games.search(gameInput.developer, gameInput.genres,gameInput.limit,gameInput.skip)
     }
 
     fun createGame(input: String):Int? {

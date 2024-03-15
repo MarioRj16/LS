@@ -4,7 +4,7 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.http4k.core.Response
 import org.http4k.core.Status
-import pt.isel.ls.utils.exceptions.NotFoundException
+import java.lang.IndexOutOfBoundsException
 
 
 inline fun <reified T> Response.json(body: T): Response{
@@ -30,8 +30,9 @@ fun httpStatus(code:String):Status{
  */
 fun httpException(e: Exception):Response{
     return when (e){
-        is NotFoundException -> Response(Status.NOT_FOUND).json("Didn't find" + e.message)
-        is IllegalArgumentException -> Response(Status.BAD_REQUEST).json("Illegal argument" + e.message)
+        is NoSuchElementException -> Response(Status.NOT_FOUND).json(e.message)
+        is IllegalArgumentException -> Response(Status.BAD_REQUEST).json("Illegal argument " + e.message)
+        //is IndexOutOfBoundsException -> Response(Status.BAD_REQUEST).json()
         else -> Response(Status.INTERNAL_SERVER_ERROR).json("Server Error")
     }
 }

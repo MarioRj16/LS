@@ -26,11 +26,9 @@ object UUIDSerializer : KSerializer<UUID> {
 fun currentLocalDateTime() = LocalDateTime.now().toKotlinLocalDateTime()
 
 fun <T> List<T>.paginate(skip: Int, limit: Int): List<T> {
-    var firstIndex: Int = if (skip > size) size else skip
-    firstIndex--
-    var lastIndex: Int = if (size > skip + limit) skip + limit else size
-    lastIndex--
-    return subList(firstIndex, lastIndex)
+    if (this.isEmpty() || skip > size) return emptyList()
+    val lastIndex:Int = if (limit > size) size else limit
+    return subList(skip, lastIndex)
 }
 
 fun kotlinx.datetime.LocalDateTime.toTimeStamp(): Timestamp = Timestamp.valueOf(toJavaLocalDateTime())

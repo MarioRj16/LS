@@ -24,7 +24,6 @@ class GamesMem(private val games: DBTableMem<Game>): GameStorage{
             (developer.isNullOrBlank() || it.developer == developer) &&
             (genres.isNullOrEmpty() || it.genres.intersect(genres).isNotEmpty())
         }
-
         return list.paginate(skip, limit)
     }
 
