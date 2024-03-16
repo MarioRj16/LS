@@ -1,18 +1,14 @@
 package pt.isel.ls.utils
 
-import pt.isel.ls.Data.Mem.DataMem
-import pt.isel.ls.Domain.Player
+import pt.isel.ls.data.mem.DataMem
+import pt.isel.ls.domain.Player
 
-internal class PlayerFactory {
-    companion object: DataMem() {
-
+internal class PlayerFactory(private val db: DataMem) {
         fun createRandomPlayer(): Player {
             val randomName = generateRandomString()
             val randomEmail = generateRandomEmail()
-            return players.create(randomName, randomEmail)
+            return db.players.create(randomName, randomEmail)
         }
         private fun generateRandomEmail(): String =
             "${generateRandomString()}@${generateRandomString()}.com"
-
-    }
 }
