@@ -13,8 +13,24 @@ import pt.isel.ls.utils.json
 class GamesAPI(private val services: GamesServices) {
     fun searchGames(request: Request): Response {
         try {
+            /**
+             * (val developer: String? = null,
+             * val genres: Set<String>?  = null
+             * ,val limit:Int = 30 ,
+             * val skip:Int = 0)
+             */
+
+            /**
+             * TODO might need to change for query
+             *  val developer=request.query("developer")
+             *             val genres=
+             */
+
             return Response(Status.OK)
-                .json(services.searchGames(request.bodyString()))
+                .json(services.searchGames(
+                    request.bodyString(),
+                    request.header("Authorization")
+                ))
         } catch (e: Exception) {
             return httpException(e)
         }
@@ -22,12 +38,10 @@ class GamesAPI(private val services: GamesServices) {
 
     fun createGame(request: Request): Response {
         try {
-            val gameId=services.createGame(request.bodyString())
-
-            //remove after merge
-            require(gameId!=null)
-
-
+            val gameId=services.createGame(
+                request.bodyString(),
+                request.header("Authorization")
+            )
             return Response(Status.CREATED)
                 .json(GameResponse(gameId))
         } catch (e: Exception) {
@@ -38,7 +52,10 @@ class GamesAPI(private val services: GamesServices) {
     fun getGame(request: Request): Response {
         try {
             return Response(Status.OK)
-                .json(services.getGame(request.path("gameId")?.toInt()))
+                .json(services.getGame(
+                    request.path("gameId")?.toInt(),
+                    request.header("Authorization")
+                ))
         } catch (e: Exception) {
             return httpException(e)
         }

@@ -4,7 +4,9 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.http4k.core.Response
 import org.http4k.core.Status
+import pt.isel.ls.utils.exceptions.AuthorizationException
 import java.lang.IndexOutOfBoundsException
+import javax.naming.AuthenticationException
 
 
 inline fun <reified T> Response.json(body: T): Response{
@@ -12,6 +14,8 @@ inline fun <reified T> Response.json(body: T): Response{
         .header("content-type", "application/json")
         .body(Json.encodeToString(body))
 }
+
+
 /*
 fun httpStatus(code:String):Status{
     return when(code){
@@ -25,13 +29,12 @@ fun httpStatus(code:String):Status{
         else -> Status.INTERNAL_SERVER_ERROR
     }
 }
-
-
  */
 fun httpException(e: Exception):Response{
     return when (e){
         is NoSuchElementException -> Response(Status.NOT_FOUND).json(e.message)
         is IllegalArgumentException -> Response(Status.BAD_REQUEST).json("Illegal argument " + e.message)
+        is AuthorizationException -> Response(Status.UNAUTHORIZED).json(e.message)
         //is IndexOutOfBoundsException -> Response(Status.BAD_REQUEST).json()
         else -> Response(Status.INTERNAL_SERVER_ERROR).json("Server Error")
     }

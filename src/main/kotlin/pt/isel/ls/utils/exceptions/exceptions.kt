@@ -1,3 +1,3 @@
 package pt.isel.ls.utils.exceptions
 
-class ObjectDoesNotExistException(message: String): Exception(message)
+class AuthorizationException(message: String): Exception(message)

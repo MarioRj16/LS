@@ -16,7 +16,7 @@ import pt.isel.ls.services.GamesServices
 import pt.isel.ls.services.PlayerServices
 import pt.isel.ls.services.SessionServices
 
-private val logger = LoggerFactory.getLogger("pt.isel.ls.server")
+private val logger = LoggerFactory.getLogger("pt.isel.ls")
 
 /**
 fun getDate(request: Request): Response {
