@@ -5,7 +5,7 @@ import pt.isel.ls.domain.Game
 import pt.isel.ls.domain.Genre
 import kotlin.random.Random
 
-internal class GameFactory(private val db: DataMem){
+internal open class GameFactory(private val db: DataMem){
     private val developers = listOf("Developer1", "Developer2", "Developer3")
     private val genres =
         listOf("Action", "Adventure", "RPG", "Strategy", "Puzzle", "Simulation").map { Genre(it) }.toSet()

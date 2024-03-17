@@ -5,9 +5,9 @@ import pt.isel.ls.domain.GamingSession
 import pt.isel.ls.domain.Player
 import kotlin.random.Random
 
-internal class GamingSessionFactory(private val db: DataMem) {
+internal open class GamingSessionFactory(private val db: DataMem) {
 
-    fun createRandomGamingSession(gameId: Int, players: Set<Player>): GamingSession {
+    fun createRandomGamingSession(gameId: Int): GamingSession {
         val randomCapacity = Random.nextInt(1, 129)
         return db.gamingSessions.create(randomCapacity, gameId, currentLocalDateTime())
     }
