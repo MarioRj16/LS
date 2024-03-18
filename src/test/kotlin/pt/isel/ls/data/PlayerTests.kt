@@ -4,14 +4,18 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import pt.isel.ls.data.mem.DataMem
-import pt.isel.ls.utils.AppFactory
+import pt.isel.ls.utils.GameFactory
+import pt.isel.ls.utils.GamingSessionFactory
+import pt.isel.ls.utils.PlayerFactory
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 class PlayerTests: DataMem() {
 
-    private companion object: AppFactory(DataMem())
+    private val playerFactory = PlayerFactory(players)
+    // private val gameFactory = GameFactory(games)
+    // private val gamingSessionFactory = GamingSessionFactory(gamingSessions)
 
     @BeforeEach
     fun setUp() = reset()

@@ -12,20 +12,22 @@ import kotlin.test.assertTrue
 
 class GamingSessionTests: DataMem() {
 
-    val futureDate = LocalDateTime(
+    private val futureDate = LocalDateTime(
         LocalDate(2050, 3, 3),
         LocalTime(1, 1, 1, 1)
     )
 
-    val pastDate = LocalDateTime(
+    private val pastDate = LocalDateTime(
         LocalDate(2020, 3, 3),
         LocalTime(1, 1, 1, 1)
     )
 
-    val default_skip = 0
-    val default_limit = 30
+    private val defaultSkip = 0
+    private val defaultLimit = 30
 
-    private companion object: AppFactory(DataMem())
+    private val playerFactory = PlayerFactory(players)
+    private val gameFactory = GameFactory(games)
+    private val gamingSessionFactory = GamingSessionFactory(gamingSessions)
 
     @BeforeEach
     fun setUp() = reset()
@@ -145,7 +147,7 @@ class GamingSessionTests: DataMem() {
         val game2 = gameFactory.createRandomGame()
 
         assertTrue(
-            gamingSessions.search(game.id, null, null, null, default_limit, default_skip).isEmpty()
+            gamingSessions.search(game.id, null, null, null, defaultLimit, defaultSkip).isEmpty()
         )
 
         val session = gamingSessionFactory.createRandomGamingSession(game.id)
@@ -153,7 +155,7 @@ class GamingSessionTests: DataMem() {
         val session3 = gamingSessionFactory.createRandomGamingSession(game2.id)
 
         var searchResults =
-            gamingSessions.search(game.id, null, null, null, default_limit, default_skip)
+            gamingSessions.search(game.id, null, null, null, defaultLimit, defaultSkip)
         assertTrue(searchResults.size == 2)
         assertContains(searchResults, session)
         assertContains(searchResults, session2)
@@ -170,7 +172,7 @@ class GamingSessionTests: DataMem() {
         val game = gameFactory.createRandomGame()
         gamingSessionFactory.createRandomGamingSession(game.id)
         assertThrows<IllegalArgumentException> {
-            gamingSessions.search(10, null, null, null, default_limit, default_skip)
+            gamingSessions.search(10, null, null, null, defaultLimit, defaultSkip)
         }
     }
 }

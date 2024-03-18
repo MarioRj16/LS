@@ -1,11 +1,12 @@
 package pt.isel.ls.utils
 
+import pt.isel.ls.data.GameStorage
 import pt.isel.ls.data.mem.DataMem
 import pt.isel.ls.domain.Game
 import pt.isel.ls.domain.Genre
 import kotlin.random.Random
 
-internal open class GameFactory(private val db: DataMem){
+class GameFactory(private val games: GameStorage){
     private val developers = listOf("Developer1", "Developer2", "Developer3")
     private val genres =
         listOf("Action", "Adventure", "RPG", "Strategy", "Puzzle", "Simulation").map { Genre(it) }.toSet()
@@ -14,7 +15,7 @@ internal open class GameFactory(private val db: DataMem){
         val randomDeveloper = developers.random()
         val randomName = generateRandomString()
         val randomGenres = generateRandomGenres()
-        return db.games.create(randomDeveloper, randomName, randomGenres)
+        return games.create(randomDeveloper, randomName, randomGenres)
     }
     private fun generateRandomGenres(): Set<Genre> {
         val numberOfGenres = Random.nextInt(1, 4)
