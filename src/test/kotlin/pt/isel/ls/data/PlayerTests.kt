@@ -7,41 +7,39 @@ import org.junit.jupiter.api.assertThrows
 import pt.isel.ls.data.mem.DataMem
 import pt.isel.ls.utils.AppFactory
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 
 class PlayerTests: DataMem() {
 
     private companion object: AppFactory(DataMem())
 
     @BeforeEach
-    fun beforeEachTest() = reset()
+    fun setUp() = reset()
 
     @Test
-    fun `Player IDs are correctly assigned`(){
-        val player = playerFactory.createRandomPlayer()
-        val player2 = playerFactory.createRandomPlayer()
+    fun `create() creates player successfully`(){
+        val name = "testName"
+        val email = "test@email.com"
+        val player = players.create(name, email)
 
-        assertEquals(1, player.id)
-        assertEquals(2, player2.id)
+        assertEquals(name, player.name)
+        assertEquals(email, player.email)
+        assertNotNull(player.token)
+        assertTrue(player.id == 1)
     }
 
     @Test
-    fun `create() does not throw exception with unique valid email`(){
-        assertDoesNotThrow {
-            players.create("name", "valid@email.com")
-        }
-    }
-
-    @Test
-    fun `create() throws exception if email is not unique`(){
-        players.create("name", "email@email.com")
-
+    fun `create() throws exception for non unique email`(){
+        val email = "email@email.com"
+        players.create("name", email)
         assertThrows<IllegalArgumentException> {
-            players.create("name2", "email@email.com")
+            players.create("name2", email)
         }
     }
 
     @Test
-    fun `create() throws exception if email is not valid`(){
+    fun `create() throws exception for email in invalid format`(){
         assertThrows<IllegalArgumentException> {
             players.create("name", "invalidEmail")
         }
@@ -56,16 +54,16 @@ class PlayerTests: DataMem() {
     }
 
     @Test
-    fun `get() throws if player does not exist`(){
-        assertThrows<NoSuchElementException> {
-            players.get(1)
-        }
+    fun `get() returns player successfully`(){
+        val player = playerFactory.createRandomPlayer()
+
+        assertEquals(player, players.get(player.id))
     }
 
     @Test
-    fun `get() returns the right player`(){
-        val player = playerFactory.createRandomPlayer()
-
-        assertEquals(players.get(1), player)
+    fun `get() throws exception for non existing player`(){
+        assertThrows<NoSuchElementException> {
+            players.get(34223)
+        }
     }
 }
