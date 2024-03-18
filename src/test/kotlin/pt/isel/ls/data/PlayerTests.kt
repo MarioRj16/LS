@@ -62,7 +62,7 @@ class PlayerTests: DataMem() {
     @Test
     fun `get() throws exception for non existing player`(){
         assertThrows<NoSuchElementException> {
-            players.get(34223)
+            players.get(1)
         }
     }
 }
