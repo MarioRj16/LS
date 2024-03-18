@@ -2,7 +2,6 @@ package pt.isel.ls.data
 
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
 import pt.isel.ls.data.mem.DataMem
 import pt.isel.ls.utils.AppFactory
