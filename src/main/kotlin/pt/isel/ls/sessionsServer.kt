@@ -73,7 +73,7 @@ fun main() {
             gameRoutes,
             sessionRoutes
         )
-    val jettyServer = app.asServer(Jetty(8000)).start()
+    val jettyServer = app.asServer(Jetty(PORT)).start()
     logger.info("server started listening")
 
     readln()
