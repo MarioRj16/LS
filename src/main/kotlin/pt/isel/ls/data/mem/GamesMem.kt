@@ -11,24 +11,22 @@ class GamesMem(private val games: DBTableMem<Game>): GameStorage{
         require(genres.isNotEmpty()){"The game needs to have at least 1 genre in order to be created"}
         val game=Game(id = games.nextId, name = name, developer = developer, genres = genres)
         games.table[games.nextId] = game
-        return games.table[game.id] ?: throw NoSuchElementException("The game could not be created")
+        return game
     }
 
     override fun get(name: String): Game =
         games.table.values.find { it.name == name } ?:
             throw NoSuchElementException("No game with name $name was found")
 
-    override fun search(developer: String?, genres: Set<String>?, limit: Int, skip: Int): List<Game> {
-        val list = games.table.values.filter {
+    override fun search(developer: String?, genres: Set<String>?, limit: Int, skip: Int): List<Game> =
+        games.table.values.filter {
             (developer.isNullOrBlank() || it.developer == developer) &&
             (genres.isNullOrEmpty() || it.genres.intersect(genres).isNotEmpty())
-        }
+        }.paginate(skip, limit)
 
-        return list.paginate(skip, limit)
-    }
 
-    override fun getById(id: Int): Game {
-        return games.table.values.find { it.id == id } ?:
-        throw NoSuchElementException("No game with id $id was found")
-    }
+    override fun getById(id: Int): Game =
+        games.table.values.find { it.id == id } ?:
+            throw NoSuchElementException("No game with id $id was found")
+
 }
