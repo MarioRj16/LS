@@ -5,7 +5,7 @@ import pt.isel.ls.api.models.PlayerCreate
 import pt.isel.ls.data.Storage
 import pt.isel.ls.domain.Player
 import pt.isel.ls.utils.bearerToken
-import pt.isel.ls.utils.exceptions.AuthorizationException
+import pt.isel.ls.utils.exceptions.ForbiddenException
 
 
 class PlayerServices(private val db:Storage) {
@@ -17,10 +17,9 @@ class PlayerServices(private val db:Storage) {
     fun getPlayer(id: Int?,authorization:String?):Player {
         require(id!=null){"id"}
         val ownId=bearerToken(authorization,db).id
-        if(ownId!=id) throw AuthorizationException(
+        if(ownId!=id) throw ForbiddenException(
             "You dont have authorization to see this player, instead you can see your own id $ownId")
-        val player=db.players.get(id)
-        return player
+        return db.players.get(id)
     }
 
 }

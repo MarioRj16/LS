@@ -8,12 +8,16 @@ import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
+import pt.isel.ls.DEFAULT_LIMIT
+import pt.isel.ls.DEFAULT_SKIP
 import pt.isel.ls.data.Storage
 import pt.isel.ls.domain.Player
+import pt.isel.ls.utils.exceptions.AuthorizationException
 import java.sql.Timestamp
 import java.time.LocalDateTime
 import java.util.*
 import javax.naming.AuthenticationException
+
 
 object UUIDSerializer : KSerializer<UUID> {
     override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("UUID", PrimitiveKind.STRING)
@@ -43,7 +47,7 @@ fun emailIsValid(email: String): Boolean {
 fun bearerToken(authorization:String?,db: Storage): Player {
     if( authorization.isNullOrEmpty() ||
         !authorization.startsWith("Bearer")
-        ) throw AuthenticationException("Missing Bearer token")
+        ) throw AuthorizationException("Missing Bearer token")
     val token = authorization.removePrefix("Bearer ")
     return db.players.getByToken(UUID.fromString(token))
 }

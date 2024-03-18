@@ -6,6 +6,7 @@ import pt.isel.ls.domain.Game
 import pt.isel.ls.domain.GamingSession
 import pt.isel.ls.domain.Player
 import pt.isel.ls.utils.currentLocalDateTime
+import pt.isel.ls.utils.exceptions.ConflictException
 import pt.isel.ls.utils.paginate
 
 class GamingSessionMem(
@@ -62,7 +63,7 @@ class GamingSessionMem(
         val playerToAdd = players.table[player]
         playerToAdd ?: throw NoSuchElementException("Player $player does not exist")
         if(playerToAdd in gamingSessions.table[session]!!.players)
-            throw Exception("Played could not be added to database")
+            throw ConflictException("Played could not be added to database")
        gamingSessions.table[session] =
             gamingSessions.table[session]!!.copy(players = (gamingSessions.table[session]!!.players + playerToAdd))
     }

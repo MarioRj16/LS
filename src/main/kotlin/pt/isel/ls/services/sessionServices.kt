@@ -1,6 +1,8 @@
 package pt.isel.ls.services
 
 import kotlinx.serialization.json.Json
+import pt.isel.ls.DEFAULT_LIMIT
+import pt.isel.ls.DEFAULT_SKIP
 import pt.isel.ls.api.models.SessionCreate
 import pt.isel.ls.api.models.SessionResponse
 import pt.isel.ls.api.models.SessionSearch
@@ -10,7 +12,7 @@ import pt.isel.ls.utils.bearerToken
 
 class SessionServices(private val db:Storage) {
 
-    fun searchSessions(input: String,authorization:String?):List<GamingSession> {
+    fun searchSessions(input: String,authorization:String?,skip:Int?,limit:Int?):List<GamingSession> {
         bearerToken(authorization,db).id
         val sessionInput = Json.decodeFromString<SessionSearch>(input)
         return db.gamingSessions.search(
@@ -18,8 +20,8 @@ class SessionServices(private val db:Storage) {
             sessionInput.date,
             sessionInput.state,
             sessionInput.playerId,
-            sessionInput.limit,
-            sessionInput.skip
+            limit ?: DEFAULT_LIMIT,
+            skip ?: DEFAULT_SKIP
         )
     }
 

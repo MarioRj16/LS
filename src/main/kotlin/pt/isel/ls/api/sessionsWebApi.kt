@@ -18,7 +18,9 @@ class SessionsAPI(private val services: SessionServices) {
             return Response(Status.OK)
                 .json(services.searchSessions(
                     request.bodyString(),
-                    request.header("Authorization")
+                    request.header("Authorization"),
+                    request.query("skip")?.toInt() ,
+                    request.query("limit")?.toInt()
                 ))
         } catch (e: Exception) {
             return httpException(e)

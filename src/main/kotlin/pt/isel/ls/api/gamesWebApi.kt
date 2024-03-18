@@ -29,7 +29,9 @@ class GamesAPI(private val services: GamesServices) {
             return Response(Status.OK)
                 .json(services.searchGames(
                     request.bodyString(),
-                    request.header("Authorization")
+                    request.header("Authorization"),
+                    request.query("skip")?.toInt() ,
+                    request.query("limit")?.toInt()
                 ))
         } catch (e: Exception) {
             return httpException(e)

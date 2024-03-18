@@ -1,6 +1,11 @@
 package pt.isel.ls.api.models;
 
 import kotlinx.serialization.Serializable
+import pt.isel.ls.domain.Genre
 
+
+/**
+ * TODO If we can change genres to GenreClass
+ */
 @Serializable
-data class GameSearch(val developer: String? = null, val genres: Set<String>?  = null,val limit:Int = 30 ,val skip:Int = 0)
+data class GameSearch(val developer: String? = null, val genres: Set<Genre>?  = null)
