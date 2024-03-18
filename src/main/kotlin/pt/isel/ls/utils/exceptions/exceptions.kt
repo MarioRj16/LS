@@ -1,5 +1,7 @@
 package pt.isel.ls.utils.exceptions
 
-class ObjectDoesNotExistException(message: String): Exception(message)
+class AuthorizationException(message: String): Exception(message)
 
-class NotFoundException(message:String) : Exception(message)
+class ForbiddenException(message: String): Exception(message)
+
+class ConflictException(message: String): Exception(message)

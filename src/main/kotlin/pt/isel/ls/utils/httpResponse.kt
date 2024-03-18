@@ -4,7 +4,9 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.http4k.core.Response
 import org.http4k.core.Status
-import pt.isel.ls.utils.exceptions.NotFoundException
+import pt.isel.ls.utils.exceptions.AuthorizationException
+import pt.isel.ls.utils.exceptions.ConflictException
+import pt.isel.ls.utils.exceptions.ForbiddenException
 
 
 inline fun <reified T> Response.json(body: T): Response{
@@ -12,6 +14,8 @@ inline fun <reified T> Response.json(body: T): Response{
         .header("content-type", "application/json")
         .body(Json.encodeToString(body))
 }
+
+
 /*
 fun httpStatus(code:String):Status{
     return when(code){
@@ -25,13 +29,14 @@ fun httpStatus(code:String):Status{
         else -> Status.INTERNAL_SERVER_ERROR
     }
 }
-
-
  */
 fun httpException(e: Exception):Response{
     return when (e){
-        is NotFoundException -> Response(Status.NOT_FOUND).json("Didn't find" + e.message)
-        is IllegalArgumentException -> Response(Status.BAD_REQUEST).json("Illegal argument" + e.message)
+        is NoSuchElementException -> Response(Status.NOT_FOUND).json(e.message)
+        is IllegalArgumentException -> Response(Status.BAD_REQUEST).json("Illegal argument " + e.message)
+        is AuthorizationException -> Response(Status.UNAUTHORIZED).json(e.message)
+        is ForbiddenException -> Response(Status.FORBIDDEN).json(e.message)
+        is ConflictException -> Response(Status.CONFLICT).json(e.message)
         else -> Response(Status.INTERNAL_SERVER_ERROR).json("Server Error")
     }
 }

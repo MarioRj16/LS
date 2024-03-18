@@ -4,7 +4,8 @@ import kotlinx.serialization.json.Json
 import pt.isel.ls.api.models.PlayerCreate
 import pt.isel.ls.data.Storage
 import pt.isel.ls.domain.Player
-import pt.isel.ls.utils.exceptions.NotFoundException
+import pt.isel.ls.utils.bearerToken
+import pt.isel.ls.utils.exceptions.ForbiddenException
 
 
 class PlayerServices(private val db:Storage) {
@@ -13,10 +14,12 @@ class PlayerServices(private val db:Storage) {
         return db.players.create(playerInput.name, playerInput.email)
     }
 
-    fun getPlayer(id: Int?):Player {
+    fun getPlayer(id: Int?,authorization:String?):Player {
         require(id!=null){"id"}
-        val player=db.players.get(id) ?: throw NotFoundException("player")
-        return player
+        val ownId=bearerToken(authorization,db).id
+        if(ownId!=id) throw ForbiddenException(
+            "You dont have authorization to see this player, instead you can see your own id $ownId")
+        return db.players.get(id)
     }
 
 }

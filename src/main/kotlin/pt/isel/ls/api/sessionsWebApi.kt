@@ -12,8 +12,16 @@ import pt.isel.ls.utils.json
 class SessionsAPI(private val services: SessionServices) {
     fun searchSessions(request: Request): Response {
         try {
+/**
+ * TODO maybe change to query
+ **/
             return Response(Status.OK)
-                .json(services.searchSessions(request.bodyString()))
+                .json(services.searchSessions(
+                    request.bodyString(),
+                    request.header("Authorization"),
+                    request.query("skip")?.toInt() ,
+                    request.query("limit")?.toInt()
+                ))
         } catch (e: Exception) {
             return httpException(e)
         }
@@ -22,7 +30,10 @@ class SessionsAPI(private val services: SessionServices) {
     fun createSession(request: Request): Response {
         try {
             return Response(Status.CREATED)
-                .json(services.createSession(request.bodyString()))
+                .json(services.createSession(
+                    request.bodyString(),
+                    request.header("Authorization")
+                ))
         } catch (e: Exception) {
             return httpException(e)
         }
@@ -31,7 +42,10 @@ class SessionsAPI(private val services: SessionServices) {
     fun getSession(request: Request): Response {
         try {
             return Response(Status.OK)
-                .json(services.getSession(request.path("sessionId")?.toInt()))
+                .json(services.getSession(
+                    request.path("sessionId")?.toInt(),
+                    request.header("Authorization")
+                ))
         } catch (e: Exception) {
             return httpException(e)
         }
@@ -41,7 +55,8 @@ class SessionsAPI(private val services: SessionServices) {
         try {
             val id=services.addPlayerToSession(
                 request.path("sessionId")?.toInt(),
-                request.bodyString())
+                request.header("Authorization")
+            )
             return Response(Status.OK)
                 .json("Added player $id to session")
         } catch (e: Exception) {

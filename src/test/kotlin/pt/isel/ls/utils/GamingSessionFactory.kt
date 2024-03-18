@@ -1,8 +1,8 @@
 package pt.isel.ls.utils
 
-import pt.isel.ls.Data.Mem.DataMem
-import pt.isel.ls.Domain.GamingSession
-import pt.isel.ls.Domain.Player
+import pt.isel.ls.data.mem.DataMem
+import pt.isel.ls.domain.GamingSession
+import pt.isel.ls.domain.Player
 import kotlin.random.Random
 
 internal class GamingSessionFactory {

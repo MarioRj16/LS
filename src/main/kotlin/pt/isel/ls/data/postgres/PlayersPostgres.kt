@@ -7,6 +7,7 @@ import pt.isel.ls.utils.postgres.useWithRollback
 import java.sql.Connection
 import java.sql.SQLException
 import java.sql.Statement
+import java.util.*
 import kotlin.NoSuchElementException
 
 class PlayersPostgres(private val conn: Connection): PlayerStorage {
@@ -44,5 +45,22 @@ class PlayersPostgres(private val conn: Connection): PlayerStorage {
         if(resultSet.next())
             return resultSet.toPlayer()
         throw NoSuchElementException("Could not get user, id $id was not found")
+    }
+
+    override fun getByToken(token: UUID): Player =
+        conn.useWithRollback {
+        val statement = it.prepareStatement(
+            """
+            select * from players where player_token = ?    
+            """.trimIndent()
+        ).apply {
+            setString(1, token.toString())
+        }
+
+        val resultSet = statement.executeQuery()
+
+        if(resultSet.next())
+            return resultSet.toPlayer()
+        throw NoSuchElementException("Could not get user, token $token was not found")
     }
 }

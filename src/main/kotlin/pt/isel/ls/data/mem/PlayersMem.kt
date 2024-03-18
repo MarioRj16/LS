@@ -24,6 +24,12 @@ class PlayersMem(private val players: DBTableMem<Player>): PlayerStorage {
         return players.table[id] ?: throw NoSuchElementException("No player with id $id was found")
     }
 
+    override fun getByToken(token: UUID):Player{
+        val player=players.table.filter { it.value.token == token }
+        if (player.isEmpty()) throw NoSuchElementException("No player with token $token was found")
+        return player.values.first()
+    }
+
     private fun emailExists(email: String): Boolean {
         return players.table.any { it.value.email == email }
     }
