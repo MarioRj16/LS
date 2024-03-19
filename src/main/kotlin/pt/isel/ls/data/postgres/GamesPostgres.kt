@@ -103,7 +103,7 @@ class GamesPostgres(private val conn: Connection): GameStorage {
         throw NoSuchElementException("Could not get Game, $id was not found")
     }
 
-    override fun search(developer: String?, genres: Set<String>?, limit: Int, skip: Int): List<Game> = conn.useWithRollback {
+    override fun search(developer: String?, genres: Set<Genre>?, limit: Int, skip: Int): List<Game> = conn.useWithRollback {
         val query =
             """
             select * from games 
@@ -116,7 +116,7 @@ class GamesPostgres(private val conn: Connection): GameStorage {
 
         val statement = it.prepareStatement(query).apply {
             var parameterIdx = 1
-            genres?.forEach { genre -> setString(parameterIdx++, genre) }
+            genres?.forEach { genre -> setString(parameterIdx++, genre.genre) }
             developer?.let{ setString(parameterIdx, developer) }
         }
 

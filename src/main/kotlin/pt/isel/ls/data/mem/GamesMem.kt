@@ -17,7 +17,7 @@ class GamesMem(private val games: DBTableMem<Game>) : GameStorage {
     override fun get(name: String): Game =
         games.table.values.find { it.name == name } ?: throw NoSuchElementException("No game with name $name was found")
 
-    override fun search(developer: String?, genres: Set<String>?, limit: Int, skip: Int): List<Game> {
+    override fun search(developer: String?, genres: Set<Genre>?, limit: Int, skip: Int): List<Game> {
         val list = games.table.values.filter {
             (developer.isNullOrBlank() || it.developer == developer) &&
                     (genres.isNullOrEmpty() || it.genres.intersect(genres).isNotEmpty())
