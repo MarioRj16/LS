@@ -1,36 +1,114 @@
 package pt.isel.ls.data
 
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import pt.isel.ls.data.mem.DataMem
 import pt.isel.ls.domain.Genre
+import pt.isel.ls.utils.GameFactory
+import pt.isel.ls.utils.GamingSessionFactory
+import pt.isel.ls.utils.PlayerFactory
+import kotlin.test.assertContains
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class GamesTests: DataMem() {
 
-    @Test
-    fun `Game can be created`(){
-        val game = games.create(
-            name = "name",
-            developer = "developer",
-            genres = setOf(Genre("genre"))
-        )
+    private val defaultSkip = 0
+    private val defaultLimit = 30
 
-        assertEquals(game, games.get("name"))
-       // assertEquals(game, games.get(1))
+    private val gameFactory = GameFactory(games)
+    // private val playerFactory = PlayerFactory(players)
+    // private val gamingSessionFactory = GamingSessionFactory(gamingSessions)
+
+    private val genres = listOf(
+        Genre("Role Playing Game"),
+        Genre("Action"),
+        Genre("First Person Shooter"),
+        Genre("Simulation"),
+        Genre("Sports")
+    )
+
+    @BeforeEach
+    fun beforeEachTest() = reset()
+
+
+    @Test
+    fun `create() return game successfully`(){
+        val name = "testName"
+        val developer = "testDeveloper"
+        val genres = setOf(genres[0])
+        val game = games.create(name, developer, genres)
+
+        assertTrue(game.id == 1)
+        assertEquals(name, game.name)
+        assertEquals(developer, game.developer)
+        assertEquals(genres, game.genres)
     }
 
     @Test
-    fun `Integrity Restrictions are enforced`(){
-        games.create(name = "name", developer = "developer", genres = setOf(Genre("genre")))
+    fun `create() throws exception for non unique name`(){
+        games.create("name", "developer1", setOf(genres[0]))
 
         assertThrows<IllegalArgumentException> {
-            games.create(name = "name", developer = "developer2", genres = setOf(Genre("genre2")))
+            games.create(name = "name", developer = "developer2", genres = setOf(genres[1]))
         }
+    }
 
+    @Test
+    fun `create() throws exception for no genres`(){
         assertThrows<IllegalArgumentException> {
-            games.create(name = "name2", developer = "developer2", genres = setOf())
+            games.create(name = "name", developer = "developer", genres = setOf())
         }
+    }
 
+    @Test
+    fun `get() returns game successfully`(){
+        val game = gameFactory.createRandomGame()
+
+        assertEquals(game, games.get(game.name))
+    }
+
+    @Test
+    fun `get() throws exception for non existing game`(){
+        assertThrows<NoSuchElementException> {
+            games.get("game")
+        }
+    }
+
+    @Test
+    fun `getById() returns game successfully`(){
+        val game = gameFactory.createRandomGame()
+
+        assertEquals(game, games.getById(game.id))
+    }
+
+    @Test
+    fun `getById() throws exception for non existing game`(){
+        assertThrows<NoSuchElementException> {
+            games.getById(1)
+        }
+    }
+
+    @Test
+    fun `search() returns games successfully`(){
+        var searchResults = games.search(null, null, defaultLimit, defaultSkip)
+
+        assertTrue(searchResults.isEmpty())
+
+        val game = gameFactory.createRandomGame()
+        val game2 = gameFactory.createRandomGame()
+        val game3 = gameFactory.createRandomGame()
+
+        searchResults = games.search(null, null, 2, defaultSkip)
+
+        assertTrue(searchResults.size == 2)
+        assertContains(searchResults, game)
+        assertContains(searchResults, game2)
+
+        searchResults = games.search(null, null, defaultLimit, 2)
+
+        assertTrue(searchResults.size == 1)
+        assertContains(searchResults, game3)
     }
 }

@@ -21,11 +21,11 @@ class GamingSessionMem(
         }
         require(games.table.containsKey(game)){"The provided game does not exist"}
         val obj = GamingSession(
-            id = gamingSessions.nextId,
-            game = game,
-            capacity = capacity,
-            startingDate = date,
-            players = emptySet<Player>()
+            gamingSessions.nextId,
+            game,
+            capacity,
+            date,
+            emptySet<Player>()
         )
         gamingSessions.table[gamingSessions.nextId] = obj
         return obj
@@ -41,10 +41,14 @@ class GamingSessionMem(
         date: LocalDateTime?,
         isOpen: Boolean?,
         player: Int?,
-        limit: Int,
+        limit: Int, //
         skip: Int
     ): List<GamingSession> {
+        games.table[game] ?: throw NoSuchElementException("No game with id $game was found")
         var sessions = gamingSessions.table.filter { (_, value) -> value.game == game }
+        if(sessions.isEmpty())
+            return sessions.values.toList()
+
         if(player is Int)
             sessions = sessions.filter { (_, value) -> value.players.find { it.id == player } is Player }
 
@@ -57,8 +61,8 @@ class GamingSessionMem(
 
     override fun addPlayer(session: Int, player: Int){
         gamingSessions.table[session] ?: throw NoSuchElementException("Session $session does not exist")
-        require(gamingSessions.table[session]!!.players.size < gamingSessions.table[session]!!.capacity){
-            "The session $session is already at maximum capacity"
+        require(gamingSessions.table[session]!!.state){
+            "Cannot add player for closed gaming session"
         }
         val playerToAdd = players.table[player]
         playerToAdd ?: throw NoSuchElementException("Player $player does not exist")

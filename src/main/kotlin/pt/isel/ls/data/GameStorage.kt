@@ -13,5 +13,4 @@ interface GameStorage {
     fun search(developer: String?, genres: Set<Genre>?, limit: Int, skip: Int): List<Game>
 
     fun getById(id:Int): Game
-
 }

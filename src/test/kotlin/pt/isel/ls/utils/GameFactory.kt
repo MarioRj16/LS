@@ -1,28 +1,36 @@
 package pt.isel.ls.utils
 
-import pt.isel.ls.data.mem.DataMem
+import pt.isel.ls.data.GameStorage
 import pt.isel.ls.domain.Game
 import pt.isel.ls.domain.Genre
 import kotlin.random.Random
 
-internal class GameFactory{
-    companion object: DataMem() {
-        private val developers = listOf("Developer1", "Developer2", "Developer3")
-        private val genres =
-            listOf("Action", "Adventure", "RPG", "Strategy", "Puzzle", "Simulation").map { Genre(it) }.toSet()
-        fun createRandomGame(): Game {
-            val randomDeveloper = developers.random()
-            val randomName = generateRandomString()
-            val randomGenres = generateRandomGenres()
+class GameFactory(private val games: GameStorage) {
+    private val developers = listOf("Developer1", "Developer2", "Developer3")
+    private val genres =
+        listOf("Action", "Adventure", "RPG", "Strategy", "Puzzle", "Simulation").map { Genre(it) }.toSet()
+
+    // TODO: Decide what to do with this list of genres
+    fun createRandomGame(): Game {
+        val randomDeveloper = developers.random()
+        val randomGenres = generateRandomGenres()
+        var randomName = generateRandomString()
+        try {
+            while (true) {
+                games.get(randomName)
+                randomName = generateRandomString()
+            }
+        } catch (e: NoSuchElementException) {
             return games.create(randomDeveloper, randomName, randomGenres)
         }
-        private fun generateRandomGenres(): Set<Genre> {
-            val numberOfGenres = Random.nextInt(1, 4)
-            val selectedGenres = mutableSetOf<Genre>()
-            repeat(numberOfGenres) {
-                selectedGenres.add(genres.random())
-            }
-            return selectedGenres.toSet()
+    }
+
+    private fun generateRandomGenres(): Set<Genre> {
+        val numberOfGenres = Random.nextInt(1, 4)
+        val selectedGenres = mutableSetOf<Genre>()
+        repeat(numberOfGenres) {
+            selectedGenres.add(genres.random())
         }
+        return selectedGenres.toSet()
     }
 }
