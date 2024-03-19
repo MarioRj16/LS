@@ -75,7 +75,6 @@ fun main() {
         )
     val jettyServer = app.asServer(Jetty(PORT)).start()
     logger.info("server started listening")
-
     readln()
     jettyServer.stop()
 
