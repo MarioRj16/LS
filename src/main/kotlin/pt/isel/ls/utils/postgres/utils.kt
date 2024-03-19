@@ -29,7 +29,7 @@ fun ResultSet.toGamingSession(players: Set<Player>): GamingSession =
     GamingSession(
         id = getInt("gaming_session_id"),
         game = getInt("game"),
-        capacity = getInt("capacity"),
+        maxCapacity = getInt("capacity"),
         startingDate = getTimestamp("starting_date").toLocalDateTime().toKotlinLocalDateTime(),
         players = players
     )

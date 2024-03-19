@@ -8,10 +8,10 @@ import pt.isel.ls.utils.currentLocalDateTime
 data class GamingSession(
     val id: Int,
     val game: Int,
-    val capacity: Int,
+    val maxCapacity: Int,
     val startingDate: LocalDateTime,
     val players: Set<Player>
 ){
     val state: Boolean
-        get() = startingDate >= currentLocalDateTime() && players.size < capacity
+        get() = startingDate >= currentLocalDateTime() && players.size < maxCapacity
 }

@@ -4,6 +4,8 @@ import kotlinx.datetime.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import pt.isel.ls.DEFAULT_LIMIT
+import pt.isel.ls.DEFAULT_SKIP
 import pt.isel.ls.data.mem.DataMem
 import pt.isel.ls.utils.*
 import kotlin.test.assertContains
@@ -14,9 +16,6 @@ class GamingSessionTests: DataMem() {
 
     private val pastDate = yesterdayLocalDateTime()
     private val futureDate = tomorrowLocalDateTime()
-
-    private val defaultSkip = 0
-    private val defaultLimit = 30
 
     private val playerFactory = PlayerFactory(players)
     private val gameFactory = GameFactory(games)
@@ -37,7 +36,7 @@ class GamingSessionTests: DataMem() {
 
         assertTrue(session.id == 1)
         assertEquals(game.id, session.game)
-        assertEquals(capacity, session.capacity)
+        assertEquals(capacity, session.maxCapacity)
         assertEquals(date, session.startingDate)
         assertTrue(session.players.isEmpty())
         assertTrue(session.state)
@@ -107,7 +106,7 @@ class GamingSessionTests: DataMem() {
         val game = gameFactory.createRandomGame()
         val session = gamingSessionFactory.createRandomGamingSession(game.id)
 
-        repeat(session.capacity){
+        repeat(session.maxCapacity){
             val player = playerFactory.createRandomPlayer()
             gamingSessions.addPlayer(session.id, player.id)
         }
@@ -141,7 +140,7 @@ class GamingSessionTests: DataMem() {
         val game2 = gameFactory.createRandomGame()
 
         assertTrue(
-            gamingSessions.search(game.id, null, null, null, defaultLimit, defaultSkip).isEmpty()
+            gamingSessions.search(game.id, null, null, null, DEFAULT_LIMIT, DEFAULT_SKIP).isEmpty()
         )
 
         val session = gamingSessionFactory.createRandomGamingSession(game.id)
@@ -149,7 +148,7 @@ class GamingSessionTests: DataMem() {
         val session3 = gamingSessionFactory.createRandomGamingSession(game2.id)
 
         var searchResults =
-            gamingSessions.search(game.id, null, null, null, defaultLimit, defaultSkip)
+            gamingSessions.search(game.id, null, null, null, DEFAULT_LIMIT, DEFAULT_SKIP)
         assertTrue(searchResults.size == 2)
         assertContains(searchResults, session)
         assertContains(searchResults, session2)
@@ -166,7 +165,7 @@ class GamingSessionTests: DataMem() {
         val game = gameFactory.createRandomGame()
         gamingSessionFactory.createRandomGamingSession(game.id)
         assertThrows<NoSuchElementException> {
-            gamingSessions.search(10, null, null, null, defaultLimit, defaultSkip)
+            gamingSessions.search(10, null, null, null, DEFAULT_LIMIT, DEFAULT_SKIP)
         }
     }
 }

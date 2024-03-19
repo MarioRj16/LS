@@ -39,27 +39,27 @@ class GamesAPI(private val services: GamesServices) {
     }
 
     fun createGame(request: Request): Response {
-        try {
+        return try {
             val gameId=services.createGame(
                 request.bodyString(),
                 request.header("Authorization")
             )
-            return Response(Status.CREATED)
+            Response(Status.CREATED)
                 .json(GameResponse(gameId))
         } catch (e: Exception) {
-            return httpException(e)
+            httpException(e)
         }
     }
 
     fun getGame(request: Request): Response {
-        try {
-            return Response(Status.OK)
+        return try {
+            Response(Status.OK)
                 .json(services.getGame(
                     request.path("gameId")?.toInt(),
                     request.header("Authorization")
                 ))
         } catch (e: Exception) {
-            return httpException(e)
+            httpException(e)
         }
     }
 }
