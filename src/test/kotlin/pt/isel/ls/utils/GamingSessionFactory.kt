@@ -8,6 +8,6 @@ class GamingSessionFactory(private val gamingSessions: GamingSessionStorage) {
 
     fun createRandomGamingSession(gameId: Int): GamingSession {
         val randomCapacity = Random.nextInt(1, 129)
-        return gamingSessions.create(randomCapacity, gameId, currentLocalDateTime())
+        return gamingSessions.create(randomCapacity, gameId, tomorrowLocalDateTime())
     }
 }

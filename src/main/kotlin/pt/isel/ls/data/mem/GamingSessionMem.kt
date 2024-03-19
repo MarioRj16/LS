@@ -60,8 +60,8 @@ class GamingSessionMem(
 
     override fun addPlayer(session: Int, player: Int){
         gamingSessions.table[session] ?: throw NoSuchElementException("Session $session does not exist")
-        require(gamingSessions.table[session]!!.players.size < gamingSessions.table[session]!!.capacity){
-            "The session $session is already at maximum capacity"
+        require(gamingSessions.table[session]!!.state){
+            "Cannot add player for closed gaming session"
         }
         val playerToAdd = players.table[player]
         playerToAdd ?: throw NoSuchElementException("Player $player does not exist")

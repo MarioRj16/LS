@@ -25,7 +25,12 @@ object UUIDSerializer : KSerializer<UUID> {
 
 fun currentLocalDateTime() = LocalDateTime.now().toKotlinLocalDateTime()
 
+fun tomorrowLocalDateTime() = LocalDateTime.now().plusDays(1L).toKotlinLocalDateTime()
+
+fun yesterdayLocalDateTime() = LocalDateTime.now().minusDays(1L).toKotlinLocalDateTime()
+
 fun <T> List<T>.paginate(skip: Int, limit: Int): List<T> {
+    if (isEmpty()) return this
     var firstIndex: Int = if (skip > size) size else skip
     firstIndex--
     var lastIndex: Int = if (size > skip + limit) skip + limit else size

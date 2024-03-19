@@ -12,15 +12,8 @@ import kotlin.test.assertTrue
 
 class GamingSessionTests: DataMem() {
 
-    private val futureDate = LocalDateTime(
-        LocalDate(2050, 3, 3),
-        LocalTime(1, 1, 1, 1)
-    )
-
-    private val pastDate = LocalDateTime(
-        LocalDate(2020, 3, 3),
-        LocalTime(1, 1, 1, 1)
-    )
+    private val pastDate = yesterdayLocalDateTime()
+    private val futureDate = tomorrowLocalDateTime()
 
     private val defaultSkip = 0
     private val defaultLimit = 30
@@ -103,7 +96,7 @@ class GamingSessionTests: DataMem() {
 
     @Test
     fun `addPlayer() throws exception for non existing gaming session`(){
-        assertThrows<IllegalArgumentException> {
+        assertThrows<NoSuchElementException> {
             val player = playerFactory.createRandomPlayer()
             gamingSessions.addPlayer(1, player.id)
         }
@@ -114,7 +107,7 @@ class GamingSessionTests: DataMem() {
         val game = gameFactory.createRandomGame()
         val session = gamingSessionFactory.createRandomGamingSession(game.id)
 
-        for(i in 1 until session.capacity){
+        repeat(session.capacity){
             val player = playerFactory.createRandomPlayer()
             gamingSessions.addPlayer(session.id, player.id)
         }
@@ -129,14 +122,15 @@ class GamingSessionTests: DataMem() {
     fun `addPlayer() throws exception for session past starting date`(){
         val game = gameFactory.createRandomGame()
         val player = playerFactory.createRandomPlayer()
-        val nanosToAdd = 100L
+        val secondsToAdd = 1L
         val date = LocalDateTime(
             java.time.LocalDate.now().toKotlinLocalDate(),
-            java.time.LocalTime.now().plusNanos(nanosToAdd).toKotlinLocalTime()
+            java.time.LocalTime.now().plusSeconds(secondsToAdd).toKotlinLocalTime()
         )
         val session = gamingSessions.create(1, game.id, date)
         assertThrows<IllegalArgumentException> {
-            Thread.sleep(nanosToAdd)
+            val msToAdd = (secondsToAdd * 1000)
+            Thread.sleep(msToAdd)
             gamingSessions.addPlayer(session.id, player.id)
         }
     }
@@ -171,7 +165,7 @@ class GamingSessionTests: DataMem() {
     fun`search() throws exception for non existing game`(){
         val game = gameFactory.createRandomGame()
         gamingSessionFactory.createRandomGamingSession(game.id)
-        assertThrows<IllegalArgumentException> {
+        assertThrows<NoSuchElementException> {
             gamingSessions.search(10, null, null, null, defaultLimit, defaultSkip)
         }
     }
