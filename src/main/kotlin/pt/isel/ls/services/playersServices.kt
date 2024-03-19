@@ -8,7 +8,7 @@ import pt.isel.ls.utils.bearerToken
 import pt.isel.ls.utils.exceptions.ForbiddenException
 
 
-class PlayerServices(private val db:Storage) {
+open class PlayerServices(private val db:Storage) {
     fun createPlayer(input: String) :Player{
         val playerInput = Json.decodeFromString<PlayerCreate>(input)
         return db.players.create(playerInput.name, playerInput.email)
