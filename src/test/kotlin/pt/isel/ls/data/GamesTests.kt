@@ -3,20 +3,16 @@ package pt.isel.ls.data
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import pt.isel.ls.DEFAULT_LIMIT
+import pt.isel.ls.DEFAULT_SKIP
 import pt.isel.ls.data.mem.DataMem
 import pt.isel.ls.domain.Genre
 import pt.isel.ls.utils.GameFactory
-import pt.isel.ls.utils.GamingSessionFactory
-import pt.isel.ls.utils.PlayerFactory
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class GamesTests: DataMem() {
-
-    private val defaultSkip = 0
-    private val defaultLimit = 30
-
     private val gameFactory = GameFactory(games)
     // private val playerFactory = PlayerFactory(players)
     // private val gamingSessionFactory = GamingSessionFactory(gamingSessions)
@@ -92,7 +88,7 @@ class GamesTests: DataMem() {
 
     @Test
     fun `search() returns games successfully`(){
-        var searchResults = games.search(null, null, defaultLimit, defaultSkip)
+        var searchResults = games.search(null, null, DEFAULT_LIMIT, DEFAULT_SKIP)
 
         assertTrue(searchResults.isEmpty())
 
@@ -100,13 +96,13 @@ class GamesTests: DataMem() {
         val game2 = gameFactory.createRandomGame()
         val game3 = gameFactory.createRandomGame()
 
-        searchResults = games.search(null, null, 2, defaultSkip)
+        searchResults = games.search(null, null, 2, DEFAULT_SKIP)
 
         assertTrue(searchResults.size == 2)
         assertContains(searchResults, game)
         assertContains(searchResults, game2)
 
-        searchResults = games.search(null, null, defaultLimit, 2)
+        searchResults = games.search(null, null, DEFAULT_LIMIT, 2)
 
         assertTrue(searchResults.size == 1)
         assertContains(searchResults, game3)

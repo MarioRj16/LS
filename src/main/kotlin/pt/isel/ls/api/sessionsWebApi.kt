@@ -11,11 +11,11 @@ import pt.isel.ls.utils.json
 
 class SessionsAPI(private val services: SessionServices) {
     fun searchSessions(request: Request): Response {
-        try {
-/**
- * TODO maybe change to query
- **/
-            return Response(Status.OK)
+        return try {
+            /**
+             * TODO maybe change to query
+             **/
+            Response(Status.OK)
                 .json(services.searchSessions(
                     request.bodyString(),
                     request.header("Authorization"),
@@ -23,44 +23,44 @@ class SessionsAPI(private val services: SessionServices) {
                     request.query("limit")?.toInt()
                 ))
         } catch (e: Exception) {
-            return httpException(e)
+            httpException(e)
         }
     }
 
     fun createSession(request: Request): Response {
-        try {
-            return Response(Status.CREATED)
+        return try {
+            Response(Status.CREATED)
                 .json(services.createSession(
                     request.bodyString(),
                     request.header("Authorization")
                 ))
         } catch (e: Exception) {
-            return httpException(e)
+            httpException(e)
         }
     }
 
     fun getSession(request: Request): Response {
-        try {
-            return Response(Status.OK)
+        return try {
+            Response(Status.OK)
                 .json(services.getSession(
                     request.path("sessionId")?.toInt(),
                     request.header("Authorization")
                 ))
         } catch (e: Exception) {
-            return httpException(e)
+            httpException(e)
         }
     }
 
     fun addPlayerToSession(request: Request): Response {
-        try {
+        return try {
             val id=services.addPlayerToSession(
                 request.path("sessionId")?.toInt(),
                 request.header("Authorization")
             )
-            return Response(Status.OK)
+            Response(Status.OK)
                 .json("Added player $id to session")
         } catch (e: Exception) {
-            return httpException(e)
+            httpException(e)
         }
     }
 }

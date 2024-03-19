@@ -21,7 +21,7 @@ class GameFactory(private val games: GameStorage) {
                 randomName = generateRandomString()
             }
         } catch (e: NoSuchElementException) {
-            return games.create(randomDeveloper, randomName, randomGenres)
+            return games.create(randomName, randomDeveloper, randomGenres)
         }
     }
 
