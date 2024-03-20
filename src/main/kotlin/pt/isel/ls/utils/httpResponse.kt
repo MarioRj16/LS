@@ -10,7 +10,7 @@ import pt.isel.ls.utils.exceptions.ConflictException
 import pt.isel.ls.utils.exceptions.ForbiddenException
 
 
-//TODO: does it make sense to have this as inline fun?
+//TODO: does it make sense to have this as an inline fun?
 inline fun <reified T> Response.json(body: T): Response{
     return this
         .header("content-type", "application/json")
