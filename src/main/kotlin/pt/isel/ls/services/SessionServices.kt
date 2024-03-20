@@ -12,8 +12,6 @@ import pt.isel.ls.utils.bearerToken
 
 open class SessionServices(private val db:Storage) {
 
-    private inline
-
     fun searchSessions(input: String,authorization:String?,skip:Int?,limit:Int?):List<GamingSession> {
         bearerToken(authorization,db).id
         val sessionInput = Json.decodeFromString<SessionSearch>(input)
