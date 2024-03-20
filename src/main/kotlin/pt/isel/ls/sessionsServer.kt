@@ -8,9 +8,13 @@ import org.http4k.routing.routes
 import org.http4k.server.Jetty
 import org.http4k.server.asServer
 import org.slf4j.LoggerFactory
-import pt.isel.ls.api.API
+import pt.isel.ls.api.GamesAPI
+import pt.isel.ls.api.PlayersAPI
+import pt.isel.ls.api.SessionsAPI
 import pt.isel.ls.data.mem.DataMem
-import pt.isel.ls.services.Services
+import pt.isel.ls.services.GamesServices
+import pt.isel.ls.services.PlayerServices
+import pt.isel.ls.services.SessionServices
 
 private val logger = LoggerFactory.getLogger("pt.isel.ls")
 
@@ -36,29 +40,32 @@ fun main() {
     //TODO could add more routes
     //TODO add swagger with .yaml file
     val db = DataMem()
-    val api = API(Services(db))
+    val player = PlayersAPI(PlayerServices(db))
+    val games = GamesAPI(GamesServices(db))
+    val session = SessionsAPI(SessionServices(db))
     /*
     val yamlFile = File("API-docs 1.0.yaml")
     val yamlContent = yamlFile.readText()
     val docsAPI=Yaml.decodeFromString
+
      */
     val playerRoutes =
         routes(
-            "player" bind POST to api.playerAPI::createPlayer,
-            "player/{playerId}" bind GET to api.playerAPI::getPlayer
+            "player" bind POST to player::createPlayer,
+            "player/{playerId}" bind GET to player::getPlayer
         )
     val gameRoutes=
         routes(
-            "games" bind GET to api.gamesAPI::searchGames,
-            "games" bind POST to api.gamesAPI::createGame,
-            "games/{gameId}" bind GET to api.gamesAPI::getGame
+            "games" bind GET to games::searchGames,
+            "games" bind POST to games::createGame,
+            "games/{gameId}" bind GET to games::getGame
         )
     val sessionRoutes=
         routes(
-            "sessions" bind GET to api.sessionsAPI::searchSessions,
-            "sessions" bind POST to api.sessionsAPI::createSession,
-            "sessions/{sessionId}" bind GET to api.sessionsAPI::getSession,
-            "sessions/{sessionId}" bind POST to api.sessionsAPI::addPlayerToSession
+            "sessions" bind GET to session::searchSessions,
+            "sessions" bind POST to session::createSession,
+            "sessions/{sessionId}" bind GET to session::getSession,
+            "sessions/{sessionId}" bind POST to session::addPlayerToSession
         )
     val app =
         routes(
@@ -68,6 +75,7 @@ fun main() {
         )
     val jettyServer = app.asServer(Jetty(PORT)).start()
     logger.info("server started listening")
+
     readln()
     jettyServer.stop()
 

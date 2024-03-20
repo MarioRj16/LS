@@ -8,8 +8,9 @@ import pt.isel.ls.api.models.SessionResponse
 import pt.isel.ls.api.models.SessionSearch
 import pt.isel.ls.data.Storage
 import pt.isel.ls.domain.*
+import pt.isel.ls.utils.bearerToken
 
-open class SessionServices(internal val db:Storage):ServicesSchema() {
+open class SessionServices(internal val db:Storage) {
 
     fun searchSessions(input: String,authorization:String?,skip:Int?,limit:Int?):List<GamingSession> {
         bearerToken(authorization,db).id

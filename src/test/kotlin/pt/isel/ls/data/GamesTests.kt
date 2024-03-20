@@ -1,21 +1,15 @@
 package pt.isel.ls.data
 
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import pt.isel.ls.DEFAULT_LIMIT
 import pt.isel.ls.DEFAULT_SKIP
-import pt.isel.ls.data.mem.DataMem
 import pt.isel.ls.domain.Genre
-import pt.isel.ls.utils.GameFactory
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class GamesTests: DataMem() {
-    private val gameFactory = GameFactory(games)
-    // private val playerFactory = PlayerFactory(players)
-    // private val gamingSessionFactory = GamingSessionFactory(gamingSessions)
+class GamesTests: AbstractDataTests() {
 
     private val genres = listOf(
         Genre("Role Playing Game"),
@@ -24,10 +18,6 @@ class GamesTests: DataMem() {
         Genre("Simulation"),
         Genre("Sports")
     )
-
-    @BeforeEach
-    fun beforeEachTest() = reset()
-
 
     @Test
     fun `create() return game successfully`(){

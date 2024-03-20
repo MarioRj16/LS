@@ -1,7 +1,8 @@
-package pt.isel.ls.utils
+package pt.isel.ls.utils.factories
 
 import pt.isel.ls.data.GamingSessionStorage
 import pt.isel.ls.domain.GamingSession
+import pt.isel.ls.utils.tomorrowLocalDateTime
 import kotlin.random.Random
 
 class GamingSessionFactory(private val gamingSessions: GamingSessionStorage) {

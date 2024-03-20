@@ -1,8 +1,9 @@
-package pt.isel.ls.utils
+package pt.isel.ls.utils.factories
 
 import pt.isel.ls.data.GameStorage
 import pt.isel.ls.domain.Game
 import pt.isel.ls.domain.Genre
+import pt.isel.ls.utils.generateRandomString
 import kotlin.random.Random
 
 class GameFactory(private val games: GameStorage) {
