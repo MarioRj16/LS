@@ -1,28 +1,16 @@
 package pt.isel.ls.data
 
 import kotlinx.datetime.*
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import pt.isel.ls.DEFAULT_LIMIT
 import pt.isel.ls.DEFAULT_SKIP
-import pt.isel.ls.data.mem.DataMem
 import pt.isel.ls.utils.*
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class GamingSessionTests: DataMem() {
-
-    private val pastDate = yesterdayLocalDateTime()
-    private val futureDate = tomorrowLocalDateTime()
-
-    private val playerFactory = PlayerFactory(players)
-    private val gameFactory = GameFactory(games)
-    private val gamingSessionFactory = GamingSessionFactory(gamingSessions)
-
-    @BeforeEach
-    fun setUp() = reset()
+class GamingSessionTests: AbstractDataTests() {
 
     @Test
     fun`create() returns gaming session successfully`(){
@@ -45,7 +33,7 @@ class GamingSessionTests: DataMem() {
     @Test
     fun `create() throws exception for non existing game`(){
         assertThrows<IllegalArgumentException> {
-            gamingSessions.create(1, 1, futureDate)
+            gamingSessions.create(1, 1, tomorrowLocalDateTime())
         }
     }
 
@@ -53,7 +41,7 @@ class GamingSessionTests: DataMem() {
     fun `create() throws exception for invalid capacity`(){
         val game = gameFactory.createRandomGame()
         assertThrows<IllegalArgumentException> {
-            gamingSessions.create(-1, game.id, futureDate)
+            gamingSessions.create(-1, game.id, tomorrowLocalDateTime())
         }
     }
 
@@ -61,7 +49,7 @@ class GamingSessionTests: DataMem() {
     fun `create() throws exception for past starting date`(){
         val game = gameFactory.createRandomGame()
         assertThrows<IllegalArgumentException> {
-            gamingSessions.create(1, game.id, pastDate)
+            gamingSessions.create(1, game.id, yesterdayLocalDateTime())
         }
     }
 
