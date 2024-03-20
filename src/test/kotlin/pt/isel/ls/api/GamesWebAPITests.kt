@@ -1,13 +1,9 @@
 package pt.isel.ls.api
 
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 class GamesWebAPITests {
-    @BeforeEach
-    fun setUp(){
-        TODO()
-    }
+
 
     @Test
     fun `createGame() returns 201 CREATED response with GameResponse`(){
@@ -23,4 +19,5 @@ class GamesWebAPITests {
     fun `searchGames() returns 200 OK with list of games`(){
         TODO()
     }
+
 }

@@ -1,0 +1,69 @@
+<mxfile host="Electron" modified="2024-03-20T00:26:41.437Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/21.2.1 Chrome/112.0.5615.87 Electron/24.1.2 Safari/537.36" etag="TCB5WbDBhmymAx_TCq3X" version="21.2.1" type="device">
+  <diagram name="Página-1" id="9pI_9j59oDvoFk84XUo-">
+    <mxGraphModel dx="1182" dy="723" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="827" pageHeight="1169" background="none" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="ZGOzC3T_o9DJFjdVKeZU-22" value="SERVER" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry width="800" height="400" as="geometry" />
+        </mxCell>
+        <mxCell id="ZGOzC3T_o9DJFjdVKeZU-32" value="-" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="ZGOzC3T_o9DJFjdVKeZU-22">
+          <mxGeometry x="420" y="43" width="160" height="337" as="geometry" />
+        </mxCell>
+        <mxCell id="ZGOzC3T_o9DJFjdVKeZU-30" value="-" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="ZGOzC3T_o9DJFjdVKeZU-22">
+          <mxGeometry x="220" y="44" width="160" height="337" as="geometry" />
+        </mxCell>
+        <mxCell id="ZGOzC3T_o9DJFjdVKeZU-2" value="PlayersAPI" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="ZGOzC3T_o9DJFjdVKeZU-22">
+          <mxGeometry x="220" y="60" width="160" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="ZGOzC3T_o9DJFjdVKeZU-28" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="ZGOzC3T_o9DJFjdVKeZU-22" source="ZGOzC3T_o9DJFjdVKeZU-3" target="ZGOzC3T_o9DJFjdVKeZU-6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ZGOzC3T_o9DJFjdVKeZU-3" value="gamesAPI" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="ZGOzC3T_o9DJFjdVKeZU-22">
+          <mxGeometry x="220" y="180" width="160" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="ZGOzC3T_o9DJFjdVKeZU-4" value="SessionsAPI" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="ZGOzC3T_o9DJFjdVKeZU-22">
+          <mxGeometry x="220" y="300" width="160" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="ZGOzC3T_o9DJFjdVKeZU-18" value="API" style="swimlane;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="ZGOzC3T_o9DJFjdVKeZU-22">
+          <mxGeometry x="220" y="20" width="160" height="360" as="geometry" />
+        </mxCell>
+        <mxCell id="ZGOzC3T_o9DJFjdVKeZU-5" value="PlayersServices" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="ZGOzC3T_o9DJFjdVKeZU-22">
+          <mxGeometry x="420" y="60" width="160" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="ZGOzC3T_o9DJFjdVKeZU-29" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="ZGOzC3T_o9DJFjdVKeZU-22" source="ZGOzC3T_o9DJFjdVKeZU-6">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="620" y="220" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ZGOzC3T_o9DJFjdVKeZU-6" value="GamesServices" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="ZGOzC3T_o9DJFjdVKeZU-22">
+          <mxGeometry x="420" y="180" width="160" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="ZGOzC3T_o9DJFjdVKeZU-7" value="SessionsServices" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="ZGOzC3T_o9DJFjdVKeZU-22">
+          <mxGeometry x="420" y="300" width="160" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="ZGOzC3T_o9DJFjdVKeZU-20" value="SERVICES" style="swimlane;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="ZGOzC3T_o9DJFjdVKeZU-22">
+          <mxGeometry x="420" y="20" width="160" height="360" as="geometry" />
+        </mxCell>
+        <mxCell id="ZGOzC3T_o9DJFjdVKeZU-21" value="DATA" style="swimlane;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="ZGOzC3T_o9DJFjdVKeZU-22">
+          <mxGeometry x="620" y="20" width="160" height="361" as="geometry" />
+        </mxCell>
+        <mxCell id="ZGOzC3T_o9DJFjdVKeZU-12" value="Memory" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="ZGOzC3T_o9DJFjdVKeZU-21">
+          <mxGeometry y="22" width="160" height="177" as="geometry" />
+        </mxCell>
+        <mxCell id="ZGOzC3T_o9DJFjdVKeZU-13" value="Postgres" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="ZGOzC3T_o9DJFjdVKeZU-21">
+          <mxGeometry y="199" width="160" height="162" as="geometry" />
+        </mxCell>
+        <mxCell id="ZGOzC3T_o9DJFjdVKeZU-1" value="Server" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="ZGOzC3T_o9DJFjdVKeZU-22">
+          <mxGeometry x="30" y="180" width="160" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="ZGOzC3T_o9DJFjdVKeZU-27" value="" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="ZGOzC3T_o9DJFjdVKeZU-1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="390" y="370" as="sourcePoint" />
+            <mxPoint x="220" y="220" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
