@@ -24,12 +24,12 @@ We highlight the following aspects:
 The conceptual model has the following restrictions:
 - Player's email and token as AK.
 - Game's name as AK.
-- Gamingsession's date can´t be inserted with a date newer than the current date.
+- GamingSession's date can´t be inserted with a date newer than the current date.
 - Capacity must be higher than 0.
 
 #### Physical Model
 
-The physical model of the database is available in [link to the SQL script with the schema definition](link).
+The physical model of the database is available in [link to the SQL script with the schema definition](src/main/sql/createSchema.sql).
 
 We highlight the following aspects of this model:
 - Gaming Session state is defined as true if the date is newer than the current date.
@@ -41,7 +41,7 @@ We highlight the following aspects of this model:
 [Open-API Specification YAML file](docs/API-docs%201.0.yaml)
 
 In our Open-API specification, we highlight the following aspects:
-- All the possible routes you can do as an user
+- All the possible routes you can do as a user
 - The correct way to send requests to our server
 - Possible errors you could have sending a request and fixes
 - Auxiliary images to show an example request
@@ -51,23 +51,23 @@ In our Open-API specification, we highlight the following aspects:
 To help visualize our implementation of the request schemes we made this diagram
 ![Conceptual Model](assets/requestDetails.png)
 
-All request are received in the server file that divides all request by its own url path to the corresponding API section. All those section correlate to the corresponding entity that is being used at the moment.
-For example if i want to create a new player it would send that request to the players API file.
+All requests are received in the server file that divides all requests by its own URL path to the corresponding API section. All those sections correlate to the corresponding entity that is being used at the moment.
+For example, if I want to create a new player it would send that request to the player's API file.
 
 In the API section we extract all the information that the user sent us and by giving it to the Services section.
 The information that we send to services could be in authorization(bearer token), body, query, path...
-It's in this section where we send all the http responses and catch even the responses.
+It's in this section where we send all the HTTP responses and catch even the responses.
 We can then return a response according to the return of the services
 
 In the Services section where we turn all the information received by the API to the corresponding object by using.
-Its also here where we check if the user is authenticated with a bearer token that fits with a player in our database.
+It's also here where we check if the user is authenticated with a bearer token that fits with a player in our database.
 Also, we check here if the parameters that are sent are valid according to the request made.
-We also send most of our Exceptions here so that the API can catch them and turn them into http error responses.
-Its here where we apply all the logic and send the objects to the Data section.
+We also send most of our Exceptions here so that the API can catch them and turn them into HTTP error responses.
+It's here where we apply all the logic and send the objects to the Data section.
 
-//ADD DATA
+In the Data section we modify the data according to the corresponding request unless the request is invalid in some sense that could end up causing some cause of exceptions for example if u try to create a player with the same email it will cause an exception(because the email is unique)
 
-We also created an inline function in Response.json(body: T) so that the content type would always be json in the responses
+We also created an inline function in Response.json(body: T) so that the content type would always be JSON in the responses
 
 [Describe how a request goes through the different elements of your solution]
 
@@ -80,15 +80,15 @@ We also created an inline function in Response.json(body: T) so that the content
 
 #### Connection Management
 
-[Describe how connections are created, used and disposed, namely its relation with transaction scopes].
+[Describe how connections are created, used, and disposed, namely its relation with transaction scopes].
 
 #### Data Access
 
 To help with visualizing our module we created this image that resumes our interface for Data Acess.
 ![Conceptual Model](assets/DataAcess.png)
 
-To help in Data acess we created an Interface Storage that contains each Interface storage  (players, gamingSessions,games).
-Now as we can see in this image this Interface is used to help define each class in memory or postgres. That has their own player,gamingSessions and games classes associated with it.
+To help in Data access we created an Interface Storage that contains each Interface storage  (players, gamingSessions, games).
+Now as we can see in this image this Interface is used to help define each class in memory or Postgres. That has its own player, gaming sessions, and game classes associated with it.
 This way we can confirm that each DB uses all the functions defined in the Interface Storage.
 [Describe any created classes to help on data access].
 
@@ -96,8 +96,8 @@ This way we can confirm that each DB uses all the functions defined in the Inter
 
 #### Error Handling/Processing
 
-For error handling we opted to create an inline function that uses try and catch for each function in the API section and whenever there is an error of some kind we send out an exception that is translanted to a response (via our function httpException(e)) with the corresponding http error status for each different exception.
-For some errors we even created new exceptions to correlate to different http error status.
+For error handling, we opted to create an inline function that uses try and catch for each function in the API section and whenever there is an error of some kind we send out an exception that is translated to a response (via our function httpException(e)) with the corresponding HTTP error status for each different exception.
+For some errors, we even created new exceptions to correlate to a different HTTP error status.
 
 #### Critical Evaluation
 
