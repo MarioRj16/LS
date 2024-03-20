@@ -6,8 +6,6 @@ import org.http4k.core.Status
 import org.http4k.routing.path
 import pt.isel.ls.api.models.PlayerResponse
 import pt.isel.ls.services.PlayerServices
-import pt.isel.ls.utils.*
-
 class PlayersAPI(private val services: PlayerServices):APISchema(){
     fun createPlayer(request: Request): Response = useWithException {
         val player=services.createPlayer(request.bodyString())

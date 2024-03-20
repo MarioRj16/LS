@@ -41,7 +41,6 @@ fun main() {
     val yamlFile = File("API-docs 1.0.yaml")
     val yamlContent = yamlFile.readText()
     val docsAPI=Yaml.decodeFromString
-
      */
     val playerRoutes =
         routes(
