@@ -10,7 +10,7 @@ import pt.isel.ls.data.Storage
 import pt.isel.ls.domain.*
 import pt.isel.ls.utils.bearerToken
 
-class SessionServices(private val db:Storage) {
+open class SessionServices(internal val db:Storage) {
 
     fun searchSessions(input: String,authorization:String?,skip:Int?,limit:Int?):List<GamingSession> {
         bearerToken(authorization,db).id
@@ -41,15 +41,17 @@ class SessionServices(private val db:Storage) {
     }
 
     fun getSession(id: Int?,authorization:String?):GamingSession {
-        require(id!=null)
+        requireNotNull(id)
+        // TODO("Write a message")
         bearerToken(authorization,db).id
         return db.gamingSessions.get(id)
     }
 
-    fun addPlayerToSession(id: Int?,authorization:String?):Int {
-        require(id!=null){"id"}
-        val playerId= bearerToken(authorization,db).id
-        db.gamingSessions.addPlayer(id,playerId)
+    fun addPlayerToSession(sessionId: Int?, authorization:String?):Int {
+        requireNotNull(sessionId){"id"}
+        // TODO: Improve this message
+        val playerId = bearerToken(authorization, db).id
+        db.gamingSessions.addPlayer(sessionId, playerId)
         return playerId
     }
 }
