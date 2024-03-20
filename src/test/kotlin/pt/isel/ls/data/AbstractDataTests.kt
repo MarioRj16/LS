@@ -2,9 +2,9 @@ package pt.isel.ls.data
 
 import org.junit.jupiter.api.BeforeEach
 import pt.isel.ls.data.mem.DataMem
-import pt.isel.ls.utils.GameFactory
-import pt.isel.ls.utils.GamingSessionFactory
-import pt.isel.ls.utils.PlayerFactory
+import pt.isel.ls.utils.factories.GameFactory
+import pt.isel.ls.utils.factories.GamingSessionFactory
+import pt.isel.ls.utils.factories.PlayerFactory
 
 abstract class AbstractDataTests {
     private val db = DataMem()

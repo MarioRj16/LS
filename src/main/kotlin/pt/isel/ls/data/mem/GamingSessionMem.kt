@@ -10,9 +10,9 @@ import pt.isel.ls.utils.exceptions.ConflictException
 import pt.isel.ls.utils.paginate
 
 class GamingSessionMem(
-    private val gamingSessions: DBTableMem<GamingSession>,
-    private val players: DBTableMem<Player>,
-    private val games: DBTableMem<Game>
+    private val gamingSessions: DBTableMem<GamingSession> = DBTableMem(),
+    private val players: DBTableMem<Player> = DBTableMem(),
+    private val games: DBTableMem<Game> = DBTableMem()
 ): GamingSessionStorage {
     override fun create(capacity: Int, game: Int, date: LocalDateTime): GamingSession {
         require(capacity >= 1){"The session capacity has to be at least 1"}

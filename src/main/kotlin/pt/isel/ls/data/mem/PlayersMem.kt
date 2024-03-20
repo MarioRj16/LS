@@ -6,7 +6,7 @@ import pt.isel.ls.domain.Player
 import java.util.*
 import kotlin.NoSuchElementException
 
-class PlayersMem(private val players: DBTableMem<Player>): PlayerStorage {
+class PlayersMem(private val players: DBTableMem<Player> = DBTableMem()): PlayerStorage {
     override fun create(name: String, email: String): Player {
         require(emailIsValid(email)){"The given email is not in the right format"}
         require(!emailExists(email)){" The given email is not unique"}
