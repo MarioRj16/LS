@@ -1,12 +1,25 @@
 package pt.isel.ls.utils
 
+import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import java.util.*
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class UtilsTests {
+
+    @Test
+    fun `UUID serializer serializes and deserializes correctly`() {
+        val uuid = UUID.randomUUID()
+
+        val serialized = Json.encodeToString(UUIDSerializer, uuid)
+
+        val deserialized = Json.decodeFromString(UUIDSerializer, serialized)
+
+        assertEquals(uuid, deserialized)
+    }
 
     @Test
     fun `paginate() does pagination correctly`(){
