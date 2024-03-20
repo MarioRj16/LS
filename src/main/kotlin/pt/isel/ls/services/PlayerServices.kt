@@ -7,7 +7,7 @@ import pt.isel.ls.domain.Player
 import pt.isel.ls.utils.exceptions.ForbiddenException
 
 
-open class PlayerServices(private val db:Storage):ServicesSchema() {
+open class PlayerServices(internal val db:Storage):ServicesSchema() {
     fun createPlayer(input: String) :Player{
         val playerInput = Json.decodeFromString<PlayerCreate>(input)
         return db.players.create(playerInput.name, playerInput.email)
