@@ -37,7 +37,7 @@ fun tomorrowLocalDateTime() = LocalDateTime.now().plusDays(1L).toKotlinLocalDate
 fun yesterdayLocalDateTime() = LocalDateTime.now().minusDays(1L).toKotlinLocalDateTime()
 
 fun <T> List<T>.paginate(skip: Int, limit: Int): List<T> {
-    if (this.isEmpty() || skip > size) return emptyList()
+    if (this.isEmpty()) return emptyList()
     val lastIndex:Int = if (limit > size) size else limit+skip
     return subList(skip, lastIndex)
 }
@@ -48,10 +48,3 @@ fun emailIsValid(email: String): Boolean {
     return emailRegex.matches(email)
 }
 
-fun bearerToken(authorization:String?,db: Storage): Player {
-    if( authorization.isNullOrEmpty() ||
-        !authorization.startsWith("Bearer")
-        ) throw AuthorizationException("Missing Bearer token")
-    val token = authorization.removePrefix("Bearer ")
-    return db.players.getByToken(UUID.fromString(token))
-}
