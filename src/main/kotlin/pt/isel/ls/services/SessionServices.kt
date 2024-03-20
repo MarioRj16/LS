@@ -40,15 +40,17 @@ open class SessionServices(private val db:Storage):ServicesSchema() {
     }
 
     fun getSession(id: Int?,authorization:String?):GamingSession {
-        require(id!=null)
+        requireNotNull(id)
+        // TODO("Write a message")
         bearerToken(authorization,db).id
         return db.gamingSessions.get(id)
     }
 
-    fun addPlayerToSession(id: Int?,authorization:String?):Int {
-        require(id!=null){"id"}
-        val playerId= bearerToken(authorization,db).id
-        db.gamingSessions.addPlayer(id,playerId)
+    fun addPlayerToSession(sessionId: Int?, authorization:String?):Int {
+        requireNotNull(sessionId){"id"}
+        // TODO: Improve this message
+        val playerId = bearerToken(authorization, db).id
+        db.gamingSessions.addPlayer(sessionId, playerId)
         return playerId
     }
 }

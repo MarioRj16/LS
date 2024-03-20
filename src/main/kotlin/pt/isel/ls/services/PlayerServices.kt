@@ -14,7 +14,7 @@ open class PlayerServices(private val db:Storage):ServicesSchema() {
     }
 
     fun getPlayer(id: Int?,authorization:String?):Player {
-        require(id!=null){"id"}
+        requireNotNull(id){"id"}
         val ownId=bearerToken(authorization,db).id
         if(ownId!=id) throw ForbiddenException(
             "You dont have authorization to see this player, instead you can see your own id $ownId")
