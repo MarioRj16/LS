@@ -8,7 +8,7 @@ import pt.isel.ls.domain.Game
 import pt.isel.ls.api.models.GameCreate
 import pt.isel.ls.api.models.GameSearch
 import pt.isel.ls.utils.bearerToken
-open class GamesServices(private val db: Storage) {
+open class GamesServices(internal val db: Storage) {
     fun searchGames(input: String,authorization:String?,skip:Int?,limit:Int?):List<Game> {
         bearerToken(authorization,db)
         val gameInput = Json.decodeFromString<GameSearch>(input)
