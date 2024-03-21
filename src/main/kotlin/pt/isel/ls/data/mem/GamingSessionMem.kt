@@ -21,13 +21,13 @@ class GamingSessionMem(
         }
         require(games.table.containsKey(game)){"The provided game does not exist"}
         val obj = GamingSession(
-            gamingSessions.nextId,
+            gamingSessions.nextId.get(),
             game,
             capacity,
             date,
             emptySet<Player>()
         )
-        gamingSessions.table[gamingSessions.nextId] = obj
+        gamingSessions.table[gamingSessions.nextId.get()] = obj
         return obj
     }
 

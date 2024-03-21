@@ -8,6 +8,7 @@ import pt.isel.ls.domain.Player
 import pt.isel.ls.utils.GameFactory
 import pt.isel.ls.utils.GamingSessionFactory
 import pt.isel.ls.utils.PlayerFactory
+import pt.isel.ls.utils.tomorrowLocalDateTime
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -30,7 +31,7 @@ class GamingSessionsServicesTests: SessionServices(DataMem()) {
     fun `createSession() returns sessionResponse successfully`(){
         val game = gameFactory.createRandomGame()
         val capacity = 2
-        val startingDate = "2025-03-20T12:00:00"
+        val startingDate = tomorrowLocalDateTime()
         val input = """
             {
                 "gameId": ${game.id},

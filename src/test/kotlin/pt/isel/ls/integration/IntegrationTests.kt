@@ -11,6 +11,7 @@ import org.http4k.server.Jetty
 import org.http4k.server.asServer
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.BeforeEach
 import pt.isel.ls.PORT
 import pt.isel.ls.api.API
 import pt.isel.ls.api.models.PlayerResponse
@@ -25,10 +26,8 @@ abstract class IntegrationTests (){
         const val URI_PREFIX = "http://localhost:$PORT"
         val client = JavaHttpClient()
         var user : PlayerResponse? = null
-        //TODO could add more routes
-        //TODO add swagger with .yaml file
         val db = DataMem()
-        val api = API(Services(db))
+        var api = API(Services(db))
         val playerRoutes =
             routes(
                 "player" bind Method.POST to api.playerAPI::createPlayer,
@@ -54,7 +53,7 @@ abstract class IntegrationTests (){
                 sessionRoutes
             )
 
-        val jettyServer = app.asServer(Jetty(PORT))
+        var jettyServer = app.asServer(Jetty(PORT))
 
 
         @JvmStatic
@@ -69,14 +68,11 @@ abstract class IntegrationTests (){
             jettyServer.stop()
         }
 
-        /**
-        val logger = LoggerFactory.getLogger("pt.isel.ls")
-        logger.info("server started listening")
-        readln()
-        jettyServer.stop()
-        logger.info("leaving Main")
+        @BeforeEach
+        fun reset(){
+            db.reset()
+        }
 
-         **/
         inline fun <reified T> Request.json(body: T): Request {
             return this
                 .header("content-type", "application/json")
@@ -93,7 +89,7 @@ abstract class IntegrationTests (){
         @JvmStatic
         @BeforeAll
         fun createUser(): Unit {
-            val requestBody = mapOf("name" to "oi", "email" to "oi123@gmail.com")
+            val requestBody = mapOf("name" to "user", "email" to "user123@gmail.com")
             val request = Request(Method.POST, "$URI_PREFIX/player")
                 .json(requestBody)
             client(request)

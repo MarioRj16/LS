@@ -80,6 +80,10 @@ We also created an inline function in Response.json(body: T) so that the content
 
 #### Connection Management
 
+To make sure that everything is stable we created all the sections independently to one another.
+What we mean is that to create the API class you need to send the as an argument class of services that is going to be connected and to create the Services class you need to send the db that is going to be affected by the requests.
+We create the db that is going to be used in the server file and then we connect to all the sections that are going to be used in these lines "val db = DataMem() /n val api = API(Services(db))"  then in all the possible routes we call the corresponding functions to this api object.
+
 [Describe how connections are created, used, and disposed, namely its relation with transaction scopes].
 
 #### Data Access

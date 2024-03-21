@@ -1,5 +1,4 @@
 
-import kotlinx.datetime.toLocalDateTime
 import org.http4k.core.Method
 import org.http4k.core.Request
 import org.http4k.core.Status
@@ -8,6 +7,7 @@ import pt.isel.ls.api.models.SessionSearch
 import pt.isel.ls.integration.IntegrationTests
 import pt.isel.ls.utils.GameFactory
 import pt.isel.ls.utils.GamingSessionFactory
+import pt.isel.ls.utils.tomorrowLocalDateTime
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -16,7 +16,7 @@ class GamingSessionsTests : IntegrationTests(){
     @Test
     fun createSession(){
         val game=GameFactory(db.games).createRandomGame()
-        val requestBody = SessionCreate(game.id,4, "2025-03-20T12:00:00".toLocalDateTime())
+        val requestBody = SessionCreate(game.id,4, tomorrowLocalDateTime())
         val request = Request(Method.POST, "$URI_PREFIX/sessions")
             .json(requestBody)
             .token(user!!.token)
