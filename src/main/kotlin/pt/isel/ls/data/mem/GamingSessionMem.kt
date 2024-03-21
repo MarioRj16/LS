@@ -7,6 +7,7 @@ import pt.isel.ls.domain.GamingSession
 import pt.isel.ls.domain.Player
 import pt.isel.ls.utils.currentLocalDateTime
 import pt.isel.ls.utils.exceptions.ConflictException
+import pt.isel.ls.utils.isPast
 import pt.isel.ls.utils.paginate
 
 class GamingSessionMem(
@@ -16,7 +17,7 @@ class GamingSessionMem(
 ): GamingSessionStorage {
     override fun create(capacity: Int, game: Int, date: LocalDateTime): GamingSession {
         require(capacity >= 1){"The session capacity has to be at least 1"}
-        require(date >= currentLocalDateTime()){
+        require(!date.isPast()){
             "The session starting date cannot precede the current LocalDateTime"
         }
         require(games.table.containsKey(game)){"The provided game does not exist"}
@@ -45,7 +46,7 @@ class GamingSessionMem(
         skip: Int
     ): List<GamingSession> {
         games.table[game] ?: throw NoSuchElementException("No game with id $game was found")
-        var sessions = gamingSessions.table.filter { (_, value) -> value.game == game }
+        var sessions = gamingSessions.table.filter { (_, value) -> value.gameId == game }
         if(sessions.isEmpty())
             return sessions.values.toList()
 

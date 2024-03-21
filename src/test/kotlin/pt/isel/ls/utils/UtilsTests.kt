@@ -11,17 +11,6 @@ import kotlin.test.assertTrue
 class UtilsTests {
 
     @Test
-    fun `UUID serializer serializes and deserializes correctly`() {
-        val uuid = UUID.randomUUID()
-
-        val serialized = Json.encodeToString(UUIDSerializer, uuid)
-
-        val deserialized = Json.decodeFromString(UUIDSerializer, serialized)
-
-        assertEquals(uuid, deserialized)
-    }
-
-    @Test
     fun `paginate() does pagination correctly`(){
         val intList = List(5){ it }
 

@@ -23,7 +23,7 @@ class GamingSessionTests: AbstractDataTests() {
         val session = gamingSessions.create(capacity, game.id, date)
 
         assertTrue(session.id == 1)
-        assertEquals(game.id, session.game)
+        assertEquals(game.id, session.gameId)
         assertEquals(capacity, session.maxCapacity)
         assertEquals(date, session.startingDate)
         assertTrue(session.players.isEmpty())
