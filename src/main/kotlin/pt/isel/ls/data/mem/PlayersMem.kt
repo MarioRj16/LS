@@ -10,7 +10,7 @@ import kotlin.NoSuchElementException
 class PlayersMem(private val players: DBTableMem<Player>): PlayerStorage {
     override fun create(name: String, email: String): Player {
         require(emailIsValid(email)){"The given email is not in the right format"}
-        if (!emailExists(email)) throw ConflictException("The given email is not unique")
+        if (emailExists(email)) throw ConflictException("The given email is not unique")
         val obj = Player(
             id = players.nextId,
             name = name,

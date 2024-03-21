@@ -30,7 +30,7 @@ class GamingSessionsServicesTests: SessionServices(DataMem()) {
     fun `createSession() returns sessionResponse successfully`(){
         val game = gameFactory.createRandomGame()
         val capacity = 2
-        val startingDate = "2024-03-20T12:00:00"
+        val startingDate = "2025-03-20T12:00:00"
         val input = """
             {
                 "gameId": ${game.id},
