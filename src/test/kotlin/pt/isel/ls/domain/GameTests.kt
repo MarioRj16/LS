@@ -45,6 +45,8 @@ class GameTests {
 
     @Test
     fun `game throws exception with no genres`(){
-        Game(validId, validName, validDeveloper, emptySet())
+        assertThrows<IllegalArgumentException> {
+            Game(validId, validName, validDeveloper, emptySet())
+        }
     }
 }

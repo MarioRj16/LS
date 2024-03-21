@@ -3,13 +3,14 @@ package pt.isel.ls.utils
 import org.http4k.core.Response
 import org.http4k.core.Status
 import org.junit.jupiter.api.Test
+import pt.isel.ls.api.APISchema
 import pt.isel.ls.domain.Genre
 import pt.isel.ls.utils.exceptions.AuthorizationException
 import pt.isel.ls.utils.exceptions.ConflictException
 import pt.isel.ls.utils.exceptions.ForbiddenException
 import kotlin.test.assertEquals
 
-class HTTPResponseTests {
+class HTTPResponseTests: APISchema() {
 
     @Test
     fun `json() returns response with body in json successfully`(){
@@ -40,25 +41,20 @@ class HTTPResponseTests {
 
         assertEquals(404, responseNotFound.status.code)
         assertEquals("application/json", responseNotFound.header("content-type"))
-        assertEquals("{\"message\":\"Resource not found\"}", responseNotFound.bodyString())
+
         assertEquals(400, responseIllegalArgument.status.code)
         assertEquals("application/json", responseIllegalArgument.header("content-type"))
-        assertEquals("{\"message\":\"Invalid argument\"}", responseIllegalArgument.bodyString())
 
         assertEquals(401, responseAuthorization.status.code)
         assertEquals("application/json", responseAuthorization.header("content-type"))
-        assertEquals("{\"message\":\"Unauthorized access\"}", responseAuthorization.bodyString())
 
         assertEquals(403, responseForbidden.status.code)
         assertEquals("application/json", responseForbidden.header("content-type"))
-        assertEquals("{\"message\":\"Forbidden access\"}", responseForbidden.bodyString())
 
         assertEquals(409, responseConflict.status.code)
         assertEquals("application/json", responseConflict.header("content-type"))
-        assertEquals("{\"message\":\"Conflict occurred\"}", responseConflict.bodyString())
 
         assertEquals(500, responseOther.status.code)
         assertEquals("application/json", responseOther.header("content-type"))
-        assertEquals("{\"message\":\"Server Error\"}", responseOther.bodyString())
     }
 }

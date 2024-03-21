@@ -9,7 +9,7 @@ class PlayerTests {
 
     private val validId = 1
     private val validName = "testName"
-    private val validEmail = "testEmail"
+    private val validEmail = "testEmail@email.com"
     private val token = UUID.randomUUID()
 
     @Test

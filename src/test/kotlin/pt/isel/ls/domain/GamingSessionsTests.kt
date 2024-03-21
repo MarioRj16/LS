@@ -40,7 +40,9 @@ class GamingSessionsTests {
 
     @Test
     fun `gaming session state is false when starting date is in the past`(){
-        val session = GamingSession(validSessionId, validGameId, validMaxCapacity, yesterdayLocalDateTime(), emptySetOfPlayers)
+        val timeToWait = 100L
+        val session = GamingSession(validSessionId, validGameId, validMaxCapacity, plusMillis(timeToWait), emptySetOfPlayers)
+        Thread.sleep(timeToWait+1L)
         assertFalse(session.state)
     }
 
@@ -52,7 +54,15 @@ class GamingSessionsTests {
 
     @Test
     fun `gaming session state is false when players are at max capacity and starting date is in the past`(){
-        val session = GamingSession(validSessionId, validGameId, validMaxCapacity, yesterdayLocalDateTime(), maxCapacitySetOfPlayers)
+        val timeToWait = 100L
+        val session = GamingSession(
+            validSessionId,
+            validGameId,
+            validMaxCapacity,
+            plusMillis(timeToWait),
+            maxCapacitySetOfPlayers
+        )
+        Thread.sleep(timeToWait)
         assertFalse(session.state)
     }
 

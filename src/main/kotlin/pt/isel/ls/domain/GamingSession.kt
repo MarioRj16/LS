@@ -23,5 +23,5 @@ data class GamingSession(
         }
     }
     val state: Boolean
-        get() = startingDate >= currentLocalDateTime() && players.size < maxCapacity
+        get() = !startingDate.isPast() && players.size < maxCapacity
 }
