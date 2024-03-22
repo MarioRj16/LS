@@ -9,7 +9,7 @@ import org.http4k.server.Jetty
 import org.http4k.server.asServer
 import org.slf4j.LoggerFactory
 import pt.isel.ls.api.API
-import pt.isel.ls.data.mem.DataMem
+import pt.isel.ls.data.postgres.DataPostgres
 import pt.isel.ls.services.Services
 
 private val logger = LoggerFactory.getLogger("pt.isel.ls")
@@ -33,7 +33,9 @@ fun logRequest(request: Request) {
 }
 
 fun main() {
-    val db = DataMem()
+    val db = DataPostgres(System.getenv("JDBC_conn"))
+   // db.create()
+    //val db=DataMem()
     val api = API(Services(db))
     val playerRoutes =
         routes(
