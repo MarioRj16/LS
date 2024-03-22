@@ -2,6 +2,7 @@ package pt.isel.ls.data
 
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import pt.isel.ls.utils.exceptions.ConflictException
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
@@ -24,7 +25,7 @@ class PlayerTests: AbstractDataTests() {
     fun `create() throws exception for non unique email`(){
         val email = "email@email.com"
         players.create("name", email)
-        assertThrows<IllegalArgumentException> {
+        assertThrows<ConflictException> {
             players.create("name2", email)
         }
     }

@@ -6,6 +6,7 @@ import org.junit.jupiter.api.assertThrows
 import pt.isel.ls.DEFAULT_LIMIT
 import pt.isel.ls.DEFAULT_SKIP
 import pt.isel.ls.utils.*
+import pt.isel.ls.utils.exceptions.ConflictException
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -15,7 +16,7 @@ class GamingSessionTests: AbstractDataTests() {
     @Test
     fun`create() returns gaming session successfully`(){
         val game = gameFactory.createRandomGame()
-        val capacity = 1
+        val capacity = 2
         val date = LocalDateTime(
             LocalDate(2050, 3, 3),
             LocalTime(1, 1, 1, 1)
@@ -23,7 +24,7 @@ class GamingSessionTests: AbstractDataTests() {
         val session = gamingSessions.create(capacity, game.id, date)
 
         assertTrue(session.id == 1)
-        assertEquals(game.id, session.game)
+        assertEquals(game.id, session.gameId)
         assertEquals(capacity, session.maxCapacity)
         assertEquals(date, session.startingDate)
         assertTrue(session.players.isEmpty())
@@ -114,7 +115,7 @@ class GamingSessionTests: AbstractDataTests() {
             java.time.LocalDate.now().toKotlinLocalDate(),
             java.time.LocalTime.now().plusSeconds(secondsToAdd).toKotlinLocalTime()
         )
-        val session = gamingSessions.create(1, game.id, date)
+        val session = gamingSessions.create(2, game.id, date)
         assertThrows<IllegalArgumentException> {
             val msToAdd = (secondsToAdd * 1000)
             Thread.sleep(msToAdd)
