@@ -33,15 +33,8 @@ fun logRequest(request: Request) {
 }
 
 fun main() {
-    //TODO could add more routes
-    //TODO add swagger with .yaml file
     val db = DataMem()
     val api = API(Services(db))
-    /*
-    val yamlFile = File("API-docs 1.0.yaml")
-    val yamlContent = yamlFile.readText()
-    val docsAPI=Yaml.decodeFromString
-     */
     val playerRoutes =
         routes(
             "player" bind POST to api.playerAPI::createPlayer,
