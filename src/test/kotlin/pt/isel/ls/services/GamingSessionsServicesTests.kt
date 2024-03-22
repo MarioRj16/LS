@@ -5,6 +5,10 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import pt.isel.ls.data.mem.DataMem
 import pt.isel.ls.domain.Player
+import pt.isel.ls.utils.factories.GameFactory
+import pt.isel.ls.utils.factories.GamingSessionFactory
+import pt.isel.ls.utils.factories.PlayerFactory
+import pt.isel.ls.utils.tomorrowLocalDateTime
 import pt.isel.ls.utils.GameFactory
 import pt.isel.ls.utils.GamingSessionFactory
 import pt.isel.ls.utils.PlayerFactory

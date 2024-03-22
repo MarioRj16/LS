@@ -6,7 +6,7 @@ import pt.isel.ls.utils.exceptions.AuthorizationException
 import java.util.*
 
 abstract class ServicesSchema(){
-    fun bearerToken(authorization:String?,db: Storage): Player {
+    fun bearerToken(authorization:String?, db: Storage): Player {
         if( authorization.isNullOrEmpty() ||
             !authorization.startsWith("Bearer")
         ) throw AuthorizationException("Missing Bearer token")
