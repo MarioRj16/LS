@@ -11,19 +11,19 @@ import org.http4k.server.Jetty
 import org.http4k.server.asServer
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.BeforeEach
-import pt.isel.ls.PORT
+import pt.isel.ls.TEST_PORT
 import pt.isel.ls.api.API
 import pt.isel.ls.api.models.PlayerResponse
 import pt.isel.ls.data.mem.DataMem
 import pt.isel.ls.domain.Game
 import pt.isel.ls.domain.GamingSession
 import pt.isel.ls.services.Services
+import pt.isel.ls.utils.generateRandomEmail
 
 
 abstract class IntegrationTests (){
     companion object {
-        const val URI_PREFIX = "http://localhost:$PORT"
+        const val URI_PREFIX = "http://localhost:$TEST_PORT"
         val client = JavaHttpClient()
         var user : PlayerResponse? = null
         val db = DataMem()
@@ -53,8 +53,7 @@ abstract class IntegrationTests (){
                 sessionRoutes
             )
 
-        var jettyServer = app.asServer(Jetty(PORT))
-
+        var jettyServer = app.asServer(Jetty(TEST_PORT))
 
         @JvmStatic
         @BeforeAll
@@ -68,10 +67,7 @@ abstract class IntegrationTests (){
             jettyServer.stop()
         }
 
-        @BeforeEach
-        fun reset(){
-            db.reset()
-        }
+
 
         inline fun <reified T> Request.json(body: T): Request {
             return this
@@ -85,11 +81,10 @@ abstract class IntegrationTests (){
         }
 
 
-
         @JvmStatic
         @BeforeAll
         fun createUser(): Unit {
-            val requestBody = mapOf("name" to "user", "email" to "user123@gmail.com")
+            val requestBody = mapOf("name" to "user", "email" to generateRandomEmail())
             val request = Request(Method.POST, "$URI_PREFIX/player")
                 .json(requestBody)
             client(request)

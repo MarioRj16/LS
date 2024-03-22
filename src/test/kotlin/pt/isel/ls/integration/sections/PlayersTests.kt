@@ -3,12 +3,12 @@ import kotlinx.serialization.json.Json
 import org.http4k.core.Method
 import org.http4k.core.Request
 import org.http4k.core.Status
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
 import pt.isel.ls.api.models.PlayerCreate
 import pt.isel.ls.api.models.PlayerResponse
 import pt.isel.ls.domain.Player
 import pt.isel.ls.integration.IntegrationTests
-import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class PlayersTests:IntegrationTests(){
