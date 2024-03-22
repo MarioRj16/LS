@@ -7,39 +7,45 @@ import org.http4k.routing.path
 import pt.isel.ls.services.SessionServices
 
 
-class SessionsAPI(private val services: SessionServices):APISchema() {
+class SessionsAPI(private val services: SessionServices) : APISchema() {
 
     /**
      * TODO maybe change to query
      **/
-    fun searchSessions(request: Request): Response= useWithException {
+    fun searchSessions(request: Request): Response = useWithException {
         Response(Status.OK)
-            .json(services.searchSessions(
-                request.bodyString(),
-                request.header("Authorization"),
-                request.query("skip")?.toInt() ,
-                request.query("limit")?.toInt()
-            ))
+            .json(
+                services.searchSessions(
+                    request.bodyString(),
+                    request.header("Authorization"),
+                    request.query("skip")?.toInt(),
+                    request.query("limit")?.toInt()
+                )
+            )
     }
 
     fun createSession(request: Request): Response = useWithException {
         Response(Status.CREATED)
-            .json(services.createSession(
-                request.bodyString(),
-                request.header("Authorization")
-            ))
+            .json(
+                services.createSession(
+                    request.bodyString(),
+                    request.header("Authorization")
+                )
+            )
     }
 
     fun getSession(request: Request): Response = useWithException {
         Response(Status.OK)
-            .json(services.getSession(
-                request.path("sessionId")?.toInt(),
-                request.header("Authorization")
-            ))
+            .json(
+                services.getSession(
+                    request.path("sessionId")?.toInt(),
+                    request.header("Authorization")
+                )
+            )
     }
 
     fun addPlayerToSession(request: Request): Response = useWithException {
-        val id=services.addPlayerToSession(
+        val id = services.addPlayerToSession(
             request.path("sessionId")?.toInt(),
             request.header("Authorization")
         )

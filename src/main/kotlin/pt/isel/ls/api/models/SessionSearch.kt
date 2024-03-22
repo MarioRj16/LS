@@ -4,10 +4,11 @@ import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class SessionSearch(val game: Int,
-                         val date:LocalDateTime? = null ,
-                         val state:Boolean? = null ,
-                         val playerId: Int? = null
+data class SessionSearch(
+    val game: Int,
+    val date: LocalDateTime? = null,
+    val state: Boolean? = null,
+    val playerId: Int? = null
 )
 
 /**

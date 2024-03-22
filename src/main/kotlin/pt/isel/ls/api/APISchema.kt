@@ -24,7 +24,7 @@ abstract class APISchema {
     }
 
     fun httpException(e: Exception): Response {
-        return when (e){
+        return when (e) {
             is NoSuchElementException -> Response(Status.NOT_FOUND).json(e.message)
             is IllegalArgumentException -> Response(Status.BAD_REQUEST).json("Illegal argument " + e.message)
             is AuthorizationException -> Response(Status.UNAUTHORIZED).json(e.message)

@@ -1,9 +1,7 @@
 package pt.isel.ls.utils
 
-import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import java.util.*
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
@@ -11,8 +9,8 @@ import kotlin.test.assertTrue
 class UtilsTests {
 
     @Test
-    fun `paginate() does pagination correctly`(){
-        val intList = List(5){ it }
+    fun `paginate() does pagination correctly`() {
+        val intList = List(5) { it }
 
         assertEquals(intList, intList.paginate(0, 5))
         assertTrue(intList.paginate(2, 0).isEmpty())
@@ -21,8 +19,8 @@ class UtilsTests {
     }
 
     @Test
-    fun `paginate() throws exception if limit or skip are not valid`(){
-        val l = List(10){it}
+    fun `paginate() throws exception if limit or skip are not valid`() {
+        val l = List(10) { it }
         assertThrows<IllegalArgumentException> {
             l.paginate(-1, 2)
         }
@@ -35,7 +33,7 @@ class UtilsTests {
     }
 
     @Test
-    fun `emailIsValid() validates email correctly`(){
+    fun `emailIsValid() validates email correctly`() {
         assertTrue(emailIsValid("email@email.com"))
         assertTrue(emailIsValid("email@email.org"))
         assertTrue(emailIsValid("email@email.co.uk"))

@@ -14,18 +14,16 @@ class DataPostgres(connectionString: String) : Storage {
         it.autoCommit = false
     }
 
-    fun create(){
-        //TODO: Check if all the paths are okay
-        //conn.runSQLScript("")
-        conn.runSQLScript("src/main/sql/createSchema.sql")
-        conn.runSQLScript("src/main/sql/createGenres.sql")
+    fun create() {
+        conn.runSQLScript("createSchema.sql")
+        conn.runSQLScript("createGenres.sql")
     }
 
     override fun reset() {
         conn.runSQLScript("reset.sql")
     }
 
-    override fun populate(){
+    override fun populate() {
         conn.runSQLScript("populate.sql")
     }
 

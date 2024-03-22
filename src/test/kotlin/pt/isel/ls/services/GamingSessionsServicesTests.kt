@@ -13,7 +13,7 @@ import kotlin.test.assertContains
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class GamingSessionsServicesTests: SessionServices(DataMem()) {
+class GamingSessionsServicesTests : SessionServices(DataMem()) {
     private lateinit var bearerToken: String
     private lateinit var user: Player
     private val playerFactory = PlayerFactory(db.players)
@@ -21,14 +21,14 @@ class GamingSessionsServicesTests: SessionServices(DataMem()) {
     private val gameFactory = GameFactory(db.games)
 
     @BeforeEach
-    fun setUp(){
+    fun setUp() {
         db.reset()
         user = playerFactory.createRandomPlayer()
         bearerToken = "Bearer ${user.token}"
     }
 
     @Test
-    fun `createSession() returns sessionResponse successfully`(){
+    fun `createSession() returns sessionResponse successfully`() {
         val game = gameFactory.createRandomGame()
         val capacity = 2
         val startingDate = tomorrowLocalDateTime()
@@ -45,7 +45,7 @@ class GamingSessionsServicesTests: SessionServices(DataMem()) {
     }
 
     @Test
-    fun `getSession() returns gaming session successfully`(){
+    fun `getSession() returns gaming session successfully`() {
         val game = gameFactory.createRandomGame()
         val session = gamingSessionFactory.createRandomGamingSession(game.id)
         val returnedSession = getSession(session.id, bearerToken)
@@ -53,14 +53,14 @@ class GamingSessionsServicesTests: SessionServices(DataMem()) {
     }
 
     @Test
-    fun `getSession() throws exception for null id`(){
+    fun `getSession() throws exception for null id`() {
         assertThrows<IllegalArgumentException> {
             getSession(null, bearerToken)
         }
     }
 
     @Test
-    fun `searchSessions() returns gaming sessions successfully`(){
+    fun `searchSessions() returns gaming sessions successfully`() {
         val game = gameFactory.createRandomGame()
         val session1 = gamingSessionFactory.createRandomGamingSession(game.id)
         val session2 = gamingSessionFactory.createRandomGamingSession(game.id)
@@ -78,7 +78,7 @@ class GamingSessionsServicesTests: SessionServices(DataMem()) {
     }
 
     @Test
-    fun `addPlayerToSession() returns id of added player successfully`(){
+    fun `addPlayerToSession() returns id of added player successfully`() {
         val game = gameFactory.createRandomGame()
         val session = gamingSessionFactory.createRandomGamingSession(game.id)
         val returnedPlayerId = addPlayerToSession(session.id, bearerToken)
@@ -86,7 +86,7 @@ class GamingSessionsServicesTests: SessionServices(DataMem()) {
     }
 
     @Test
-    fun `addPlayerToSession() throws exception for null id`(){
+    fun `addPlayerToSession() throws exception for null id`() {
         assertThrows<IllegalArgumentException> {
             addPlayerToSession(null, bearerToken)
         }

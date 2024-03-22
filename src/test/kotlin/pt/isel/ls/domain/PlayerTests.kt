@@ -13,16 +13,16 @@ class PlayerTests {
     private val token = UUID.randomUUID()
 
     @Test
-    fun `Player is created successfully`(){
+    fun `Player is created successfully`() {
         assertDoesNotThrow {
             Player(validId, validName, validEmail, token)
         }
     }
 
     @Test
-    fun `Player throws exception for invalid ID`(){
+    fun `Player throws exception for invalid ID`() {
         assertThrows<IllegalArgumentException> {
-           Player(-1, validName, validEmail, token)
+            Player(-1, validName, validEmail, token)
         }
         assertThrows<IllegalArgumentException> {
             Player(0, validName, validEmail, token)
@@ -30,7 +30,7 @@ class PlayerTests {
     }
 
     @Test
-    fun `Player throws exception with email in invalid format`(){
+    fun `Player throws exception with email in invalid format`() {
         assertThrows<IllegalArgumentException> {
             Player(validId, validName, "email@email.", token)
         }
@@ -43,7 +43,7 @@ class PlayerTests {
     }
 
     @Test
-    fun `Player throws exception with blank name`(){
+    fun `Player throws exception with blank name`() {
         assertThrows<IllegalArgumentException> {
             Player(validId, "", validEmail, token)
         }

@@ -1,7 +1,10 @@
 package pt.isel.ls.utils.postgres
 
-import kotlinx.datetime.*
-import pt.isel.ls.domain.*
+import kotlinx.datetime.toKotlinLocalDateTime
+import pt.isel.ls.domain.Game
+import pt.isel.ls.domain.GamingSession
+import pt.isel.ls.domain.Genre
+import pt.isel.ls.domain.Player
 import java.io.File
 import java.sql.Connection
 import java.sql.ResultSet
@@ -46,7 +49,7 @@ inline fun <R> Connection.useWithRollback(block: (Connection) -> R): R {
     }
 }
 
-fun Connection.runSQLScript(path: String){
-    val script = File(path).readText()
+fun Connection.runSQLScript(path: String) {
+    val script = File("src/main/sql/$path").readText()
     prepareStatement(script).executeUpdate()
 }

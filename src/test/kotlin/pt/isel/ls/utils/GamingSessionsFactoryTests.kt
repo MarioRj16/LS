@@ -9,7 +9,7 @@ import kotlin.test.assertEquals
 class GamingSessionsFactoryTests {
 
     @Test
-    fun `createRandomGamingSession() creates gaming session successfully`(){
+    fun `createRandomGamingSession() creates gaming session successfully`() {
         val db = DataMem()
         val game = db.games.create("game", "developer", setOf(Genre("FPS")))
         val gamingSessionFactory = GamingSessionFactory(db.gamingSessions)

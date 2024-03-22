@@ -8,7 +8,7 @@ import kotlin.test.assertEquals
 class PlayerFactoryTests {
 
     @Test
-    fun `createRandomPlayer() creates player successfully`(){
+    fun `createRandomPlayer() creates player successfully`() {
         val players = PlayersMem()
         val playerFactory = PlayerFactory(players)
         val player = playerFactory.createRandomPlayer()

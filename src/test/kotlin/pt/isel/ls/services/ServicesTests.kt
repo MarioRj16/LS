@@ -7,16 +7,16 @@ import pt.isel.ls.data.mem.DataMem
 import pt.isel.ls.utils.factories.PlayerFactory
 import kotlin.test.assertEquals
 
-class ServicesTests: ServicesSchema() {
+class ServicesTests : ServicesSchema() {
     val data = DataMem()
 
     @BeforeEach
-    fun setUp(){
+    fun setUp() {
         data.reset()
     }
 
     @Test
-    fun `Token gets validated successfully`(){
+    fun `Token gets validated successfully`() {
         val playerFactory = PlayerFactory(data.players)
         val player = playerFactory.createRandomPlayer()
         val auth = "Bearer ${player.token}"
@@ -24,14 +24,14 @@ class ServicesTests: ServicesSchema() {
     }
 
     @Test
-    fun `throws exception for non existing token`(){
+    fun `throws exception for non existing token`() {
         assertThrows<IllegalArgumentException> {
             bearerToken("Bearer ", data)
         }
     }
 
     @Test
-    fun `throws exception if token is in invalid format`(){
+    fun `throws exception if token is in invalid format`() {
         assertThrows<IllegalArgumentException> {
             bearerToken("Bearer token", data)
         }

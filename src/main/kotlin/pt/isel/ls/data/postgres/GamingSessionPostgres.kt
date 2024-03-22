@@ -2,18 +2,18 @@ package pt.isel.ls.data.postgres
 
 import kotlinx.datetime.LocalDateTime
 import pt.isel.ls.data.GamingSessionStorage
-import pt.isel.ls.utils.postgres.toGamingSession
-import pt.isel.ls.utils.postgres.toPlayer
-import pt.isel.ls.utils.toTimeStamp
 import pt.isel.ls.domain.GamingSession
 import pt.isel.ls.domain.Player
 import pt.isel.ls.utils.paginate
+import pt.isel.ls.utils.postgres.toGamingSession
+import pt.isel.ls.utils.postgres.toPlayer
 import pt.isel.ls.utils.postgres.useWithRollback
+import pt.isel.ls.utils.toTimeStamp
 import java.sql.Connection
 import java.sql.SQLException
 import java.sql.Statement
 
-class GamingSessionPostgres(private val conn: Connection): GamingSessionStorage {
+class GamingSessionPostgres(private val conn: Connection) : GamingSessionStorage {
     override fun create(capacity: Int, game: Int, date: LocalDateTime): GamingSession = conn.useWithRollback {
         val statement = it.prepareStatement(
             """insert into gaming_sessions(capacity, starting_date, game) values (?, ?, ?)""",
@@ -24,12 +24,12 @@ class GamingSessionPostgres(private val conn: Connection): GamingSessionStorage 
             setInt(3, game)
         }
 
-        if(statement.executeUpdate() == 0)
+        if (statement.executeUpdate() == 0)
             throw SQLException("Creating gaming session failed, no rows affected")
 
         val generatedKeys = statement.generatedKeys
 
-        if(generatedKeys.next())
+        if (generatedKeys.next())
             return get(generatedKeys.getInt(1))
         throw SQLException("Creating gaming session failed, no ID was created")
     }
@@ -52,11 +52,11 @@ class GamingSessionPostgres(private val conn: Connection): GamingSessionStorage 
         val resultSet = statement.executeQuery()
         val players = mutableSetOf<Player>()
 
-        while(resultSet.next()){
+        while (resultSet.next()) {
             players += resultSet.toPlayer()
-            if(resultSet.isLast)
+            if (resultSet.isLast)
                 return resultSet.toGamingSession(players)
-            }
+        }
         throw NoSuchElementException("Could not get gaming session, session with id $sessionId was not found")
     }
 
@@ -99,10 +99,10 @@ class GamingSessionPostgres(private val conn: Connection): GamingSessionStorage 
         val players = mutableSetOf<Player>()
 
         var previousSessionId: Int? = null
-        while(resultSet.next()){
+        while (resultSet.next()) {
             players += resultSet.toPlayer()
             val currentSessionId = resultSet.getInt("gaming_session_id")
-            if(previousSessionId == currentSessionId){
+            if (previousSessionId == currentSessionId) {
                 sessions += resultSet.toGamingSession(players.toSet())
                 players.clear()
                 continue
@@ -121,7 +121,7 @@ class GamingSessionPostgres(private val conn: Connection): GamingSessionStorage 
             setInt(2, session)
         }
 
-        if(stm.executeUpdate() == 0 || !stm.generatedKeys.next())
+        if (stm.executeUpdate() == 0 || !stm.generatedKeys.next())
             throw SQLException("Adding player to session failed, no rows affected")
     }
 }

@@ -7,10 +7,10 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
-class PlayerTests: AbstractDataTests() {
+class PlayerTests : AbstractDataTests() {
 
     @Test
-    fun `create() creates player successfully`(){
+    fun `create() creates player successfully`() {
         val name = "testName"
         val email = "test@email.com"
         val player = players.create(name, email)
@@ -22,7 +22,7 @@ class PlayerTests: AbstractDataTests() {
     }
 
     @Test
-    fun `create() throws exception for non unique email`(){
+    fun `create() throws exception for non unique email`() {
         val email = "email@email.com"
         players.create("name", email)
         assertThrows<ConflictException> {
@@ -31,7 +31,7 @@ class PlayerTests: AbstractDataTests() {
     }
 
     @Test
-    fun `create() throws exception for email in invalid format`(){
+    fun `create() throws exception for email in invalid format`() {
         assertThrows<IllegalArgumentException> {
             players.create("name", "invalidEmail")
         }
@@ -46,14 +46,14 @@ class PlayerTests: AbstractDataTests() {
     }
 
     @Test
-    fun `get() returns player successfully`(){
+    fun `get() returns player successfully`() {
         val player = playerFactory.createRandomPlayer()
 
         assertEquals(player, players.get(player.id))
     }
 
     @Test
-    fun `get() throws exception for non existing player`(){
+    fun `get() throws exception for non existing player`() {
         assertThrows<NoSuchElementException> {
             players.get(1)
         }

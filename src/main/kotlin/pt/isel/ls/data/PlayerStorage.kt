@@ -8,5 +8,5 @@ interface PlayerStorage {
 
     fun get(id: Int): Player
 
-    fun getByToken(token: UUID):Player
+    fun getByToken(token: UUID): Player
 }

@@ -18,7 +18,7 @@ abstract class AbstractDataTests {
     protected val gamingSessionFactory = GamingSessionFactory(db.gamingSessions)
 
     @BeforeEach
-    fun setUp(){
+    fun setUp() {
         db.reset()
     }
 

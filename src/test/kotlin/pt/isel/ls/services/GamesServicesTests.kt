@@ -12,7 +12,7 @@ import kotlin.test.assertContains
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class GamesServicesTests: GamesServices(DataMem()) {
+class GamesServicesTests : GamesServices(DataMem()) {
 
     private lateinit var bearerToken: String
     private lateinit var user: Player
@@ -20,14 +20,14 @@ class GamesServicesTests: GamesServices(DataMem()) {
     private val gameFactory = GameFactory(db.games)
 
     @BeforeEach
-    fun setUp(){
+    fun setUp() {
         db.reset()
         user = playerFactory.createRandomPlayer()
         bearerToken = "Bearer ${user.token}"
     }
 
     @Test
-    fun `createGame() returns created game id successfully`(){
+    fun `createGame() returns created game id successfully`() {
         val name = generateRandomString()
         val developer = generateRandomString()
         val genre = "Action"
@@ -47,21 +47,21 @@ class GamesServicesTests: GamesServices(DataMem()) {
     }
 
     @Test
-    fun `getGame() returns game successfully`(){
+    fun `getGame() returns game successfully`() {
         val game = gameFactory.createRandomGame()
         val returnedGame = getGame(game.id, bearerToken)
         assertEquals(game, returnedGame)
     }
 
     @Test
-    fun `getGame() throws exception for null id`(){
+    fun `getGame() throws exception for null id`() {
         assertThrows<IllegalArgumentException> {
             getGame(null, bearerToken)
         }
     }
 
     @Test
-    fun `searchGames() returns games successfully`(){
+    fun `searchGames() returns games successfully`() {
         val game1 = gameFactory.createRandomGame()
         val game2 = gameFactory.createRandomGame()
         val game3 = gameFactory.createRandomGame()

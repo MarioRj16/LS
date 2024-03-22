@@ -5,7 +5,7 @@ import pt.isel.ls.data.GamingSessionStorage
 import pt.isel.ls.data.PlayerStorage
 import pt.isel.ls.data.Storage
 
-open class DataMem: Storage, DataMemSchema() {
+open class DataMem : Storage, DataMemSchema() {
     override fun reset() {
         playersDB.table.clear()
         gamingSessionsDB.table.clear()
