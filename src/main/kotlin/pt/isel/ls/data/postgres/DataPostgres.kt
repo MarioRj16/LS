@@ -16,8 +16,9 @@ class DataPostgres(connectionString: String) : Storage {
 
     fun create(){
         //TODO: Check if all the paths are okay
-        conn.runSQLScript("createSchema.sql")
-        conn.runSQLScript("createGenres.sql")
+        //conn.runSQLScript("")
+        conn.runSQLScript("src/main/sql/createSchema.sql")
+        conn.runSQLScript("src/main/sql/createGenres.sql")
     }
 
     override fun reset() {
