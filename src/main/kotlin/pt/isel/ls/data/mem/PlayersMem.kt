@@ -1,23 +1,22 @@
 package pt.isel.ls.data.mem
 
 import pt.isel.ls.data.PlayerStorage
-import pt.isel.ls.utils.emailIsValid
 import pt.isel.ls.domain.Player
+import pt.isel.ls.utils.emailIsValid
 import pt.isel.ls.utils.exceptions.ConflictException
 import java.util.*
-import kotlin.NoSuchElementException
 
 class PlayersMem(private val players: DBTableMem<Player> = DBTableMem()): PlayerStorage {
     override fun create(name: String, email: String): Player {
         require(emailIsValid(email)){"The given email is not in the right format"}
         if (emailExists(email)) throw ConflictException("The given email is not unique")
         val obj = Player(
-            id = players.nextId,
+            id = players.nextId.get(),
             name = name,
             email = email,
             token = UUID.randomUUID()
         )
-        players.table[players.nextId] = obj
+        players.table[players.nextId.get()] = obj
         return obj
     }
 
