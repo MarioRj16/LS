@@ -1,19 +1,19 @@
 package pt.isel.ls.data.postgres
 
 import pt.isel.ls.data.GameStorage
-import pt.isel.ls.utils.postgres.toGame
-import pt.isel.ls.utils.postgres.toGenre
-import pt.isel.ls.utils.postgres.useWithRollback
 import pt.isel.ls.domain.Game
 import pt.isel.ls.domain.Genre
 import pt.isel.ls.utils.paginate
+import pt.isel.ls.utils.postgres.toGame
+import pt.isel.ls.utils.postgres.toGenre
+import pt.isel.ls.utils.postgres.useWithRollback
 import java.sql.Connection
 import java.sql.SQLException
 import java.sql.Statement
 
-class GamesPostgres(private val conn: Connection): GameStorage {
+class GamesPostgres(private val conn:  ()-> Connection): GameStorage {
 
-    override fun create(name: String, developer: String, genres: Set<Genre>): Game = conn.useWithRollback {
+    override fun create(name: String, developer: String, genres: Set<Genre>): Game = conn().useWithRollback {
         val game: Game
 
         var statement = it.prepareStatement(
@@ -58,7 +58,7 @@ class GamesPostgres(private val conn: Connection): GameStorage {
         return game
     }
 
-    override fun get(name: String): Game = conn.useWithRollback {
+    override fun get(name: String): Game = conn().useWithRollback {
         val statement = it.prepareStatement(
             """
             select * from games 
@@ -80,7 +80,7 @@ class GamesPostgres(private val conn: Connection): GameStorage {
         }
         throw NoSuchElementException("Could not get Game, $name was not found")
     }
-    override fun getById(id:Int): Game = conn.useWithRollback {
+    override fun getById(id:Int): Game = conn().useWithRollback {
         val statement = it.prepareStatement(
             """
             select * from games 
@@ -103,7 +103,7 @@ class GamesPostgres(private val conn: Connection): GameStorage {
         throw NoSuchElementException("Could not get Game, $id was not found")
     }
 
-    override fun search(developer: String?, genres: Set<Genre>?, limit: Int, skip: Int): List<Game> = conn.useWithRollback {
+    override fun search(developer: String?, genres: Set<Genre>?, limit: Int, skip: Int): List<Game> = conn().useWithRollback {
         val query =
             """
             select * from games 

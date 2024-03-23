@@ -10,28 +10,27 @@ import pt.isel.ls.utils.postgres.runSQLScript
 class DataPostgres(connectionString: String) : Storage {
     private val dataSource = PGSimpleDataSource().apply { setURL(connectionString) }
 
-    private val conn = dataSource.connection.also {
+     fun conn() = dataSource.connection.also {
         it.autoCommit = false
     }
 
     fun create(){
         //TODO: Check if all the paths are okay
-        //conn.runSQLScript("")
-        conn.runSQLScript("src/main/sql/createSchema.sql")
-        conn.runSQLScript("src/main/sql/createGenres.sql")
+        conn().runSQLScript("src/main/sql/createSchema.sql")
+        conn().runSQLScript("src/main/sql/createGenres.sql")
     }
 
     override fun reset() {
-        conn.runSQLScript("reset.sql")
+        conn().runSQLScript("reset.sql")
     }
 
     override fun populate(){
-        conn.runSQLScript("populate.sql")
+        conn().runSQLScript("populate.sql")
     }
 
-    override val players: PlayerStorage = PlayersPostgres(conn)
+    override val players: PlayerStorage = PlayersPostgres(::conn)
 
-    override val gamingSessions: GamingSessionStorage = GamingSessionPostgres(conn)
+    override val gamingSessions: GamingSessionStorage = GamingSessionPostgres(::conn)
 
-    override val games: GameStorage = GamesPostgres(conn)
+    override val games: GameStorage = GamesPostgres(::conn)
 }
