@@ -30,7 +30,7 @@ class GamesPostgres(private val conn:  ()-> Connection): GameStorage {
         val generatedKeys = statement.generatedKeys
 
         if (generatedKeys.next())
-            game = get(name)
+            game = Game(generatedKeys.getInt(1),name,developer,genres)
         else
             throw SQLException("Creating game failed, no ID was created")
 
@@ -104,15 +104,34 @@ class GamesPostgres(private val conn:  ()-> Connection): GameStorage {
     }
 
     override fun search(developer: String?, genres: Set<Genre>?, limit: Int, skip: Int): List<Game> = conn().useWithRollback {
-        val query =
+        /*val query =
             """
             select * from games 
-            inner join games_genres
-            on games.game_id = games_genres.game where
-            ${genres?.joinToString(separator = "?, ", prefix = "genre in (", postfix = ")")}
-            ${developer?.let { """ and developer = ?""" }}
+            left outer join games_genres
+            on games.game_id = games_genres.game ${if(genres.isNullOrEmpty()&& developer==null)"" else "where"}
+            ${genres?.joinToString(separator = "?, ", prefix = "genre in (", postfix = ")") ?: ""}
+            ${developer?.let { """ and developer = ?""" } ?: ""}
             """.trimIndent()
 
+         */
+val query=when{
+        (genres.isNullOrEmpty()&& developer.isNullOrEmpty()) -> """select * from games"""
+    (developer.isNullOrEmpty()) -> """
+            select * from games 
+            left outer join games_genres
+            on games.game_id = games_genres.game where
+            ${genres?.joinToString(separator = "?, ", prefix = "genre in (", postfix = ")") ?: ""}""".trimIndent()
+    (genres.isNullOrEmpty()) -> //TODO $developer change
+        """
+            select * from games where developer= $developer"""
+         else ->             """
+            select * from games 
+            left outer join games_genres
+            on games.game_id = games_genres.game  where
+            ${genres.joinToString(separator = "?, ", prefix = "genre in (", postfix = ")") ?: ""}
+            ${developer.let { """ and developer = ?""" } ?: ""}
+            """.trimIndent()
+         }
 
             val statement = it.prepareStatement(query).apply {
                 var parameterIdx = 1

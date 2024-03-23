@@ -30,7 +30,7 @@ class GamingSessionPostgres(private val conn:  ()-> Connection): GamingSessionSt
         val generatedKeys = statement.generatedKeys
 
         if(generatedKeys.next())
-            return get(generatedKeys.getInt(1))
+            return GamingSession(generatedKeys.getInt(1),game, capacity,date, emptySet())
         throw SQLException("Creating gaming session failed, no ID was created")
     }
 
@@ -113,6 +113,8 @@ class GamingSessionPostgres(private val conn:  ()-> Connection): GamingSessionSt
     }
 
     override fun addPlayer(session: Int, player: Int) = conn().useWithRollback {
+
+        //TODO Throw ConflictException if the same player tries enter twice in the same session
         val stm = it.prepareStatement(
             """insert into players_sessions(player, gaming_session) values (?, ?)""",
             Statement.RETURN_GENERATED_KEYS

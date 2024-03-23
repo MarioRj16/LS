@@ -13,9 +13,8 @@ CREATE TABLE players
 
 CREATE TABLE genres
 (
-    genre_id serial,
-    genre    varchar(100) unique,
-    PRIMARY KEY (genre_id)
+    genre    varchar(100),
+    PRIMARY KEY (genre)
 );
 
 CREATE TABLE games
@@ -39,9 +38,9 @@ CREATE TABLE gaming_sessions
 CREATE TABLE games_genres
 (
     game  integer,
-    genre integer,
+    genre varchar(100),
     FOREIGN KEY (game) REFERENCES games (game_id),
-    FOREIGN KEY (genre) REFERENCES genres (genre_id),
+    FOREIGN KEY (genre) REFERENCES genres (genre),
     PRIMARY KEY (game, genre)
 );
 

@@ -28,6 +28,10 @@ class DataPostgres(connectionString: String) : Storage {
         conn().runSQLScript("populate.sql")
     }
 
+    fun delete(){
+        conn().runSQLScript("deleteSchema.sql")
+    }
+
     override val players: PlayerStorage = PlayersPostgres(::conn)
 
     override val gamingSessions: GamingSessionStorage = GamingSessionPostgres(::conn)
