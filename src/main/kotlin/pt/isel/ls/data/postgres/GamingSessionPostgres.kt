@@ -13,8 +13,8 @@ import java.sql.Connection
 import java.sql.SQLException
 import java.sql.Statement
 
-class GamingSessionPostgres(private val conn: Connection) : GamingSessionStorage {
-    override fun create(capacity: Int, game: Int, date: LocalDateTime): GamingSession = conn.useWithRollback {
+class GamingSessionPostgres(private val conn:  ()-> Connection): GamingSessionStorage {
+    override fun create(capacity: Int, game: Int, date: LocalDateTime): GamingSession = conn().useWithRollback {
         val statement = it.prepareStatement(
             """insert into gaming_sessions(capacity, starting_date, game) values (?, ?, ?)""",
             Statement.RETURN_GENERATED_KEYS
@@ -24,17 +24,17 @@ class GamingSessionPostgres(private val conn: Connection) : GamingSessionStorage
             setInt(3, game)
         }
 
-        if (statement.executeUpdate() == 0)
+        if(statement.executeUpdate() == 0)
             throw SQLException("Creating gaming session failed, no rows affected")
 
         val generatedKeys = statement.generatedKeys
 
-        if (generatedKeys.next())
+        if(generatedKeys.next())
             return get(generatedKeys.getInt(1))
         throw SQLException("Creating gaming session failed, no ID was created")
     }
 
-    override fun get(sessionId: Int): GamingSession = conn.useWithRollback {
+    override fun get(sessionId: Int): GamingSession = conn().useWithRollback {
         val statement =
             it.prepareStatement(
                 """
@@ -52,11 +52,11 @@ class GamingSessionPostgres(private val conn: Connection) : GamingSessionStorage
         val resultSet = statement.executeQuery()
         val players = mutableSetOf<Player>()
 
-        while (resultSet.next()) {
+        while(resultSet.next()){
             players += resultSet.toPlayer()
-            if (resultSet.isLast)
+            if(resultSet.isLast)
                 return resultSet.toGamingSession(players)
-        }
+            }
         throw NoSuchElementException("Could not get gaming session, session with id $sessionId was not found")
     }
 
@@ -67,7 +67,7 @@ class GamingSessionPostgres(private val conn: Connection) : GamingSessionStorage
         player: Int?,
         limit: Int,
         skip: Int
-    ): List<GamingSession> = conn.use {
+    ): List<GamingSession> = conn().useWithRollback {
         val query =
             """
             select * from gaming_sessions 
@@ -99,10 +99,10 @@ class GamingSessionPostgres(private val conn: Connection) : GamingSessionStorage
         val players = mutableSetOf<Player>()
 
         var previousSessionId: Int? = null
-        while (resultSet.next()) {
+        while(resultSet.next()){
             players += resultSet.toPlayer()
             val currentSessionId = resultSet.getInt("gaming_session_id")
-            if (previousSessionId == currentSessionId) {
+            if(previousSessionId == currentSessionId){
                 sessions += resultSet.toGamingSession(players.toSet())
                 players.clear()
                 continue
@@ -112,7 +112,7 @@ class GamingSessionPostgres(private val conn: Connection) : GamingSessionStorage
         return sessions.paginate(skip, limit)
     }
 
-    override fun addPlayer(session: Int, player: Int) = conn.useWithRollback {
+    override fun addPlayer(session: Int, player: Int) = conn().useWithRollback {
         val stm = it.prepareStatement(
             """insert into players_sessions(player, gaming_session) values (?, ?)""",
             Statement.RETURN_GENERATED_KEYS
@@ -121,7 +121,7 @@ class GamingSessionPostgres(private val conn: Connection) : GamingSessionStorage
             setInt(2, session)
         }
 
-        if (stm.executeUpdate() == 0 || !stm.generatedKeys.next())
+        if(stm.executeUpdate() == 0 || !stm.generatedKeys.next())
             throw SQLException("Adding player to session failed, no rows affected")
     }
 }

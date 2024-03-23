@@ -34,9 +34,8 @@ fun logRequest(request: Request) {
 
 fun main() {
     val db = DataPostgres(System.getenv("JDBC_conn"))
-    //db.create()
+   // db.create()
     //val db=DataMem()
-    db.populate()
     val api = API(Services(db))
     val playerRoutes =
         routes(
