@@ -11,9 +11,9 @@ import java.sql.Connection
 import java.sql.SQLException
 import java.sql.Statement
 
-class GamesPostgres(private val conn: Connection): GameStorage {
+class GamesPostgres(private val conn:  ()-> Connection): GameStorage {
 
-    override fun create(name: String, developer: String, genres: Set<Genre>): Game = conn.useWithRollback {
+    override fun create(name: String, developer: String, genres: Set<Genre>): Game = conn().useWithRollback {
         val game: Game
 
         var statement = it.prepareStatement(
