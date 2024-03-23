@@ -30,7 +30,7 @@ abstract class APISchema {
             is AuthorizationException -> Response(Status.UNAUTHORIZED).json(e.message)
             is ForbiddenException -> Response(Status.FORBIDDEN).json(e.message)
             is ConflictException -> Response(Status.CONFLICT).json(e.message)
-            else -> Response(Status.INTERNAL_SERVER_ERROR).json("Server Error")
+            else -> Response(Status.INTERNAL_SERVER_ERROR).json(e.message)
         }
     }
 }
