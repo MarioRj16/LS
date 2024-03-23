@@ -5,9 +5,9 @@ import pt.isel.ls.domain.Player
 import pt.isel.ls.utils.exceptions.AuthorizationException
 import java.util.*
 
-abstract class ServicesSchema(){
-    fun bearerToken(authorization:String?, db: Storage): Player {
-        if( authorization.isNullOrEmpty() ||
+abstract class ServicesSchema {
+    fun bearerToken(authorization: String?, db: Storage): Player {
+        if (authorization.isNullOrEmpty() ||
             !authorization.startsWith("Bearer")
         ) throw AuthorizationException("Missing Bearer token")
         val token = authorization.removePrefix("Bearer ")

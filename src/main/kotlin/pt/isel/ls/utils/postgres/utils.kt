@@ -49,7 +49,7 @@ inline fun <R> Connection.useWithRollback(block: (Connection) -> R): R {
     }
 }
 
-fun Connection.runSQLScript(path: String){
-    val script = File(path).readText()
+fun Connection.runSQLScript(path: String) {
+    val script = File("src/main/sql/$path").readText()
     prepareStatement(script).executeUpdate()
 }

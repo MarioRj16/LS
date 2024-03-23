@@ -9,7 +9,7 @@ import kotlin.test.assertContains
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class GamesTests: AbstractDataTests() {
+class GamesTests : AbstractDataTests() {
 
     private val genres = listOf(
         Genre("Role Playing Game"),
@@ -20,7 +20,7 @@ class GamesTests: AbstractDataTests() {
     )
 
     @Test
-    fun `create() return game successfully`(){
+    fun `create() return game successfully`() {
         val name = "testName"
         val developer = "testDeveloper"
         val genres = setOf(genres[0])
@@ -33,7 +33,7 @@ class GamesTests: AbstractDataTests() {
     }
 
     @Test
-    fun `create() throws exception for non unique name`(){
+    fun `create() throws exception for non unique name`() {
         games.create("name", "developer1", setOf(genres[0]))
 
         assertThrows<IllegalArgumentException> {
@@ -42,42 +42,42 @@ class GamesTests: AbstractDataTests() {
     }
 
     @Test
-    fun `create() throws exception for no genres`(){
+    fun `create() throws exception for no genres`() {
         assertThrows<IllegalArgumentException> {
             games.create(name = "name", developer = "developer", genres = setOf())
         }
     }
 
     @Test
-    fun `get() returns game successfully`(){
+    fun `get() returns game successfully`() {
         val game = gameFactory.createRandomGame()
 
         assertEquals(game, games.get(game.name))
     }
 
     @Test
-    fun `get() throws exception for non existing game`(){
+    fun `get() throws exception for non existing game`() {
         assertThrows<NoSuchElementException> {
             games.get("game")
         }
     }
 
     @Test
-    fun `getById() returns game successfully`(){
+    fun `getById() returns game successfully`() {
         val game = gameFactory.createRandomGame()
 
         assertEquals(game, games.getById(game.id))
     }
 
     @Test
-    fun `getById() throws exception for non existing game`(){
+    fun `getById() throws exception for non existing game`() {
         assertThrows<NoSuchElementException> {
             games.getById(1)
         }
     }
 
     @Test
-    fun `search() returns games successfully`(){
+    fun `search() returns games successfully`() {
         var searchResults = games.search(null, null, DEFAULT_LIMIT, DEFAULT_SKIP)
 
         assertTrue(searchResults.isEmpty())

@@ -10,10 +10,10 @@ import pt.isel.ls.utils.exceptions.ConflictException
 import pt.isel.ls.utils.exceptions.ForbiddenException
 import kotlin.test.assertEquals
 
-class HTTPResponseTests: APISchema() {
+class HTTPResponseTests : APISchema() {
 
     @Test
-    fun `json() returns response with body in json successfully`(){
+    fun `json() returns response with body in json successfully`() {
 
         val testData = Genre("FPS")
 
@@ -24,7 +24,7 @@ class HTTPResponseTests: APISchema() {
     }
 
     @Test
-    fun `httpException() returns the right response`(){
+    fun `httpException() returns the right response`() {
         val notFoundException = NoSuchElementException("Resource not found")
         val illegalArgumentException = IllegalArgumentException("Invalid argument")
         val authorizationException = AuthorizationException("Unauthorized access")

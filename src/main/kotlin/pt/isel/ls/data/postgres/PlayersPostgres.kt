@@ -1,13 +1,14 @@
 package pt.isel.ls.data.postgres
 
 import pt.isel.ls.data.PlayerStorage
-import pt.isel.ls.domain.Player
 import pt.isel.ls.utils.postgres.toPlayer
+import pt.isel.ls.domain.Player
 import pt.isel.ls.utils.postgres.useWithRollback
 import java.sql.Connection
 import java.sql.SQLException
 import java.sql.Statement
 import java.util.*
+import kotlin.NoSuchElementException
 
 class PlayersPostgres(private val conn: ()-> Connection): PlayerStorage {
     override fun create(name: String, email: String): Player = conn().useWithRollback {

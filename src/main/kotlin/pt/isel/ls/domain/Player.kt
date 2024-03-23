@@ -12,10 +12,10 @@ data class Player(
     val email: String,
     @Serializable(with = UUIDSerializer::class)
     val token: UUID
-){
+) {
     init {
-        require(id > 0){ "ID must be a positive Int\nID=$id" }
-        require(name.isNotBlank()){"Name cannot be blank"}
-        require(emailIsValid(email)){"Email must be in valid format\nemail=$email"}
+        require(id > 0) { "ID must be a positive Int\nID=$id" }
+        require(name.isNotBlank()) { "Name cannot be blank" }
+        require(emailIsValid(email)) { "Email must be in valid format\nemail=$email" }
     }
 }

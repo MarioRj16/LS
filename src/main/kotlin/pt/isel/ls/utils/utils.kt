@@ -37,10 +37,10 @@ fun plusMillis(ms: Long) = LocalDateTime.now().plusNanos(ms * 1000000).toKotlinL
 fun kotlinx.datetime.LocalDateTime.isPast() = this < currentLocalDateTime()
 
 fun <T> List<T>.paginate(skip: Int, limit: Int): List<T> {
-    require(skip >= 0){"skip must be a non negative integer\nskip=$skip"}
-    require(limit >= 0){"Limit must be a non negative integer\nlimit=$limit"}
+    require(skip >= 0) { "skip must be a non negative integer\nskip=$skip" }
+    require(limit >= 0) { "Limit must be a non negative integer\nlimit=$limit" }
     if (this.isEmpty()) return emptyList()
-    val lastIndex:Int = if (limit > size) size else limit+skip
+    val lastIndex: Int = if (limit > size) size else limit + skip
     return subList(skip, lastIndex)
 }
 

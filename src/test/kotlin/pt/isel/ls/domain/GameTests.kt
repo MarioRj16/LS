@@ -12,14 +12,14 @@ class GameTests {
     private val validGenres = setOf(Genre("FPS"), Genre("Action"))
 
     @Test
-    fun `game can be created successfully`(){
+    fun `game can be created successfully`() {
         assertDoesNotThrow {
             Game(validId, validName, validDeveloper, validGenres)
         }
     }
 
     @Test
-    fun `game throws exception for non positive ID`(){
+    fun `game throws exception for non positive ID`() {
         assertThrows<IllegalArgumentException> {
             Game(-1, validName, validDeveloper, validGenres)
         }
@@ -30,21 +30,21 @@ class GameTests {
     }
 
     @Test
-    fun `game throws exception with blank name`(){
+    fun `game throws exception with blank name`() {
         assertThrows<IllegalArgumentException> {
             Game(validId, "", validDeveloper, validGenres)
         }
     }
 
     @Test
-    fun `game throws exception with blank developer`(){
+    fun `game throws exception with blank developer`() {
         assertThrows<IllegalArgumentException> {
             Game(validId, validName, "", validGenres)
         }
     }
 
     @Test
-    fun `game throws exception with no genres`(){
+    fun `game throws exception with no genres`() {
         assertThrows<IllegalArgumentException> {
             Game(validId, validName, validDeveloper, emptySet())
         }

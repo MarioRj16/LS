@@ -7,12 +7,12 @@ import pt.isel.ls.api.models.SessionCreate
 import pt.isel.ls.api.models.SessionResponse
 import pt.isel.ls.api.models.SessionSearch
 import pt.isel.ls.data.Storage
-import pt.isel.ls.domain.*
+import pt.isel.ls.domain.GamingSession
 
-open class SessionServices(internal val db:Storage):ServicesSchema() {
+open class SessionServices(internal val db: Storage) : ServicesSchema() {
 
-    fun searchSessions(input: String,authorization:String?,skip:Int?,limit:Int?):List<GamingSession> {
-        bearerToken(authorization,db).id
+    fun searchSessions(input: String, authorization: String?, skip: Int?, limit: Int?): List<GamingSession> {
+        bearerToken(authorization, db).id
         val sessionInput = Json.decodeFromString<SessionSearch>(input)
         return db.gamingSessions.search(
             sessionInput.game,
@@ -24,14 +24,14 @@ open class SessionServices(internal val db:Storage):ServicesSchema() {
         )
     }
 
-    fun createSession(input: String,authorization:String?): SessionResponse {
-        bearerToken(authorization,db).id
+    fun createSession(input: String, authorization: String?): SessionResponse {
+        bearerToken(authorization, db).id
         /**
          * TODO
          * We could add here the person who created the session to list of players
          */
         val sessionInput = Json.decodeFromString<SessionCreate>(input)
-        val session=db.gamingSessions.create(
+        val session = db.gamingSessions.create(
             sessionInput.capacity,
             sessionInput.gameId,
             sessionInput.startingDate
@@ -39,15 +39,15 @@ open class SessionServices(internal val db:Storage):ServicesSchema() {
         return SessionResponse(session.id)
     }
 
-    fun getSession(id: Int?,authorization:String?):GamingSession {
+    fun getSession(id: Int?, authorization: String?): GamingSession {
         requireNotNull(id)
         // TODO("Write a message")
-        bearerToken(authorization,db).id
+        bearerToken(authorization, db).id
         return db.gamingSessions.get(id)
     }
 
-    fun addPlayerToSession(sessionId: Int?, authorization:String?):Int {
-        requireNotNull(sessionId){"id"}
+    fun addPlayerToSession(sessionId: Int?, authorization: String?): Int {
+        requireNotNull(sessionId) { "id" }
         // TODO: Improve this message
         val playerId = bearerToken(authorization, db).id
         db.gamingSessions.addPlayer(sessionId, playerId)

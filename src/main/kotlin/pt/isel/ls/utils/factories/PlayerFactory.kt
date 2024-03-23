@@ -6,10 +6,10 @@ import pt.isel.ls.utils.generateRandomEmail
 import pt.isel.ls.utils.generateRandomString
 
 class PlayerFactory(private val players: PlayerStorage) {
-        fun createRandomPlayer(): Player {
-            val randomName = generateRandomString()
-            val randomEmail = generateRandomEmail()
-            return players.create(randomName, randomEmail)
-        }
+    fun createRandomPlayer(): Player {
+        val randomName = generateRandomString()
+        val randomEmail = generateRandomEmail()
+        return players.create(randomName, randomEmail)
+    }
 
 }

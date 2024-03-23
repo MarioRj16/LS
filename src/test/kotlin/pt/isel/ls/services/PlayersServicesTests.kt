@@ -8,21 +8,21 @@ import pt.isel.ls.domain.Player
 import pt.isel.ls.utils.factories.PlayerFactory
 import kotlin.test.assertEquals
 
-class PlayersServicesTests: PlayerServices(DataMem()) {
+class PlayersServicesTests : PlayerServices(DataMem()) {
 
     private lateinit var bearerToken: String
     private lateinit var user: Player
     private val playerFactory = PlayerFactory(db.players)
 
     @BeforeEach
-    fun setUp(){
+    fun setUp() {
         db.reset()
         user = playerFactory.createRandomPlayer()
         bearerToken = "Bearer ${user.token}"
     }
 
     @Test
-    fun `createPlayer() returns player successfully`(){
+    fun `createPlayer() returns player successfully`() {
         val name = "testName"
         val email = "testEmail@gmail.com"
         val playerInfo = """
@@ -37,13 +37,13 @@ class PlayersServicesTests: PlayerServices(DataMem()) {
     }
 
     @Test
-    fun `getPlayer() returns player successfully`(){
+    fun `getPlayer() returns player successfully`() {
         val returnedPlayer = getPlayer(user.id, bearerToken)
         assertEquals(user, returnedPlayer)
     }
 
     @Test
-    fun `getPlayer() throws exception for null id`(){
+    fun `getPlayer() throws exception for null id`() {
         assertThrows<IllegalArgumentException> {
             getPlayer(null, bearerToken)
         }

@@ -7,7 +7,7 @@ import kotlin.test.assertEquals
 
 class GameFactoryTests {
     @Test
-    fun `createRandomGame() creates game successfully`(){
+    fun `createRandomGame() creates game successfully`() {
 
         val games = GamesMem()
         val gameFactory = GameFactory(games)
