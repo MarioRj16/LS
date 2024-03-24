@@ -28,6 +28,15 @@ fun ResultSet.toGame(genres: Set<Genre>): Game =
         genres = genres
     )
 
+fun ResultSet.toPreviousGame(genres: Set<Genre>,gameId:Int): Game =
+    Game(
+        id = gameId,
+        name = getString("game_name"),
+        developer = getString("developer"),
+        genres = genres
+    )
+
+
 fun ResultSet.toGamingSession(players: Set<Player>): GamingSession =
     GamingSession(
         id = getInt("gaming_session_id"),
