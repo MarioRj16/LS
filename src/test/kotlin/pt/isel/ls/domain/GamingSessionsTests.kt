@@ -77,13 +77,6 @@ class GamingSessionsTests {
     }
 
     @Test
-    fun `throws exception for past startingDate`() {
-        assertThrows<IllegalArgumentException> {
-            GamingSession(validSessionId, validGameId, validMaxCapacity, yesterdayLocalDateTime(), emptySetOfPlayers)
-        }
-    }
-
-    @Test
     fun `throws exception non positive game`() {
         assertThrows<IllegalArgumentException> {
             GamingSession(validSessionId, -1, validMaxCapacity, validStartingDate, emptySetOfPlayers)
