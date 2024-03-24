@@ -10,7 +10,7 @@ import pt.isel.ls.utils.postgres.runSQLScript
 class DataPostgres(connectionString: String) : Storage {
     private val dataSource = PGSimpleDataSource().apply { setURL(connectionString) }
 
-     fun conn() = dataSource.connection.also {
+     private fun conn() = dataSource.connection.also {
         it.autoCommit = false
     }
 
@@ -20,16 +20,16 @@ class DataPostgres(connectionString: String) : Storage {
         conn().runSQLScript("createGenres.sql")
     }
 
+    fun delete(){
+        conn().runSQLScript("deleteSchema.sql")
+    }
+
     override fun reset() {
         conn().runSQLScript("reset.sql")
     }
 
     override fun populate(){
         conn().runSQLScript("populate.sql")
-    }
-
-    fun delete(){
-        conn().runSQLScript("deleteSchema.sql")
     }
 
     override val players: PlayerStorage = PlayersPostgres(::conn)
