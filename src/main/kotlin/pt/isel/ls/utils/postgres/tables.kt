@@ -5,8 +5,6 @@ import pt.isel.ls.domain.Game
 import pt.isel.ls.domain.GamingSession
 import pt.isel.ls.domain.Genre
 import pt.isel.ls.domain.Player
-import java.io.File
-import java.sql.Connection
 import java.sql.ResultSet
 import java.util.*
 
@@ -46,19 +44,3 @@ fun ResultSet.toGamingSession(players: Set<Player>): GamingSession =
         players = players
     )
 
-inline fun <R> Connection.useWithRollback(block: (Connection) -> R): R {
-    try {
-        return block(this)
-    } catch (e: Throwable) {
-        rollback() // TODO: Find out if we need to handle rollback failures
-        throw e
-    } finally {
-        commit()
-        close() // TODO: Find out if we need to handle close failures
-    }
-}
-
-fun Connection.runSQLScript(path: String) {
-    val script = File("src/main/sql/$path").readText()
-    prepareStatement(script).executeUpdate()
-}

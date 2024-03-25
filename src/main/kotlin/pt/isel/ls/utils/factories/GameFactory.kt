@@ -11,7 +11,6 @@ class GameFactory(private val games: GamesData) {
     private val genres =
         listOf("Action", "Adventure", "RPG", "Strategy", "Puzzle", "Simulation").map { Genre(it) }.toSet()
 
-    // TODO: Decide what to do with this list of genres
     fun createRandomGame(): Game {
         val randomDeveloper = developers.random()
         val randomGenres = generateRandomGenres()
