@@ -2,7 +2,7 @@ package pt.isel.ls.data.mem
 
 import java.util.concurrent.atomic.AtomicInteger
 
-class DBTableMem<T> {
+class DataMemTable<T> {
     val table = object : HashMap<Int, T>() {
         override fun put(key: Int, value: T): T? {
             nextId.incrementAndGet()

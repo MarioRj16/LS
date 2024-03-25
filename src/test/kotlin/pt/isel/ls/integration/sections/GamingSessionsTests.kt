@@ -12,7 +12,7 @@ import pt.isel.ls.domain.GamingSession
 import pt.isel.ls.integration.IntegrationTests
 import pt.isel.ls.utils.factories.GameFactory
 import pt.isel.ls.utils.factories.GamingSessionFactory
-import pt.isel.ls.utils.tomorrowLocalDateTime
+import pt.isel.ls.utils.plusDaysToCurrentDateTime
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
@@ -25,7 +25,7 @@ class GamingSessionsTests : IntegrationTests(){
     }
     @Test
     fun createSession(){
-        val requestBody = SessionCreate(game.id,4, tomorrowLocalDateTime())
+        val requestBody = SessionCreate(game.id,4, plusDaysToCurrentDateTime(1L))
         val request = Request(Method.POST, "$URI_PREFIX/sessions")
             .json(requestBody)
             .token(user!!.token)

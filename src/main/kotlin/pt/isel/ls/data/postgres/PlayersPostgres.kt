@@ -1,18 +1,17 @@
 package pt.isel.ls.data.postgres
 
-import pt.isel.ls.data.PlayerStorage
-import pt.isel.ls.utils.postgres.toPlayer
+import pt.isel.ls.data.PlayersData
 import pt.isel.ls.domain.Player
+import pt.isel.ls.utils.postgres.toPlayer
 import pt.isel.ls.utils.postgres.useWithRollback
 import java.sql.Connection
 import java.sql.SQLException
 import java.sql.Statement
 import java.util.*
-import kotlin.NoSuchElementException
 
-class PlayersPostgres(private val conn: ()-> Connection): PlayerStorage {
+class PlayersPostgres(private val conn: () -> Connection) : PlayersData {
     override fun create(name: String, email: String): Player = conn().useWithRollback {
-        val token=UUID.randomUUID()
+        val token = UUID.randomUUID()
         val statement = it.prepareStatement(
             """INSERT INTO PLAYERS(player_name, email, token) VALUES (?, ?, ?)""".trimIndent(),
             Statement.RETURN_GENERATED_KEYS
@@ -27,8 +26,8 @@ class PlayersPostgres(private val conn: ()-> Connection): PlayerStorage {
 
         val generatedKeys = statement.generatedKeys
 
-        if(generatedKeys.next())
-            return Player(generatedKeys.getInt(1),name,email,token)
+        if (generatedKeys.next())
+            return Player(generatedKeys.getInt(1), name, email, token)
 
         throw SQLException("Creating user failed, no ID was created")
     }
@@ -44,13 +43,12 @@ class PlayersPostgres(private val conn: ()-> Connection): PlayerStorage {
 
         val resultSet = statement.executeQuery()
 
-        if(resultSet.next())
+        if (resultSet.next())
             return resultSet.toPlayer()
         throw NoSuchElementException("Could not get user, id $id was not found")
     }
 
-    override fun getByToken(token: UUID): Player =
-        conn().useWithRollback {
+    override fun getByToken(token: UUID): Player = conn().useWithRollback {
         val statement = it.prepareStatement(
             """
             select * from players where token = ?    
@@ -61,7 +59,7 @@ class PlayersPostgres(private val conn: ()-> Connection): PlayerStorage {
 
         val resultSet = statement.executeQuery()
 
-        if(resultSet.next())
+        if (resultSet.next())
             return resultSet.toPlayer()
         throw NoSuchElementException("Could not get user, token $token was not found")
     }

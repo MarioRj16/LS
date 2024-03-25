@@ -3,7 +3,7 @@ package pt.isel.ls.data
 import kotlinx.datetime.LocalDateTime
 import pt.isel.ls.domain.GamingSession
 
-interface GamingSessionStorage {
+interface GamingSessionsData {
 
     fun create(capacity: Int, game: Int, date: LocalDateTime): GamingSession
 

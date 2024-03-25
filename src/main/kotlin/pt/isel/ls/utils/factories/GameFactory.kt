@@ -1,12 +1,12 @@
 package pt.isel.ls.utils.factories
 
-import pt.isel.ls.data.GameStorage
+import pt.isel.ls.data.GamesData
 import pt.isel.ls.domain.Game
 import pt.isel.ls.domain.Genre
 import pt.isel.ls.utils.generateRandomString
 import kotlin.random.Random
 
-class GameFactory(private val games: GameStorage) {
+class GameFactory(private val games: GamesData) {
     private val developers = listOf("Developer1", "Developer2", "Developer3")
     private val genres =
         listOf("Action", "Adventure", "RPG", "Strategy", "Puzzle", "Simulation").map { Genre(it) }.toSet()

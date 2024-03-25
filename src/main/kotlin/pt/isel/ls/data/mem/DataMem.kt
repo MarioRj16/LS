@@ -1,24 +1,20 @@
 package pt.isel.ls.data.mem
 
-import pt.isel.ls.data.GameStorage
-import pt.isel.ls.data.GamingSessionStorage
-import pt.isel.ls.data.PlayerStorage
-import pt.isel.ls.data.Storage
+import pt.isel.ls.data.Data
+import pt.isel.ls.data.GamesData
+import pt.isel.ls.data.GamingSessionsData
+import pt.isel.ls.data.PlayersData
 
-open class DataMem : Storage, DataMemSchema() {
+open class DataMem : Data, DataMemSchema() {
     override fun reset() {
         playersDB.table.clear()
         gamingSessionsDB.table.clear()
         gamesDB.table.clear()
     }
 
-    override fun populate() {
-        TODO("Not yet implemented")
-    }
+    override val players: PlayersData = PlayersMem(playersDB)
 
-    override val players: PlayerStorage = PlayersMem(playersDB)
+    override val gamingSessions: GamingSessionsData = GamingSessionsMem(gamingSessionsDB, playersDB, gamesDB)
 
-    override val gamingSessions: GamingSessionStorage = GamingSessionMem(gamingSessionsDB, playersDB, gamesDB)
-
-    override val games: GameStorage = GamesMem(gamesDB)
+    override val games: GamesData = GamesMem(gamesDB)
 }

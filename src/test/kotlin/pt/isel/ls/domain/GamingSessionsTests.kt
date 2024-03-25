@@ -3,6 +3,7 @@ package pt.isel.ls.domain
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import pt.isel.ls.utils.*
+import pt.isel.ls.utils.plusDaysToCurrentDateTime
 import java.util.*
 import kotlin.random.Random
 import kotlin.test.assertFalse
@@ -14,7 +15,7 @@ class GamingSessionsTests {
     private val validGameId = 1
     private val validMaxCapacity = 2
     private val emptySetOfPlayers = setOf<Player>()
-    private val validStartingDate = tomorrowLocalDateTime()
+    private val validStartingDate = plusDaysToCurrentDateTime(1L)
 
     private val maxCapacitySetOfPlayers = mutableSetOf<Player>()
 
@@ -43,7 +44,7 @@ class GamingSessionsTests {
     fun `gaming session state is false when starting date is in the past`() {
         val timeToWait = 100L
         val session =
-            GamingSession(validSessionId, validGameId, validMaxCapacity, plusMillis(timeToWait), emptySetOfPlayers)
+            GamingSession(validSessionId, validGameId, validMaxCapacity, plusMillisecondsToCurrentDateTime(timeToWait), emptySetOfPlayers)
         Thread.sleep(timeToWait + 1L)
         assertFalse(session.state)
     }
@@ -62,7 +63,7 @@ class GamingSessionsTests {
             validSessionId,
             validGameId,
             validMaxCapacity,
-            plusMillis(timeToWait),
+            plusMillisecondsToCurrentDateTime(timeToWait),
             maxCapacitySetOfPlayers
         )
         Thread.sleep(timeToWait)
@@ -72,14 +73,14 @@ class GamingSessionsTests {
     @Test
     fun `throws exception for non positive integer maxCapacity`() {
         assertThrows<IllegalArgumentException> {
-            GamingSession(validSessionId, validGameId, -1, yesterdayLocalDateTime(), emptySetOfPlayers)
+            GamingSession(validSessionId, validGameId, -1, minusDaysToCurrentDateTime(), emptySetOfPlayers)
         }
     }
 
     @Test
     fun `throws exception for past startingDate`() {
         assertThrows<IllegalArgumentException> {
-            GamingSession(validSessionId, validGameId, validMaxCapacity, yesterdayLocalDateTime(), emptySetOfPlayers)
+            GamingSession(validSessionId, validGameId, validMaxCapacity, minusDaysToCurrentDateTime(), emptySetOfPlayers)
         }
     }
 

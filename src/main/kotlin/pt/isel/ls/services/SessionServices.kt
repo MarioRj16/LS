@@ -6,10 +6,10 @@ import pt.isel.ls.DEFAULT_SKIP
 import pt.isel.ls.api.models.SessionCreate
 import pt.isel.ls.api.models.SessionResponse
 import pt.isel.ls.api.models.SessionSearch
-import pt.isel.ls.data.Storage
+import pt.isel.ls.data.Data
 import pt.isel.ls.domain.GamingSession
 
-open class SessionServices(internal val db: Storage) : ServicesSchema() {
+open class SessionServices(internal val db: Data) : ServicesSchema() {
 
     fun searchSessions(input: String, authorization: String?, skip: Int?, limit: Int?): List<GamingSession> {
         bearerToken(authorization, db).id

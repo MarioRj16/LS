@@ -5,8 +5,8 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import pt.isel.ls.DEFAULT_LIMIT
 import pt.isel.ls.DEFAULT_SKIP
-import pt.isel.ls.utils.tomorrowLocalDateTime
-import pt.isel.ls.utils.yesterdayLocalDateTime
+import pt.isel.ls.utils.plusDaysToCurrentDateTime
+import pt.isel.ls.utils.minusDaysToCurrentDateTime
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -34,7 +34,7 @@ class GamingSessionTests : AbstractDataTests() {
     @Test
     fun `create() throws exception for non existing game`() {
         assertThrows<IllegalArgumentException> {
-            gamingSessions.create(1, 1, tomorrowLocalDateTime())
+            gamingSessions.create(1, 1, plusDaysToCurrentDateTime(1L))
         }
     }
 
@@ -42,7 +42,7 @@ class GamingSessionTests : AbstractDataTests() {
     fun `create() throws exception for invalid capacity`() {
         val game = gameFactory.createRandomGame()
         assertThrows<IllegalArgumentException> {
-            gamingSessions.create(-1, game.id, tomorrowLocalDateTime())
+            gamingSessions.create(-1, game.id, plusDaysToCurrentDateTime(1L))
         }
     }
 
@@ -50,7 +50,7 @@ class GamingSessionTests : AbstractDataTests() {
     fun `create() throws exception for past starting date`() {
         val game = gameFactory.createRandomGame()
         assertThrows<IllegalArgumentException> {
-            gamingSessions.create(1, game.id, yesterdayLocalDateTime())
+            gamingSessions.create(1, game.id, minusDaysToCurrentDateTime())
         }
     }
 

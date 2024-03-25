@@ -1,6 +1,6 @@
 package pt.isel.ls.data.postgres
 
-import pt.isel.ls.data.GameStorage
+import pt.isel.ls.data.GamesData
 import pt.isel.ls.domain.Game
 import pt.isel.ls.domain.Genre
 import pt.isel.ls.utils.paginate
@@ -13,7 +13,7 @@ import java.sql.ResultSet
 import java.sql.SQLException
 import java.sql.Statement
 
-class GamesPostgres(private val conn:  ()-> Connection): GameStorage {
+class GamesPostgres(private val conn: () -> Connection) : GamesData {
 
     override fun create(name: String, developer: String, genres: Set<Genre>): Game = conn().useWithRollback {
         val game: Game
@@ -32,7 +32,7 @@ class GamesPostgres(private val conn:  ()-> Connection): GameStorage {
         val generatedKeys = statement.generatedKeys
 
         if (generatedKeys.next())
-            game = Game(generatedKeys.getInt(1),name,developer,genres)
+            game = Game(generatedKeys.getInt(1), name, developer, genres)
         else
             throw SQLException("Creating game failed, no ID was created")
 
@@ -82,7 +82,8 @@ class GamesPostgres(private val conn:  ()-> Connection): GameStorage {
         }
         throw NoSuchElementException("Could not get Game, $name was not found")
     }
-    override fun getById(id:Int): Game = conn().useWithRollback {
+
+    override fun getById(id: Int): Game = conn().useWithRollback {
         val statement = it.prepareStatement(
             """
             select * from games 
@@ -105,39 +106,51 @@ class GamesPostgres(private val conn:  ()-> Connection): GameStorage {
         throw NoSuchElementException("Could not get Game, $id was not found")
     }
 
-    override fun search(developer: String?, genres: Set<Genre>?, limit: Int, skip: Int): List<Game> = conn().useWithRollback {
-        /*val query =
-            """
-            select * from games 
-            left outer join games_genres
-            on games.game_id = games_genres.game ${if(genres.isNullOrEmpty()&& developer==null)"" else "where"}
-            ${genres?.joinToString(separator = "?, ", prefix = "genre in (", postfix = ")") ?: ""}
-            ${developer?.let { """ and developer = ?""" } ?: ""}
-            """.trimIndent()
+    override fun search(developer: String?, genres: Set<Genre>?, limit: Int, skip: Int): List<Game> =
+        conn().useWithRollback {
+            /*val query =
+                """
+                select * from games
+                left outer join games_genres
+                on games.game_id = games_genres.game ${if(genres.isNullOrEmpty()&& developer==null)"" else "where"}
+                ${genres?.joinToString(separator = "?, ", prefix = "genre in (", postfix = ")") ?: ""}
+                ${developer?.let { """ and developer = ?""" } ?: ""}
+                """.trimIndent()
 
-         */
-        val query=when{
+             */
+            val query = when {
                 (genres.isNullOrEmpty() && developer.isNullOrEmpty()) -> """select * from games
                     full outer join games_genres
                     on games.game_id = games_genres.game
                 """.trimMargin()
+
                 (developer.isNullOrEmpty()) -> """
                     select * from games 
                     full outer join games_genres
                     on games.game_id = games_genres.game where
-                    ${genres?.joinToString(separator = ", ", prefix = "genre in (", postfix = ")"){"?"} ?: ""}""".trimIndent()
-                (genres.isNullOrEmpty()) ->  """ select * from games full outer join games_genres
+                    ${
+                    genres?.joinToString(
+                        separator = ", ",
+                        prefix = "genre in (",
+                        postfix = ")"
+                    ) { "?" } ?: ""
+                }""".trimIndent()
+
+                (genres.isNullOrEmpty()) -> """ select * from games full outer join games_genres
                     on games.game_id = games_genres.game where developer= ? """
-                else ->"""
+
+                else -> """
                      select * from games 
                      full outer join games_genres
                      on games.game_id = games_genres.game  where
-                     ${genres.joinToString(separator = ", ", prefix = "genre in (", postfix = ")"){"?"} }
-                     ${developer.let { """ and developer = ?""" } }""".trimIndent()
-         }
+                     ${genres.joinToString(separator = ", ", prefix = "genre in (", postfix = ")") { "?" }}
+                     ${developer.let { """ and developer = ?""" }}""".trimIndent()
+            }
 
-            val statement = it.prepareStatement(query, ResultSet.TYPE_SCROLL_INSENSITIVE,
-                ResultSet.CONCUR_READ_ONLY).apply {
+            val statement = it.prepareStatement(
+                query, ResultSet.TYPE_SCROLL_INSENSITIVE,
+                ResultSet.CONCUR_READ_ONLY
+            ).apply {
                 var parameterIdx = 1
 
                 genres?.forEach { genre -> setString(parameterIdx++, genre.genre) }
@@ -148,19 +161,22 @@ class GamesPostgres(private val conn:  ()-> Connection): GameStorage {
 
             val games = mutableListOf<Game>()
             val foundGenres = mutableSetOf<Genre>()
-            var previousGameId:Int?=null
+            var previousGameId: Int? = null
             while (resultSet.next()) {
                 val currentGameId = resultSet.getInt("game_id")
 
-                if ( currentGameId!=previousGameId && previousGameId!=null) {
-                    games += resultSet.toPreviousGame(foundGenres.toSet(),previousGameId)
+                if (currentGameId != previousGameId && previousGameId != null) {
+                    games += resultSet.toPreviousGame(foundGenres.toSet(), previousGameId)
                     foundGenres.clear()
                 }
                 foundGenres += resultSet.toGenre()
-                previousGameId=currentGameId
+                previousGameId = currentGameId
             }
 
-            if (resultSet.previous()&&previousGameId!=null)games += resultSet.toPreviousGame(foundGenres.toSet(),previousGameId)
+            if (resultSet.previous() && previousGameId != null) games += resultSet.toPreviousGame(
+                foundGenres.toSet(),
+                previousGameId
+            )
 
             return games.paginate(skip, limit)
         }
