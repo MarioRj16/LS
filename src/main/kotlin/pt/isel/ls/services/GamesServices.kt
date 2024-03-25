@@ -28,7 +28,7 @@ open class GamesServices(internal val db: Storage) : ServicesSchema() {
     }
 
     fun getGame(id: Int?, authorization: String?): Game {
-        require(id != null) { "id" }
+        requireNotNull(id) { "Invalid argument id can't be null" }
         bearerToken(authorization, db)
         return db.games.getById(id)
     }

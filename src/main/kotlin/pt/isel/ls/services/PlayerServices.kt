@@ -14,7 +14,7 @@ open class PlayerServices(internal val db: Storage) : ServicesSchema() {
     }
 
     fun getPlayer(id: Int?, authorization: String?): Player {
-        requireNotNull(id) { "id" }
+        requireNotNull(id) { "Invalid argument id can't be null" }
         val ownId = bearerToken(authorization, db).id
         if (ownId != id) throw ForbiddenException(
             "You dont have authorization to see this player, instead you can see your own id $ownId"

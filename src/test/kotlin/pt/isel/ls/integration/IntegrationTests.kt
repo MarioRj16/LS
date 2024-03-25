@@ -5,12 +5,11 @@ import kotlinx.serialization.json.Json
 import org.http4k.client.JavaHttpClient
 import org.http4k.core.Method
 import org.http4k.core.Request
-import org.http4k.routing.bind
-import org.http4k.routing.routes
 import org.http4k.server.Jetty
 import org.http4k.server.asServer
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
+import pt.isel.ls.Routes
 import pt.isel.ls.TEST_PORT
 import pt.isel.ls.api.API
 import pt.isel.ls.api.models.PlayerResponse
@@ -28,32 +27,9 @@ abstract class IntegrationTests (){
         var user : PlayerResponse? = null
         val db = DataMem()
         var api = API(Services(db))
-        val playerRoutes =
-            routes(
-                "player" bind Method.POST to api.playerAPI::createPlayer,
-                "player/{playerId}" bind Method.GET to api.playerAPI::getPlayer
-            )
-        val gameRoutes =
-            routes(
-                "games" bind Method.GET to api.gamesAPI::searchGames,
-                "games" bind Method.POST to api.gamesAPI::createGame,
-                "games/{gameId}" bind Method.GET to api.gamesAPI::getGame
-            )
-        val sessionRoutes =
-            routes(
-                "sessions" bind Method.GET to api.sessionsAPI::searchSessions,
-                "sessions" bind Method.POST to api.sessionsAPI::createSession,
-                "sessions/{sessionId}" bind Method.GET to api.sessionsAPI::getSession,
-                "sessions/{sessionId}" bind Method.POST to api.sessionsAPI::addPlayerToSession
-            )
-        val app =
-            routes(
-                playerRoutes,
-                gameRoutes,
-                sessionRoutes
-            )
 
-        var jettyServer = app.asServer(Jetty(TEST_PORT))
+
+        var jettyServer = Routes(api).app.asServer(Jetty(TEST_PORT))
 
         @JvmStatic
         @BeforeAll

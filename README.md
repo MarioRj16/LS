@@ -103,4 +103,4 @@ For some errors, we even created new exceptions to correlate to a different HTTP
 #### Critical Evaluation
 
 All proposed tasks have been successfully executed by the group. Moving forward, there is a focus on optimizing the management of our project's file structure, improving the clarity of file and function naming, and enhancing the frequency of updates to our project reports.
-
+For the near future we are expecting to create some neat features like a logger.

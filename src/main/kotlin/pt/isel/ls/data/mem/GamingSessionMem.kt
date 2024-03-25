@@ -41,7 +41,7 @@ class GamingSessionMem(
         date: LocalDateTime?,
         isOpen: Boolean?,
         player: Int?,
-        limit: Int, //
+        limit: Int,
         skip: Int
     ): List<GamingSession> {
         games.table[game] ?: throw NoSuchElementException("No game with id $game was found")

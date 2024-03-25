@@ -9,9 +9,6 @@ import pt.isel.ls.services.GamesServices
 
 
 class GamesAPI(private val services: GamesServices) : APISchema() {
-    /**
-     * TODO maybe change to query
-     **/
     fun searchGames(request: Request): Response = useWithException {
         Response(Status.OK)
             .json(

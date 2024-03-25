@@ -26,10 +26,6 @@ open class SessionServices(internal val db: Storage) : ServicesSchema() {
 
     fun createSession(input: String, authorization: String?): SessionResponse {
         bearerToken(authorization, db).id
-        /**
-         * TODO
-         * We could add here the person who created the session to list of players
-         */
         val sessionInput = Json.decodeFromString<SessionCreate>(input)
         val session = db.gamingSessions.create(
             sessionInput.capacity,
@@ -40,15 +36,13 @@ open class SessionServices(internal val db: Storage) : ServicesSchema() {
     }
 
     fun getSession(id: Int?, authorization: String?): GamingSession {
-        requireNotNull(id)
-        // TODO("Write a message")
+        requireNotNull(id){"Invalid argument id can't be null"}
         bearerToken(authorization, db).id
         return db.gamingSessions.get(id)
     }
 
     fun addPlayerToSession(sessionId: Int?, authorization: String?): Int {
-        requireNotNull(sessionId) { "id" }
-        // TODO: Improve this message
+        requireNotNull(sessionId) { "Invalid argument id can't be null" }
         val playerId = bearerToken(authorization, db).id
         db.gamingSessions.addPlayer(sessionId, playerId)
         return playerId

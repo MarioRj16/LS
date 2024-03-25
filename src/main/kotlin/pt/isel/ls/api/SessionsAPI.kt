@@ -9,9 +9,6 @@ import pt.isel.ls.services.SessionServices
 
 class SessionsAPI(private val services: SessionServices) : APISchema() {
 
-    /**
-     * TODO maybe change to query
-     **/
     fun searchSessions(request: Request): Response = useWithException {
         Response(Status.OK)
             .json(
