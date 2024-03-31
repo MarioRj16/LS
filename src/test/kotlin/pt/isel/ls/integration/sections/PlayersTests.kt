@@ -12,9 +12,8 @@ import pt.isel.ls.integration.IntegrationTests
 import kotlin.test.assertEquals
 
 class PlayersTests : IntegrationTests() {
-
     @Test
-    fun createPlayer()  {
+    fun createPlayer() {
         val requestBody = PlayerCreate("diferente", "diferente@gmail.com")
         val request =
             Request(Method.POST, "$URI_PREFIX/player")
@@ -27,7 +26,7 @@ class PlayersTests : IntegrationTests() {
     }
 
     @Test
-    fun getPlayer()  {
+    fun getPlayer() {
         val request =
             Request(Method.GET, "$URI_PREFIX/player/${user!!.playerId}")
                 .json("")

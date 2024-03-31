@@ -16,13 +16,12 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class GamesTests : IntegrationTests() {
-
     companion object {
         val list = searchHelpGame(20, GameFactory(db.games)::createRandomGame)
     }
 
     @Test
-    fun createGame()  {
+    fun createGame() {
         val requestBody = GameCreate("Test", "developer1", setOf(Genre("Horror")))
         val request =
             Request(Method.POST, "$URI_PREFIX/games")
@@ -36,7 +35,7 @@ class GamesTests : IntegrationTests() {
     }
 
     @Test
-    fun noParametersSearchGames()  {
+    fun noParametersSearchGames() {
         val requestBody = GameSearch()
         val request =
             Request(Method.GET, "$URI_PREFIX/games")
@@ -55,7 +54,7 @@ class GamesTests : IntegrationTests() {
     }
 
     @Test
-    fun searchGames()  {
+    fun searchGames() {
         val requestBody = GameSearch("Developer1", setOf(Genre("RPG")))
         val request =
             Request(Method.GET, "$URI_PREFIX/games")
@@ -75,7 +74,7 @@ class GamesTests : IntegrationTests() {
     }
 
     @Test
-    fun getGame()  {
+    fun getGame() {
         val game = GameFactory(db.games).createRandomGame()
         val request =
             Request(Method.GET, "$URI_PREFIX/games/${game.id}")

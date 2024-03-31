@@ -17,7 +17,6 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class GamingSessionsTests : IntegrationTests() {
-
     companion object {
         val game = GameFactory(db.games).createRandomGame()
         val sessions: List<GamingSession> =
@@ -25,7 +24,7 @@ class GamingSessionsTests : IntegrationTests() {
     }
 
     @Test
-    fun createSession()  {
+    fun createSession() {
         val requestBody = SessionCreate(game.id, 4, plusDaysToCurrentDateTime(1L))
         val request =
             Request(Method.POST, "$URI_PREFIX/sessions")
@@ -39,7 +38,7 @@ class GamingSessionsTests : IntegrationTests() {
     }
 
     @Test
-    fun addPlayerToSession()  {
+    fun addPlayerToSession() {
         val session = GamingSessionFactory(db.gamingSessions).createRandomGamingSession(game.id)
         val request =
             Request(Method.POST, "$URI_PREFIX/sessions/${session.id}")
@@ -52,7 +51,7 @@ class GamingSessionsTests : IntegrationTests() {
     }
 
     @Test
-    fun searchSessions()  {
+    fun searchSessions() {
         val requestBody = SessionSearch(game.id)
         val request =
             Request(Method.GET, "$URI_PREFIX/sessions")
@@ -71,7 +70,7 @@ class GamingSessionsTests : IntegrationTests() {
     }
 
     @Test
-    fun getSession()  {
+    fun getSession() {
         val newSession = GamingSessionFactory(db.gamingSessions).createRandomGamingSession(game.id)
         val request =
             Request(Method.POST, "$URI_PREFIX/sessions/${newSession.id}")
