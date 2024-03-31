@@ -38,7 +38,7 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
             val generatedKeys = statement.generatedKeys
 
             if (generatedKeys.next()) {
-                return GamingSession(generatedKeys.getInt(1), game, capacity, date, emptySet(), playerId)
+                return GamingSession(generatedKeys.getInt(1), game, playerId, capacity, date, emptySet())
             }
             throw SQLException("Creating gaming session failed, no ID was created")
         }
@@ -125,14 +125,17 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
             return sessions.paginate(skip, limit)
         }
 
-    override fun delete(sessionId: Int) = conn().useWithRollback {
-        val stm = it.prepareStatement("""delete from gaming_sessions where gaming_session_id = ?""").apply {
-            setInt(1, sessionId)
-        }
+    override fun delete(sessionId: Int) =
+        conn().useWithRollback {
+            val stm =
+                it.prepareStatement("""delete from gaming_sessions where gaming_session_id = ?""").apply {
+                    setInt(1, sessionId)
+                }
 
-        if (stm.executeUpdate() == 0)
-            throw SQLException("Gaming session could not be deleted, no rows affected")
-    }
+            if (stm.executeUpdate() == 0) {
+                throw SQLException("Gaming session could not be deleted, no rows affected")
+            }
+        }
 
     override fun addPlayer(
         session: Int,
@@ -167,10 +170,9 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
 
             val resultSet = stm.executeQuery()
 
-            if (resultSet.next())
-                {
-                    return resultSet.toGamingSession(emptySet()).creatorId == playerId
-                }
+            if (resultSet.next()) {
+                return resultSet.toGamingSession(emptySet()).creatorId == playerId
+            }
             throw NoSuchElementException("No session $sessionId was found")
         }
 }

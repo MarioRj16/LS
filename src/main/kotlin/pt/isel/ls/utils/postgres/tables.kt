@@ -17,7 +17,7 @@ fun ResultSet.toPlayer(): Player {
     )
 }
 
-fun ResultSet.toGenre(): Genre = Genre(genre = getString("genre"))
+fun ResultSet.toGenre(): Genre = Genre(getInt("genre_id"), getString("genre"))
 
 fun ResultSet.toGame(genres: Set<Genre>): Game =
     Game(
@@ -42,21 +42,8 @@ fun ResultSet.toGamingSession(players: Set<Player>): GamingSession =
     GamingSession(
         id = getInt("gaming_session_id"),
         gameId = getInt("game"),
+        creatorId = getInt("creator"),
         maxCapacity = getInt("capacity"),
         startingDate = getTimestamp("starting_date").toLocalDateTime().toKotlinLocalDateTime(),
         players = players,
-        creatorId = getInt("creator"),
-    )
-
-fun ResultSet.toPreviousGamingSession(
-    players: Set<Player>,
-    session: Int,
-): GamingSession =
-    GamingSession(
-        id = session,
-        gameId = getInt("game"),
-        maxCapacity = getInt("capacity"),
-        startingDate = getTimestamp("starting_date").toLocalDateTime().toKotlinLocalDateTime(),
-        players = players,
-        creatorId = getInt("creator"),
     )

@@ -8,10 +8,10 @@ import pt.isel.ls.utils.isPast
 data class GamingSession(
     val id: Int,
     val gameId: Int, // TODO: Does it make sense to have an Id instead of the Game object here
+    val creatorId: Int,
     val maxCapacity: Int,
     val startingDate: LocalDateTime,
     val players: Set<Player>,
-    val creatorId: Int,
 ) {
     // TODO: Create an annotation class to automate PK and FK checks
     init {

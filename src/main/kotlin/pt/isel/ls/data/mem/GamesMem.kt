@@ -5,21 +5,23 @@ import pt.isel.ls.domain.Game
 import pt.isel.ls.domain.Genre
 import pt.isel.ls.utils.paginate
 
-class GamesMem(private val games: DataMemTable<Game> = DataMemTable()) : GamesData {
+class GamesMem(
+    private val gamesDB: DataMemTable<Game> = DataMemTable(),
+) : GamesData {
     override fun create(
         name: String,
         developer: String,
         genres: Set<Genre>,
     ): Game {
-        require(games.table.none { it.value.name == name }) { "The name of a game has to be unique" }
+        require(gamesDB.table.none { it.value.name == name }) { "The name of a game has to be unique" }
         require(genres.isNotEmpty()) { "The game needs to have at least 1 genre in order to be created" }
-        val game = Game(games.nextId.get(), name, developer, genres)
-        games.table[games.nextId.get()] = game
+        val game = Game(gamesDB.nextId.get(), name, developer, genres)
+        gamesDB.table[gamesDB.nextId.get()] = game
         return game
     }
 
     override fun get(name: String): Game =
-        games.table.values.find { it.name == name }
+        gamesDB.table.values.find { it.name == name }
             ?: throw NoSuchElementException("No game with name $name was found")
 
     override fun search(
@@ -29,7 +31,7 @@ class GamesMem(private val games: DataMemTable<Game> = DataMemTable()) : GamesDa
         skip: Int,
     ): List<Game> {
         val list =
-            games.table.values.filter {
+            gamesDB.table.values.filter {
                 (developer.isNullOrBlank() || it.developer == developer) &&
                     (genres.isNullOrEmpty() || it.genres.intersect(genres).isNotEmpty())
             }
@@ -37,5 +39,5 @@ class GamesMem(private val games: DataMemTable<Game> = DataMemTable()) : GamesDa
     }
 
     override fun getById(id: Int): Game =
-        games.table.values.find { it.id == id } ?: throw NoSuchElementException("No game with id $id was found")
+        gamesDB.table.values.find { it.id == id } ?: throw NoSuchElementException("No game with id $id was found")
 }

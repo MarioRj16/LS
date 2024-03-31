@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import pt.isel.ls.data.mem.DataMem
+import pt.isel.ls.domain.Genre
 import pt.isel.ls.domain.Player
 import pt.isel.ls.utils.factories.GameFactory
 import pt.isel.ls.utils.factories.PlayerFactory
@@ -29,7 +30,7 @@ class GamesServicesTests : GamesServices(DataMem()) {
     fun `createGame() returns created game id successfully`() {
         val name = generateRandomString()
         val developer = generateRandomString()
-        val genre = "Action"
+        val genre = Genre(1, "Action")
         val input =
             """
             {
@@ -37,7 +38,8 @@ class GamesServicesTests : GamesServices(DataMem()) {
                 "developer": "$developer",
                 "genres": [
                     {
-                        "genre": "$genre"
+                        "genreId": ${genre.genreId}
+                        "name": "${genre.name}"
                     }
                 ]
             }

@@ -29,10 +29,10 @@ class GamingSessionsMem(
             GamingSession(
                 gamingSessions.nextId.get(),
                 game,
+                playerId,
                 capacity,
                 date,
                 emptySet(),
-                playerId,
             )
         gamingSessions.table[gamingSessions.nextId.get()] = obj
         return obj

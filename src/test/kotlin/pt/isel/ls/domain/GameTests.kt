@@ -8,7 +8,7 @@ class GameTests {
     private val validId = 1
     private val validName = "testName"
     private val validDeveloper = "testDeveloper"
-    private val validGenres = setOf(Genre("FPS"), Genre("Action"))
+    private val validGenres = setOf(Genre(1, "FPS"), Genre(2, "Action"))
 
     @Test
     fun `game can be created successfully`() {
