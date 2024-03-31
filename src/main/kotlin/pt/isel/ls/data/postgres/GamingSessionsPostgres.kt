@@ -7,15 +7,13 @@ import pt.isel.ls.domain.Player
 import pt.isel.ls.utils.paginate
 import pt.isel.ls.utils.postgres.toGamingSession
 import pt.isel.ls.utils.postgres.toPlayer
-import pt.isel.ls.utils.postgres.toPreviousGamingSession
 import pt.isel.ls.utils.postgres.useWithRollback
 import pt.isel.ls.utils.toTimeStamp
 import java.sql.Connection
-import java.sql.ResultSet
 import java.sql.SQLException
 import java.sql.Statement
 
-class GamingSessionPostgres(private val conn: () -> Connection) : GamingSessionsData {
+class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSessionsData {
     override fun create(
         capacity: Int,
         game: Int,
@@ -64,10 +62,7 @@ class GamingSessionPostgres(private val conn: () -> Connection) : GamingSessions
             val players = mutableSetOf<Player>()
 
             while (resultSet.next()) {
-                try {
-                    players += resultSet.toPlayer()
-                } catch (e: NullPointerException) {
-                }
+                players += resultSet.toPlayer()
                 if (resultSet.isLast) {
                     return resultSet.toGamingSession(players)
                 }
@@ -87,11 +82,11 @@ class GamingSessionPostgres(private val conn: () -> Connection) : GamingSessions
             val query =
                 """
                 select * from gaming_sessions 
-                left join players_sessions
+                full outer join players_sessions
                 on gaming_sessions.gaming_session_id = players_sessions.gaming_session
-                left join players
+                full outer join players
                 on players_sessions.player = players.player_id
-                where game = ?
+                where game = $game
                 ${if (date != null) " and startingDate = ?" else ""}
                 ${if (isOpen != null) " and startingDate <= CURRENT_TIMESTAMP" else ""}
                 ${if (player != null) " and player = ?" else ""}
@@ -99,11 +94,7 @@ class GamingSessionPostgres(private val conn: () -> Connection) : GamingSessions
                 """.trimIndent()
 
             val statement =
-                it.prepareStatement(
-                    query,
-                    ResultSet.TYPE_SCROLL_INSENSITIVE,
-                    ResultSet.CONCUR_READ_ONLY,
-                ).apply {
+                it.prepareStatement(query).apply {
                     var parameterIndex = 1
                     setInt(parameterIndex++, game)
                     date?.let {
@@ -121,32 +112,15 @@ class GamingSessionPostgres(private val conn: () -> Connection) : GamingSessions
 
             var previousSessionId: Int? = null
             while (resultSet.next()) {
+                players += resultSet.toPlayer()
                 val currentSessionId = resultSet.getInt("gaming_session_id")
-                if (previousSessionId != currentSessionId && previousSessionId != null)
-                    {
-                        sessions += resultSet.toPreviousGamingSession(players.toSet(), previousSessionId)
-                        players.clear()
-                    }
-                if (resultSet.getInt("player_id") != 0)players += resultSet.toPlayer()
+                if (previousSessionId == currentSessionId) {
+                    sessions += resultSet.toGamingSession(players.toSet())
+                    players.clear()
+                    continue
+                }
                 previousSessionId = currentSessionId
             }
-            if (resultSet.previous() && previousSessionId != null) sessions += resultSet.toPreviousGamingSession(players.toSet(), previousSessionId)
-
-            /**
-             *        while (resultSet.next()) {
-             *                 val currentGameId = resultSet.getInt("game_id")
-             *
-             *                 if ( currentGameId!=previousGameId && previousGameId!=null) {
-             *                     games += resultSet.toPreviousGame(foundGenres.toSet(),previousGameId)
-             *                     foundGenres.clear()
-             *                 }
-             *                 foundGenres += resultSet.toGenre()
-             *                 previousGameId=currentGameId
-             *             }
-             *
-             *             if (resultSet.previous()&&previousGameId!=null)games += resultSet.toPreviousGame(foundGenres.toSet(),previousGameId)
-             *
-             */
             return sessions.paginate(skip, limit)
         }
 

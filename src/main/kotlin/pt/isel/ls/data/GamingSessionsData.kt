@@ -3,9 +3,12 @@ package pt.isel.ls.data
 import kotlinx.datetime.LocalDateTime
 import pt.isel.ls.domain.GamingSession
 
-interface GamingSessionStorage {
-
-    fun create(capacity: Int, game: Int, date: LocalDateTime): GamingSession
+interface GamingSessionsData {
+    fun create(
+        capacity: Int,
+        game: Int,
+        date: LocalDateTime,
+    ): GamingSession
 
     fun get(sessionId: Int): GamingSession
 
@@ -15,8 +18,11 @@ interface GamingSessionStorage {
         isOpen: Boolean?,
         player: Int?,
         limit: Int,
-        skip: Int
+        skip: Int,
     ): List<GamingSession>
 
-    fun addPlayer(session: Int, player: Int)
+    fun addPlayer(
+        session: Int,
+        player: Int,
+    )
 }

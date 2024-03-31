@@ -6,7 +6,6 @@ import org.junit.jupiter.api.assertThrows
 import java.util.*
 
 class PlayerTests {
-
     private val validId = 1
     private val validName = "testName"
     private val validEmail = "testEmail@email.com"

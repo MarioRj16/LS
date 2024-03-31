@@ -8,7 +8,7 @@ import pt.isel.ls.domain.Player
 import pt.isel.ls.utils.factories.GameFactory
 import pt.isel.ls.utils.factories.GamingSessionFactory
 import pt.isel.ls.utils.factories.PlayerFactory
-import pt.isel.ls.utils.tomorrowLocalDateTime
+import pt.isel.ls.utils.plusDaysToCurrentDateTime
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -31,14 +31,15 @@ class GamingSessionsServicesTests : SessionServices(DataMem()) {
     fun `createSession() returns sessionResponse successfully`() {
         val game = gameFactory.createRandomGame()
         val capacity = 2
-        val startingDate = tomorrowLocalDateTime()
-        val input = """
+        val startingDate = plusDaysToCurrentDateTime(1L)
+        val input =
+            """
             {
                 "gameId": ${game.id},
                 "capacity": $capacity,
                 "startingDate": "$startingDate"
             }
-        """.trimIndent()
+            """.trimIndent()
         val sessionResponse = createSession(input, bearerToken)
         val expectedId = 1
         assertEquals(expectedId, sessionResponse.id)
@@ -65,11 +66,12 @@ class GamingSessionsServicesTests : SessionServices(DataMem()) {
         val session1 = gamingSessionFactory.createRandomGamingSession(game.id)
         val session2 = gamingSessionFactory.createRandomGamingSession(game.id)
 
-        val input = """
+        val input =
+            """
             {
                 "game": ${game.id}
             }
-        """.trimIndent()
+            """.trimIndent()
         val gamingSessions = searchSessions(input, bearerToken, null, null)
 
         assertTrue(gamingSessions.size == 2)

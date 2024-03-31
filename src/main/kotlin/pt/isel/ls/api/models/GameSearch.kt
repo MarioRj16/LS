@@ -3,7 +3,6 @@ package pt.isel.ls.api.models
 import kotlinx.serialization.Serializable
 import pt.isel.ls.domain.Genre
 
-
 /**
  * TODO If we can change genres to GenreClass
  */

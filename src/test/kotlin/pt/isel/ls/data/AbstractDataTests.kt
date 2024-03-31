@@ -45,6 +45,5 @@ abstract class AbstractDataTests {
         assertTrue(db.gamesDB.table.isEmpty())
         assertTrue(db.gamingSessionsDB.table.isEmpty())
     }
-    */
-
+     */
 }

@@ -3,8 +3,11 @@ package pt.isel.ls.data
 import pt.isel.ls.domain.Player
 import java.util.*
 
-interface PlayerStorage {
-    fun create(name: String, email: String): Player
+interface PlayersData {
+    fun create(
+        name: String,
+        email: String,
+    ): Player
 
     fun get(id: Int): Player
 

@@ -8,5 +8,5 @@ import java.util.*
 data class PlayerResponse(
     @Serializable(with = UUIDSerializer::class)
     val token: UUID,
-    val playerId: Int
+    val playerId: Int,
 )

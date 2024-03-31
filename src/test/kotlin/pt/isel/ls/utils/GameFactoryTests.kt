@@ -8,7 +8,6 @@ import kotlin.test.assertEquals
 class GameFactoryTests {
     @Test
     fun `createRandomGame() creates game successfully`() {
-
         val games = GamesMem()
         val gameFactory = GameFactory(games)
         val game = gameFactory.createRandomGame()

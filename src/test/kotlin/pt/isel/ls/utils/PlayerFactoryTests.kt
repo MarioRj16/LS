@@ -6,7 +6,6 @@ import pt.isel.ls.utils.factories.PlayerFactory
 import kotlin.test.assertEquals
 
 class PlayerFactoryTests {
-
     @Test
     fun `createRandomPlayer() creates player successfully`() {
         val players = PlayersMem()
