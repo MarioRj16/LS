@@ -6,5 +6,4 @@ open class API(services: Services) : APISchema() {
     val playerAPI = PlayersAPI(services.playersServices)
     val gamesAPI = GamesAPI(services.gamesServices)
     val sessionsAPI = SessionsAPI(services.gamingSessionsServices)
-
 }

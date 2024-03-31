@@ -10,8 +10,12 @@ import pt.isel.ls.data.Data
 import pt.isel.ls.domain.GamingSession
 
 open class SessionServices(internal val db: Data) : ServicesSchema() {
-
-    fun searchSessions(input: String, authorization: String?, skip: Int?, limit: Int?): List<GamingSession> {
+    fun searchSessions(
+        input: String,
+        authorization: String?,
+        skip: Int?,
+        limit: Int?,
+    ): List<GamingSession> {
         bearerToken(authorization, db).id
         val sessionInput = Json.decodeFromString<SessionSearch>(input)
         return db.gamingSessions.search(
@@ -20,33 +24,43 @@ open class SessionServices(internal val db: Data) : ServicesSchema() {
             sessionInput.state,
             sessionInput.playerId,
             limit ?: DEFAULT_LIMIT,
-            skip ?: DEFAULT_SKIP
+            skip ?: DEFAULT_SKIP,
         )
     }
 
-    fun createSession(input: String, authorization: String?): SessionResponse {
+    fun createSession(
+        input: String,
+        authorization: String?,
+    ): SessionResponse {
         bearerToken(authorization, db).id
         /**
          * TODO
          * We could add here the person who created the session to list of players
          */
         val sessionInput = Json.decodeFromString<SessionCreate>(input)
-        val session = db.gamingSessions.create(
-            sessionInput.capacity,
-            sessionInput.gameId,
-            sessionInput.startingDate
-        )
+        val session =
+            db.gamingSessions.create(
+                sessionInput.capacity,
+                sessionInput.gameId,
+                sessionInput.startingDate,
+            )
         return SessionResponse(session.id)
     }
 
-    fun getSession(id: Int?, authorization: String?): GamingSession {
+    fun getSession(
+        id: Int?,
+        authorization: String?,
+    ): GamingSession {
         requireNotNull(id)
         // TODO("Write a message")
         bearerToken(authorization, db).id
         return db.gamingSessions.get(id)
     }
 
-    fun addPlayerToSession(sessionId: Int?, authorization: String?): Int {
+    fun addPlayerToSession(
+        sessionId: Int?,
+        authorization: String?,
+    ): Int {
         requireNotNull(sessionId) { "id" }
         // TODO: Improve this message
         val playerId = bearerToken(authorization, db).id

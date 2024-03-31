@@ -16,9 +16,9 @@ private val logger = LoggerFactory.getLogger("pt.isel.ls")
 
 /**
 fun getDate(request: Request): Response {
-    return Response(OK)
-        .header("content-type", "text/plain")
-        .body(Clock.System.now().toString())
+ return Response(OK)
+ .header("content-type", "text/plain")
+ .body(Clock.System.now().toString())
 }
 
 */
@@ -35,35 +35,35 @@ fun logRequest(request: Request) {
 fun main() {
     val db = DataPostgres(System.getenv("JDBC_conn"))
     //
-    //db.reset()
-   // db.delete()
-    //db.create()
-    //db.populate()
-    //val db=DataMem()
+    // db.reset()
+    // db.delete()
+    // db.create()
+    // db.populate()
+    // val db=DataMem()
     val api = API(Services(db))
     val playerRoutes =
         routes(
             "player" bind POST to api.playerAPI::createPlayer,
-            "player/{playerId}" bind GET to api.playerAPI::getPlayer
+            "player/{playerId}" bind GET to api.playerAPI::getPlayer,
         )
-    val gameRoutes=
+    val gameRoutes =
         routes(
             "games" bind GET to api.gamesAPI::searchGames,
             "games" bind POST to api.gamesAPI::createGame,
-            "games/{gameId}" bind GET to api.gamesAPI::getGame
+            "games/{gameId}" bind GET to api.gamesAPI::getGame,
         )
-    val sessionRoutes=
+    val sessionRoutes =
         routes(
             "sessions" bind GET to api.sessionsAPI::searchSessions,
             "sessions" bind POST to api.sessionsAPI::createSession,
             "sessions/{sessionId}" bind GET to api.sessionsAPI::getSession,
-            "sessions/{sessionId}" bind POST to api.sessionsAPI::addPlayerToSession
+            "sessions/{sessionId}" bind POST to api.sessionsAPI::addPlayerToSession,
         )
     val app =
         routes(
             playerRoutes,
             gameRoutes,
-            sessionRoutes
+            sessionRoutes,
         )
     val jettyServer = app.asServer(Jetty(PORT)).start()
     logger.info("server started listening")
@@ -71,6 +71,4 @@ fun main() {
     jettyServer.stop()
 
     logger.info("leaving Main")
-
-
 }

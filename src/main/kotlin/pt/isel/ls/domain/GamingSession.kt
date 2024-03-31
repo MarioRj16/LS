@@ -10,9 +10,9 @@ data class GamingSession(
     val gameId: Int,
     val maxCapacity: Int,
     val startingDate: LocalDateTime,
-    val players: Set<Player>
+    val players: Set<Player>,
 ) {
-    //TODO: Create an annotation class to automate PK and FK checks
+    // TODO: Create an annotation class to automate PK and FK checks
     init {
         require(id >= 1) { "ID must be a positive integer\nid=$id" }
         require(gameId >= 1) { "gameId must be a positive integer\nid=$id" }

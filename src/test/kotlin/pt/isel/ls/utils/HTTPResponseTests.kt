@@ -11,10 +11,8 @@ import pt.isel.ls.utils.exceptions.ForbiddenException
 import kotlin.test.assertEquals
 
 class HTTPResponseTests : APISchema() {
-
     @Test
     fun `json() returns response with body in json successfully`() {
-
         val testData = Genre("FPS")
 
         val response = Response(Status.OK).json(testData)

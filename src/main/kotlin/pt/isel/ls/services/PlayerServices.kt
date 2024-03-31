@@ -6,20 +6,23 @@ import pt.isel.ls.data.Data
 import pt.isel.ls.domain.Player
 import pt.isel.ls.utils.exceptions.ForbiddenException
 
-
 open class PlayerServices(internal val db: Data) : ServicesSchema() {
     fun createPlayer(input: String): Player {
         val playerInput = Json.decodeFromString<PlayerCreate>(input)
         return db.players.create(playerInput.name, playerInput.email)
     }
 
-    fun getPlayer(id: Int?, authorization: String?): Player {
+    fun getPlayer(
+        id: Int?,
+        authorization: String?,
+    ): Player {
         requireNotNull(id) { "id" }
         val ownId = bearerToken(authorization, db).id
-        if (ownId != id) throw ForbiddenException(
-            "You dont have authorization to see this player, instead you can see your own id $ownId"
-        )
+        if (ownId != id) {
+            throw ForbiddenException(
+                "You dont have authorization to see this player, instead you can see your own id $ownId",
+            )
+        }
         return db.players.get(id)
     }
-
 }

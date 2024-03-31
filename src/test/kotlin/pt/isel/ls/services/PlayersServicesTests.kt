@@ -9,7 +9,6 @@ import pt.isel.ls.utils.factories.PlayerFactory
 import kotlin.test.assertEquals
 
 class PlayersServicesTests : PlayerServices(DataMem()) {
-
     private lateinit var bearerToken: String
     private lateinit var user: Player
     private val playerFactory = PlayerFactory(db.players)
@@ -25,12 +24,13 @@ class PlayersServicesTests : PlayerServices(DataMem()) {
     fun `createPlayer() returns player successfully`() {
         val name = "testName"
         val email = "testEmail@gmail.com"
-        val playerInfo = """
+        val playerInfo =
+            """
             {
                 "name": "$name",
                 "email": "$email"
             }
-        """.trimIndent()
+            """.trimIndent()
         val player = createPlayer(playerInfo)
         assertEquals(name, player.name)
         assertEquals(email, player.email)

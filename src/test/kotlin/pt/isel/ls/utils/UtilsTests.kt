@@ -7,7 +7,6 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class UtilsTests {
-
     @Test
     fun `paginate() does pagination correctly`() {
         val intList = List(5) { it }

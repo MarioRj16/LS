@@ -9,25 +9,36 @@ import pt.isel.ls.data.Data
 import pt.isel.ls.domain.Game
 
 open class GamesServices(internal val db: Data) : ServicesSchema() {
-    fun searchGames(input: String, authorization: String?, skip: Int?, limit: Int?): List<Game> {
+    fun searchGames(
+        input: String,
+        authorization: String?,
+        skip: Int?,
+        limit: Int?,
+    ): List<Game> {
         bearerToken(authorization, db)
         val gameInput = Json.decodeFromString<GameSearch>(input)
         return db.games.search(
             gameInput.developer,
             gameInput.genres,
             limit ?: DEFAULT_LIMIT,
-            skip ?: DEFAULT_SKIP
+            skip ?: DEFAULT_SKIP,
         )
     }
 
-    fun createGame(input: String, authorization: String?): Int {
+    fun createGame(
+        input: String,
+        authorization: String?,
+    ): Int {
         bearerToken(authorization, db)
         val gameInput = Json.decodeFromString<GameCreate>(input)
         val game = db.games.create(gameInput.name, gameInput.developer, gameInput.genres)
         return game.id
     }
 
-    fun getGame(id: Int?, authorization: String?): Game {
+    fun getGame(
+        id: Int?,
+        authorization: String?,
+    ): Game {
         require(id != null) { "id" }
         bearerToken(authorization, db)
         return db.games.getById(id)

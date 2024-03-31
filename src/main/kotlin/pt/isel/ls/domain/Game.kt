@@ -7,7 +7,7 @@ data class Game(
     val id: Int,
     val name: String,
     val developer: String,
-    val genres: Set<Genre>
+    val genres: Set<Genre>,
 ) {
     init {
         require(id >= 1) { "ID must be a positive integer\nid=$id" }

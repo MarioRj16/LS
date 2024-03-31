@@ -21,21 +21,6 @@ dependencies {
     testImplementation(kotlin("test"))
 }
 
-tasks {
-    val ktlint by getting {
-        doLast {
-            exec {
-                commandLine("ktlint", "src/**/*.kt")
-            }
-        }
-    }
-
-    val ktlintCheck by getting {
-        dependsOn(ktlint)
-    }
-}
-
-
 tasks.test {
     useJUnitPlatform()
 }
@@ -48,4 +33,3 @@ tasks.register<Copy>("copyRuntimeDependencies") {
     into("build/libs")
     from(configurations.runtimeClasspath)
 }
-

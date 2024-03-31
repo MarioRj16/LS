@@ -16,72 +16,70 @@ import pt.isel.ls.utils.plusDaysToCurrentDateTime
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class GamingSessionsTests : IntegrationTests(){
-
+class GamingSessionsTests : IntegrationTests() {
 
     companion object {
-        val game=GameFactory(db.games).createRandomGame()
-        val sessions:List<GamingSession> = searchHelpSessions(10,GamingSessionFactory(db.gamingSessions)::createRandomGamingSession,game.id)
+        val game = GameFactory(db.games).createRandomGame()
+        val sessions: List<GamingSession> =
+            searchHelpSessions(10, GamingSessionFactory(db.gamingSessions)::createRandomGamingSession, game.id)
     }
+
     @Test
-    fun createSession(){
-        val requestBody = SessionCreate(game.id,4, plusDaysToCurrentDateTime(1L))
-        val request = Request(Method.POST, "$URI_PREFIX/sessions")
-            .json(requestBody)
-            .token(user!!.token)
+    fun createSession()  {
+        val requestBody = SessionCreate(game.id, 4, plusDaysToCurrentDateTime(1L))
+        val request =
+            Request(Method.POST, "$URI_PREFIX/sessions")
+                .json(requestBody)
+                .token(user!!.token)
         client(request)
             .apply {
-                assertEquals(Status.CREATED,status)
+                assertEquals(Status.CREATED, status)
                 assertDoesNotThrow { Json.decodeFromString<SessionResponse>(bodyString()) }
             }
     }
 
     @Test
-    fun addPlayerToSession(){
-        val session=GamingSessionFactory(db.gamingSessions).createRandomGamingSession(game.id)
-        val request = Request(Method.POST, "$URI_PREFIX/sessions/${session.id}")
-            .json("")
-            .token(user!!.token)
+    fun addPlayerToSession()  {
+        val session = GamingSessionFactory(db.gamingSessions).createRandomGamingSession(game.id)
+        val request =
+            Request(Method.POST, "$URI_PREFIX/sessions/${session.id}")
+                .json("")
+                .token(user!!.token)
         client(request)
             .apply {
-                assertEquals(Status.OK,status)
+                assertEquals(Status.OK, status)
             }
     }
 
     @Test
-    fun searchSessions(){
-        val requestBody= SessionSearch(game.id)
-        val request = Request(Method.GET, "$URI_PREFIX/sessions")
-            .json(requestBody)
-            .token(user!!.token)
+    fun searchSessions()  {
+        val requestBody = SessionSearch(game.id)
+        val request =
+            Request(Method.GET, "$URI_PREFIX/sessions")
+                .json(requestBody)
+                .token(user!!.token)
         client(request)
             .apply {
-                assertEquals(Status.OK,status)
-                val response:List<GamingSession> = Json.decodeFromString<List<GamingSession>>(bodyString())
+                assertEquals(Status.OK, status)
+                val response: List<GamingSession> = Json.decodeFromString<List<GamingSession>>(bodyString())
                 assertTrue {
-                    sessions.all{x->
+                    sessions.all { x ->
                         response.contains(x)
                     }
                 }
             }
     }
 
-
-
     @Test
-    fun getSession(){
-        val newSession=GamingSessionFactory(db.gamingSessions).createRandomGamingSession(game.id)
-        val request = Request(Method.POST, "$URI_PREFIX/sessions/${newSession.id}")
-            .json("")
-            .token(user!!.token)
+    fun getSession()  {
+        val newSession = GamingSessionFactory(db.gamingSessions).createRandomGamingSession(game.id)
+        val request =
+            Request(Method.POST, "$URI_PREFIX/sessions/${newSession.id}")
+                .json("")
+                .token(user!!.token)
         client(request)
             .apply {
-                assertEquals(Status.OK,status)
+                assertEquals(Status.OK, status)
             }
-
     }
-
-
-
-
 }

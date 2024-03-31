@@ -13,7 +13,7 @@ fun ResultSet.toPlayer(): Player =
         id = getInt("player_id"),
         name = getString("player_name"),
         email = getString("email"),
-        token = UUID.fromString(getString("token"))
+        token = UUID.fromString(getString("token")),
     )
 
 fun ResultSet.toGenre(): Genre = Genre(genre = getString("genre"))
@@ -23,17 +23,19 @@ fun ResultSet.toGame(genres: Set<Genre>): Game =
         id = getInt("game_id"),
         name = getString("game_name"),
         developer = getString("developer"),
-        genres = genres
+        genres = genres,
     )
 
-fun ResultSet.toPreviousGame(genres: Set<Genre>,gameId:Int): Game =
+fun ResultSet.toPreviousGame(
+    genres: Set<Genre>,
+    gameId: Int,
+): Game =
     Game(
         id = gameId,
         name = getString("game_name"),
         developer = getString("developer"),
-        genres = genres
+        genres = genres,
     )
-
 
 fun ResultSet.toGamingSession(players: Set<Player>): GamingSession =
     GamingSession(
@@ -41,6 +43,5 @@ fun ResultSet.toGamingSession(players: Set<Player>): GamingSession =
         gameId = getInt("game"),
         maxCapacity = getInt("capacity"),
         startingDate = getTimestamp("starting_date").toLocalDateTime().toKotlinLocalDateTime(),
-        players = players
+        players = players,
     )
-

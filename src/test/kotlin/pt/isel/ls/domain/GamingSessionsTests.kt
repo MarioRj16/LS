@@ -10,7 +10,6 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class GamingSessionsTests {
-
     private val validSessionId = 1
     private val validGameId = 1
     private val validMaxCapacity = 2
@@ -21,12 +20,13 @@ class GamingSessionsTests {
 
     init {
         repeat(validMaxCapacity) {
-            maxCapacitySetOfPlayers += Player(
-                Random.nextInt(1, validMaxCapacity),
-                generateRandomString(),
-                generateRandomEmail(),
-                UUID.randomUUID()
-            )
+            maxCapacitySetOfPlayers +=
+                Player(
+                    Random.nextInt(1, validMaxCapacity),
+                    generateRandomString(),
+                    generateRandomEmail(),
+                    UUID.randomUUID(),
+                )
         }
         /**
          * There is the chance of having players with the same ID, that is not relevant since we are not testing the
@@ -59,13 +59,14 @@ class GamingSessionsTests {
     @Test
     fun `gaming session state is false when players are at max capacity and starting date is in the past`() {
         val timeToWait = 100L
-        val session = GamingSession(
-            validSessionId,
-            validGameId,
-            validMaxCapacity,
-            plusMillisecondsToCurrentDateTime(timeToWait),
-            maxCapacitySetOfPlayers
-        )
+        val session =
+            GamingSession(
+                validSessionId,
+                validGameId,
+                validMaxCapacity,
+                plusMillisecondsToCurrentDateTime(timeToWait),
+                maxCapacitySetOfPlayers,
+            )
         Thread.sleep(timeToWait)
         assertFalse(session.state)
     }

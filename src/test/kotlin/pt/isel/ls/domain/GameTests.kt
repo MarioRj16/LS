@@ -5,7 +5,6 @@ import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
 
 class GameTests {
-
     private val validId = 1
     private val validName = "testName"
     private val validDeveloper = "testDeveloper"

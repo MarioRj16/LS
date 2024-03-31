@@ -20,37 +20,36 @@ import pt.isel.ls.domain.GamingSession
 import pt.isel.ls.services.Services
 import pt.isel.ls.utils.generateRandomEmail
 
-
-abstract class IntegrationTests (){
+abstract class IntegrationTests() {
     companion object {
         const val URI_PREFIX = "http://localhost:$TEST_PORT"
         val client = JavaHttpClient()
-        var user : PlayerResponse? = null
+        var user: PlayerResponse? = null
         val db = DataMem()
         var api = API(Services(db))
         val playerRoutes =
             routes(
                 "player" bind Method.POST to api.playerAPI::createPlayer,
-                "player/{playerId}" bind Method.GET to api.playerAPI::getPlayer
+                "player/{playerId}" bind Method.GET to api.playerAPI::getPlayer,
             )
         val gameRoutes =
             routes(
                 "games" bind Method.GET to api.gamesAPI::searchGames,
                 "games" bind Method.POST to api.gamesAPI::createGame,
-                "games/{gameId}" bind Method.GET to api.gamesAPI::getGame
+                "games/{gameId}" bind Method.GET to api.gamesAPI::getGame,
             )
         val sessionRoutes =
             routes(
                 "sessions" bind Method.GET to api.sessionsAPI::searchSessions,
                 "sessions" bind Method.POST to api.sessionsAPI::createSession,
                 "sessions/{sessionId}" bind Method.GET to api.sessionsAPI::getSession,
-                "sessions/{sessionId}" bind Method.POST to api.sessionsAPI::addPlayerToSession
+                "sessions/{sessionId}" bind Method.POST to api.sessionsAPI::addPlayerToSession,
             )
         val app =
             routes(
                 playerRoutes,
                 gameRoutes,
-                sessionRoutes
+                sessionRoutes,
             )
 
         var jettyServer = app.asServer(Jetty(TEST_PORT))
@@ -67,8 +66,6 @@ abstract class IntegrationTests (){
             jettyServer.stop()
         }
 
-
-
         inline fun <reified T> Request.json(body: T): Request {
             return this
                 .header("content-type", "application/json")
@@ -77,38 +74,43 @@ abstract class IntegrationTests (){
 
         inline fun <reified T> Request.token(body: T): Request {
             return this
-                .header("Authorization","Bearer $body")
+                .header("Authorization", "Bearer $body")
         }
-
 
         @JvmStatic
         @BeforeAll
-        fun createUser(): Unit {
+        fun createUser() {
             val requestBody = mapOf("name" to "user", "email" to generateRandomEmail())
-            val request = Request(Method.POST, "$URI_PREFIX/player")
-                .json(requestBody)
+            val request =
+                Request(Method.POST, "$URI_PREFIX/player")
+                    .json(requestBody)
             client(request)
                 .apply {
                     user = Json.decodeFromString<PlayerResponse>(bodyString())
                 }
         }
 
-        fun searchHelpGame(repetitions:Int, entity: () -> Game):List<Game>{
+        fun searchHelpGame(
+            repetitions: Int,
+            entity: () -> Game,
+        ): List<Game>  {
             val list = mutableListOf<Game>()
-            repeat (repetitions) {
+            repeat(repetitions) {
                 list.add(entity())
             }
             return list
         }
 
-        fun searchHelpSessions(repetitions:Int, entity: (Int) -> GamingSession, game:Int ):List<GamingSession>{
+        fun searchHelpSessions(
+            repetitions: Int,
+            entity: (Int) -> GamingSession,
+            game: Int,
+        ): List<GamingSession>  {
             val list = mutableListOf<GamingSession>()
-            repeat (repetitions) {
+            repeat(repetitions) {
                 list.add(entity(game))
             }
             return list
         }
-
-
     }
 }

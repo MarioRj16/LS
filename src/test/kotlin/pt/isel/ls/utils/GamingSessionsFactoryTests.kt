@@ -7,7 +7,6 @@ import pt.isel.ls.utils.factories.GamingSessionFactory
 import kotlin.test.assertEquals
 
 class GamingSessionsFactoryTests {
-
     @Test
     fun `createRandomGamingSession() creates gaming session successfully`() {
         val db = DataMem()

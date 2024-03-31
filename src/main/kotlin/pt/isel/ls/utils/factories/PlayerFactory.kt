@@ -11,5 +11,4 @@ class PlayerFactory(private val players: PlayersData) {
         val randomEmail = generateRandomEmail()
         return players.create(randomName, randomEmail)
     }
-
 }

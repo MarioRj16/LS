@@ -8,7 +8,6 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 class PlayerTests : AbstractDataTests() {
-
     @Test
     fun `create() creates player successfully`() {
         val name = "testName"

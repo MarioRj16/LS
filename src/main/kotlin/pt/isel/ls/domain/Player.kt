@@ -11,7 +11,7 @@ data class Player(
     val name: String,
     val email: String,
     @Serializable(with = UUIDSerializer::class)
-    val token: UUID = UUID.randomUUID()
+    val token: UUID = UUID.randomUUID(),
 ) {
     init {
         require(id > 0) { "ID must be a positive Int\nID=$id" }

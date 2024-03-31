@@ -10,14 +10,14 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class GamesTests : AbstractDataTests() {
-
-    private val genres = listOf(
-        Genre("Role Playing Game"),
-        Genre("Action"),
-        Genre("First Person Shooter"),
-        Genre("Simulation"),
-        Genre("Sports")
-    )
+    private val genres =
+        listOf(
+            Genre("Role Playing Game"),
+            Genre("Action"),
+            Genre("First Person Shooter"),
+            Genre("Simulation"),
+            Genre("Sports"),
+        )
 
     @Test
     fun `create() return game successfully`() {

@@ -11,8 +11,7 @@ import java.time.LocalDateTime
  * @param days The number of days to add. Defaults to 1 if not provided.
  * @return The resulting LocalDateTime after adding the specified number of days.
  */
-fun plusDaysToCurrentDateTime(days: Long = 1L): kotlinx.datetime.LocalDateTime =
-    LocalDateTime.now().plusDays(days).toKotlinLocalDateTime()
+fun plusDaysToCurrentDateTime(days: Long = 1L): kotlinx.datetime.LocalDateTime = LocalDateTime.now().plusDays(days).toKotlinLocalDateTime()
 
 /**
  * Adds the specified number of milliseconds to the current date and time.

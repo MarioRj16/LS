@@ -13,7 +13,6 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class GamesServicesTests : GamesServices(DataMem()) {
-
     private lateinit var bearerToken: String
     private lateinit var user: Player
     private val playerFactory = PlayerFactory(db.players)
@@ -31,7 +30,8 @@ class GamesServicesTests : GamesServices(DataMem()) {
         val name = generateRandomString()
         val developer = generateRandomString()
         val genre = "Action"
-        val input = """
+        val input =
+            """
             {
                 "name": "$name",
                 "developer": "$developer",
@@ -41,7 +41,7 @@ class GamesServicesTests : GamesServices(DataMem()) {
                     }
                 ]
             }
-        """.trimIndent()
+            """.trimIndent()
         val gameId = createGame(input, bearerToken)
         assertTrue(gameId == 1)
     }

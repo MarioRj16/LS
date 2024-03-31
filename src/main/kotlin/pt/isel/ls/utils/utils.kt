@@ -1,7 +1,9 @@
 package pt.isel.ls.utils
 
-
-fun <T> List<T>.paginate(skip: Int, limit: Int): List<T> {
+fun <T> List<T>.paginate(
+    skip: Int,
+    limit: Int,
+): List<T> {
     require(skip >= 0) { "skip must be a non negative integer\nskip=$skip" }
     require(limit >= 0) { "Limit must be a non negative integer\nlimit=$limit" }
     if (this.isEmpty()) return emptyList()
@@ -13,4 +15,3 @@ fun emailIsValid(email: String): Boolean {
     val emailRegex = Regex("^\\w+([.-]?\\w+)*@\\w+([.-]?\\w+)*(\\.\\w{2,})+$")
     return emailRegex.matches(email)
 }
-

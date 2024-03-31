@@ -4,8 +4,11 @@ import kotlinx.datetime.LocalDateTime
 import pt.isel.ls.domain.GamingSession
 
 interface GamingSessionsData {
-
-    fun create(capacity: Int, game: Int, date: LocalDateTime): GamingSession
+    fun create(
+        capacity: Int,
+        game: Int,
+        date: LocalDateTime,
+    ): GamingSession
 
     fun get(sessionId: Int): GamingSession
 
@@ -15,8 +18,11 @@ interface GamingSessionsData {
         isOpen: Boolean?,
         player: Int?,
         limit: Int,
-        skip: Int
+        skip: Int,
     ): List<GamingSession>
 
-    fun addPlayer(session: Int, player: Int)
+    fun addPlayer(
+        session: Int,
+        player: Int,
+    )
 }
