@@ -12,12 +12,12 @@ class DataPostgres(connectionString: String) : Data {
             it.autoCommit = false
         }
 
-    fun create()  {
+    fun create() {
         conn().runSQLScript("createSchema.sql")
         conn().runSQLScript("createGenres.sql")
     }
 
-    fun delete()  {
+    fun delete() {
         conn().runSQLScript("deleteSchema.sql")
     }
 
@@ -25,13 +25,13 @@ class DataPostgres(connectionString: String) : Data {
         conn().runSQLScript("reset.sql")
     }
 
-    fun populate()  {
+    fun populate() {
         conn().runSQLScript("populate.sql")
     }
 
     override val players: PlayersData = PlayersPostgres(::conn)
 
-    override val gamingSessions: GamingSessionsData = GamingSessionPostgres(::conn)
+    override val gamingSessions: GamingSessionsData = GamingSessionsPostgres(::conn)
 
     override val games: GamesData = GamesPostgres(::conn)
 }

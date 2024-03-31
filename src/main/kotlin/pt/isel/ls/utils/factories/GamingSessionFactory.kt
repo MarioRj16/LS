@@ -6,8 +6,11 @@ import pt.isel.ls.utils.plusDaysToCurrentDateTime
 import kotlin.random.Random
 
 class GamingSessionFactory(private val gamingSessions: GamingSessionsData) {
-    fun createRandomGamingSession(gameId: Int): GamingSession {
+    fun createRandomGamingSession(
+        gameId: Int,
+        playerId: Int,
+    ): GamingSession {
         val randomCapacity = Random.nextInt(2, 129)
-        return gamingSessions.create(randomCapacity, gameId, plusDaysToCurrentDateTime(1L))
+        return gamingSessions.create(randomCapacity, gameId, plusDaysToCurrentDateTime(1L), playerId)
     }
 }

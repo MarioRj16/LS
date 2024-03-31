@@ -45,6 +45,7 @@ fun ResultSet.toGamingSession(players: Set<Player>): GamingSession =
         maxCapacity = getInt("capacity"),
         startingDate = getTimestamp("starting_date").toLocalDateTime().toKotlinLocalDateTime(),
         players = players,
+        creatorId = getInt("creator"),
     )
 
 fun ResultSet.toPreviousGamingSession(
@@ -57,4 +58,5 @@ fun ResultSet.toPreviousGamingSession(
         maxCapacity = getInt("capacity"),
         startingDate = getTimestamp("starting_date").toLocalDateTime().toKotlinLocalDateTime(),
         players = players,
+        creatorId = getInt("creator"),
     )

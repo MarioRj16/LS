@@ -68,7 +68,7 @@ abstract class IntegrationTests() {
         fun searchHelpGame(
             repetitions: Int,
             entity: () -> Game,
-        ): List<Game>  {
+        ): List<Game> {
             val list = mutableListOf<Game>()
             repeat(repetitions) {
                 list.add(entity())
@@ -78,12 +78,13 @@ abstract class IntegrationTests() {
 
         fun searchHelpSessions(
             repetitions: Int,
-            entity: (Int) -> GamingSession,
+            entity: (Int, Int) -> GamingSession,
             game: Int,
-        ): List<GamingSession>  {
+            owner: Int,
+        ): List<GamingSession> {
             val list = mutableListOf<GamingSession>()
             repeat(repetitions) {
-                list.add(entity(game))
+                list.add(entity(game, owner))
             }
             return list
         }

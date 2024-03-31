@@ -6,7 +6,6 @@ import org.http4k.routing.routes
 import pt.isel.ls.api.API
 
 class Routes(api: API) {
-
     private val playerRoutes =
         routes(
             "player" bind Method.POST to api.playerAPI::createPlayer,
@@ -24,6 +23,7 @@ class Routes(api: API) {
             "sessions" bind Method.POST to api.sessionsAPI::createSession,
             "sessions/{sessionId}" bind Method.GET to api.sessionsAPI::getSession,
             "sessions/{sessionId}" bind Method.POST to api.sessionsAPI::addPlayerToSession,
+            "sessions/{sessionId}" bind Method.DELETE to api.sessionsAPI::deleteSession,
         )
     val app =
         routes(

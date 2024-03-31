@@ -18,6 +18,7 @@ class GamingSessionsMem(
         capacity: Int,
         game: Int,
         date: LocalDateTime,
+        playerId: Int,
     ): GamingSession {
         require(capacity >= 1) { "The session capacity has to be at least 1" }
         require(!date.isPast()) {
@@ -30,7 +31,8 @@ class GamingSessionsMem(
                 game,
                 capacity,
                 date,
-                emptySet<Player>(),
+                emptySet(),
+                playerId,
             )
         gamingSessions.table[gamingSessions.nextId.get()] = obj
         return obj
@@ -66,6 +68,11 @@ class GamingSessionsMem(
         return sessions.values.toList().paginate(skip, limit)
     }
 
+    override fun delete(sessionId: Int) {
+        gamingSessions.table.remove(sessionId)
+            ?: throw NoSuchElementException("The provided gaming session does not exist")
+    }
+
     override fun addPlayer(
         session: Int,
         player: Int,
@@ -81,5 +88,15 @@ class GamingSessionsMem(
         }
         gamingSessions.table[session] =
             gamingSessions.table[session]!!.copy(players = (gamingSessions.table[session]!!.players + playerToAdd))
+    }
+
+    override fun isOwner(
+        sessionId: Int,
+        playerId: Int,
+    ): Boolean {
+        val session =
+            gamingSessions.table[sessionId]
+                ?: throw NoSuchElementException("Session $sessionId does not exist")
+        return session.creatorId == playerId
     }
 }

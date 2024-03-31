@@ -8,6 +8,7 @@ import pt.isel.ls.api.models.SessionResponse
 import pt.isel.ls.api.models.SessionSearch
 import pt.isel.ls.data.Data
 import pt.isel.ls.domain.GamingSession
+import pt.isel.ls.utils.exceptions.ForbiddenException
 
 open class SessionServices(internal val db: Data) : ServicesSchema() {
     fun searchSessions(
@@ -32,24 +33,38 @@ open class SessionServices(internal val db: Data) : ServicesSchema() {
         input: String,
         authorization: String?,
     ): SessionResponse {
-        bearerToken(authorization, db).id
+        val user = bearerToken(authorization, db)
         val sessionInput = Json.decodeFromString<SessionCreate>(input)
         val session =
             db.gamingSessions.create(
                 sessionInput.capacity,
                 sessionInput.gameId,
                 sessionInput.startingDate,
+                user.id,
             )
         return SessionResponse(session.id)
     }
 
     fun getSession(
-        id: Int?,
+        sessionId: Int?,
         authorization: String?,
     ): GamingSession {
-        requireNotNull(id) { "Invalid argument id can't be null" }
-        bearerToken(authorization, db).id
-        return db.gamingSessions.get(id)
+        requireNotNull(sessionId) { "Invalid argument id can't be null" }
+        bearerToken(authorization, db)
+        return db.gamingSessions.get(sessionId)
+    }
+
+    fun deleteSession(
+        sessionId: Int?,
+        authorization: String?,
+    )  {
+        requireNotNull(sessionId) { "Invalid argument id can't be null" }
+        val user = bearerToken(authorization, db)
+        if (db.gamingSessions.isOwner(sessionId, user.id)) {
+            return db.gamingSessions.delete(sessionId)
+        }
+
+        throw ForbiddenException("You can only delete games you created")
     }
 
     fun addPlayerToSession(

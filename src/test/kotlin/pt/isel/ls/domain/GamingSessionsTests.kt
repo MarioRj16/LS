@@ -13,6 +13,7 @@ class GamingSessionsTests {
     private val validGameId = 1
     private val validMaxCapacity = 2
     private val emptySetOfPlayers = setOf<Player>()
+    private val validCreatorId = 1
     private val validStartingDate = plusDaysToCurrentDateTime(1)
 
     private val maxCapacitySetOfPlayers = mutableSetOf<Player>()
@@ -35,7 +36,15 @@ class GamingSessionsTests {
 
     @Test
     fun `gaming session state is true when starting date is in the future and players are not at max capacity`() {
-        val session = GamingSession(validSessionId, validGameId, validMaxCapacity, validStartingDate, emptySetOfPlayers)
+        val session =
+            GamingSession(
+                validSessionId,
+                validGameId,
+                validMaxCapacity,
+                validStartingDate,
+                emptySetOfPlayers,
+                validCreatorId,
+            )
         assertTrue(session.state)
     }
 
@@ -43,7 +52,14 @@ class GamingSessionsTests {
     fun `gaming session state is false when starting date is in the past`() {
         val timeToWait = 100L
         val session =
-            GamingSession(validSessionId, validGameId, validMaxCapacity, plusMillisecondsToCurrentDateTime(timeToWait), emptySetOfPlayers)
+            GamingSession(
+                validSessionId,
+                validGameId,
+                validMaxCapacity,
+                plusMillisecondsToCurrentDateTime(timeToWait),
+                emptySetOfPlayers,
+                validCreatorId,
+            )
         Thread.sleep(timeToWait + 1L)
         assertFalse(session.state)
     }
@@ -51,7 +67,7 @@ class GamingSessionsTests {
     @Test
     fun `gaming session state is false when players are at max capacity`() {
         val session =
-            GamingSession(validSessionId, validGameId, validMaxCapacity, validStartingDate, maxCapacitySetOfPlayers)
+            GamingSession(validSessionId, validGameId, validMaxCapacity, validStartingDate, maxCapacitySetOfPlayers, validCreatorId)
         assertFalse(session.state)
     }
 
@@ -65,6 +81,7 @@ class GamingSessionsTests {
                 validMaxCapacity,
                 plusMillisecondsToCurrentDateTime(timeToWait),
                 maxCapacitySetOfPlayers,
+                validCreatorId,
             )
         Thread.sleep(timeToWait)
         assertFalse(session.state)
@@ -73,29 +90,29 @@ class GamingSessionsTests {
     @Test
     fun `throws exception for non positive integer maxCapacity`() {
         assertThrows<IllegalArgumentException> {
-            GamingSession(validSessionId, validGameId, -1, minusDaysToCurrentDateTime(1), emptySetOfPlayers)
+            GamingSession(validSessionId, validGameId, -1, minusDaysToCurrentDateTime(1), emptySetOfPlayers, validCreatorId)
         }
     }
 
     @Test
     fun `throws exception non positive game`() {
         assertThrows<IllegalArgumentException> {
-            GamingSession(validSessionId, -1, validMaxCapacity, validStartingDate, emptySetOfPlayers)
+            GamingSession(validSessionId, -1, validMaxCapacity, validStartingDate, emptySetOfPlayers, validCreatorId)
         }
 
         assertThrows<IllegalArgumentException> {
-            GamingSession(validSessionId, 0, validMaxCapacity, validStartingDate, emptySetOfPlayers)
+            GamingSession(validSessionId, 0, validMaxCapacity, validStartingDate, emptySetOfPlayers, validCreatorId)
         }
     }
 
     @Test
     fun `throws exception for non positive ID`() {
         assertThrows<IllegalArgumentException> {
-            GamingSession(-1, validGameId, validMaxCapacity, validStartingDate, emptySetOfPlayers)
+            GamingSession(-1, validGameId, validMaxCapacity, validStartingDate, emptySetOfPlayers, validCreatorId)
         }
 
         assertThrows<IllegalArgumentException> {
-            GamingSession(0, validGameId, validMaxCapacity, validStartingDate, emptySetOfPlayers)
+            GamingSession(0, validGameId, validMaxCapacity, validStartingDate, emptySetOfPlayers, validCreatorId)
         }
     }
 }

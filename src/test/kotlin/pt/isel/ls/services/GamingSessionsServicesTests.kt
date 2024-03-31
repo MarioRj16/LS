@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import pt.isel.ls.data.mem.DataMem
 import pt.isel.ls.domain.Player
+import pt.isel.ls.utils.exceptions.ForbiddenException
 import pt.isel.ls.utils.factories.GameFactory
 import pt.isel.ls.utils.factories.GamingSessionFactory
 import pt.isel.ls.utils.factories.PlayerFactory
@@ -47,8 +48,9 @@ class GamingSessionsServicesTests : SessionServices(DataMem()) {
 
     @Test
     fun `getSession() returns gaming session successfully`() {
+        val player = playerFactory.createRandomPlayer()
         val game = gameFactory.createRandomGame()
-        val session = gamingSessionFactory.createRandomGamingSession(game.id)
+        val session = gamingSessionFactory.createRandomGamingSession(game.id, player.id)
         val returnedSession = getSession(session.id, bearerToken)
         assertEquals(session, returnedSession)
     }
@@ -61,10 +63,44 @@ class GamingSessionsServicesTests : SessionServices(DataMem()) {
     }
 
     @Test
-    fun `searchSessions() returns gaming sessions successfully`() {
+    fun `deleteSession() deletes gaming session successfully`()  {
         val game = gameFactory.createRandomGame()
-        val session1 = gamingSessionFactory.createRandomGamingSession(game.id)
-        val session2 = gamingSessionFactory.createRandomGamingSession(game.id)
+        val session = gamingSessionFactory.createRandomGamingSession(game.id, user.id)
+        deleteSession(session.id, bearerToken)
+    }
+
+    @Test
+    fun `deleteSession() throws exception for null id`()  {
+        assertThrows<IllegalArgumentException> {
+            deleteSession(null, bearerToken)
+        }
+
+        val player = playerFactory.createRandomPlayer()
+        val game = gameFactory.createRandomGame()
+        gamingSessionFactory.createRandomGamingSession(game.id, player.id)
+
+        assertThrows<IllegalArgumentException> {
+            deleteSession(null, bearerToken)
+        }
+    }
+
+    @Test
+    fun `deleteSession throws exception for non owner token`()  {
+        val player = playerFactory.createRandomPlayer()
+        val game = gameFactory.createRandomGame()
+        val session = gamingSessionFactory.createRandomGamingSession(game.id, player.id)
+
+        assertThrows<ForbiddenException> {
+            deleteSession(session.id, bearerToken)
+        }
+    }
+
+    @Test
+    fun `searchSessions() returns gaming sessions successfully`() {
+        val player = playerFactory.createRandomPlayer()
+        val game = gameFactory.createRandomGame()
+        val session1 = gamingSessionFactory.createRandomGamingSession(game.id, player.id)
+        val session2 = gamingSessionFactory.createRandomGamingSession(game.id, player.id)
 
         val input =
             """
@@ -81,8 +117,9 @@ class GamingSessionsServicesTests : SessionServices(DataMem()) {
 
     @Test
     fun `addPlayerToSession() returns id of added player successfully`() {
+        val player = playerFactory.createRandomPlayer()
         val game = gameFactory.createRandomGame()
-        val session = gamingSessionFactory.createRandomGamingSession(game.id)
+        val session = gamingSessionFactory.createRandomGamingSession(game.id, player.id)
         val returnedPlayerId = addPlayerToSession(session.id, bearerToken)
         assertEquals(user.id, returnedPlayerId)
     }
