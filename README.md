@@ -69,12 +69,6 @@ In the Data section we modify the data according to the corresponding request un
 
 We also created an inline function in Response.json(body: T) so that the content type would always be JSON in the responses
 
-[Describe how a request goes through the different elements of your solution]
-
-[Describe the relevant classes/functions used internally in a request]
-
-[Describe how and where request parameters are validated]
-
 ### Server --> API --> Services --> Data
 
 
@@ -84,8 +78,7 @@ To make sure that everything is stable we created all the sections independently
 What we mean is that to create the API class you need to send the as an argument class of services that is going to be connected and to create the Services class you need to send the db that is going to be affected by the requests.
 We create the db that is going to be used in the server file and then we connect to all the sections that are going to be used in these lines "val db = DataMem() /n val api = API(Services(db))"  then in all the possible routes we call the corresponding functions to this api object.
 
-[Describe how connections are created, used, and disposed, namely its relation with transaction scopes].
-
+Connections to the RDBMS are vital for database interactions in our project. Following best practices, we obtain Connection instances through the DataSource interface, enabling efficient connection pooling. Once acquired, a Connection instance encapsulates transactional scopes, ensuring data integrity. Our conn() function exemplifies this, where we configure and manage connections for manual transaction control. Additionally, our useWithRollback extension function handles transactional logic, including proper commit, rollback, and connection closure, promoting robust and efficient database interactions. Overall, our approach emphasizes resource management, transactional integrity, and performance optimization, facilitating reliable database operations within our application.
 #### Data Access
 
 To help with visualizing our module we created this image that resumes our interface for Data Acess.
@@ -94,9 +87,13 @@ To help with visualizing our module we created this image that resumes our inter
 To help in Data access we created an Interface Storage that contains each Interface storage  (players, gamingSessions, games).
 Now as we can see in this image this Interface is used to help define each class in memory or Postgres. That has its own player, gaming sessions, and game classes associated with it.
 This way we can confirm that each DB uses all the functions defined in the Interface Storage.
-[Describe any created classes to help on data access].
 
-[Identify any non-trivial used SQL statements].
+
+The email attribute defined in the createSchema.sql file ensures data integrity and uniqueness within the database. It specifies that the email field is of type varchar(50), allowing for a maximum length of 50 characters. The NOT NULL constraint ensures that every record must have a value for the email field.
+
+Furthermore, the CHECK constraint utilizes a regular expression pattern to validate that the email values adhere to the typical format of email addresses encountered in daily usage, such as "local-part@domain.TLD". This pattern ensures that the entered email addresses are in a recognizable and standardized format.
+
+Additionally, the UNIQUE constraint guarantees that each email address stored in the database is unique, preventing duplicate entries and maintaining data integrity.
 
 #### Error Handling/Processing
 
@@ -105,6 +102,5 @@ For some errors, we even created new exceptions to correlate to a different HTTP
 
 #### Critical Evaluation
 
-- Enumerate the functionality that is not concluded and the identified defects.
-- Identify improvements to be made in the next phase.
-
+All proposed tasks have been successfully executed by the group. Moving forward, there is a focus on optimizing the management of our project's file structure, improving the clarity of file and function naming, and enhancing the frequency of updates to our project reports.
+For the near future we are expecting to create some neat features like a logger.
