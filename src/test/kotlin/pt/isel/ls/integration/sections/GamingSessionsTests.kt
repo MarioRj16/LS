@@ -72,7 +72,7 @@ class GamingSessionsTests : IntegrationTests() {
     }
 
     @Test
-    fun deleteSession()  {
+    fun deleteSession() {
         val session = GamingSessionFactory(db.gamingSessions).createRandomGamingSession(game.id, user!!.playerId)
         val request =
             Request(Method.DELETE, "$URI_PREFIX/sessions/${session.id}").json("").token(user!!.token)

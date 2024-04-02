@@ -57,7 +57,7 @@ open class SessionServices(internal val db: Data) : ServicesSchema() {
     fun deleteSession(
         sessionId: Int?,
         authorization: String?,
-    )  {
+    ) {
         requireNotNull(sessionId) { "Invalid argument id can't be null" }
         val user = bearerToken(authorization, db)
         if (db.gamingSessions.isOwner(sessionId, user.id)) {

@@ -329,6 +329,33 @@ paths:
           $ref: "#/components/responses/404NotFound"
         409:
           $ref: "#/components/responses/409AlreadyExists"
+    put:
+      tags:
+        - Sessions
+      summary: Updates a session
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - name: sessionID
+          in: path
+          description: ID of the session
+          required: true
+          schema:
+            type: integer
+            minimum: 0
+      responses:
+        200:
+          description: Session was updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Session"
+        400:
+          $ref: "#/components/responses/400BadRequest"
+        401:
+          $ref: "#/components/responses/401Unauthorized"
+        404:
+          $ref: "#/components/responses/404NotFound"
     delete:
       tags:
         - Sessions

@@ -132,7 +132,7 @@ class GamingSessionTests : AbstractDataTests() {
     }
 
     @Test
-    fun `delete() deletes gaming session successfully`()  {
+    fun `delete() deletes gaming session successfully`() {
         val player = playerFactory.createRandomPlayer()
         val game = gameFactory.createRandomGame()
         val session = gamingSessionFactory.createRandomGamingSession(game.id, player.id)
@@ -145,7 +145,7 @@ class GamingSessionTests : AbstractDataTests() {
     }
 
     @Test
-    fun `delete() throws for non existing gaming session`()  {
+    fun `delete() throws for non existing gaming session`() {
         assertThrows<NoSuchElementException> {
             gamingSessions.delete(1)
         }
@@ -189,7 +189,7 @@ class GamingSessionTests : AbstractDataTests() {
     }
 
     @Test
-    fun `isOwner() checks if player is owner successfully`()  {
+    fun `isOwner() checks if player is owner successfully`() {
         val game = gameFactory.createRandomGame()
         val player1 = playerFactory.createRandomPlayer()
         val player2 = playerFactory.createRandomPlayer()
@@ -200,7 +200,7 @@ class GamingSessionTests : AbstractDataTests() {
     }
 
     @Test
-    fun `isOwner() throws for non existing gaming session`()  {
+    fun `isOwner() throws for non existing gaming session`() {
         val player = playerFactory.createRandomPlayer()
         assertThrows<NoSuchElementException> {
             gamingSessions.isOwner(1, player.id)

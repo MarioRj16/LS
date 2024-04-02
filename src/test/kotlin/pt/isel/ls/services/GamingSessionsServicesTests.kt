@@ -63,14 +63,14 @@ class GamingSessionsServicesTests : SessionServices(DataMem()) {
     }
 
     @Test
-    fun `deleteSession() deletes gaming session successfully`()  {
+    fun `deleteSession() deletes gaming session successfully`() {
         val game = gameFactory.createRandomGame()
         val session = gamingSessionFactory.createRandomGamingSession(game.id, user.id)
         deleteSession(session.id, bearerToken)
     }
 
     @Test
-    fun `deleteSession() throws exception for null id`()  {
+    fun `deleteSession() throws exception for null id`() {
         assertThrows<IllegalArgumentException> {
             deleteSession(null, bearerToken)
         }
@@ -85,7 +85,7 @@ class GamingSessionsServicesTests : SessionServices(DataMem()) {
     }
 
     @Test
-    fun `deleteSession throws exception for non owner token`()  {
+    fun `deleteSession throws exception for non owner token`() {
         val player = playerFactory.createRandomPlayer()
         val game = gameFactory.createRandomGame()
         val session = gamingSessionFactory.createRandomGamingSession(game.id, player.id)
