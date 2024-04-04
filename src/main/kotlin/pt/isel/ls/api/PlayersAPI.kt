@@ -10,6 +10,7 @@ import pt.isel.ls.services.PlayerServices
 class PlayersAPI(private val services: PlayerServices) : APISchema() {
     fun createPlayer(request: Request): Response =
         useWithException {
+            logRequest(request)
             val player = services.createPlayer(request.bodyString())
             Response(Status.CREATED)
                 .json(PlayerResponse(player.token, player.id))
@@ -17,6 +18,7 @@ class PlayersAPI(private val services: PlayerServices) : APISchema() {
 
     fun getPlayer(request: Request): Response =
         useWithException {
+            logRequest(request)
             Response(Status.OK)
                 .json(
                     services.getPlayer(

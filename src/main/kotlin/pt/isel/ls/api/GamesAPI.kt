@@ -8,8 +8,11 @@ import pt.isel.ls.api.models.GameResponse
 import pt.isel.ls.services.GamesServices
 
 class GamesAPI(private val services: GamesServices) : APISchema() {
+
+
     fun searchGames(request: Request): Response =
         useWithException {
+            logRequest(request)
             Response(Status.OK)
                 .json(
                     services.searchGames(
@@ -23,6 +26,7 @@ class GamesAPI(private val services: GamesServices) : APISchema() {
 
     fun createGame(request: Request): Response =
         useWithException {
+            logRequest(request)
             val gameId =
                 services.createGame(
                     request.bodyString(),
@@ -34,6 +38,7 @@ class GamesAPI(private val services: GamesServices) : APISchema() {
 
     fun getGame(request: Request): Response =
         useWithException {
+            logRequest(request)
             Response(Status.OK)
                 .json(
                     services.getGame(
