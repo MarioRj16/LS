@@ -1,8 +1,10 @@
 package pt.isel.ls.domain
 
 import kotlinx.datetime.LocalDateTime
+import kotlinx.serialization.Serializable
 import pt.isel.ls.utils.isPast
 
+@Serializable
 data class GamingSession(
     val id: Int,
     val gameId: Int, // TODO: Does it make sense to have an Id instead of the Game object here

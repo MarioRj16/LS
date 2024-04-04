@@ -1,5 +1,8 @@
 package pt.isel.ls.domain
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class Game(
     val id: Int,
     val name: String,
