@@ -126,11 +126,11 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
         }
 
     override fun update(sessionId: Int, newDateTime: LocalDateTime, newCapacity: Int): GamingSession =
-        conn().useWithRollback{
+        conn().useWithRollback {
             val stm2 = it.prepareStatement(
                 """
                 select * from players where player_id in (select player from players_sessions where gaming_session = ?)
-                """.trimIndent()
+                """.trimIndent(),
             ).apply {
                 setInt(1, sessionId)
             }
@@ -139,13 +139,13 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
 
             val players = mutableSetOf<Player>()
 
-            while (resultSet2.next()){
+            while (resultSet2.next()) {
                 players += resultSet2.toPlayer()
             }
 
             val stm =
                 it.prepareStatement(
-                """update gaming_sessions set capacity = ?, starting_date = ? where gaming_session_id = ? RETURNING *"""
+                    """update gaming_sessions set capacity = ?, starting_date = ? where gaming_session_id = ? RETURNING *""",
                 ).apply {
                     setInt(1, newCapacity)
                     setTimestamp(2, newDateTime.toTimeStamp())
@@ -153,7 +153,7 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
                 }
 
             val resultSet = stm.executeQuery()
-            while(resultSet.next()){
+            while (resultSet.next()) {
                 return resultSet.toGamingSession(players)
             }
             throw SQLException("Updating gaming session failed, no rows affected")
@@ -192,17 +192,18 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
 
     override fun removePlayer(
         sessionId: Int,
-        playerId: Int
-    ) = conn().useWithRollback{
+        playerId: Int,
+    ) = conn().useWithRollback {
         val stm = it.prepareStatement(
-            """delete from players_sessions where gaming_session = ? and player = ?"""
+            """delete from players_sessions where gaming_session = ? and player = ?""",
         ).apply {
             setInt(1, sessionId)
             setInt(2, playerId)
         }
 
-        if(stm.executeUpdate() == 0)
+        if (stm.executeUpdate() == 0) {
             throw SQLException("Player could not be removed from gaming session, no rows affected")
+        }
     }
 
     override fun isOwner(

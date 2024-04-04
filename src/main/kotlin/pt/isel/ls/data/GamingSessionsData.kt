@@ -33,7 +33,7 @@ interface GamingSessionsData {
 
     fun removePlayer(
         sessionId: Int,
-        playerId: Int
+        playerId: Int,
     )
 
     fun isOwner(

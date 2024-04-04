@@ -59,16 +59,17 @@ open class SessionServices(internal val db: Data) : ServicesSchema() {
     fun updateSession(
         sessionId: Int?,
         input: String,
-        authorization: String?
-    ): GamingSession{
+        authorization: String?,
+    ): GamingSession {
         requireNotNull(sessionId) { "Invalid argument id can't be null" }
         val user = bearerToken(authorization, db)
         val sessionUpdate = Json.decodeFromString<SessionUpdate>(input)
-        require(!sessionUpdate.startingDate.isPast()){ "LocalDateTime cannot be in past" }
+        require(!sessionUpdate.startingDate.isPast()) { "LocalDateTime cannot be in past" }
         val currentSession = db.gamingSessions.get(sessionId)
-        if(user.id != currentSession.creatorId)
+        if (user.id != currentSession.creatorId) {
             throw ForbiddenException("Changes can only be made by the creator of the session")
-        require(currentSession.players.size <= sessionUpdate.capacity){
+        }
+        require(currentSession.players.size <= sessionUpdate.capacity) {
             "Cannot update session capacity to a value lower than the number of players currently in session"
         }
 
@@ -102,13 +103,14 @@ open class SessionServices(internal val db: Data) : ServicesSchema() {
         sessionId: Int?,
         authorization: String?,
         playerId: Int?,
-    ){
-        requireNotNull(sessionId){ "Invalid argument id can't be null" }
-        requireNotNull(playerId){ "Invalid argument id can't be null" }
+    ) {
+        requireNotNull(sessionId) { "Invalid argument id can't be null" }
+        requireNotNull(playerId) { "Invalid argument id can't be null" }
         val user = bearerToken(authorization, db)
         val session = db.gamingSessions.get(sessionId)
-        if(session.creatorId != user.id)
+        if (session.creatorId != user.id) {
             throw ForbiddenException("Changes can only be made by the creator of the session")
+        }
         db.gamingSessions.removePlayer(sessionId, playerId)
     }
 }

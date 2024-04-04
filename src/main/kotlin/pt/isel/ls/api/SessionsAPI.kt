@@ -52,7 +52,7 @@ class SessionsAPI(private val services: SessionServices) : APISchema() {
                     services.updateSession(
                         request.path("sessionId")?.toInt(),
                         request.bodyString(),
-                        request.header("Authorization")
+                        request.header("Authorization"),
                     ),
                 )
         }
@@ -83,7 +83,7 @@ class SessionsAPI(private val services: SessionServices) : APISchema() {
             services.removePlayerFromSession(
                 request.path("sessionId")?.toInt(),
                 request.header("Authorization"),
-                request.path("playerId")?.toInt()
+                request.path("playerId")?.toInt(),
             )
             Response(Status.NO_CONTENT).json("")
         }

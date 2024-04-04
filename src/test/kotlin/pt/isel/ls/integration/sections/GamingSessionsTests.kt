@@ -55,7 +55,7 @@ class GamingSessionsTests : IntegrationTests() {
     }
 
     @Test
-    fun removePlayerFromSession(){
+    fun removePlayerFromSession() {
         val session =
             GamingSessionFactory(db.gamingSessions).createRandomGamingSession(game.id, player.id, setOf(player))
         val request =
@@ -88,7 +88,7 @@ class GamingSessionsTests : IntegrationTests() {
     }
 
     @Test
-    fun updateSession(){
+    fun updateSession() {
         val session = GamingSessionFactory(db.gamingSessions).createRandomGamingSession(game.id, user!!.playerId)
         val requestBody =
             SessionUpdate(Random.nextInt(2, session.maxCapacity), plusDaysToCurrentDateTime(1))

@@ -64,7 +64,7 @@ class GamingSessionsServicesTests : SessionServices(DataMem()) {
     }
 
     @Test
-    fun `updateSession() updates gaming session successfully`(){
+    fun `updateSession() updates gaming session successfully`() {
         val game = gameFactory.createRandomGame()
         val session = gamingSessionFactory.createRandomGamingSession(game.id, user.id)
         val capacity = Random.nextInt(2, session.maxCapacity)
@@ -80,7 +80,7 @@ class GamingSessionsServicesTests : SessionServices(DataMem()) {
     }
 
     @Test
-    fun `updateSession() throws exception for null id`(){
+    fun `updateSession() throws exception for null id`() {
         val game = gameFactory.createRandomGame()
         val session = gamingSessionFactory.createRandomGamingSession(game.id, user.id)
         val capacity = Random.nextInt(2, session.maxCapacity)
@@ -91,13 +91,13 @@ class GamingSessionsServicesTests : SessionServices(DataMem()) {
                 "startingDate": "2028-04-02T15:30:00"
             }
             """.trimIndent()
-        assertThrows<IllegalArgumentException> { 
+        assertThrows<IllegalArgumentException> {
             updateSession(null, input, bearerToken)
         }
     }
 
     @Test
-    fun `updateSession() throws exception for non owner token`(){
+    fun `updateSession() throws exception for non owner token`() {
         val player = playerFactory.createRandomPlayer()
         val game = gameFactory.createRandomGame()
         val session = gamingSessionFactory.createRandomGamingSession(game.id, player.id)
@@ -115,9 +115,8 @@ class GamingSessionsServicesTests : SessionServices(DataMem()) {
     }
 
     @Test
-    fun `updateSession() throws exception for capacity lower than number of players in gaming session`(){
-
-        val players = List(10){
+    fun `updateSession() throws exception for capacity lower than number of players in gaming session`() {
+        val players = List(10) {
             playerFactory.createRandomPlayer()
         }.toSet()
         val game = gameFactory.createRandomGame()
@@ -136,7 +135,7 @@ class GamingSessionsServicesTests : SessionServices(DataMem()) {
     }
 
     @Test
-    fun `update() throws exception for past date`(){
+    fun `update() throws exception for past date`() {
         val game = gameFactory.createRandomGame()
         val session = gamingSessionFactory.createRandomGamingSession(game.id, user.id)
         val capacity = Random.nextInt(2, session.maxCapacity)
@@ -222,7 +221,7 @@ class GamingSessionsServicesTests : SessionServices(DataMem()) {
     }
 
     @Test
-    fun `removePlayerFromSession() removes player successfully`(){
+    fun `removePlayerFromSession() removes player successfully`() {
         val game = gameFactory.createRandomGame()
         val player = playerFactory.createRandomPlayer()
         val session = gamingSessionFactory.createRandomGamingSession(game.id, user.id, setOf(player))
@@ -235,7 +234,7 @@ class GamingSessionsServicesTests : SessionServices(DataMem()) {
     }
 
     @Test
-    fun `removePlayerFromSession() throws exception for null player id`(){
+    fun `removePlayerFromSession() throws exception for null player id`() {
         val game = gameFactory.createRandomGame()
         val session = gamingSessionFactory.createRandomGamingSession(game.id, user.id)
         assertThrows<IllegalArgumentException> {
@@ -244,7 +243,7 @@ class GamingSessionsServicesTests : SessionServices(DataMem()) {
     }
 
     @Test
-    fun `removePlayerFromSession() throws exception for null session id`(){
+    fun `removePlayerFromSession() throws exception for null session id`() {
         val host = playerFactory.createRandomPlayer()
         assertThrows<IllegalArgumentException> {
             removePlayerFromSession(null, bearerToken, host.id)
