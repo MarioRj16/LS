@@ -2,35 +2,28 @@
 const API_BASE_URL = "http://localhost:9000/"
 
 function getHome(mainContent){
-
     const h1 = document.createElement("h1")
+    const searchGamesA = document.createElement("a")
+    const searchSessionsA = document.createElement("a")
+    const playerDetails = document.createElement("a")
     const text = document.createTextNode("Home")
+    const searchGamesTxt = document.createTextNode("Search Games")
+    const searchSessionsTxt = document.createTextNode("Search Sessions")
+    const playerDetailsTxt = document.createTextNode("Player Details")
+
     h1.appendChild(text)
+    searchSessionsA.appendChild(searchSessionsTxt)
+    searchGamesA.appendChild(searchGamesTxt)
+    playerDetails.appendChild(playerDetailsTxt)
     mainContent.replaceChildren(h1)
+    mainContent.appendChild(searchGamesA)
+    mainContent.appendChild(searchSessionsA)
+    mainContent.appendChild(playerDetails)
 }
 
-function getStudents(mainContent){
-    fetch(API_BASE_URL + "students")
-        .then(res => res.json())
-        .then(students => {
-            const div = document.createElement("div")
 
-            const h1 = document.createElement("h1")
-            const text = document.createTextNode("Students")
-            h1.appendChild(text)
-            div.appendChild(h1)
-
-            students.forEach(s => {
-                const p = document.createElement("p")
-                const a = document.createElement("a")
-                const aText = document.createTextNode("Link Example to students/" + s.number);
-                a.appendChild(aText)
-                a.href="#students/" + s.number
-                p.appendChild(a)
-                div.appendChild(p)
-            })
-            mainContent.replaceChildren(div)
-        })
+function searchGames(mainContent){
+    TODO()
 }
 
 function getStudent(mainContent){
@@ -54,10 +47,12 @@ function getStudent(mainContent){
         })
 }
 
+
+
 export const handlers = {
     getHome,
-    getStudent,
-    getStudents,
+    //getStudent,
+    //getStudents,
 }
 
 export default handlers
