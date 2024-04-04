@@ -14,11 +14,15 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
-      - name: Set up JDK 17
-        uses: actions/setup-java@v2
-        with:
-          java-version: 17
-          distribution: 'corretto'
+      - name: Install Corretto JDK
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y curl
+          sudo curl -O https://corretto.aws/downloads/latest/amazon-corretto-17-x64-linux-jdk.tar.gz
+          sudo tar xvf amazon-corretto-17-x64-linux-jdk.tar.gz -C /usr/lib/jvm/
+          export JAVA_HOME=/usr/lib/jvm/amazon-corretto-17
+          export PATH=$JAVA_HOME/bin:$PATH
+          java -version
 
       - name: Build with Gradle
         run: ./gradlew build
