@@ -1,6 +1,5 @@
 package pt.isel.ls.api
 
-import kotlinx.datetime.Clock
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.http4k.core.Request
@@ -12,6 +11,7 @@ import pt.isel.ls.logger
 import pt.isel.ls.utils.exceptions.AuthorizationException
 import pt.isel.ls.utils.exceptions.ConflictException
 import pt.isel.ls.utils.exceptions.ForbiddenException
+import java.sql.Timestamp
 
 abstract class APISchema {
     inline fun <reified T> Response.json(body: T): Response {
@@ -28,15 +28,19 @@ abstract class APISchema {
         }
     }
 
+/*
     fun getDate(request: Request): Response {
         return Response(Status.OK)
                 .header("content-type", "text/plain")
                 .body(Clock.System.now().toString())
     }
 
+ */
+
     fun logRequest(request: Request) {
         logger.info(
-                "incoming request: method={}, uri={}, content-type={} accept={}",
+                "{} -> incoming request: method={}, uri={}, content-type={} accept={}",
+                Timestamp(System.currentTimeMillis()),
                 request.method,
                 request.uri,
                 request.header("content-type"),
