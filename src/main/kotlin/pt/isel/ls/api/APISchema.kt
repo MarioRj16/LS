@@ -2,13 +2,16 @@ package pt.isel.ls.api
 
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status
 import org.postgresql.util.PSQLException
 import pt.isel.ls.api.models.ExceptionResponse
+import pt.isel.ls.logger
 import pt.isel.ls.utils.exceptions.AuthorizationException
 import pt.isel.ls.utils.exceptions.ConflictException
 import pt.isel.ls.utils.exceptions.ForbiddenException
+import java.sql.Timestamp
 
 abstract class APISchema {
     inline fun <reified T> Response.json(body: T): Response {
@@ -23,6 +26,26 @@ abstract class APISchema {
         } catch (e: Exception) {
             httpException(e)
         }
+    }
+
+/*
+    fun getDate(request: Request): Response {
+        return Response(Status.OK)
+                .header("content-type", "text/plain")
+                .body(Clock.System.now().toString())
+    }
+
+ */
+
+    fun logRequest(request: Request) {
+        logger.info(
+            "{} -> incoming request: method={}, uri={}, content-type={} accept={}",
+            Timestamp(System.currentTimeMillis()),
+            request.method,
+            request.uri,
+            request.header("content-type"),
+            request.header("accept"),
+        )
     }
 
     fun httpException(e: Exception): Response {

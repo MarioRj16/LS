@@ -3,11 +3,11 @@
 - Rafael Nicolau - 50546
 - Mário Carvalho - 50561
 
-## Phase 1
+## Phase 2
 
 ### Introduction
 
-This document contains the relevant design and implementation aspects of LS project's first phase.
+This document contains the relevant design and implementation aspects of LS project's second phase.
 
 ## Modeling the database
 
@@ -24,6 +24,7 @@ We highlight the following aspects:
 The conceptual model has the following restrictions:
 - Player's email and token as AK.
 - Game's name as AK.
+- Genre's name as AK.
 - GamingSession's date can´t be inserted with a date newer than the current date.
 - Capacity must be higher than 0.
 

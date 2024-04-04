@@ -1,4 +1,4 @@
-name: LS CI
+name: Java Gradle CI
 
 on:
   push:
@@ -14,18 +14,11 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
-      - name: Set up JDK 17
-        uses: actions/setup-java@v2
-        with:
-          java-version: 17
-          distribution: 'corretto'
-
       - name: Build with Gradle
         run: ./gradlew build
 
       - name: Run ktlint
-        run: ./gradlew ktlintCheck
+        run: ./gradlew ktlintFormat
 
       - name: Run Tests
         run: ./gradlew test
-

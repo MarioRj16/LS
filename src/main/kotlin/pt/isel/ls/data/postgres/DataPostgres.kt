@@ -1,7 +1,10 @@
 package pt.isel.ls.data.postgres
 
 import org.postgresql.ds.PGSimpleDataSource
-import pt.isel.ls.data.*
+import pt.isel.ls.data.Data
+import pt.isel.ls.data.GamesData
+import pt.isel.ls.data.GamingSessionsData
+import pt.isel.ls.data.PlayersData
 import pt.isel.ls.utils.postgres.runSQLScript
 
 class DataPostgres(connectionString: String) : Data {
