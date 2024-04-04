@@ -220,4 +220,46 @@ class GamingSessionsServicesTests : SessionServices(DataMem()) {
             addPlayerToSession(null, bearerToken)
         }
     }
+
+    @Test
+    fun `removePlayerFromSession() removes player successfully`(){
+        val game = gameFactory.createRandomGame()
+        val player = playerFactory.createRandomPlayer()
+        val session = gamingSessionFactory.createRandomGamingSession(game.id, user.id, setOf(player))
+        removePlayerFromSession(session.id, bearerToken, player.id)
+        val updatedSession = getSession(session.id, bearerToken)
+
+        assertTrue(session.players.contains(player))
+        assertTrue(session != updatedSession)
+        assertTrue(updatedSession.players.isEmpty())
+    }
+
+    @Test
+    fun `removePlayerFromSession() throws exception for null player id`(){
+        val game = gameFactory.createRandomGame()
+        val session = gamingSessionFactory.createRandomGamingSession(game.id, user.id)
+        assertThrows<IllegalArgumentException> {
+            removePlayerFromSession(session.id, bearerToken, null)
+        }
+    }
+
+    @Test
+    fun `removePlayerFromSession() throws exception for null session id`(){
+        val host = playerFactory.createRandomPlayer()
+        assertThrows<IllegalArgumentException> {
+            removePlayerFromSession(null, bearerToken, host.id)
+        }
+    }
+
+    @Test
+    fun `removePlayerFromSession() throws exception for non owner token`() {
+        val host = playerFactory.createRandomPlayer()
+        val player = playerFactory.createRandomPlayer()
+        val game = gameFactory.createRandomGame()
+        val session = gamingSessionFactory.createRandomGamingSession(game.id, host.id)
+
+        assertThrows<ForbiddenException> {
+            removePlayerFromSession(session.id, bearerToken, player.id)
+        }
+    }
 }

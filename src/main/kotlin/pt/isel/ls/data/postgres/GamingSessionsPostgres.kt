@@ -190,6 +190,21 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
         }
     }
 
+    override fun removePlayer(
+        sessionId: Int,
+        playerId: Int
+    ) = conn().useWithRollback{
+        val stm = it.prepareStatement(
+            """delete from players_sessions where gaming_session = ? and player = ?"""
+        ).apply {
+            setInt(1, sessionId)
+            setInt(2, playerId)
+        }
+
+        if(stm.executeUpdate() == 0)
+            throw SQLException("Player could not be removed from gaming session, no rows affected")
+    }
+
     override fun isOwner(
         sessionId: Int,
         playerId: Int,

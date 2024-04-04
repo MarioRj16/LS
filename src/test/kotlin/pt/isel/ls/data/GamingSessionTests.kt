@@ -7,6 +7,7 @@ import pt.isel.ls.DEFAULT_LIMIT
 import pt.isel.ls.DEFAULT_SKIP
 import pt.isel.ls.utils.minusDaysToCurrentDateTime
 import pt.isel.ls.utils.plusDaysToCurrentDateTime
+import pt.isel.ls.utils.plusMillisecondsToCurrentDateTime
 import kotlin.random.Random
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
@@ -129,6 +130,55 @@ class GamingSessionTests : AbstractDataTests() {
             val msToAdd = (secondsToAdd * 1000)
             Thread.sleep(msToAdd)
             gamingSessions.addPlayer(session.id, player.id)
+        }
+    }
+
+    @Test
+    fun `removePlayer() removes player from session successfully`(){
+        val game = gameFactory.createRandomGame()
+        val creator = playerFactory.createRandomPlayer()
+        val player = playerFactory.createRandomPlayer()
+        val session = gamingSessionFactory.createRandomGamingSession(game.id, creator.id, setOf(player))
+
+        gamingSessions.removePlayer(session.id, player.id)
+
+        val expected = gamingSessions.get(session.id).players
+        assertTrue(session.players.contains(player))
+        assertTrue(expected.isEmpty())
+    }
+
+    @Test
+    fun `removePlayer() throws exception for non existing player in session`(){
+        val game = gameFactory.createRandomGame()
+        val creator = playerFactory.createRandomPlayer()
+        val player = playerFactory.createRandomPlayer()
+        val session = gamingSessionFactory.createRandomGamingSession(game.id, creator.id)
+
+        assertThrows<IllegalArgumentException> {
+            gamingSessions.removePlayer(session.id, player.id)
+        }
+    }
+
+    @Test
+    fun `removePlayer() throws exception for non existing gaming session`(){
+        val player = playerFactory.createRandomPlayer()
+        assertThrows<NoSuchElementException> {
+            gamingSessions.removePlayer(1, player.id)
+        }
+    }
+
+    @Test
+    fun `removePlayer() throws exception for session past starting date`(){
+        val game = gameFactory.createRandomGame()
+        val creator = playerFactory.createRandomPlayer()
+        val player = playerFactory.createRandomPlayer()
+        val session = gamingSessionFactory.createRandomGamingSession(game.id, creator.id, setOf(player))
+        gamingSessions.update(session.id, plusMillisecondsToCurrentDateTime(3), session.maxCapacity)
+
+        Thread.sleep(5)
+
+        assertThrows<IllegalArgumentException> {
+            gamingSessions.removePlayer(session.id, player.id)
         }
     }
 

@@ -97,4 +97,18 @@ open class SessionServices(internal val db: Data) : ServicesSchema() {
         db.gamingSessions.addPlayer(sessionId, playerId)
         return playerId
     }
+
+    fun removePlayerFromSession(
+        sessionId: Int?,
+        authorization: String?,
+        playerId: Int?,
+    ){
+        requireNotNull(sessionId){ "Invalid argument id can't be null" }
+        requireNotNull(playerId){ "Invalid argument id can't be null" }
+        val user = bearerToken(authorization, db)
+        val session = db.gamingSessions.get(sessionId)
+        if(session.creatorId != user.id)
+            throw ForbiddenException("Changes can only be made by the creator of the session")
+        db.gamingSessions.removePlayer(sessionId, playerId)
+    }
 }

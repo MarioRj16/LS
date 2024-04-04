@@ -73,4 +73,14 @@ class SessionsAPI(private val services: SessionServices) : APISchema() {
             Response(Status.OK)
                 .json("Added player $id to session")
         }
+
+    fun removePlayerFromSession(request: Request): Response =
+        useWithException {
+            services.removePlayerFromSession(
+                request.path("sessionId")?.toInt(),
+                request.header("Authorization"),
+                request.path("playerId")?.toInt()
+            )
+            Response(Status.NO_CONTENT).json("")
+        }
 }

@@ -99,6 +99,18 @@ class GamingSessionsMem(
             gamingSessions.table[session]!!.copy(players = (gamingSessions.table[session]!!.players + playerToAdd))
     }
 
+    override fun removePlayer(sessionId: Int, playerId: Int) {
+        val session =
+            gamingSessions.table[sessionId]
+                ?: throw NoSuchElementException("Session $sessionId does not exist")
+        require(!session.startingDate.isPast()){ "Changes cannot be made to past gaming sessions" }
+        val player =
+            session.players.find { it.id == playerId }
+                ?: throw IllegalArgumentException("Player $playerId does not exist")
+        gamingSessions.table[sessionId] =
+            session.copy(players = (session.players - player))
+    }
+
     override fun isOwner(
         sessionId: Int,
         playerId: Int,

@@ -55,6 +55,20 @@ class GamingSessionsTests : IntegrationTests() {
     }
 
     @Test
+    fun removePlayerFromSession(){
+        val session =
+            GamingSessionFactory(db.gamingSessions).createRandomGamingSession(game.id, player.id, setOf(player))
+        val request =
+            Request(Method.DELETE, "$URI_PREFIX/sessions/${session.id}/players/${player.id}")
+                .json("")
+                .token(player.token)
+
+        client(request).apply {
+            assertEquals(Status.NO_CONTENT, status)
+        }
+    }
+
+    @Test
     fun searchSessions() {
         val requestBody = SessionSearch(game.id)
         val request =
