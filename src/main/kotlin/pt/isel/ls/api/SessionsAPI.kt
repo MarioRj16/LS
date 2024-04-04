@@ -9,6 +9,7 @@ import pt.isel.ls.services.SessionServices
 class SessionsAPI(private val services: SessionServices) : APISchema() {
     fun searchSessions(request: Request): Response =
         useWithException {
+            logRequest(request)
             Response(Status.OK)
                 .json(
                     services.searchSessions(
@@ -22,6 +23,7 @@ class SessionsAPI(private val services: SessionServices) : APISchema() {
 
     fun createSession(request: Request): Response =
         useWithException {
+            logRequest(request)
             Response(Status.CREATED)
                 .json(
                     services.createSession(
@@ -33,6 +35,7 @@ class SessionsAPI(private val services: SessionServices) : APISchema() {
 
     fun getSession(request: Request): Response =
         useWithException {
+            logRequest(request)
             Response(Status.OK)
                 .json(
                     services.getSession(
@@ -44,6 +47,7 @@ class SessionsAPI(private val services: SessionServices) : APISchema() {
 
     fun addPlayerToSession(request: Request): Response =
         useWithException {
+            logRequest(request)
             val id =
                 services.addPlayerToSession(
                     request.path("sessionId")?.toInt(),
