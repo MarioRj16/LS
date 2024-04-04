@@ -4,31 +4,35 @@ import org.http4k.routing.routes
 import pt.isel.ls.api.API
 
 class RoutesSite(api: API) {
-    private
-
 
     private val playerRoutes =
             routes(
-                    "player" bind Method.POST to api.playerAPI::createPlayer,
-                    "player/{playerId}" bind Method.GET to api.playerAPI::getPlayer,
+                    "playerHome" bind Method.GET to api,
+                    "player/{playerId}" bind Method.GET to api,
+                    "player/{playerId}" bind Method.POST to api
             )
     private val gameRoutes =
             routes(
-                    "games" bind Method.GET to api.gamesAPI::searchGames,
-                    "games" bind Method.POST to api.gamesAPI::createGame,
-                    "games/{gameId}" bind Method.GET to api.gamesAPI::getGame,
+                    "gamesSearch" bind Method.GET to api,
+                    "gamesSearch" bind Method.POST to api,
+                    "games" bind Method.GET to api,
+                    "games" bind Method.POST to api,
+                    "games/{gameId}" bind Method.GET to api,
+                    "games/{gameId}" bind Method.POST to api
             )
-    private val sessionRoutes =
+    private val gamingSessionRoutes =
             routes(
-                    "sessions" bind Method.GET to api.sessionsAPI::searchSessions,
-                    "sessions" bind Method.POST to api.sessionsAPI::createSession,
-                    "sessions/{sessionId}" bind Method.GET to api.sessionsAPI::getSession,
-                    "sessions/{sessionId}" bind Method.POST to api.sessionsAPI::addPlayerToSession,
+                    "gamingSessionsSearch" bind Method.GET to api,
+                    "gamingSessionsSearch" bind Method.POST to api,
+                    "gamingSessions" bind Method.GET to api,
+                    "gamingSessions" bind Method.POST to api,
+                    "gamingSessions/{gamingSessionId}" bind Method.GET to api,
+                    "gamingSessions/{gamingSessionId}" bind Method.POST to api,
             )
     val app =
             routes(
                     playerRoutes,
                     gameRoutes,
-                    sessionRoutes,
+                    gamingSessionRoutes,
             )
 }
