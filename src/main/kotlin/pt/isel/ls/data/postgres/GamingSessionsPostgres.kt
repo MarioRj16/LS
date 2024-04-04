@@ -125,6 +125,40 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
             return sessions.paginate(skip, limit)
         }
 
+    override fun update(sessionId: Int, newDateTime: LocalDateTime, newCapacity: Int): GamingSession =
+        conn().useWithRollback{
+            val stm2 = it.prepareStatement(
+                """
+                select * from players where player_id in (select player from players_sessions where gaming_session = ?)
+                """.trimIndent()
+            ).apply {
+                setInt(1, sessionId)
+            }
+
+            val resultSet2 = stm2.executeQuery()
+
+            val players = mutableSetOf<Player>()
+
+            while (resultSet2.next()){
+                players += resultSet2.toPlayer()
+            }
+
+            val stm =
+                it.prepareStatement(
+                """update gaming_sessions set capacity = ?, starting_date = ? where gaming_session_id = ? RETURNING *"""
+                ).apply {
+                    setInt(1, newCapacity)
+                    setTimestamp(2, newDateTime.toTimeStamp())
+                    setInt(3, sessionId)
+                }
+
+            val resultSet = stm.executeQuery()
+            while(resultSet.next()){
+                return resultSet.toGamingSession(players)
+            }
+            throw SQLException("Updating gaming session failed, no rows affected")
+        }
+
     override fun delete(sessionId: Int) =
         conn().useWithRollback {
             val stm =

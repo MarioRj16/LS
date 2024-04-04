@@ -18,15 +18,17 @@ class GamingSessionsTests {
 
     private val maxCapacitySetOfPlayers = mutableSetOf<Player>()
 
+    private fun generateRandomPlayer() =
+        Player(
+            Random.nextInt(1, validMaxCapacity),
+            generateRandomString(),
+            generateRandomEmail(),
+            UUID.randomUUID(),
+        )
+
     init {
         repeat(validMaxCapacity) {
-            maxCapacitySetOfPlayers +=
-                Player(
-                    Random.nextInt(1, validMaxCapacity),
-                    generateRandomString(),
-                    generateRandomEmail(),
-                    UUID.randomUUID(),
-                )
+            maxCapacitySetOfPlayers += generateRandomPlayer()
         }
         /**
          * There is the chance of having players with the same ID, that is not relevant since we are not testing the
@@ -127,6 +129,20 @@ class GamingSessionsTests {
 
         assertThrows<IllegalArgumentException> {
             GamingSession(0, validGameId, validCreatorId, validMaxCapacity, validStartingDate, emptySetOfPlayers)
+        }
+    }
+
+    @Test
+    fun `throws exception for maxCapacity lower than number of players in session`(){
+        assertThrows<IllegalArgumentException> {
+            GamingSession(
+                validSessionId,
+                validGameId,
+                validCreatorId,
+                validMaxCapacity,
+                validStartingDate,
+                (maxCapacitySetOfPlayers + generateRandomPlayer())
+            )
         }
     }
 }

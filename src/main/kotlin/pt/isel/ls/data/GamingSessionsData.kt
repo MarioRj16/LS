@@ -22,6 +22,8 @@ interface GamingSessionsData {
         skip: Int,
     ): List<GamingSession>
 
+    fun update(sessionId: Int, newDateTime: LocalDateTime, newCapacity: Int): GamingSession
+
     fun delete(sessionId: Int)
 
     fun addPlayer(

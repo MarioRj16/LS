@@ -6,9 +6,11 @@ import pt.isel.ls.DEFAULT_SKIP
 import pt.isel.ls.api.models.SessionCreate
 import pt.isel.ls.api.models.SessionResponse
 import pt.isel.ls.api.models.SessionSearch
+import pt.isel.ls.api.models.SessionUpdate
 import pt.isel.ls.data.Data
 import pt.isel.ls.domain.GamingSession
 import pt.isel.ls.utils.exceptions.ForbiddenException
+import pt.isel.ls.utils.isPast
 
 open class SessionServices(internal val db: Data) : ServicesSchema() {
     fun searchSessions(
@@ -52,6 +54,25 @@ open class SessionServices(internal val db: Data) : ServicesSchema() {
         requireNotNull(sessionId) { "Invalid argument id can't be null" }
         bearerToken(authorization, db)
         return db.gamingSessions.get(sessionId)
+    }
+
+    fun updateSession(
+        sessionId: Int?,
+        input: String,
+        authorization: String?
+    ): GamingSession{
+        requireNotNull(sessionId) { "Invalid argument id can't be null" }
+        val user = bearerToken(authorization, db)
+        val sessionUpdate = Json.decodeFromString<SessionUpdate>(input)
+        require(!sessionUpdate.startingDate.isPast()){ "LocalDateTime cannot be in past" }
+        val currentSession = db.gamingSessions.get(sessionId)
+        if(user.id != currentSession.creatorId)
+            throw ForbiddenException("Changes can only be made by the creator of the session")
+        require(currentSession.players.size <= sessionUpdate.capacity){
+            "Cannot update session capacity to a value lower than the number of players currently in session"
+        }
+
+        return db.gamingSessions.update(sessionId, sessionUpdate.startingDate, sessionUpdate.capacity)
     }
 
     fun deleteSession(

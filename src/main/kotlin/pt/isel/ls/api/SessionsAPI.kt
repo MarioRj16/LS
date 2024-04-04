@@ -42,14 +42,25 @@ class SessionsAPI(private val services: SessionServices) : APISchema() {
                 )
         }
 
+    fun updateSession(request: Request): Response =
+        useWithException {
+            Response(Status.OK)
+                .json(
+                    services.updateSession(
+                        request.path("sessionId")?.toInt(),
+                        request.bodyString(),
+                        request.header("Authorization")
+                    ),
+                )
+        }
+
     fun deleteSession(request: Request): Response =
         useWithException {
             services.deleteSession(
                 request.path("sessionId")?.toInt(),
                 request.header("Authorization"),
             )
-            Response(Status.OK)
-                .json("Session was deleted successfully")
+            Response(Status.NO_CONTENT).json("")
         }
 
     fun addPlayerToSession(request: Request): Response =

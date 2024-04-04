@@ -10,6 +10,7 @@ import pt.isel.ls.utils.factories.GameFactory
 import pt.isel.ls.utils.factories.GamingSessionFactory
 import pt.isel.ls.utils.factories.PlayerFactory
 import pt.isel.ls.utils.plusDaysToCurrentDateTime
+import kotlin.random.Random
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -63,6 +64,95 @@ class GamingSessionsServicesTests : SessionServices(DataMem()) {
     }
 
     @Test
+    fun `updateSession() updates gaming session successfully`(){
+        val game = gameFactory.createRandomGame()
+        val session = gamingSessionFactory.createRandomGamingSession(game.id, user.id)
+        val capacity = Random.nextInt(2, session.maxCapacity)
+        val input =
+            """
+            {
+                "capacity": $capacity,
+                "startingDate": "2028-04-02T15:30:00"
+            }
+            """.trimIndent()
+        val returnedSession = updateSession(session.id, input, bearerToken)
+        assertEquals(returnedSession, getSession(session.id, bearerToken))
+    }
+
+    @Test
+    fun `updateSession() throws exception for null id`(){
+        val game = gameFactory.createRandomGame()
+        val session = gamingSessionFactory.createRandomGamingSession(game.id, user.id)
+        val capacity = Random.nextInt(2, session.maxCapacity)
+        val input =
+            """
+            {
+                "capacity": $capacity,
+                "startingDate": "2028-04-02T15:30:00"
+            }
+            """.trimIndent()
+        assertThrows<IllegalArgumentException> { 
+            updateSession(null, input, bearerToken)
+        }
+    }
+
+    @Test
+    fun `updateSession() throws exception for non owner token`(){
+        val player = playerFactory.createRandomPlayer()
+        val game = gameFactory.createRandomGame()
+        val session = gamingSessionFactory.createRandomGamingSession(game.id, player.id)
+        val capacity = Random.nextInt(2, session.maxCapacity)
+        val input =
+            """
+            {
+                "capacity": $capacity,
+                "startingDate": "2028-04-02T15:30:00"
+            }
+            """.trimIndent()
+        assertThrows<ForbiddenException> {
+            updateSession(session.id, input, bearerToken)
+        }
+    }
+
+    @Test
+    fun `updateSession() throws exception for capacity lower than number of players in gaming session`(){
+
+        val players = List(10){
+            playerFactory.createRandomPlayer()
+        }.toSet()
+        val game = gameFactory.createRandomGame()
+        val session = gamingSessionFactory.createRandomGamingSession(game.id, user.id, players)
+        val capacity = Random.nextInt(2, players.size)
+        val input =
+            """
+            {
+                "capacity": $capacity,
+                "startingDate": "2028-04-02T15:30:00"
+            }
+            """.trimIndent()
+        assertThrows<IllegalArgumentException> {
+            updateSession(session.id, input, bearerToken)
+        }
+    }
+
+    @Test
+    fun `update() throws exception for past date`(){
+        val game = gameFactory.createRandomGame()
+        val session = gamingSessionFactory.createRandomGamingSession(game.id, user.id)
+        val capacity = Random.nextInt(2, session.maxCapacity)
+        val input =
+            """
+            {
+                "capacity": $capacity,
+                "startingDate": "2012-01-01T00:00:00"
+            }
+            """.trimIndent()
+        assertThrows<IllegalArgumentException> {
+            updateSession(session.id, input, bearerToken)
+        }
+    }
+
+    @Test
     fun `deleteSession() deletes gaming session successfully`() {
         val game = gameFactory.createRandomGame()
         val session = gamingSessionFactory.createRandomGamingSession(game.id, user.id)
@@ -85,7 +175,7 @@ class GamingSessionsServicesTests : SessionServices(DataMem()) {
     }
 
     @Test
-    fun `deleteSession throws exception for non owner token`() {
+    fun `deleteSession() throws exception for non owner token`() {
         val player = playerFactory.createRandomPlayer()
         val game = gameFactory.createRandomGame()
         val session = gamingSessionFactory.createRandomGamingSession(game.id, player.id)

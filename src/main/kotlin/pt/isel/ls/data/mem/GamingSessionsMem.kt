@@ -68,6 +68,15 @@ class GamingSessionsMem(
         return sessions.values.toList().paginate(skip, limit)
     }
 
+    override fun update(sessionId: Int, newDateTime: LocalDateTime, newCapacity: Int): GamingSession {
+        val session =
+            gamingSessions.table[sessionId]?.copy(maxCapacity = newCapacity, startingDate = newDateTime)
+                ?: throw NoSuchElementException("No gaming session with id $sessionId was found")
+
+        gamingSessions.table[sessionId] = session
+        return session
+    }
+
     override fun delete(sessionId: Int) {
         gamingSessions.table.remove(sessionId)
             ?: throw NoSuchElementException("The provided gaming session does not exist")

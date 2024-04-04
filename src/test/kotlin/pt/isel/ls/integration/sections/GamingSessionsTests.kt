@@ -8,12 +8,14 @@ import org.junit.jupiter.api.assertDoesNotThrow
 import pt.isel.ls.api.models.SessionCreate
 import pt.isel.ls.api.models.SessionResponse
 import pt.isel.ls.api.models.SessionSearch
+import pt.isel.ls.api.models.SessionUpdate
 import pt.isel.ls.domain.GamingSession
 import pt.isel.ls.integration.IntegrationTests
 import pt.isel.ls.utils.factories.GameFactory
 import pt.isel.ls.utils.factories.GamingSessionFactory
 import pt.isel.ls.utils.factories.PlayerFactory
 import pt.isel.ls.utils.plusDaysToCurrentDateTime
+import kotlin.random.Random
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
@@ -72,12 +74,28 @@ class GamingSessionsTests : IntegrationTests() {
     }
 
     @Test
+    fun updateSession(){
+        val session = GamingSessionFactory(db.gamingSessions).createRandomGamingSession(game.id, user!!.playerId)
+        val requestBody =
+            SessionUpdate(Random.nextInt(2, session.maxCapacity), plusDaysToCurrentDateTime(1))
+        val request =
+            Request(Method.PUT, "$URI_PREFIX/sessions/${session.id}").json(requestBody).token(user!!.token)
+        client(request).apply {
+            assertEquals(Status.OK, status)
+            val response = Json.decodeFromString<GamingSession>(bodyString())
+            val expectedSession =
+                session.copy(maxCapacity = requestBody.capacity, startingDate = requestBody.startingDate)
+            assertEquals(expectedSession, response)
+        }
+    }
+
+    @Test
     fun deleteSession() {
         val session = GamingSessionFactory(db.gamingSessions).createRandomGamingSession(game.id, user!!.playerId)
         val request =
             Request(Method.DELETE, "$URI_PREFIX/sessions/${session.id}").json("").token(user!!.token)
         client(request).apply {
-            assertEquals(Status.OK, status)
+            assertEquals(Status.NO_CONTENT, status)
         }
     }
 
