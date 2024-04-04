@@ -18,6 +18,7 @@ class GamingSessionsMem(
         capacity: Int,
         game: Int,
         date: LocalDateTime,
+        playerId: Int,
     ): GamingSession {
         require(capacity >= 1) { "The session capacity has to be at least 1" }
         require(!date.isPast()) {
@@ -28,9 +29,10 @@ class GamingSessionsMem(
             GamingSession(
                 gamingSessions.nextId.get(),
                 game,
+                playerId,
                 capacity,
                 date,
-                emptySet<Player>(),
+                emptySet(),
             )
         gamingSessions.table[gamingSessions.nextId.get()] = obj
         return obj
@@ -66,6 +68,20 @@ class GamingSessionsMem(
         return sessions.values.toList().paginate(skip, limit)
     }
 
+    override fun update(sessionId: Int, newDateTime: LocalDateTime, newCapacity: Int): GamingSession {
+        val session =
+            gamingSessions.table[sessionId]?.copy(maxCapacity = newCapacity, startingDate = newDateTime)
+                ?: throw NoSuchElementException("No gaming session with id $sessionId was found")
+
+        gamingSessions.table[sessionId] = session
+        return session
+    }
+
+    override fun delete(sessionId: Int) {
+        gamingSessions.table.remove(sessionId)
+            ?: throw NoSuchElementException("The provided gaming session does not exist")
+    }
+
     override fun addPlayer(
         session: Int,
         player: Int,
@@ -81,5 +97,27 @@ class GamingSessionsMem(
         }
         gamingSessions.table[session] =
             gamingSessions.table[session]!!.copy(players = (gamingSessions.table[session]!!.players + playerToAdd))
+    }
+
+    override fun removePlayer(sessionId: Int, playerId: Int) {
+        val session =
+            gamingSessions.table[sessionId]
+                ?: throw NoSuchElementException("Session $sessionId does not exist")
+        require(!session.startingDate.isPast()){ "Changes cannot be made to past gaming sessions" }
+        val player =
+            session.players.find { it.id == playerId }
+                ?: throw IllegalArgumentException("Player $playerId does not exist")
+        gamingSessions.table[sessionId] =
+            session.copy(players = (session.players - player))
+    }
+
+    override fun isOwner(
+        sessionId: Int,
+        playerId: Int,
+    ): Boolean {
+        val session =
+            gamingSessions.table[sessionId]
+                ?: throw NoSuchElementException("Session $sessionId does not exist")
+        return session.creatorId == playerId
     }
 }

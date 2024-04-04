@@ -13,12 +13,12 @@ import kotlin.test.assertEquals
 class HTTPResponseTests : APISchema() {
     @Test
     fun `json() returns response with body in json successfully`() {
-        val testData = Genre("FPS")
+        val testData = Genre(1, "FPS")
 
         val response = Response(Status.OK).json(testData)
 
         assertEquals("application/json", response.header("content-type"))
-        assertEquals("""{"genre":"FPS"}""", response.bodyString())
+        assertEquals("""{"genreId":1,"name":"FPS"}""", response.bodyString())
     }
 
     @Test

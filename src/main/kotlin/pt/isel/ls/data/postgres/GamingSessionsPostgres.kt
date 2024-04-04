@@ -18,6 +18,7 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
         capacity: Int,
         game: Int,
         date: LocalDateTime,
+        playerId: Int,
     ): GamingSession =
         conn().useWithRollback {
             val statement =
@@ -37,7 +38,7 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
             val generatedKeys = statement.generatedKeys
 
             if (generatedKeys.next()) {
-                return GamingSession(generatedKeys.getInt(1), game, capacity, date, emptySet())
+                return GamingSession(generatedKeys.getInt(1), game, playerId, capacity, date, emptySet())
             }
             throw SQLException("Creating gaming session failed, no ID was created")
         }
@@ -124,6 +125,52 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
             return sessions.paginate(skip, limit)
         }
 
+    override fun update(sessionId: Int, newDateTime: LocalDateTime, newCapacity: Int): GamingSession =
+        conn().useWithRollback{
+            val stm2 = it.prepareStatement(
+                """
+                select * from players where player_id in (select player from players_sessions where gaming_session = ?)
+                """.trimIndent()
+            ).apply {
+                setInt(1, sessionId)
+            }
+
+            val resultSet2 = stm2.executeQuery()
+
+            val players = mutableSetOf<Player>()
+
+            while (resultSet2.next()){
+                players += resultSet2.toPlayer()
+            }
+
+            val stm =
+                it.prepareStatement(
+                """update gaming_sessions set capacity = ?, starting_date = ? where gaming_session_id = ? RETURNING *"""
+                ).apply {
+                    setInt(1, newCapacity)
+                    setTimestamp(2, newDateTime.toTimeStamp())
+                    setInt(3, sessionId)
+                }
+
+            val resultSet = stm.executeQuery()
+            while(resultSet.next()){
+                return resultSet.toGamingSession(players)
+            }
+            throw SQLException("Updating gaming session failed, no rows affected")
+        }
+
+    override fun delete(sessionId: Int) =
+        conn().useWithRollback {
+            val stm =
+                it.prepareStatement("""delete from gaming_sessions where gaming_session_id = ?""").apply {
+                    setInt(1, sessionId)
+                }
+
+            if (stm.executeUpdate() == 0) {
+                throw SQLException("Gaming session could not be deleted, no rows affected")
+            }
+        }
+
     override fun addPlayer(
         session: Int,
         player: Int,
@@ -142,4 +189,39 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
             throw SQLException("Adding player to session failed, no rows affected")
         }
     }
+
+    override fun removePlayer(
+        sessionId: Int,
+        playerId: Int
+    ) = conn().useWithRollback{
+        val stm = it.prepareStatement(
+            """delete from players_sessions where gaming_session = ? and player = ?"""
+        ).apply {
+            setInt(1, sessionId)
+            setInt(2, playerId)
+        }
+
+        if(stm.executeUpdate() == 0)
+            throw SQLException("Player could not be removed from gaming session, no rows affected")
+    }
+
+    override fun isOwner(
+        sessionId: Int,
+        playerId: Int,
+    ): Boolean =
+        conn().useWithRollback {
+            val stm =
+                it.prepareStatement("""select * from gaming_sessions where gaming_session_id = ?""")
+                    .apply {
+                        setInt(1, sessionId)
+                        setInt(2, playerId)
+                    }
+
+            val resultSet = stm.executeQuery()
+
+            if (resultSet.next()) {
+                return resultSet.toGamingSession(emptySet()).creatorId == playerId
+            }
+            throw NoSuchElementException("No session $sessionId was found")
+        }
 }

@@ -8,6 +8,7 @@ interface GamingSessionsData {
         capacity: Int,
         game: Int,
         date: LocalDateTime,
+        playerId: Int,
     ): GamingSession
 
     fun get(sessionId: Int): GamingSession
@@ -21,8 +22,22 @@ interface GamingSessionsData {
         skip: Int,
     ): List<GamingSession>
 
+    fun update(sessionId: Int, newDateTime: LocalDateTime, newCapacity: Int): GamingSession
+
+    fun delete(sessionId: Int)
+
     fun addPlayer(
         session: Int,
         player: Int,
     )
+
+    fun removePlayer(
+        sessionId: Int,
+        playerId: Int
+    )
+
+    fun isOwner(
+        sessionId: Int,
+        playerId: Int,
+    ): Boolean
 }

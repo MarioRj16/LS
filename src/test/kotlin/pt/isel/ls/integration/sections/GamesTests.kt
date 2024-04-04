@@ -22,7 +22,7 @@ class GamesTests : IntegrationTests() {
 
     @Test
     fun createGame() {
-        val requestBody = GameCreate("Test", "developer1", setOf(Genre("Horror")))
+        val requestBody = GameCreate("Test", "developer1", setOf(Genre(1, "Horror")))
         val request =
             Request(Method.POST, "$URI_PREFIX/games")
                 .json(requestBody)
@@ -55,7 +55,7 @@ class GamesTests : IntegrationTests() {
 
     @Test
     fun searchGames() {
-        val requestBody = GameSearch("Developer1", setOf(Genre("RPG")))
+        val requestBody = GameSearch("Developer1", setOf(Genre(1, "RPG")))
         val request =
             Request(Method.GET, "$URI_PREFIX/games")
                 .json(requestBody)
@@ -65,7 +65,7 @@ class GamesTests : IntegrationTests() {
                 assertEquals(Status.OK, status)
                 val response = Json.decodeFromString<List<Game>>(bodyString())
                 assertTrue {
-                    list.filter { it.developer == "Developer1" && it.genres.contains(Genre("RPG")) }
+                    list.filter { it.developer == "Developer1" && it.genres.contains(Genre(1, "RPG")) }
                         .all { x ->
                             response.contains(x)
                         }

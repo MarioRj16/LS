@@ -23,6 +23,9 @@ class Routes(api: API) {
             "sessions" bind Method.POST to api.sessionsAPI::createSession,
             "sessions/{sessionId}" bind Method.GET to api.sessionsAPI::getSession,
             "sessions/{sessionId}" bind Method.POST to api.sessionsAPI::addPlayerToSession,
+            "sessions/{sessionId}" bind Method.PUT to api.sessionsAPI::updateSession,
+            "sessions/{sessionId}" bind Method.DELETE to api.sessionsAPI::deleteSession,
+            "sessions/{sessionId}/players/{playerId}" bind Method.DELETE to api.sessionsAPI::removePlayerFromSession
         )
     val app =
         routes(

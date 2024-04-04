@@ -9,7 +9,17 @@ import kotlin.random.Random
 class GameFactory(private val games: GamesData) {
     private val developers = listOf("Developer1", "Developer2", "Developer3")
     private val genres =
-        listOf("Action", "Adventure", "RPG", "Strategy", "Puzzle", "Simulation").map { Genre(it) }.toSet()
+        listOf(
+            "Action",
+            "Adventure",
+            "RPG",
+            "Strategy",
+            "Puzzle",
+            "Simulation",
+        ).mapIndexed {
+                idx, name ->
+            Genre(idx, name)
+        }.toSet()
 
     fun createRandomGame(): Game {
         val randomDeveloper = developers.random()

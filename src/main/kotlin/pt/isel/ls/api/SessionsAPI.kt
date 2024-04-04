@@ -45,6 +45,27 @@ class SessionsAPI(private val services: SessionServices) : APISchema() {
                 )
         }
 
+    fun updateSession(request: Request): Response =
+        useWithException {
+            Response(Status.OK)
+                .json(
+                    services.updateSession(
+                        request.path("sessionId")?.toInt(),
+                        request.bodyString(),
+                        request.header("Authorization")
+                    ),
+                )
+        }
+
+    fun deleteSession(request: Request): Response =
+        useWithException {
+            services.deleteSession(
+                request.path("sessionId")?.toInt(),
+                request.header("Authorization"),
+            )
+            Response(Status.NO_CONTENT).json("")
+        }
+
     fun addPlayerToSession(request: Request): Response =
         useWithException {
             logRequest(request)
@@ -55,5 +76,15 @@ class SessionsAPI(private val services: SessionServices) : APISchema() {
                 )
             Response(Status.OK)
                 .json("Added player $id to session")
+        }
+
+    fun removePlayerFromSession(request: Request): Response =
+        useWithException {
+            services.removePlayerFromSession(
+                request.path("sessionId")?.toInt(),
+                request.header("Authorization"),
+                request.path("playerId")?.toInt()
+            )
+            Response(Status.NO_CONTENT).json("")
         }
 }

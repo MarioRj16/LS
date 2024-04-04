@@ -12,12 +12,12 @@ import kotlin.test.assertTrue
 class GamesTests : AbstractDataTests() {
     private val genres =
         listOf(
-            Genre("Role Playing Game"),
-            Genre("Action"),
-            Genre("First Person Shooter"),
-            Genre("Simulation"),
-            Genre("Sports"),
-        )
+            "Role Playing Game",
+            "Action",
+            "First Person Shooter",
+            "Simulation",
+            "Sports",
+        ).mapIndexed { idx, name -> Genre(idx, name) }
 
     @Test
     fun `create() return game successfully`() {

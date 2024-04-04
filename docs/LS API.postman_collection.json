@@ -279,6 +279,30 @@
 				"url": "http://localhost:8000/sessions/1"
 			},
 			"response": []
+		},
+		{
+			"name": "deleteSession",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{BearerToken}}"
+					}
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8000/sessions/1"
+			},
+			"response": []
 		}
 	],
 	"event": [

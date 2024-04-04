@@ -59,7 +59,7 @@ class GamesPostgres(private val conn: () -> Connection) : GamesData {
                         var counter = 1
                         for (genre in genres) {
                             setInt(counter++, game.id)
-                            setString(counter++, genre.genre)
+                            setInt(counter++, genre.genreId)
                         }
                     }
 
@@ -183,7 +183,7 @@ class GamesPostgres(private val conn: () -> Connection) : GamesData {
                 ).apply {
                     var parameterIdx = 1
 
-                    genres?.forEach { genre -> setString(parameterIdx++, genre.genre) }
+                    genres?.forEach { genre -> setString(parameterIdx++, genre.name) }
                     developer?.let { setString(parameterIdx, developer) }
                 }
 
