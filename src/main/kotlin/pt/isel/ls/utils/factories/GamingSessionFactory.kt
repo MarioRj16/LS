@@ -13,11 +13,12 @@ class GamingSessionFactory(private val gamingSessions: GamingSessionsData) {
         players: Set<Player> = emptySet<Player>(),
     ): GamingSession {
         val randomCapacity =
-            if(players.size >= 2) Random.nextInt(players.size, 33) else Random.nextInt(2, 33)
+            if (players.size >= 2) Random.nextInt(players.size, 33) else Random.nextInt(2, 33)
         val session = gamingSessions.create(randomCapacity, gameId, plusDaysToCurrentDateTime(), playerId)
-        if (players.isEmpty())
+        if (players.isEmpty()) {
             return session
-        players.forEach{
+        }
+        players.forEach {
             gamingSessions.addPlayer(session.id, it.id)
         }
         return gamingSessions.get(session.id)

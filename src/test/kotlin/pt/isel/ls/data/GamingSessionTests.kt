@@ -138,7 +138,7 @@ class GamingSessionTests : AbstractDataTests() {
     }
 
     @Test
-    fun `removePlayer() removes player from session successfully`(){
+    fun `removePlayer() removes player from session successfully`() {
         val game = gameFactory.createRandomGame()
         val creator = playerFactory.createRandomPlayer()
         val player = playerFactory.createRandomPlayer()
@@ -152,7 +152,7 @@ class GamingSessionTests : AbstractDataTests() {
     }
 
     @Test
-    fun `removePlayer() throws exception for non existing player in session`(){
+    fun `removePlayer() throws exception for non existing player in session`() {
         val game = gameFactory.createRandomGame()
         val creator = playerFactory.createRandomPlayer()
         val player = playerFactory.createRandomPlayer()
@@ -164,7 +164,7 @@ class GamingSessionTests : AbstractDataTests() {
     }
 
     @Test
-    fun `removePlayer() throws exception for non existing gaming session`(){
+    fun `removePlayer() throws exception for non existing gaming session`() {
         val player = playerFactory.createRandomPlayer()
         assertThrows<NoSuchElementException> {
             gamingSessions.removePlayer(1, player.id)
@@ -172,7 +172,7 @@ class GamingSessionTests : AbstractDataTests() {
     }
 
     @Test
-    fun `removePlayer() throws exception for session past starting date`(){
+    fun `removePlayer() throws exception for session past starting date`() {
         val game = gameFactory.createRandomGame()
         val creator = playerFactory.createRandomPlayer()
         val player = playerFactory.createRandomPlayer()
@@ -187,7 +187,7 @@ class GamingSessionTests : AbstractDataTests() {
     }
 
     @Test
-    fun `update() updates gaming session successfully`(){
+    fun `update() updates gaming session successfully`() {
         val player = playerFactory.createRandomPlayer()
         val game = gameFactory.createRandomGame()
         val session = gamingSessionFactory.createRandomGamingSession(game.id, player.id)
@@ -200,7 +200,7 @@ class GamingSessionTests : AbstractDataTests() {
     }
 
     @Test
-    fun `update() throws exception for non existing gaming session`(){
+    fun `update() throws exception for non existing gaming session`() {
         val newDate = plusDaysToCurrentDateTime()
         val newCapacity = 2
         assertThrows<NoSuchElementException> {

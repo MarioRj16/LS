@@ -103,7 +103,7 @@ class GamingSessionsMem(
         val session =
             gamingSessions.table[sessionId]
                 ?: throw NoSuchElementException("Session $sessionId does not exist")
-        require(!session.startingDate.isPast()){ "Changes cannot be made to past gaming sessions" }
+        require(!session.startingDate.isPast()) { "Changes cannot be made to past gaming sessions" }
         val player =
             session.players.find { it.id == playerId }
                 ?: throw IllegalArgumentException("Player $playerId does not exist")
