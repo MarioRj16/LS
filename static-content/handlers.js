@@ -1,5 +1,5 @@
 
-const API_BASE_URL = "http://localhost:9000/"
+const API_BASE_URL = `http://localhost:8000`
 
 function getHome(mainContent){
     const h1 = document.createElement("h1")
@@ -23,36 +23,63 @@ function getHome(mainContent){
 
 
 function searchGames(mainContent){
-    TODO()
+    const developerInput = document.createElement("");
+    const genresInput =document.createElement("");
+
+    developerInput.setAttribute("type", "text");
+    genresInput.setAttribute("type", "text");
 }
 
-function getStudent(mainContent){
-    fetch(API_BASE_URL + "students/10")
-        .then(res => res.json())
-        .then(student => {
-            const ulStd = document.createElement("ul")
+function searchGamingSessions(mainContent){
 
-            const liName = document.createElement("li")
-            const textName = document.createTextNode("Name : " + student.name)
-            liName.appendChild(textName)
-
-            const liNumber = document.createElement("li")
-            const textNumber = document.createTextNode("Number : " + student.number)
-            liNumber.appendChild(textNumber)
-
-            ulStd.appendChild(liName)
-            ulStd.appendChild(liNumber)
-
-            mainContent.replaceChildren(ulStd)
-        })
 }
 
+function games(mainContent){
 
+}
+
+function gamingSessions(mainContent){
+
+}
+
+function gameDetails(mainContent){
+
+}
+
+function sessionDetails(mainContent){
+
+}
+
+function playerDetails(mainContent){
+
+}
+
+/**
+ *  fetch(API_BASE_URL + "students/10")
+ *         .then(res => res.json())
+ *         .then(student => {
+ *             const ulStd = document.createElement("ul")
+ *
+ *             const liName = document.createElement("li")
+ *             const textName = document.createTextNode("Name : " + student.name)
+ *             liName.appendChild(textName)
+ *
+ *             const liNumber = document.createElement("li")
+ *             const textNumber = document.createTextNode("Number : " + student.number)
+ *             liNumber.appendChild(textNumber)
+ *
+ *             ulStd.appendChild(liName)
+ *             ulStd.appendChild(liNumber)
+ *
+ *             mainContent.replaceChildren(ulStd)
+ *         })
+ * @type {{getHome: getHome, searchGames: searchGames}}
+ */
 
 export const handlers = {
     getHome,
-    //getStudent,
-    //getStudents,
+    searchGames,
+
 }
 
 export default handlers
