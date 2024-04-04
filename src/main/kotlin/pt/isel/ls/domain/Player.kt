@@ -5,7 +5,6 @@ import pt.isel.ls.utils.UUIDSerializer
 import pt.isel.ls.utils.emailIsValid
 import java.util.*
 
-@Serializable
 data class Player(
     val id: Int,
     val name: String,

@@ -39,12 +39,12 @@ abstract class APISchema {
 
     fun logRequest(request: Request) {
         logger.info(
-                "{} -> incoming request: method={}, uri={}, content-type={} accept={}",
-                Timestamp(System.currentTimeMillis()),
-                request.method,
-                request.uri,
-                request.header("content-type"),
-                request.header("accept"),
+            "{} -> incoming request: method={}, uri={}, content-type={} accept={}",
+            Timestamp(System.currentTimeMillis()),
+            request.method,
+            request.uri,
+            request.header("content-type"),
+            request.header("accept"),
         )
     }
 

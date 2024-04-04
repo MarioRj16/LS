@@ -6,7 +6,6 @@ import org.http4k.routing.routes
 import pt.isel.ls.api.API
 
 class Routes(api: API) {
-
     private val playerRoutes =
         routes(
             "player" bind Method.POST to api.playerAPI::createPlayer,

@@ -8,8 +8,6 @@ import pt.isel.ls.api.models.GameResponse
 import pt.isel.ls.services.GamesServices
 
 class GamesAPI(private val services: GamesServices) : APISchema() {
-
-
     fun searchGames(request: Request): Response =
         useWithException {
             logRequest(request)

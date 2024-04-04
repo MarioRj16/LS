@@ -1,7 +1,10 @@
 package pt.isel.ls.data.postgres
 
 import org.postgresql.ds.PGSimpleDataSource
-import pt.isel.ls.data.*
+import pt.isel.ls.data.Data
+import pt.isel.ls.data.GamesData
+import pt.isel.ls.data.GamingSessionsData
+import pt.isel.ls.data.PlayersData
 import pt.isel.ls.utils.postgres.runSQLScript
 
 class DataPostgres(connectionString: String) : Data {
@@ -12,12 +15,12 @@ class DataPostgres(connectionString: String) : Data {
             it.autoCommit = false
         }
 
-    fun create()  {
+    fun create() {
         conn().runSQLScript("createSchema.sql")
         conn().runSQLScript("createGenres.sql")
     }
 
-    fun delete()  {
+    fun delete() {
         conn().runSQLScript("deleteSchema.sql")
     }
 
@@ -25,7 +28,7 @@ class DataPostgres(connectionString: String) : Data {
         conn().runSQLScript("reset.sql")
     }
 
-    fun populate()  {
+    fun populate() {
         conn().runSQLScript("populate.sql")
     }
 

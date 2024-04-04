@@ -2,11 +2,9 @@ package pt.isel.ls
 
 import org.http4k.server.Jetty
 import org.http4k.server.asServer
-import org.slf4j.LoggerFactory
 import pt.isel.ls.api.API
 import pt.isel.ls.data.postgres.DataPostgres
 import pt.isel.ls.services.Services
-
 
 fun main() {
     /**

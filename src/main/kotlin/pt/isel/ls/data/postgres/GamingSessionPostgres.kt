@@ -122,11 +122,10 @@ class GamingSessionPostgres(private val conn: () -> Connection) : GamingSessions
             var previousSessionId: Int? = null
             while (resultSet.next()) {
                 val currentSessionId = resultSet.getInt("gaming_session_id")
-                if (previousSessionId != currentSessionId && previousSessionId != null)
-                    {
-                        sessions += resultSet.toPreviousGamingSession(players.toSet(), previousSessionId)
-                        players.clear()
-                    }
+                if (previousSessionId != currentSessionId && previousSessionId != null) {
+                    sessions += resultSet.toPreviousGamingSession(players.toSet(), previousSessionId)
+                    players.clear()
+                }
                 if (resultSet.getInt("player_id") != 0)players += resultSet.toPlayer()
                 previousSessionId = currentSessionId
             }
