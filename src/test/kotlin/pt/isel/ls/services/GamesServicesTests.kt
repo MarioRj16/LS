@@ -3,6 +3,8 @@ package pt.isel.ls.services
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import pt.isel.ls.api.models.GameCreate
+import pt.isel.ls.api.models.GameSearch
 import pt.isel.ls.data.mem.DataMem
 import pt.isel.ls.domain.Genre
 import pt.isel.ls.domain.Player
@@ -31,20 +33,8 @@ class GamesServicesTests : GamesServices(DataMem()) {
         val name = generateRandomString()
         val developer = generateRandomString()
         val genre = Genre(1, "Action")
-        val input =
-            """
-            {
-                "name": "$name",
-                "developer": "$developer",
-                "genres": [
-                    {
-                        "genreId": ${genre.genreId}
-                        "name": "${genre.name}"
-                    }
-                ]
-            }
-            """.trimIndent()
-        val gameId = createGame(input, bearerToken)
+        val gameCreate = GameCreate(name, developer, setOf(genre))
+        val gameId = createGame(gameCreate, bearerToken)
         assertTrue(gameId == 1)
     }
 
@@ -67,8 +57,7 @@ class GamesServicesTests : GamesServices(DataMem()) {
         val game1 = gameFactory.createRandomGame()
         val game2 = gameFactory.createRandomGame()
         val game3 = gameFactory.createRandomGame()
-        val input = "{}"
-        val searchResults = searchGames(input, bearerToken, null, null)
+        val searchResults = searchGames(GameSearch(), bearerToken, null, null)
         assertTrue(searchResults.size == 3)
         assertContains(searchResults, game1)
         assertContains(searchResults, game2)

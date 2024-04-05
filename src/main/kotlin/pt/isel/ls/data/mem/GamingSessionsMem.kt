@@ -1,6 +1,8 @@
 package pt.isel.ls.data.mem
 
 import kotlinx.datetime.LocalDateTime
+import pt.isel.ls.api.models.SessionSearch
+import pt.isel.ls.api.models.SessionUpdate
 import pt.isel.ls.data.GamingSessionsData
 import pt.isel.ls.domain.Game
 import pt.isel.ls.domain.GamingSession
@@ -44,33 +46,37 @@ class GamingSessionsMem(
     }
 
     override fun search(
-        game: Int,
-        date: LocalDateTime?,
-        isOpen: Boolean?,
-        player: Int?,
+        sessionParameters: SessionSearch,
         limit: Int,
         skip: Int,
     ): List<GamingSession> {
+        val (game, date, state, player) = sessionParameters
         games.table[game] ?: throw NoSuchElementException("No game with id $game was found")
         var sessions = gamingSessions.table.filter { (_, value) -> value.gameId == game }
+
         if (sessions.isEmpty()) {
             return sessions.values.toList()
         }
 
-        if (player is Int) {
+        if (player != null) {
             sessions = sessions.filter { (_, value) -> value.players.find { it.id == player } is Player }
         }
 
-        if (date is LocalDateTime) {
+        if (state != null) {
+            sessions = sessions.filter { (_, value) -> value.state == state }
+        }
+
+        if (date != null) {
             return sessions.values.filter { it.startingDate == date }
         }
 
         return sessions.values.toList().paginate(skip, limit)
     }
 
-    override fun update(sessionId: Int, newDateTime: LocalDateTime, newCapacity: Int): GamingSession {
+    override fun update(sessionId: Int, sessionUpdate: SessionUpdate): GamingSession {
+        val (capacity, startingDate) = sessionUpdate
         val session =
-            gamingSessions.table[sessionId]?.copy(maxCapacity = newCapacity, startingDate = newDateTime)
+            gamingSessions.table[sessionId]?.copy(maxCapacity = capacity, startingDate = startingDate)
                 ?: throw NoSuchElementException("No gaming session with id $sessionId was found")
 
         gamingSessions.table[sessionId] = session

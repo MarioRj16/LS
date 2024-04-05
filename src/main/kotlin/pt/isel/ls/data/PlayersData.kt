@@ -1,12 +1,12 @@
 package pt.isel.ls.data
 
+import pt.isel.ls.api.models.PlayerCreate
 import pt.isel.ls.domain.Player
 import java.util.*
 
 interface PlayersData {
     fun create(
-        name: String,
-        email: String,
+        playerCreate: PlayerCreate,
     ): Player
 
     fun get(id: Int): Player

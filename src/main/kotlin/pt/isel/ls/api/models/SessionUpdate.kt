@@ -4,4 +4,4 @@ import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.Serializable
 
 @Serializable
-class SessionUpdate(val capacity: Int, val startingDate: LocalDateTime)
+data class SessionUpdate(val capacity: Int, val startingDate: LocalDateTime)

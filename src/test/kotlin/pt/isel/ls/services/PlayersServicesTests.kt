@@ -3,6 +3,7 @@ package pt.isel.ls.services
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import pt.isel.ls.api.models.PlayerCreate
 import pt.isel.ls.data.mem.DataMem
 import pt.isel.ls.domain.Player
 import pt.isel.ls.utils.factories.PlayerFactory
@@ -24,13 +25,7 @@ class PlayersServicesTests : PlayerServices(DataMem()) {
     fun `createPlayer() returns player successfully`() {
         val name = "testName"
         val email = "testEmail@gmail.com"
-        val playerInfo =
-            """
-            {
-                "name": "$name",
-                "email": "$email"
-            }
-            """.trimIndent()
+        val playerInfo = PlayerCreate(name, email)
         val player = createPlayer(playerInfo)
         assertEquals(name, player.name)
         assertEquals(email, player.email)

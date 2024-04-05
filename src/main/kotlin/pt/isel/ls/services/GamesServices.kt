@@ -1,6 +1,5 @@
 package pt.isel.ls.services
 
-import kotlinx.serialization.json.Json
 import pt.isel.ls.DEFAULT_LIMIT
 import pt.isel.ls.DEFAULT_SKIP
 import pt.isel.ls.api.models.GameCreate
@@ -10,28 +9,25 @@ import pt.isel.ls.domain.Game
 
 open class GamesServices(internal val db: Data) : ServicesSchema() {
     fun searchGames(
-        input: String,
+        searchParameters: GameSearch,
         authorization: String?,
         skip: Int?,
         limit: Int?,
     ): List<Game> {
         bearerToken(authorization, db)
-        val gameInput = Json.decodeFromString<GameSearch>(input)
         return db.games.search(
-            gameInput.developer,
-            gameInput.genres,
+            searchParameters,
             limit ?: DEFAULT_LIMIT,
             skip ?: DEFAULT_SKIP,
         )
     }
 
     fun createGame(
-        input: String,
+        gameInput: GameCreate,
         authorization: String?,
     ): Int {
         bearerToken(authorization, db)
-        val gameInput = Json.decodeFromString<GameCreate>(input)
-        val game = db.games.create(gameInput.name, gameInput.developer, gameInput.genres)
+        val game = db.games.create(gameInput)
         return game.id
     }
 
@@ -41,6 +37,6 @@ open class GamesServices(internal val db: Data) : ServicesSchema() {
     ): Game {
         requireNotNull(id) { "Invalid argument id can't be null" }
         bearerToken(authorization, db)
-        return db.games.getById(id)
+        return db.games.get(id)
     }
 }

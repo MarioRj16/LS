@@ -13,7 +13,8 @@ import pt.isel.ls.utils.exceptions.ConflictException
 import pt.isel.ls.utils.exceptions.ForbiddenException
 import java.sql.Timestamp
 
-abstract class APISchema {
+abstract class APISchema() {
+
     inline fun <reified T> Response.json(body: T): Response {
         return this
             .header("content-type", "application/json")
@@ -27,15 +28,6 @@ abstract class APISchema {
             httpException(e)
         }
     }
-
-/*
-    fun getDate(request: Request): Response {
-        return Response(Status.OK)
-                .header("content-type", "text/plain")
-                .body(Clock.System.now().toString())
-    }
-
- */
 
     fun logRequest(request: Request) {
         logger.info(

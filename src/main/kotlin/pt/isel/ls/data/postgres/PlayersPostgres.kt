@@ -1,5 +1,6 @@
 package pt.isel.ls.data.postgres
 
+import pt.isel.ls.api.models.PlayerCreate
 import pt.isel.ls.data.PlayersData
 import pt.isel.ls.domain.Player
 import pt.isel.ls.utils.postgres.toPlayer
@@ -11,10 +12,10 @@ import java.util.*
 
 class PlayersPostgres(private val conn: () -> Connection) : PlayersData {
     override fun create(
-        name: String,
-        email: String,
+        playerCreate: PlayerCreate,
     ): Player =
         conn().useWithRollback {
+            val (name, email) = playerCreate
             val token = UUID.randomUUID()
             val statement =
                 it.prepareStatement(

@@ -9,6 +9,8 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import pt.isel.ls.DEFAULT_LIMIT
 import pt.isel.ls.DEFAULT_SKIP
+import pt.isel.ls.api.models.SessionSearch
+import pt.isel.ls.api.models.SessionUpdate
 import pt.isel.ls.utils.minusDaysToCurrentDateTime
 import pt.isel.ls.utils.plusDaysToCurrentDateTime
 import pt.isel.ls.utils.plusMillisecondsToCurrentDateTime
@@ -177,7 +179,8 @@ class GamingSessionTests : AbstractDataTests() {
         val creator = playerFactory.createRandomPlayer()
         val player = playerFactory.createRandomPlayer()
         val session = gamingSessionFactory.createRandomGamingSession(game.id, creator.id, setOf(player))
-        gamingSessions.update(session.id, plusMillisecondsToCurrentDateTime(3), session.maxCapacity)
+        val sessionUpdate = SessionUpdate(session.maxCapacity, plusMillisecondsToCurrentDateTime(3))
+        gamingSessions.update(session.id, sessionUpdate)
 
         Thread.sleep(5)
 
@@ -194,17 +197,16 @@ class GamingSessionTests : AbstractDataTests() {
         val newDate = plusDaysToCurrentDateTime()
         val newCapacity = Random.nextInt(2, session.maxCapacity)
         val expected = session.copy(startingDate = newDate, maxCapacity = newCapacity)
-
-        assertEquals(expected, gamingSessions.update(session.id, newDate, newCapacity))
+        val sessionUpdate = SessionUpdate(newCapacity, newDate)
+        assertEquals(expected, gamingSessions.update(session.id, sessionUpdate))
         assertEquals(expected, gamingSessions.get(session.id))
     }
 
     @Test
     fun `update() throws exception for non existing gaming session`() {
-        val newDate = plusDaysToCurrentDateTime()
-        val newCapacity = 2
+        val sessionUpdate = SessionUpdate(2, plusDaysToCurrentDateTime())
         assertThrows<NoSuchElementException> {
-            gamingSessions.update(1, newDate, newCapacity)
+            gamingSessions.update(1, sessionUpdate)
         }
     }
 
@@ -233,23 +235,24 @@ class GamingSessionTests : AbstractDataTests() {
         val player = playerFactory.createRandomPlayer()
         val game = gameFactory.createRandomGame()
         val game2 = gameFactory.createRandomGame()
+        val searchParameters1 = SessionSearch(game.id)
+        val searchParameters2 = SessionSearch(game2.id)
+        var searchResults = gamingSessions.search(searchParameters1, DEFAULT_LIMIT, DEFAULT_SKIP)
 
-        assertTrue(
-            gamingSessions.search(game.id, null, null, null, DEFAULT_LIMIT, DEFAULT_SKIP).isEmpty(),
-        )
+        assertTrue(searchResults.isEmpty())
 
         val session = gamingSessionFactory.createRandomGamingSession(game.id, player.id)
         val session2 = gamingSessionFactory.createRandomGamingSession(game.id, player.id)
         val session3 = gamingSessionFactory.createRandomGamingSession(game2.id, player.id)
 
-        var searchResults =
-            gamingSessions.search(game.id, null, null, null, DEFAULT_LIMIT, DEFAULT_SKIP)
+        searchResults =
+            gamingSessions.search(searchParameters1, DEFAULT_LIMIT, DEFAULT_SKIP)
         assertTrue(searchResults.size == 2)
         assertContains(searchResults, session)
         assertContains(searchResults, session2)
 
         searchResults =
-            gamingSessions.search(game2.id, null, null, null, 1, 0)
+            gamingSessions.search(searchParameters2, 1, 0)
 
         assertTrue(searchResults.size == 1)
         assertContains(searchResults, session3)
@@ -260,8 +263,9 @@ class GamingSessionTests : AbstractDataTests() {
         val player = playerFactory.createRandomPlayer()
         val game = gameFactory.createRandomGame()
         gamingSessionFactory.createRandomGamingSession(game.id, player.id)
+        val searchParameters = SessionSearch(10)
         assertThrows<NoSuchElementException> {
-            gamingSessions.search(10, null, null, null, DEFAULT_LIMIT, DEFAULT_SKIP)
+            gamingSessions.search(searchParameters, DEFAULT_LIMIT, DEFAULT_SKIP)
         }
     }
 

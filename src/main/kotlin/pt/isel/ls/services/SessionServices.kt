@@ -1,8 +1,5 @@
 package pt.isel.ls.services
 
-import kotlinx.serialization.json.Json
-import pt.isel.ls.DEFAULT_LIMIT
-import pt.isel.ls.DEFAULT_SKIP
 import pt.isel.ls.api.models.SessionCreate
 import pt.isel.ls.api.models.SessionResponse
 import pt.isel.ls.api.models.SessionSearch
@@ -14,29 +11,20 @@ import pt.isel.ls.utils.isPast
 
 open class SessionServices(internal val db: Data) : ServicesSchema() {
     fun searchSessions(
-        input: String,
+        sessionSearch: SessionSearch,
         authorization: String?,
-        skip: Int?,
-        limit: Int?,
+        skip: Int,
+        limit: Int,
     ): List<GamingSession> {
         bearerToken(authorization, db).id
-        val sessionInput = Json.decodeFromString<SessionSearch>(input)
-        return db.gamingSessions.search(
-            sessionInput.game,
-            sessionInput.date,
-            sessionInput.state,
-            sessionInput.playerId,
-            limit ?: DEFAULT_LIMIT,
-            skip ?: DEFAULT_SKIP,
-        )
+        return db.gamingSessions.search(sessionSearch, limit, skip)
     }
 
     fun createSession(
-        input: String,
+        sessionInput: SessionCreate,
         authorization: String?,
     ): SessionResponse {
         val user = bearerToken(authorization, db)
-        val sessionInput = Json.decodeFromString<SessionCreate>(input)
         val session =
             db.gamingSessions.create(
                 sessionInput.capacity,
@@ -58,12 +46,11 @@ open class SessionServices(internal val db: Data) : ServicesSchema() {
 
     fun updateSession(
         sessionId: Int?,
-        input: String,
+        sessionUpdate: SessionUpdate,
         authorization: String?,
     ): GamingSession {
         requireNotNull(sessionId) { "Invalid argument id can't be null" }
         val user = bearerToken(authorization, db)
-        val sessionUpdate = Json.decodeFromString<SessionUpdate>(input)
         require(!sessionUpdate.startingDate.isPast()) { "LocalDateTime cannot be in past" }
         val currentSession = db.gamingSessions.get(sessionId)
         if (user.id != currentSession.creatorId) {
@@ -73,7 +60,7 @@ open class SessionServices(internal val db: Data) : ServicesSchema() {
             "Cannot update session capacity to a value lower than the number of players currently in session"
         }
 
-        return db.gamingSessions.update(sessionId, sessionUpdate.startingDate, sessionUpdate.capacity)
+        return db.gamingSessions.update(sessionId, sessionUpdate)
     }
 
     fun deleteSession(

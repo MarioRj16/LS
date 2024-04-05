@@ -27,7 +27,7 @@ abstract class IntegrationTests() {
         val db = DataMem()
         var api = API(Services(db))
 
-        var jettyServer = Routes(api).app.asServer(Jetty(TEST_PORT))
+        private var jettyServer = Routes(api).app.asServer(Jetty(TEST_PORT))
 
         @JvmStatic
         @BeforeAll

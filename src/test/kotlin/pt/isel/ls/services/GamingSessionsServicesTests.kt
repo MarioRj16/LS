@@ -3,12 +3,18 @@ package pt.isel.ls.services
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import pt.isel.ls.DEFAULT_LIMIT
+import pt.isel.ls.DEFAULT_SKIP
+import pt.isel.ls.api.models.SessionCreate
+import pt.isel.ls.api.models.SessionSearch
+import pt.isel.ls.api.models.SessionUpdate
 import pt.isel.ls.data.mem.DataMem
 import pt.isel.ls.domain.Player
 import pt.isel.ls.utils.exceptions.ForbiddenException
 import pt.isel.ls.utils.factories.GameFactory
 import pt.isel.ls.utils.factories.GamingSessionFactory
 import pt.isel.ls.utils.factories.PlayerFactory
+import pt.isel.ls.utils.minusDaysToCurrentDateTime
 import pt.isel.ls.utils.plusDaysToCurrentDateTime
 import kotlin.random.Random
 import kotlin.test.assertContains
@@ -34,15 +40,8 @@ class GamingSessionsServicesTests : SessionServices(DataMem()) {
         val game = gameFactory.createRandomGame()
         val capacity = 2
         val startingDate = plusDaysToCurrentDateTime(1L)
-        val input =
-            """
-            {
-                "gameId": ${game.id},
-                "capacity": $capacity,
-                "startingDate": "$startingDate"
-            }
-            """.trimIndent()
-        val sessionResponse = createSession(input, bearerToken)
+        val sessionCreate = SessionCreate(game.id, capacity, startingDate)
+        val sessionResponse = createSession(sessionCreate, bearerToken)
         val expectedId = 1
         assertEquals(expectedId, sessionResponse.id)
     }
@@ -67,15 +66,14 @@ class GamingSessionsServicesTests : SessionServices(DataMem()) {
     fun `updateSession() updates gaming session successfully`() {
         val game = gameFactory.createRandomGame()
         val session = gamingSessionFactory.createRandomGamingSession(game.id, user.id)
-        val capacity = Random.nextInt(2, session.maxCapacity)
-        val input =
-            """
-            {
-                "capacity": $capacity,
-                "startingDate": "2028-04-02T15:30:00"
+        val capacity =
+            if (session.maxCapacity > 3) {
+                Random.nextInt(2, session.maxCapacity)
+            } else {
+                Random.nextInt(session.maxCapacity, 10)
             }
-            """.trimIndent()
-        val returnedSession = updateSession(session.id, input, bearerToken)
+        val sessionUpdate = SessionUpdate(capacity, plusDaysToCurrentDateTime(600))
+        val returnedSession = updateSession(session.id, sessionUpdate, bearerToken)
         assertEquals(returnedSession, getSession(session.id, bearerToken))
     }
 
@@ -84,15 +82,9 @@ class GamingSessionsServicesTests : SessionServices(DataMem()) {
         val game = gameFactory.createRandomGame()
         val session = gamingSessionFactory.createRandomGamingSession(game.id, user.id)
         val capacity = Random.nextInt(2, session.maxCapacity)
-        val input =
-            """
-            {
-                "capacity": $capacity,
-                "startingDate": "2028-04-02T15:30:00"
-            }
-            """.trimIndent()
+        val sessionUpdate = SessionUpdate(capacity, plusDaysToCurrentDateTime(600))
         assertThrows<IllegalArgumentException> {
-            updateSession(null, input, bearerToken)
+            updateSession(null, sessionUpdate, bearerToken)
         }
     }
 
@@ -102,15 +94,9 @@ class GamingSessionsServicesTests : SessionServices(DataMem()) {
         val game = gameFactory.createRandomGame()
         val session = gamingSessionFactory.createRandomGamingSession(game.id, player.id)
         val capacity = Random.nextInt(2, session.maxCapacity)
-        val input =
-            """
-            {
-                "capacity": $capacity,
-                "startingDate": "2028-04-02T15:30:00"
-            }
-            """.trimIndent()
+        val sessionUpdate = SessionUpdate(capacity, plusDaysToCurrentDateTime(600))
         assertThrows<ForbiddenException> {
-            updateSession(session.id, input, bearerToken)
+            updateSession(session.id, sessionUpdate, bearerToken)
         }
     }
 
@@ -122,15 +108,9 @@ class GamingSessionsServicesTests : SessionServices(DataMem()) {
         val game = gameFactory.createRandomGame()
         val session = gamingSessionFactory.createRandomGamingSession(game.id, user.id, players)
         val capacity = Random.nextInt(2, players.size)
-        val input =
-            """
-            {
-                "capacity": $capacity,
-                "startingDate": "2028-04-02T15:30:00"
-            }
-            """.trimIndent()
+        val sessionUpdate = SessionUpdate(capacity, plusDaysToCurrentDateTime(600))
         assertThrows<IllegalArgumentException> {
-            updateSession(session.id, input, bearerToken)
+            updateSession(session.id, sessionUpdate, bearerToken)
         }
     }
 
@@ -139,15 +119,9 @@ class GamingSessionsServicesTests : SessionServices(DataMem()) {
         val game = gameFactory.createRandomGame()
         val session = gamingSessionFactory.createRandomGamingSession(game.id, user.id)
         val capacity = Random.nextInt(2, session.maxCapacity)
-        val input =
-            """
-            {
-                "capacity": $capacity,
-                "startingDate": "2012-01-01T00:00:00"
-            }
-            """.trimIndent()
+        val sessionUpdate = SessionUpdate(capacity, minusDaysToCurrentDateTime(600))
         assertThrows<IllegalArgumentException> {
-            updateSession(session.id, input, bearerToken)
+            updateSession(session.id, sessionUpdate, bearerToken)
         }
     }
 
@@ -190,14 +164,9 @@ class GamingSessionsServicesTests : SessionServices(DataMem()) {
         val game = gameFactory.createRandomGame()
         val session1 = gamingSessionFactory.createRandomGamingSession(game.id, player.id)
         val session2 = gamingSessionFactory.createRandomGamingSession(game.id, player.id)
+        val searchParameters = SessionSearch(game.id)
 
-        val input =
-            """
-            {
-                "game": ${game.id}
-            }
-            """.trimIndent()
-        val gamingSessions = searchSessions(input, bearerToken, null, null)
+        val gamingSessions = searchSessions(searchParameters, bearerToken, DEFAULT_SKIP, DEFAULT_LIMIT)
 
         assertTrue(gamingSessions.size == 2)
         assertContains(gamingSessions, session1)

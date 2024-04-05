@@ -1,15 +1,14 @@
 package pt.isel.ls.data.mem
 
+import pt.isel.ls.api.models.PlayerCreate
 import pt.isel.ls.data.PlayersData
 import pt.isel.ls.domain.Player
-import pt.isel.ls.utils.emailIsValid
 import pt.isel.ls.utils.exceptions.ConflictException
 import java.util.*
 
 class PlayersMem(private val players: DataMemTable<Player> = DataMemTable()) : PlayersData {
     override fun create(
-        name: String,
-        email: String,
+        playerCreate: PlayerCreate,
     ): Player {
         require(emailIsValid(email)) { "The given email is not in the right format" }
         if (emailExists(email)) throw ConflictException("The given email is not unique")

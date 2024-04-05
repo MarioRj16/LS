@@ -1,6 +1,8 @@
 package pt.isel.ls.data.postgres
 
 import kotlinx.datetime.LocalDateTime
+import pt.isel.ls.api.models.SessionSearch
+import pt.isel.ls.api.models.SessionUpdate
 import pt.isel.ls.data.GamingSessionsData
 import pt.isel.ls.domain.GamingSession
 import pt.isel.ls.domain.Player
@@ -71,15 +73,9 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
             throw NoSuchElementException("Could not get gaming session, session with id $sessionId was not found")
         }
 
-    override fun search(
-        game: Int,
-        date: LocalDateTime?,
-        isOpen: Boolean?,
-        player: Int?,
-        limit: Int,
-        skip: Int,
-    ): List<GamingSession> =
+    override fun search(sessionParameters: SessionSearch, limit: Int, skip: Int): List<GamingSession> =
         conn().useWithRollback {
+            val (game, date, isOpen, player) = sessionParameters
             val query =
                 """
                 select * from gaming_sessions 
@@ -125,8 +121,9 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
             return sessions.paginate(skip, limit)
         }
 
-    override fun update(sessionId: Int, newDateTime: LocalDateTime, newCapacity: Int): GamingSession =
+    override fun update(sessionId: Int, sessionUpdate: SessionUpdate): GamingSession =
         conn().useWithRollback {
+            val (capacity, startingDate) = sessionUpdate
             val stm2 = it.prepareStatement(
                 """
                 select * from players where player_id in (select player from players_sessions where gaming_session = ?)
@@ -147,8 +144,8 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
                 it.prepareStatement(
                     """update gaming_sessions set capacity = ?, starting_date = ? where gaming_session_id = ? RETURNING *""",
                 ).apply {
-                    setInt(1, newCapacity)
-                    setTimestamp(2, newDateTime.toTimeStamp())
+                    setInt(1, capacity)
+                    setTimestamp(2, startingDate.toTimeStamp())
                     setInt(3, sessionId)
                 }
 

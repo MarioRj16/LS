@@ -1,5 +1,6 @@
 package pt.isel.ls.utils.factories
 
+import pt.isel.ls.api.models.GameCreate
 import pt.isel.ls.data.GamesData
 import pt.isel.ls.domain.Game
 import pt.isel.ls.domain.Genre
@@ -31,7 +32,7 @@ class GameFactory(private val games: GamesData) {
                 randomName = generateRandomString()
             }
         } catch (e: NoSuchElementException) {
-            return games.create(randomName, randomDeveloper, randomGenres)
+            return games.create(GameCreate(randomName, randomDeveloper, randomGenres))
         }
     }
 
