@@ -5,7 +5,7 @@ import pt.isel.ls.data.Data
 import pt.isel.ls.domain.Player
 import pt.isel.ls.utils.exceptions.ForbiddenException
 
-open class PlayerServices(internal val db: Data) : ServicesSchema() {
+open class PlayerServices(internal val db: Data) : ServicesSchema(db) {
     fun createPlayer(playerCreate: PlayerCreate): Player {
         return db.players.create(playerCreate)
     }
@@ -13,14 +13,13 @@ open class PlayerServices(internal val db: Data) : ServicesSchema() {
     fun getPlayer(
         playerId: Int?,
         authorization: String?,
-    ): Player {
+    ): Player = withAuthorization(authorization){ user ->
         requireNotNull(playerId) { "Invalid argument id can't be null" }
-        val ownId = bearerToken(authorization, db).id
-        if (ownId != playerId) {
+        if (user.id != playerId) {
             throw ForbiddenException(
-                "You dont have authorization to see this player, instead you can see your own id $ownId",
+                "You dont have authorization to see this player, instead you can see your own id ${user.id}",
             )
         }
-        return db.players.get(playerId)
+        return@withAuthorization db.players.get(playerId)
     }
 }

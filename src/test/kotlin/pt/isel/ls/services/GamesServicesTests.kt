@@ -18,12 +18,12 @@ import kotlin.test.assertTrue
 class GamesServicesTests : GamesServices(DataMem()) {
     private lateinit var bearerToken: String
     private lateinit var user: Player
-    private val playerFactory = PlayerFactory(db.players)
-    private val gameFactory = GameFactory(db.games)
+    private val playerFactory = PlayerFactory(data.players)
+    private val gameFactory = GameFactory(data.games)
 
     @BeforeEach
     fun setUp() {
-        db.reset()
+        data.reset()
         user = playerFactory.createRandomPlayer()
         bearerToken = "Bearer ${user.token}"
     }

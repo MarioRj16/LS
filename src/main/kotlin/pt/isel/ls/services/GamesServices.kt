@@ -7,36 +7,36 @@ import pt.isel.ls.api.models.GameSearch
 import pt.isel.ls.data.Data
 import pt.isel.ls.domain.Game
 
-open class GamesServices(internal val db: Data) : ServicesSchema() {
+open class GamesServices(data: Data) : ServicesSchema(data) {
     fun searchGames(
         searchParameters: GameSearch,
         authorization: String?,
         skip: Int?,
         limit: Int?,
-    ): List<Game> {
-        bearerToken(authorization, db)
-        return db.games.search(
-            searchParameters,
-            limit ?: DEFAULT_LIMIT,
-            skip ?: DEFAULT_SKIP,
-        )
-    }
+    ): List<Game> =
+        withAuthorization(authorization){
+             data.games.search(
+                searchParameters,
+                limit ?: DEFAULT_LIMIT,
+                skip ?: DEFAULT_SKIP,
+            )
+        }
 
     fun createGame(
         gameInput: GameCreate,
         authorization: String?,
-    ): Int {
-        bearerToken(authorization, db)
-        val game = db.games.create(gameInput)
-        return game.id
+    ): Int =
+        withAuthorization(authorization){
+            val game = data.games.create(gameInput)
+            return@withAuthorization game.id
     }
 
     fun getGame(
         id: Int?,
         authorization: String?,
-    ): Game {
-        requireNotNull(id) { "Invalid argument id can't be null" }
-        bearerToken(authorization, db)
-        return db.games.get(id)
+    ): Game =
+        withAuthorization(authorization) {
+            requireNotNull(id) { "Invalid argument id can't be null" }
+            return@withAuthorization data.games.get(id)
     }
 }
