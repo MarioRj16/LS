@@ -22,10 +22,6 @@ class GamingSessionsMem(
         date: LocalDateTime,
         playerId: Int,
     ): GamingSession {
-        require(capacity >= 1) { "The session capacity has to be at least 1" }
-        require(!date.isPast()) {
-            "The session starting date cannot precede the current LocalDateTime"
-        }
         require(games.table.containsKey(game)) { "The provided game does not exist" }
         val obj =
             GamingSession(

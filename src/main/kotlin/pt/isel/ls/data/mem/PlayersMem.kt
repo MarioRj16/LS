@@ -10,7 +10,7 @@ class PlayersMem(private val players: DataMemTable<Player> = DataMemTable()) : P
     override fun create(
         playerCreate: PlayerCreate,
     ): Player {
-        require(emailIsValid(email)) { "The given email is not in the right format" }
+        val (name, email) = playerCreate
         if (emailExists(email)) throw ConflictException("The given email is not unique")
         val obj = Player(players.nextId.get(), name, email)
         players.table[players.nextId.get()] = obj
