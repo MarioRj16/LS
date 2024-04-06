@@ -9,8 +9,8 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import pt.isel.ls.DEFAULT_LIMIT
 import pt.isel.ls.DEFAULT_SKIP
-import pt.isel.ls.api.models.SessionSearch
-import pt.isel.ls.api.models.SessionUpdate
+import pt.isel.ls.api.models.sessions.SessionSearch
+import pt.isel.ls.api.models.sessions.SessionUpdate
 import pt.isel.ls.utils.minusDaysToCurrentDateTime
 import pt.isel.ls.utils.plusDaysToCurrentDateTime
 import pt.isel.ls.utils.plusMillisecondsToCurrentDateTime

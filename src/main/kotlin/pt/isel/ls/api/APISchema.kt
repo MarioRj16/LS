@@ -35,6 +35,7 @@ abstract class APISchema() {
 
     fun Request.useWithException(block: (UUID) -> Response): Response {
         return try {
+            logRequest()
             val token = validateToken(header("Authorization"))
             block(token)
         } catch (e: Exception) {
@@ -42,22 +43,23 @@ abstract class APISchema() {
         }
     }
 
-    fun useWithExceptionNoToken(block: () -> Response): Response {
+    fun Request.useWithExceptionNoToken(block: () -> Response): Response {
         return try {
+            logRequest()
             block()
         } catch (e: Exception) {
             httpException(e)
         }
     }
 
-    fun logRequest(request: Request) {
+    private fun Request.logRequest() {
         logger.info(
             "{} -> incoming request: method={}, uri={}, content-type={} accept={}",
             Timestamp(System.currentTimeMillis()),
-            request.method,
-            request.uri,
-            request.header("content-type"),
-            request.header("accept"),
+            method,
+            uri,
+            header("content-type"),
+            header("accept"),
         )
     }
 

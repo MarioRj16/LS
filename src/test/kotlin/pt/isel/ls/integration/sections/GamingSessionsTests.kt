@@ -5,10 +5,10 @@ import org.http4k.core.Request
 import org.http4k.core.Status
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
-import pt.isel.ls.api.models.SessionCreate
-import pt.isel.ls.api.models.SessionResponse
-import pt.isel.ls.api.models.SessionSearch
-import pt.isel.ls.api.models.SessionUpdate
+import pt.isel.ls.api.models.sessions.SessionCreate
+import pt.isel.ls.api.models.sessions.SessionResponse
+import pt.isel.ls.api.models.sessions.SessionSearch
+import pt.isel.ls.api.models.sessions.SessionUpdate
 import pt.isel.ls.domain.GamingSession
 import pt.isel.ls.integration.IntegrationTests
 import pt.isel.ls.utils.factories.GameFactory

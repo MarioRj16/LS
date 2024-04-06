@@ -4,8 +4,8 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import pt.isel.ls.DEFAULT_LIMIT
 import pt.isel.ls.DEFAULT_SKIP
-import pt.isel.ls.api.models.GameCreate
-import pt.isel.ls.api.models.GameSearch
+import pt.isel.ls.api.models.games.GameCreate
+import pt.isel.ls.api.models.games.GameSearch
 import pt.isel.ls.domain.Genre
 import pt.isel.ls.utils.generateRandomString
 import kotlin.test.assertContains
@@ -45,14 +45,6 @@ class GamesTests : AbstractDataTests() {
 
         assertThrows<IllegalArgumentException> {
             games.create(gameCreate2)
-        }
-    }
-
-    @Test
-    fun `create() throws exception for no genres`() {
-        val gameCreate = GameCreate(generateRandomString(), generateRandomString(), setOf())
-        assertThrows<IllegalArgumentException> {
-            games.create(gameCreate)
         }
     }
 

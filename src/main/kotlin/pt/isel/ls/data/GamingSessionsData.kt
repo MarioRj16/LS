@@ -1,8 +1,8 @@
 package pt.isel.ls.data
 
 import kotlinx.datetime.LocalDateTime
-import pt.isel.ls.api.models.SessionSearch
-import pt.isel.ls.api.models.SessionUpdate
+import pt.isel.ls.api.models.sessions.SessionSearch
+import pt.isel.ls.api.models.sessions.SessionUpdate
 import pt.isel.ls.domain.GamingSession
 
 interface GamingSessionsData {

@@ -1,6 +1,6 @@
 package pt.isel.ls.services
 
-import pt.isel.ls.api.models.PlayerCreate
+import pt.isel.ls.api.models.players.PlayerCreate
 import pt.isel.ls.data.Data
 import pt.isel.ls.domain.Player
 import pt.isel.ls.utils.exceptions.ForbiddenException

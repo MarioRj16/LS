@@ -1,7 +1,7 @@
 package pt.isel.ls.data.mem
 
-import pt.isel.ls.api.models.GameCreate
-import pt.isel.ls.api.models.GameSearch
+import pt.isel.ls.api.models.games.GameCreate
+import pt.isel.ls.api.models.games.GameSearch
 import pt.isel.ls.data.GamesData
 import pt.isel.ls.domain.Game
 import pt.isel.ls.utils.paginate
@@ -14,7 +14,6 @@ class GamesMem(
     ): Game {
         val (name, developer, genres) = gameCreate
         require(gamesDB.table.none { it.value.name == name }) { "The name of a game has to be unique" }
-        require(genres.isNotEmpty()) { "The game needs to have at least 1 genre in order to be created" }
         val game = Game(gamesDB.nextId.get(), name, developer, genres)
         gamesDB.table[gamesDB.nextId.get()] = game
         return game

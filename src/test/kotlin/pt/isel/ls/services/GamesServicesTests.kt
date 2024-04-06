@@ -4,8 +4,8 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import pt.isel.ls.DEFAULT_LIMIT
 import pt.isel.ls.DEFAULT_SKIP
-import pt.isel.ls.api.models.GameCreate
-import pt.isel.ls.api.models.GameSearch
+import pt.isel.ls.api.models.games.GameCreate
+import pt.isel.ls.api.models.games.GameSearch
 import pt.isel.ls.data.mem.DataMem
 import pt.isel.ls.domain.Genre
 import pt.isel.ls.domain.Player

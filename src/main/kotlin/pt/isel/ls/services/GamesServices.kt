@@ -1,7 +1,7 @@
 package pt.isel.ls.services
 
-import pt.isel.ls.api.models.GameCreate
-import pt.isel.ls.api.models.GameSearch
+import pt.isel.ls.api.models.games.GameCreate
+import pt.isel.ls.api.models.games.GameSearch
 import pt.isel.ls.data.Data
 import pt.isel.ls.domain.Game
 import java.util.*

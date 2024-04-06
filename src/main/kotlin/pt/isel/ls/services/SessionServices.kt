@@ -1,9 +1,9 @@
 package pt.isel.ls.services
 
-import pt.isel.ls.api.models.SessionCreate
-import pt.isel.ls.api.models.SessionResponse
-import pt.isel.ls.api.models.SessionSearch
-import pt.isel.ls.api.models.SessionUpdate
+import pt.isel.ls.api.models.sessions.SessionCreate
+import pt.isel.ls.api.models.sessions.SessionResponse
+import pt.isel.ls.api.models.sessions.SessionSearch
+import pt.isel.ls.api.models.sessions.SessionUpdate
 import pt.isel.ls.data.Data
 import pt.isel.ls.domain.GamingSession
 import pt.isel.ls.utils.exceptions.ForbiddenException

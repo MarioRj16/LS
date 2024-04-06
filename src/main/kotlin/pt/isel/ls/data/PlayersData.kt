@@ -1,6 +1,6 @@
 package pt.isel.ls.data
 
-import pt.isel.ls.api.models.PlayerCreate
+import pt.isel.ls.api.models.players.PlayerCreate
 import pt.isel.ls.domain.Player
 import java.util.*
 

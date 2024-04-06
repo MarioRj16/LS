@@ -1,6 +1,6 @@
 package pt.isel.ls.utils.factories
 
-import pt.isel.ls.api.models.PlayerCreate
+import pt.isel.ls.api.models.players.PlayerCreate
 import pt.isel.ls.data.PlayersData
 import pt.isel.ls.domain.Player
 import pt.isel.ls.utils.generateRandomEmail

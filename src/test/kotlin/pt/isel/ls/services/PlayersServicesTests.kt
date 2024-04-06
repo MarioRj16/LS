@@ -2,7 +2,7 @@ package pt.isel.ls.services
 
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import pt.isel.ls.api.models.PlayerCreate
+import pt.isel.ls.api.models.players.PlayerCreate
 import pt.isel.ls.data.mem.DataMem
 import pt.isel.ls.domain.Player
 import pt.isel.ls.utils.factories.PlayerFactory

@@ -12,7 +12,7 @@ import org.junit.jupiter.api.BeforeAll
 import pt.isel.ls.Routes
 import pt.isel.ls.TEST_PORT
 import pt.isel.ls.api.API
-import pt.isel.ls.api.models.PlayerResponse
+import pt.isel.ls.api.models.players.PlayerResponse
 import pt.isel.ls.data.mem.DataMem
 import pt.isel.ls.domain.Game
 import pt.isel.ls.domain.GamingSession

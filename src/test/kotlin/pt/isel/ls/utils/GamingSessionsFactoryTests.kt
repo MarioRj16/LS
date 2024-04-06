@@ -1,8 +1,8 @@
 package pt.isel.ls.utils
 
 import org.junit.jupiter.api.Test
-import pt.isel.ls.api.models.GameCreate
-import pt.isel.ls.api.models.PlayerCreate
+import pt.isel.ls.api.models.games.GameCreate
+import pt.isel.ls.api.models.players.PlayerCreate
 import pt.isel.ls.data.mem.DataMem
 import pt.isel.ls.domain.Genre
 import pt.isel.ls.utils.factories.GamingSessionFactory

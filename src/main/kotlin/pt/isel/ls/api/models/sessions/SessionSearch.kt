@@ -1,4 +1,4 @@
-package pt.isel.ls.api.models
+package pt.isel.ls.api.models.sessions
 
 import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.Serializable

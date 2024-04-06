@@ -2,7 +2,7 @@ package pt.isel.ls.data
 
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import pt.isel.ls.api.models.PlayerCreate
+import pt.isel.ls.api.models.players.PlayerCreate
 import pt.isel.ls.utils.exceptions.ConflictException
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
