@@ -1,5 +1,6 @@
 package pt.isel.ls.api
 
+import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.json.Json
 import org.http4k.core.Request
 import org.http4k.core.Response
@@ -18,7 +19,14 @@ import pt.isel.ls.utils.validateInt
 class SessionsAPI(private val services: SessionServices) : APISchema() {
     fun searchSessions(request: Request): Response =
         request.useWithException { token ->
-            val sessionSearch = Json.decodeFromString<SessionSearch>(request.bodyString())
+            val gameId = request.query("gameId")?.toIntOrNull().validateInt { it.isPositive() }
+            val date = request.query("date")?.toLocalDateTime()
+            val state = request.query("state")?.toBoolean()
+            var playerId = request.query("player")?.toIntOrNull()
+            if(playerId != null){
+                playerId = playerId.validateInt { it.isPositive() }
+            }
+            val sessionSearch = SessionSearch(gameId, date, state, playerId)
             val skip = request.query("skip")?.toInt().validateInt(DEFAULT_SKIP) { it.isNotNegative() }
             val limit = request.query("limit")?.toInt().validateInt(DEFAULT_LIMIT) { it.isNotNegative() }
             Response(Status.OK)

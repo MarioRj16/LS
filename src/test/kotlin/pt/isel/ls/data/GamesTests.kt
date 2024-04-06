@@ -5,8 +5,8 @@ import org.junit.jupiter.api.assertThrows
 import pt.isel.ls.DEFAULT_LIMIT
 import pt.isel.ls.DEFAULT_SKIP
 import pt.isel.ls.api.models.games.GameCreate
-import pt.isel.ls.api.models.games.GameSearch
 import pt.isel.ls.domain.Genre
+import pt.isel.ls.utils.generateRandomGameSearch
 import pt.isel.ls.utils.generateRandomString
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
@@ -78,7 +78,8 @@ class GamesTests : AbstractDataTests() {
 
     @Test
     fun `search() returns games successfully`() {
-        var searchResults = games.search(GameSearch(), DEFAULT_LIMIT, DEFAULT_SKIP)
+
+        var searchResults = games.search(generateRandomGameSearch(), DEFAULT_LIMIT, DEFAULT_SKIP)
 
         assertTrue(searchResults.isEmpty())
 
@@ -86,13 +87,13 @@ class GamesTests : AbstractDataTests() {
         val game2 = gameFactory.createRandomGame()
         val game3 = gameFactory.createRandomGame()
 
-        searchResults = games.search(GameSearch(), 2, DEFAULT_SKIP)
+        searchResults = games.search(generateRandomGameSearch(true), 2, DEFAULT_SKIP)
 
         assertTrue(searchResults.size == 2)
         assertContains(searchResults, game)
         assertContains(searchResults, game2)
 
-        searchResults = games.search(GameSearch(), DEFAULT_LIMIT, 2)
+        searchResults = games.search(generateRandomGameSearch(true), DEFAULT_LIMIT, 2)
 
         assertTrue(searchResults.size == 1)
         assertContains(searchResults, game3)

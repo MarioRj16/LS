@@ -7,11 +7,11 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
 import pt.isel.ls.api.models.games.GameCreate
 import pt.isel.ls.api.models.games.GameResponse
-import pt.isel.ls.api.models.games.GameSearch
 import pt.isel.ls.domain.Game
 import pt.isel.ls.domain.Genre
 import pt.isel.ls.integration.IntegrationTests
 import pt.isel.ls.utils.factories.GameFactory
+import pt.isel.ls.utils.generateRandomGameSearch
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
@@ -36,7 +36,7 @@ class GamesTests : IntegrationTests() {
 
     @Test
     fun noParametersSearchGames() {
-        val requestBody = GameSearch()
+        val requestBody = generateRandomGameSearch()
         val request =
             Request(Method.GET, "$URI_PREFIX/games")
                 .json(requestBody)
@@ -55,10 +55,9 @@ class GamesTests : IntegrationTests() {
 
     @Test
     fun searchGames() {
-        val requestBody = GameSearch("Developer1", setOf(Genre(1, "RPG")))
         val request =
             Request(Method.GET, "$URI_PREFIX/games")
-                .json(requestBody)
+                .json("")
                 .token(user!!.token)
         client(request)
             .apply {

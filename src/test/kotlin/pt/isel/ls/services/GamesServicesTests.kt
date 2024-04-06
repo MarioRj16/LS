@@ -5,12 +5,12 @@ import org.junit.jupiter.api.Test
 import pt.isel.ls.DEFAULT_LIMIT
 import pt.isel.ls.DEFAULT_SKIP
 import pt.isel.ls.api.models.games.GameCreate
-import pt.isel.ls.api.models.games.GameSearch
 import pt.isel.ls.data.mem.DataMem
 import pt.isel.ls.domain.Genre
 import pt.isel.ls.domain.Player
 import pt.isel.ls.utils.factories.GameFactory
 import pt.isel.ls.utils.factories.PlayerFactory
+import pt.isel.ls.utils.generateRandomGameSearch
 import pt.isel.ls.utils.generateRandomString
 import java.util.*
 import kotlin.test.assertEquals
@@ -49,7 +49,7 @@ class GamesServicesTests : GamesServices(DataMem()) {
     @Test
     fun `searchGames() returns games successfully`() {
         val games = List(3) { gameFactory.createRandomGame() }
-        val searchResults = searchGames(GameSearch(), token, DEFAULT_SKIP, DEFAULT_LIMIT)
+        val searchResults = searchGames(generateRandomGameSearch(true), token, DEFAULT_SKIP, DEFAULT_LIMIT)
         assertEquals(searchResults.size, games.size)
         assertTrue(games.all { game -> searchResults.contains(game) })
     }

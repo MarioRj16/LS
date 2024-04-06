@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
 import pt.isel.ls.api.models.sessions.SessionCreate
 import pt.isel.ls.api.models.sessions.SessionResponse
-import pt.isel.ls.api.models.sessions.SessionSearch
 import pt.isel.ls.api.models.sessions.SessionUpdate
 import pt.isel.ls.domain.GamingSession
 import pt.isel.ls.integration.IntegrationTests
@@ -70,10 +69,9 @@ class GamingSessionsTests : IntegrationTests() {
 
     @Test
     fun searchSessions() {
-        val requestBody = SessionSearch(game.id)
         val request =
             Request(Method.GET, "$URI_PREFIX/sessions")
-                .json(requestBody)
+                .query("gameId", game.id.toString())
                 .token(user!!.token)
         client(request)
             .apply {

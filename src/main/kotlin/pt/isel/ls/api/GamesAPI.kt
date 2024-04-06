@@ -18,7 +18,9 @@ import pt.isel.ls.utils.validateInt
 class GamesAPI(private val services: GamesServices) : APISchema() {
     fun searchGames(request: Request): Response =
         request.useWithException { token ->
-            val searchParameters = Json.decodeFromString<GameSearch>(request.bodyString())
+            val developer = request.query("developer")
+            val genres = request.queries("genres").mapNotNull { it?.toIntOrNull() }.toSet()
+            val searchParameters = GameSearch(developer, genres)
             val skip = request.query("skip")?.toInt().validateInt(DEFAULT_SKIP) { it.isNotNegative() }
             val limit = request.query("limit")?.toInt().validateInt(DEFAULT_LIMIT) { it.isNotNegative() }
             Response(Status.OK)

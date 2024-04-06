@@ -12,9 +12,9 @@ import pt.isel.ls.utils.exceptions.AuthorizationException
 import pt.isel.ls.utils.exceptions.ConflictException
 import pt.isel.ls.utils.exceptions.ForbiddenException
 import java.sql.Timestamp
-import java.util.UUID
+import java.util.*
 
-abstract class APISchema() {
+abstract class APISchema {
 
     inline fun <reified T> Response.json(body: T): Response {
         return this

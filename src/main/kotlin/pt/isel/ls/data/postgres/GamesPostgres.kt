@@ -137,8 +137,8 @@ class GamesPostgres(private val conn: () -> Connection) : GamesData {
     private fun buildSearchQuery(searchParams: GameSearch): String {
         val (developer, genres) = searchParams
 
-        val genreParams = genres?.joinToString(", ") { "?" } ?: ""
-        val genreCondition = if (genres.isNullOrEmpty()) "" else " AND genre IN ($genreParams)"
+        val genreParams = genres.joinToString(", ") { "?" }
+        val genreCondition = if (genres.isEmpty()) "" else " AND genre_id IN ($genreParams)"
         val developerCondition = if (developer.isNullOrEmpty()) "" else " AND developer = ?"
 
         return (
@@ -154,7 +154,7 @@ class GamesPostgres(private val conn: () -> Connection) : GamesData {
         val (developer, genres) = searchParams
         var parameterIdx = 1
 
-        genres?.forEach { genre -> statement.setString(parameterIdx++, genre.name) }
+        genres.forEach { genre -> statement.setInt(parameterIdx++, genre) }
         developer?.let { statement.setString(parameterIdx, developer) }
     }
 }
