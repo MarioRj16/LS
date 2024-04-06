@@ -2,23 +2,23 @@ package pt.isel.ls.services
 
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import pt.isel.ls.api.models.PlayerCreate
 import pt.isel.ls.data.mem.DataMem
 import pt.isel.ls.domain.Player
 import pt.isel.ls.utils.factories.PlayerFactory
+import java.util.UUID
 import kotlin.test.assertEquals
 
 class PlayersServicesTests : PlayerServices(DataMem()) {
-    private lateinit var bearerToken: String
     private lateinit var user: Player
+    private lateinit var token: UUID
     private val playerFactory = PlayerFactory(db.players)
 
     @BeforeEach
     fun setUp() {
         db.reset()
         user = playerFactory.createRandomPlayer()
-        bearerToken = "Bearer ${user.token}"
+        token = user.token
     }
 
     @Test
@@ -33,14 +33,7 @@ class PlayersServicesTests : PlayerServices(DataMem()) {
 
     @Test
     fun `getPlayer() returns player successfully`() {
-        val returnedPlayer = getPlayer(user.id, bearerToken)
+        val returnedPlayer = getPlayer(user.id, token)
         assertEquals(user, returnedPlayer)
-    }
-
-    @Test
-    fun `getPlayer() throws exception for null id`() {
-        assertThrows<IllegalArgumentException> {
-            getPlayer(null, bearerToken)
-        }
     }
 }

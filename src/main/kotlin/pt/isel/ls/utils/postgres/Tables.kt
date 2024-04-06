@@ -8,6 +8,11 @@ import pt.isel.ls.domain.Player
 import java.sql.ResultSet
 import java.util.*
 
+/**
+ * Converts a [ResultSet] into a [Player] object.
+ *
+ * @return The converted [Player] object.
+ */
 fun ResultSet.toPlayer(): Player {
     return Player(
         id = getInt("player_id"),
@@ -17,32 +22,39 @@ fun ResultSet.toPlayer(): Player {
     )
 }
 
+/**
+ * Converts a [ResultSet] into a [Genre] object.
+ *
+ * @return The converted [Genre] object.
+ */
 fun ResultSet.toGenre(): Genre = Genre(getInt("genre_id"), getString("genre"))
 
-fun ResultSet.toGame(genres: Set<Genre>): Game =
+/**
+ * Converts a [ResultSet] into a [Game] object.
+ *
+ * @param genres Set of genres associated with the game.
+ * @param game Optional game ID. Defaults to the value retrieved from the ResultSet.
+ * @return The converted [Game] object.
+ */
+fun ResultSet.toGame(genres: Set<Genre>, game: Int = getInt("game_id")): Game =
     Game(
-        id = getInt("game_id"),
+        id = game,
         name = getString("game_name"),
         developer = getString("developer"),
         genres = genres,
     )
 
-fun ResultSet.toPreviousGame(
-    genres: Set<Genre>,
-    gameId: Int,
-): Game =
-    Game(
-        id = gameId,
-        name = getString("game_name"),
-        developer = getString("developer"),
-        genres = genres,
-    )
-
+/**
+ * Converts a [ResultSet] into a [GamingSession] object.
+ *
+ * @param players Set of players participating in the gaming session.
+ * @return The converted [GamingSession] object.
+ */
 fun ResultSet.toGamingSession(players: Set<Player>): GamingSession =
     GamingSession(
         id = getInt("gaming_session_id"),
         gameId = getInt("game"),
-        creatorId = getInt("creator"),
+        hostId = getInt("creator"),
         maxCapacity = getInt("capacity"),
         startingDate = getTimestamp("starting_date").toLocalDateTime().toKotlinLocalDateTime(),
         players = players,

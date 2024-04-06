@@ -1,42 +1,36 @@
 package pt.isel.ls.services
 
-import pt.isel.ls.DEFAULT_LIMIT
-import pt.isel.ls.DEFAULT_SKIP
 import pt.isel.ls.api.models.GameCreate
 import pt.isel.ls.api.models.GameSearch
 import pt.isel.ls.data.Data
 import pt.isel.ls.domain.Game
+import java.util.*
 
 open class GamesServices(data: Data) : ServicesSchema(data) {
     fun searchGames(
         searchParameters: GameSearch,
-        authorization: String?,
-        skip: Int?,
-        limit: Int?,
+        token: UUID,
+        skip: Int,
+        limit: Int,
     ): List<Game> =
-        withAuthorization(authorization){
-             data.games.search(
-                searchParameters,
-                limit ?: DEFAULT_LIMIT,
-                skip ?: DEFAULT_SKIP,
-            )
+        withAuthorization(token) {
+            data.games.search(searchParameters, limit, skip)
         }
 
     fun createGame(
         gameInput: GameCreate,
-        authorization: String?,
+        token: UUID,
     ): Int =
-        withAuthorization(authorization){
+        withAuthorization(token) {
             val game = data.games.create(gameInput)
             return@withAuthorization game.id
-    }
+        }
 
     fun getGame(
-        id: Int?,
-        authorization: String?,
+        id: Int,
+        token: UUID,
     ): Game =
-        withAuthorization(authorization) {
-            requireNotNull(id) { "Invalid argument id can't be null" }
+        withAuthorization(token) {
             return@withAuthorization data.games.get(id)
-    }
+        }
 }

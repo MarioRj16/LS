@@ -12,6 +12,7 @@ import pt.isel.ls.utils.exceptions.AuthorizationException
 import pt.isel.ls.utils.exceptions.ConflictException
 import pt.isel.ls.utils.exceptions.ForbiddenException
 import java.sql.Timestamp
+import java.util.UUID
 
 abstract class APISchema() {
 
@@ -21,7 +22,27 @@ abstract class APISchema() {
             .body(Json.encodeToString(body))
     }
 
-    inline fun useWithException(block: () -> Response): Response {
+    private fun validateToken(authHeader: String?): UUID {
+        if ((!authHeader.isNullOrEmpty() && authHeader.startsWith("Bearer "))) {
+            try {
+                return UUID.fromString(authHeader.removePrefix("Bearer "))
+            } catch (e: IllegalArgumentException) {
+                throw AuthorizationException()
+            }
+        }
+        throw AuthorizationException()
+    }
+
+    fun Request.useWithException(block: (UUID) -> Response): Response {
+        return try {
+            val token = validateToken(header("Authorization"))
+            block(token)
+        } catch (e: Exception) {
+            httpException(e)
+        }
+    }
+
+    fun useWithExceptionNoToken(block: () -> Response): Response {
         return try {
             block()
         } catch (e: Exception) {

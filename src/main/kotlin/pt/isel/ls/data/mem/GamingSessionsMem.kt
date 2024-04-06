@@ -120,6 +120,6 @@ class GamingSessionsMem(
         val session =
             gamingSessions.table[sessionId]
                 ?: throw NoSuchElementException("Session $sessionId does not exist")
-        return session.creatorId == playerId
+        return session.hostId == playerId
     }
 }

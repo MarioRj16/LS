@@ -8,7 +8,6 @@ import pt.isel.ls.domain.Genre
 import pt.isel.ls.utils.paginate
 import pt.isel.ls.utils.postgres.toGame
 import pt.isel.ls.utils.postgres.toGenre
-import pt.isel.ls.utils.postgres.toPreviousGame
 import pt.isel.ls.utils.postgres.useWithRollback
 import java.sql.Connection
 import java.sql.PreparedStatement
@@ -54,7 +53,7 @@ class GamesPostgres(private val conn: () -> Connection) : GamesData {
             while (resultSet.next()) {
                 val currentGameId = resultSet.getInt("game_id")
                 if (currentGameId != previousGameId && previousGameId != null) {
-                    games += resultSet.toPreviousGame(foundGenres.toSet(), previousGameId)
+                    games += resultSet.toGame(foundGenres.toSet(), previousGameId)
                     foundGenres.clear()
                 }
                 foundGenres += resultSet.toGenre()
@@ -62,7 +61,7 @@ class GamesPostgres(private val conn: () -> Connection) : GamesData {
             }
 
             if (previousGameId != null) {
-                games += resultSet.toPreviousGame(foundGenres.toSet(), previousGameId)
+                games += resultSet.toGame(foundGenres.toSet(), previousGameId)
             }
 
             return games.paginate(skip, limit)

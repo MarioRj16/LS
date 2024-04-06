@@ -218,7 +218,7 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
             val resultSet = stm.executeQuery()
 
             if (resultSet.next()) {
-                return resultSet.toGamingSession(emptySet()).creatorId == playerId
+                return resultSet.toGamingSession(emptySet()).hostId == playerId
             }
             throw NoSuchElementException("No session $sessionId was found")
         }

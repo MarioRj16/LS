@@ -4,7 +4,9 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import pt.isel.ls.data.mem.DataMem
+import pt.isel.ls.utils.exceptions.AuthorizationException
 import pt.isel.ls.utils.factories.PlayerFactory
+import java.util.UUID
 import kotlin.test.assertEquals
 
 class ServicesTests : ServicesSchema(DataMem()) {
@@ -18,21 +20,13 @@ class ServicesTests : ServicesSchema(DataMem()) {
     fun `Token gets validated successfully`() {
         val playerFactory = PlayerFactory(data.players)
         val player = playerFactory.createRandomPlayer()
-        val auth = "Bearer ${player.token}"
-        assertEquals(player, bearerToken(auth))
+        assertEquals(player, bearerToken(player.token))
     }
 
     @Test
     fun `throws exception for non existing token`() {
-        assertThrows<IllegalArgumentException> {
-            bearerToken("Bearer ")
-        }
-    }
-
-    @Test
-    fun `throws exception if token is in invalid format`() {
-        assertThrows<IllegalArgumentException> {
-            bearerToken("Bearer token")
+        assertThrows<AuthorizationException> {
+            bearerToken(UUID.randomUUID())
         }
     }
 }

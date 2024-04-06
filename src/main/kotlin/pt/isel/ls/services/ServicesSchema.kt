@@ -7,18 +7,16 @@ import java.util.*
 
 abstract class ServicesSchema(internal val data: Data) {
 
-    fun <T> withAuthorization(authorization: String?, action: (Player) -> T): T {
-        val user = bearerToken(authorization)
+    fun <T> withAuthorization(token: UUID, action: (Player) -> T): T {
+        val user = bearerToken(token)
         return action(user)
     }
 
-    protected fun bearerToken(authorization: String?): Player {
-        if (authorization.isNullOrEmpty() || !authorization.startsWith("Bearer")) {
-            throw AuthorizationException("Missing Bearer token")
+    protected fun bearerToken(token: UUID): Player {
+        try {
+            return data.players.getByToken(token)
+        } catch (e: NoSuchElementException) {
+            throw AuthorizationException()
         }
-
-        val token = authorization.removePrefix("Bearer ")
-        return data.players.getByToken(UUID.fromString(token))
     }
-
 }

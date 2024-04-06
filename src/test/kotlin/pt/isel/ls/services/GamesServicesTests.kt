@@ -2,7 +2,8 @@ package pt.isel.ls.services
 
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
+import pt.isel.ls.DEFAULT_LIMIT
+import pt.isel.ls.DEFAULT_SKIP
 import pt.isel.ls.api.models.GameCreate
 import pt.isel.ls.api.models.GameSearch
 import pt.isel.ls.data.mem.DataMem
@@ -11,12 +12,12 @@ import pt.isel.ls.domain.Player
 import pt.isel.ls.utils.factories.GameFactory
 import pt.isel.ls.utils.factories.PlayerFactory
 import pt.isel.ls.utils.generateRandomString
-import kotlin.test.assertContains
+import java.util.*
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class GamesServicesTests : GamesServices(DataMem()) {
-    private lateinit var bearerToken: String
+    private lateinit var token: UUID
     private lateinit var user: Player
     private val playerFactory = PlayerFactory(data.players)
     private val gameFactory = GameFactory(data.games)
@@ -25,7 +26,7 @@ class GamesServicesTests : GamesServices(DataMem()) {
     fun setUp() {
         data.reset()
         user = playerFactory.createRandomPlayer()
-        bearerToken = "Bearer ${user.token}"
+        token = user.token
     }
 
     @Test
@@ -34,33 +35,22 @@ class GamesServicesTests : GamesServices(DataMem()) {
         val developer = generateRandomString()
         val genre = Genre(1, "Action")
         val gameCreate = GameCreate(name, developer, setOf(genre))
-        val gameId = createGame(gameCreate, bearerToken)
+        val gameId = createGame(gameCreate, token)
         assertTrue(gameId == 1)
     }
 
     @Test
     fun `getGame() returns game successfully`() {
         val game = gameFactory.createRandomGame()
-        val returnedGame = getGame(game.id, bearerToken)
+        val returnedGame = getGame(game.id, token)
         assertEquals(game, returnedGame)
     }
 
     @Test
-    fun `getGame() throws exception for null id`() {
-        assertThrows<IllegalArgumentException> {
-            getGame(null, bearerToken)
-        }
-    }
-
-    @Test
     fun `searchGames() returns games successfully`() {
-        val game1 = gameFactory.createRandomGame()
-        val game2 = gameFactory.createRandomGame()
-        val game3 = gameFactory.createRandomGame()
-        val searchResults = searchGames(GameSearch(), bearerToken, null, null)
-        assertTrue(searchResults.size == 3)
-        assertContains(searchResults, game1)
-        assertContains(searchResults, game2)
-        assertContains(searchResults, game3)
+        val games = List(3) { gameFactory.createRandomGame() }
+        val searchResults = searchGames(GameSearch(), token, DEFAULT_SKIP, DEFAULT_LIMIT)
+        assertEquals(searchResults.size, games.size)
+        assertTrue(games.all { game -> searchResults.contains(game) })
     }
 }

@@ -8,10 +8,12 @@ import org.http4k.routing.path
 import pt.isel.ls.api.models.PlayerCreate
 import pt.isel.ls.api.models.PlayerResponse
 import pt.isel.ls.services.PlayerServices
+import pt.isel.ls.utils.isPositive
+import pt.isel.ls.utils.validateInt
 
 class PlayersAPI(val services: PlayerServices) : APISchema() {
     fun createPlayer(request: Request): Response =
-        useWithException {
+        useWithExceptionNoToken {
             logRequest(request)
             val input = Json.decodeFromString<PlayerCreate>(request.bodyString())
             // TODO: Player information should not be sent in the request body
@@ -22,15 +24,12 @@ class PlayersAPI(val services: PlayerServices) : APISchema() {
         }
 
     fun getPlayer(request: Request): Response =
-        useWithException {
+        request.useWithException { token ->
             logRequest(request)
-
+            val playerId = request.path("playerId")?.toInt().validateInt { it.isPositive() }
             Response(Status.OK)
                 .json(
-                    services.getPlayer(
-                        request.path("playerId")?.toInt(),
-                        request.header("Authorization"),
-                    ),
+                    services.getPlayer(playerId, token),
                 )
         }
 }

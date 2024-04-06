@@ -8,7 +8,7 @@ import pt.isel.ls.utils.isPast
 data class GamingSession(
     val id: Int,
     val gameId: Int,
-    val creatorId: Int,
+    val hostId: Int,
     val maxCapacity: Int,
     val startingDate: LocalDateTime,
     val players: Set<Player>,

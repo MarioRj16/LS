@@ -8,21 +8,22 @@ import pt.isel.ls.data.Data
 import pt.isel.ls.domain.GamingSession
 import pt.isel.ls.utils.exceptions.ForbiddenException
 import pt.isel.ls.utils.isPast
+import java.util.*
 
 open class SessionServices(internal val db: Data) : ServicesSchema(db) {
     fun searchSessions(
         sessionSearch: SessionSearch,
-        authorization: String?,
+        token: UUID,
         skip: Int,
         limit: Int,
-    ): List<GamingSession> = withAuthorization(authorization) {
+    ): List<GamingSession> = withAuthorization(token) {
         return@withAuthorization db.gamingSessions.search(sessionSearch, limit, skip)
     }
 
     fun createSession(
         sessionInput: SessionCreate,
-        authorization: String?,
-    ): SessionResponse = withAuthorization(authorization){ user ->
+        token: UUID,
+    ): SessionResponse = withAuthorization(token) { user ->
         val session =
             db.gamingSessions.create(
                 sessionInput.capacity,
@@ -34,22 +35,20 @@ open class SessionServices(internal val db: Data) : ServicesSchema(db) {
     }
 
     fun getSession(
-        sessionId: Int?,
-        authorization: String?,
-    ): GamingSession = withAuthorization(authorization){
-        requireNotNull(sessionId) { "Invalid argument id can't be null" }
+        sessionId: Int,
+        token: UUID,
+    ): GamingSession = withAuthorization(token) {
         return@withAuthorization db.gamingSessions.get(sessionId)
     }
 
     fun updateSession(
-        sessionId: Int?,
+        sessionId: Int,
         sessionUpdate: SessionUpdate,
-        authorization: String?,
-    ): GamingSession = withAuthorization(authorization) { user ->
-        requireNotNull(sessionId) { "Invalid argument id can't be null" }
+        token: UUID,
+    ): GamingSession = withAuthorization(token) { user ->
         require(!sessionUpdate.startingDate.isPast()) { "LocalDateTime cannot be in past" }
         val currentSession = db.gamingSessions.get(sessionId)
-        if (user.id != currentSession.creatorId) {
+        if (user.id != currentSession.hostId) {
             throw ForbiddenException("Changes can only be made by the creator of the session")
         }
         require(currentSession.players.size <= sessionUpdate.capacity) {
@@ -60,10 +59,9 @@ open class SessionServices(internal val db: Data) : ServicesSchema(db) {
     }
 
     fun deleteSession(
-        sessionId: Int?,
-        authorization: String?,
-    ) = withAuthorization(authorization) { user ->
-        requireNotNull(sessionId) { "Invalid argument id can't be null" }
+        sessionId: Int,
+        token: UUID,
+    ) = withAuthorization(token) { user ->
         if (db.gamingSessions.isOwner(sessionId, user.id)) {
             return@withAuthorization db.gamingSessions.delete(sessionId)
         }
@@ -72,23 +70,20 @@ open class SessionServices(internal val db: Data) : ServicesSchema(db) {
     }
 
     fun addPlayerToSession(
-        sessionId: Int?,
-        authorization: String?,
-    ): Int = withAuthorization(authorization){ user ->
-        requireNotNull(sessionId) { "Invalid argument id can't be null" }
+        sessionId: Int,
+        token: UUID,
+    ): Int = withAuthorization(token) { user ->
         db.gamingSessions.addPlayer(sessionId, user.id)
         return@withAuthorization user.id
     }
 
     fun removePlayerFromSession(
-        sessionId: Int?,
-        authorization: String?,
-        playerId: Int?,
-    ) = withAuthorization(authorization){ user ->
-        requireNotNull(sessionId) { "Invalid argument id can't be null" }
-        requireNotNull(playerId) { "Invalid argument id can't be null" }
+        sessionId: Int,
+        token: UUID,
+        playerId: Int,
+    ) = withAuthorization(token) { user ->
         val session = db.gamingSessions.get(sessionId)
-        if (session.creatorId != user.id) {
+        if (session.hostId != user.id) {
             throw ForbiddenException("Changes can only be made by the creator of the session")
         }
         db.gamingSessions.removePlayer(sessionId, playerId)
