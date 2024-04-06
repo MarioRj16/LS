@@ -1,4 +1,4 @@
-
+export const API_URL=`http://localhost:3000`
 
 export async function createElement(tag, attributes, ...children) {
 
@@ -81,3 +81,4 @@ function isElement(obj) {
             obj && typeof obj === "object" && obj.nodeType === 1 && typeof obj.nodeName === "string"
     );
 }
+
