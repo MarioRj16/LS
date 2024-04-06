@@ -1,4 +1,4 @@
-import router from "./router.js";
+import router from "./routers/router.js";
 import handlers from "./handlers.js";
 
 // For more information on ES6 modules, see https://www.javascripttutorial.net/es6/es6-modules/ or
