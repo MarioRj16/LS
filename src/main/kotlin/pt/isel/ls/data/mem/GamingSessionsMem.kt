@@ -5,14 +5,12 @@ import pt.isel.ls.api.models.sessions.SessionSearch
 import pt.isel.ls.api.models.sessions.SessionUpdate
 import pt.isel.ls.data.GamingSessionsData
 import pt.isel.ls.domain.Game
-import pt.isel.ls.domain.GamingSession
 import pt.isel.ls.domain.Player
-import pt.isel.ls.utils.exceptions.ConflictException
-import pt.isel.ls.utils.isPast
+import pt.isel.ls.domain.Session
 import pt.isel.ls.utils.paginate
 
 class GamingSessionsMem(
-    private val gamingSessions: DataMemTable<GamingSession> = DataMemTable(),
+    private val sessions: DataMemTable<Session> = DataMemTable(),
     private val players: DataMemTable<Player> = DataMemTable(),
     private val games: DataMemTable<Game> = DataMemTable(),
 ) : GamingSessionsData {
@@ -20,35 +18,30 @@ class GamingSessionsMem(
         capacity: Int,
         game: Int,
         date: LocalDateTime,
-        playerId: Int,
-    ): GamingSession {
-        require(games.table.containsKey(game)) { "The provided game does not exist" }
+        hostId: Int,
+    ): Session {
         val obj =
-            GamingSession(
-                gamingSessions.nextId.get(),
+            Session(
+                sessions.nextId.get(),
                 game,
-                playerId,
+                hostId,
                 capacity,
                 date,
                 emptySet(),
             )
-        gamingSessions.table[gamingSessions.nextId.get()] = obj
+        sessions.table[sessions.nextId.get()] = obj
         return obj
     }
 
-    override fun get(sessionId: Int): GamingSession {
-        return gamingSessions.table[sessionId]
-            ?: throw NoSuchElementException("No gaming session with id $sessionId was found")
-    }
+    override fun get(sessionId: Int): Session? = sessions.table[sessionId]
 
     override fun search(
         sessionParameters: SessionSearch,
         limit: Int,
         skip: Int,
-    ): List<GamingSession> {
+    ): List<Session> {
         val (game, date, state, player) = sessionParameters
-        games.table[game] ?: throw NoSuchElementException("No game with id $game was found")
-        var sessions = gamingSessions.table.filter { (_, value) -> value.gameId == game }
+        var sessions = sessions.table.filter { (_, value) -> value.gameId == game }
 
         if (sessions.isEmpty()) {
             return sessions.values.toList()
@@ -69,57 +62,38 @@ class GamingSessionsMem(
         return sessions.values.toList().paginate(skip, limit)
     }
 
-    override fun update(sessionId: Int, sessionUpdate: SessionUpdate): GamingSession {
+    override fun update(sessionId: Int, sessionUpdate: SessionUpdate) {
         val (capacity, startingDate) = sessionUpdate
         val session =
-            gamingSessions.table[sessionId]?.copy(maxCapacity = capacity, startingDate = startingDate)
-                ?: throw NoSuchElementException("No gaming session with id $sessionId was found")
-
-        gamingSessions.table[sessionId] = session
-        return session
+            sessions.table[sessionId]!!.copy(maxCapacity = capacity, startingDate = startingDate)
+        sessions.table[sessionId] = session
     }
 
     override fun delete(sessionId: Int) {
-        gamingSessions.table.remove(sessionId)
-            ?: throw NoSuchElementException("The provided gaming session does not exist")
+        sessions.table.remove(sessionId)!!
     }
 
     override fun addPlayer(
         session: Int,
         player: Int,
     ) {
-        gamingSessions.table[session] ?: throw NoSuchElementException("Session $session does not exist")
-        require(gamingSessions.table[session]!!.state) {
-            "Cannot add player for closed gaming session"
-        }
-        val playerToAdd = players.table[player]
-        playerToAdd ?: throw NoSuchElementException("Player $player does not exist")
-        if (playerToAdd in gamingSessions.table[session]!!.players) {
-            throw ConflictException("Played could not be added to database")
-        }
-        gamingSessions.table[session] =
-            gamingSessions.table[session]!!.copy(players = (gamingSessions.table[session]!!.players + playerToAdd))
+        val playerToAdd = players.table[player]!!
+        sessions.table[session] =
+            sessions.table[session]!!.copy(players = (sessions.table[session]!!.players + playerToAdd))
     }
 
     override fun removePlayer(sessionId: Int, playerId: Int) {
-        val session =
-            gamingSessions.table[sessionId]
-                ?: throw NoSuchElementException("Session $sessionId does not exist")
-        require(!session.startingDate.isPast()) { "Changes cannot be made to past gaming sessions" }
-        val player =
-            session.players.find { it.id == playerId }
-                ?: throw IllegalArgumentException("Player $playerId does not exist")
-        gamingSessions.table[sessionId] =
-            session.copy(players = (session.players - player))
+        val session = sessions.table[sessionId]!!
+        val playerToRemove = session.players.find { it.id == playerId }!!
+        sessions.table[sessionId] =
+            session.copy(players = (session.players - playerToRemove))
     }
 
     override fun isOwner(
         sessionId: Int,
         playerId: Int,
     ): Boolean {
-        val session =
-            gamingSessions.table[sessionId]
-                ?: throw NoSuchElementException("Session $sessionId does not exist")
+        val session = sessions.table[sessionId]!!
         return session.hostId == playerId
     }
 }

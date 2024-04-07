@@ -12,16 +12,17 @@ class PlayersMem(private val players: DataMemTable<Player> = DataMemTable()) : P
     ): Player {
         val (name, email) = playerCreate
         if (emailExists(email)) throw ConflictException("The given email is not unique")
-        val obj = Player(players.nextId.get(), name, email)
-        players.table[players.nextId.get()] = obj
-        return obj
+        val player = Player(players.nextId.get(), name, email)
+        players.table[players.nextId.get()] = player
+        return player
     }
 
-    override fun get(id: Int): Player = players.table[id] ?: throw NoSuchElementException("No player with id $id was found")
+    override fun get(id: Int): Player? = players.table[id]
 
-    override fun getByToken(token: UUID): Player =
-        players.table.values.firstOrNull { it.token == token }
-            ?: throw NoSuchElementException("No player with token $token was found")
+    override fun get(token: UUID): Player? =
+        players.table.values.find { it.token == token }
+
+    override fun get(email: String): Player? = players.table.values.find { it.email == email }
 
     private fun emailExists(email: String): Boolean = players.table.any { it.value.email == email }
 }

@@ -5,9 +5,7 @@ import org.http4k.core.Request
 import org.http4k.core.Status
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
-import pt.isel.ls.api.models.games.GameCreate
-import pt.isel.ls.api.models.games.GameResponse
-import pt.isel.ls.domain.Game
+import pt.isel.ls.api.models.games.*
 import pt.isel.ls.domain.Genre
 import pt.isel.ls.integration.IntegrationTests
 import pt.isel.ls.utils.factories.GameFactory
@@ -17,12 +15,12 @@ import kotlin.test.assertTrue
 
 class GamesTests : IntegrationTests() {
     companion object {
-        val list = searchHelpGame(20, GameFactory(db.games)::createRandomGame)
+        val list = searchHelpGame(20, GameFactory(db.games, db.genreDB)::createRandomGame)
     }
 
     @Test
     fun createGame() {
-        val requestBody = GameCreate("Test", "developer1", setOf(Genre(1, "Horror")))
+        val requestBody = GameCreate("Test", "developer1", setOf(1))
         val request =
             Request(Method.POST, "$URI_PREFIX/games")
                 .json(requestBody)
@@ -30,25 +28,27 @@ class GamesTests : IntegrationTests() {
         client(request)
             .apply {
                 assertEquals(Status.CREATED, status)
-                assertDoesNotThrow { Json.decodeFromString<GameResponse>(bodyString()) }
+                assertDoesNotThrow { Json.decodeFromString<GameCreateResponse>(bodyString()) }
             }
     }
 
     @Test
-    fun noParametersSearchGames() {
-        val requestBody = generateRandomGameSearch()
+    fun searchGameWithQuery() {
+        val search = generateRandomGameSearch()
         val request =
-            Request(Method.GET, "$URI_PREFIX/games")
-                .json(requestBody)
+            Request(Method.GET, "$URI_PREFIX/games?developer=${search.developer}&genres=${search.genres.joinToString(",")}")
+                .json("")
                 .token(user!!.token)
         client(request)
             .apply {
                 assertEquals(Status.OK, status)
-                val response = Json.decodeFromString<List<Game>>(bodyString())
+                val response = Json.decodeFromString<GameListResponse>(bodyString())
                 assertTrue {
-                    list.all { x ->
-                        response.contains(x)
-                    }
+                    list.filter { it.developer == search.developer && it.genres.containsAll(search.genres.map { Genre(it, "") }) }
+                        .map { GameResponse(it) }
+                        .all { x ->
+                            response.games.contains(x)
+                        }
                 }
             }
     }
@@ -62,11 +62,12 @@ class GamesTests : IntegrationTests() {
         client(request)
             .apply {
                 assertEquals(Status.OK, status)
-                val response = Json.decodeFromString<List<Game>>(bodyString())
+                val response = Json.decodeFromString<GameListResponse>(bodyString())
                 assertTrue {
                     list.filter { it.developer == "Developer1" && it.genres.contains(Genre(1, "RPG")) }
+                        .map { GameResponse(it) }
                         .all { x ->
-                            response.contains(x)
+                            response.games.contains(x)
                         }
                 }
             }
@@ -74,7 +75,7 @@ class GamesTests : IntegrationTests() {
 
     @Test
     fun getGame() {
-        val game = GameFactory(db.games).createRandomGame()
+        val game = GameFactory(db.games, db.genreDB).createRandomGame()
         val request =
             Request(Method.GET, "$URI_PREFIX/games/${game.id}")
                 .json("")
@@ -82,7 +83,7 @@ class GamesTests : IntegrationTests() {
         client(request)
             .apply {
                 assertEquals(Status.OK, status)
-                assertEquals(game, Json.decodeFromString<Game>(bodyString()))
+                assertEquals(GameDetails(game), Json.decodeFromString<GameDetails>(bodyString()))
             }
     }
 }

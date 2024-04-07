@@ -1,8 +1,8 @@
 package pt.isel.ls.utils.factories
 
 import pt.isel.ls.data.GamingSessionsData
-import pt.isel.ls.domain.GamingSession
 import pt.isel.ls.domain.Player
+import pt.isel.ls.domain.Session
 import pt.isel.ls.utils.plusDaysToCurrentDateTime
 import kotlin.random.Random
 
@@ -11,7 +11,7 @@ class GamingSessionFactory(private val gamingSessions: GamingSessionsData) {
         gameId: Int,
         playerId: Int,
         players: Set<Player> = emptySet<Player>(),
-    ): GamingSession {
+    ): Session {
         val randomCapacity =
             if (players.size >= 2) Random.nextInt(players.size, 33) else Random.nextInt(2, 33)
         val session = gamingSessions.create(randomCapacity, gameId, plusDaysToCurrentDateTime(), playerId)
@@ -21,6 +21,6 @@ class GamingSessionFactory(private val gamingSessions: GamingSessionsData) {
         players.forEach {
             gamingSessions.addPlayer(session.id, it.id)
         }
-        return gamingSessions.get(session.id)
+        return gamingSessions.get(session.id)!!
     }
 }

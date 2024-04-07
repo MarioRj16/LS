@@ -3,8 +3,6 @@ package pt.isel.ls.data
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
-import kotlinx.datetime.toKotlinLocalDate
-import kotlinx.datetime.toKotlinLocalTime
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import pt.isel.ls.DEFAULT_LIMIT
@@ -13,14 +11,13 @@ import pt.isel.ls.api.models.sessions.SessionSearch
 import pt.isel.ls.api.models.sessions.SessionUpdate
 import pt.isel.ls.utils.minusDaysToCurrentDateTime
 import pt.isel.ls.utils.plusDaysToCurrentDateTime
-import pt.isel.ls.utils.plusMillisecondsToCurrentDateTime
 import kotlin.random.Random
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-class GamingSessionTests : AbstractDataTests() {
+class SessionTests : AbstractDataTests() {
     @Test
     fun `create() returns gaming session successfully`() {
         val player = playerFactory.createRandomPlayer()
@@ -78,9 +75,7 @@ class GamingSessionTests : AbstractDataTests() {
 
     @Test
     fun `get() throws exception for non existing gaming session`() {
-        assertThrows<NoSuchElementException> {
-            gamingSessions.get(1)
-        }
+        assertTrue(gamingSessions.get(1) == null)
     }
 
     @Test
@@ -91,17 +86,9 @@ class GamingSessionTests : AbstractDataTests() {
 
         gamingSessions.addPlayer(session.id, player.id)
 
-        val playersInSession = gamingSessions.get(session.id).players
+        val playersInSession = gamingSessions.get(session.id)!!.players
 
         assertTrue(player in playersInSession)
-    }
-
-    @Test
-    fun `addPlayer() throws exception for non existing gaming session`() {
-        assertThrows<NoSuchElementException> {
-            val player = playerFactory.createRandomPlayer()
-            gamingSessions.addPlayer(1, player.id)
-        }
     }
 
     @Test
@@ -122,24 +109,6 @@ class GamingSessionTests : AbstractDataTests() {
     }
 
     @Test
-    fun `addPlayer() throws exception for session past starting date`() {
-        val game = gameFactory.createRandomGame()
-        val player = playerFactory.createRandomPlayer()
-        val secondsToAdd = 1L
-        val date =
-            LocalDateTime(
-                java.time.LocalDate.now().toKotlinLocalDate(),
-                java.time.LocalTime.now().plusSeconds(secondsToAdd).toKotlinLocalTime(),
-            )
-        val session = gamingSessions.create(2, game.id, date, player.id)
-        assertThrows<IllegalArgumentException> {
-            val msToAdd = (secondsToAdd * 1000)
-            Thread.sleep(msToAdd)
-            gamingSessions.addPlayer(session.id, player.id)
-        }
-    }
-
-    @Test
     fun `removePlayer() removes player from session successfully`() {
         val game = gameFactory.createRandomGame()
         val creator = playerFactory.createRandomPlayer()
@@ -148,45 +117,9 @@ class GamingSessionTests : AbstractDataTests() {
 
         gamingSessions.removePlayer(session.id, player.id)
 
-        val expected = gamingSessions.get(session.id).players
+        val expected = gamingSessions.get(session.id)!!.players
         assertTrue(session.players.contains(player))
         assertTrue(expected.isEmpty())
-    }
-
-    @Test
-    fun `removePlayer() throws exception for non existing player in session`() {
-        val game = gameFactory.createRandomGame()
-        val creator = playerFactory.createRandomPlayer()
-        val player = playerFactory.createRandomPlayer()
-        val session = gamingSessionFactory.createRandomGamingSession(game.id, creator.id)
-
-        assertThrows<IllegalArgumentException> {
-            gamingSessions.removePlayer(session.id, player.id)
-        }
-    }
-
-    @Test
-    fun `removePlayer() throws exception for non existing gaming session`() {
-        val player = playerFactory.createRandomPlayer()
-        assertThrows<NoSuchElementException> {
-            gamingSessions.removePlayer(1, player.id)
-        }
-    }
-
-    @Test
-    fun `removePlayer() throws exception for session past starting date`() {
-        val game = gameFactory.createRandomGame()
-        val creator = playerFactory.createRandomPlayer()
-        val player = playerFactory.createRandomPlayer()
-        val session = gamingSessionFactory.createRandomGamingSession(game.id, creator.id, setOf(player))
-        val sessionUpdate = SessionUpdate(session.maxCapacity, plusMillisecondsToCurrentDateTime(3))
-        gamingSessions.update(session.id, sessionUpdate)
-
-        Thread.sleep(5)
-
-        assertThrows<IllegalArgumentException> {
-            gamingSessions.removePlayer(session.id, player.id)
-        }
     }
 
     @Test
@@ -195,19 +128,15 @@ class GamingSessionTests : AbstractDataTests() {
         val game = gameFactory.createRandomGame()
         val session = gamingSessionFactory.createRandomGamingSession(game.id, player.id)
         val newDate = plusDaysToCurrentDateTime()
-        val newCapacity = Random.nextInt(2, session.maxCapacity)
+        val newCapacity: Int
+        if(session.maxCapacity in 2..3)
+            newCapacity = Random.nextInt(session.maxCapacity, 33)
+        else
+            newCapacity = Random.nextInt(2, session.maxCapacity)
         val expected = session.copy(startingDate = newDate, maxCapacity = newCapacity)
         val sessionUpdate = SessionUpdate(newCapacity, newDate)
-        assertEquals(expected, gamingSessions.update(session.id, sessionUpdate))
+        gamingSessions.update(session.id, sessionUpdate)
         assertEquals(expected, gamingSessions.get(session.id))
-    }
-
-    @Test
-    fun `update() throws exception for non existing gaming session`() {
-        val sessionUpdate = SessionUpdate(2, plusDaysToCurrentDateTime())
-        assertThrows<NoSuchElementException> {
-            gamingSessions.update(1, sessionUpdate)
-        }
     }
 
     @Test
@@ -218,16 +147,7 @@ class GamingSessionTests : AbstractDataTests() {
 
         assertEquals(session, gamingSessions.get(session.id))
         gamingSessions.delete(session.id)
-        assertThrows<NoSuchElementException> {
-            gamingSessions.get(session.id)
-        }
-    }
-
-    @Test
-    fun `delete() throws exception for non existing gaming session`() {
-        assertThrows<NoSuchElementException> {
-            gamingSessions.delete(1)
-        }
+        assertTrue(gamingSessions.get(session.id) == null)
     }
 
     @Test
@@ -259,17 +179,6 @@ class GamingSessionTests : AbstractDataTests() {
     }
 
     @Test
-    fun `search() throws exception for non existing game`() {
-        val player = playerFactory.createRandomPlayer()
-        val game = gameFactory.createRandomGame()
-        gamingSessionFactory.createRandomGamingSession(game.id, player.id)
-        val searchParameters = SessionSearch(10)
-        assertThrows<NoSuchElementException> {
-            gamingSessions.search(searchParameters, DEFAULT_LIMIT, DEFAULT_SKIP)
-        }
-    }
-
-    @Test
     fun `isOwner() checks if player is owner successfully`() {
         val game = gameFactory.createRandomGame()
         val player1 = playerFactory.createRandomPlayer()
@@ -278,13 +187,5 @@ class GamingSessionTests : AbstractDataTests() {
 
         assertTrue(gamingSessions.isOwner(session1.id, player1.id))
         assertFalse(gamingSessions.isOwner(session1.id, player2.id))
-    }
-
-    @Test
-    fun `isOwner() throws for non existing gaming session`() {
-        val player = playerFactory.createRandomPlayer()
-        assertThrows<NoSuchElementException> {
-            gamingSessions.isOwner(1, player.id)
-        }
     }
 }

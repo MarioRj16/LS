@@ -1,6 +1,5 @@
 package pt.isel.ls.data.postgres
 
-import pt.isel.ls.api.models.games.GameCreate
 import pt.isel.ls.api.models.games.GameSearch
 import pt.isel.ls.data.GamesData
 import pt.isel.ls.domain.Game
@@ -16,11 +15,12 @@ import java.sql.Statement
 
 class GamesPostgres(private val conn: () -> Connection) : GamesData {
     override fun create(
-        gameCreate: GameCreate,
+        name: String,
+        developer: String,
+        genres: Set<Genre>,
     ): Game =
         conn().useWithRollback {
             val game: Game
-            val (name, developer, genres) = gameCreate
             val gameId = it.insertGame(name, developer)
 
             game = Game(gameId, name, developer, genres)
@@ -32,9 +32,9 @@ class GamesPostgres(private val conn: () -> Connection) : GamesData {
             return game
         }
 
-    override fun get(name: String): Game = fetchGame("game_name", name)
+    override fun get(name: String): Game? = fetchGame("game_name", name)
 
-    override fun get(id: Int): Game = fetchGame("game_id", "$id")
+    override fun get(id: Int): Game? = fetchGame("game_id", "$id")
     override fun search(
         searchParams: GameSearch,
         limit: Int,
@@ -66,6 +66,30 @@ class GamesPostgres(private val conn: () -> Connection) : GamesData {
 
             return games.paginate(skip, limit)
         }
+
+    override fun genresExist(genreIds: Set<Int>): Boolean = conn().useWithRollback {
+        val query = """SELECT COUNT(*) FROM genres WHERE genre_id IN (${genreIds.joinToString(", ")})"""
+        return conn().useWithRollback {
+            val statement = it.prepareStatement(query)
+            val resultSet = statement.executeQuery()
+            resultSet.next()
+            resultSet.getInt(1) == genreIds.size
+        }
+    }
+
+    override fun getGenres(genreIds: Set<Int>): Set<Genre> = conn().useWithRollback {
+        val query = """SELECT * FROM genres WHERE genre_id IN (${genreIds.joinToString(", ")})"""
+        return conn().useWithRollback {
+            val statement = it.prepareStatement(query)
+            val resultSet = statement.executeQuery()
+            val genres = mutableSetOf<Genre>()
+
+            while (resultSet.next())
+                genres += resultSet.toGenre()
+
+            return genres
+        }
+    }
 
     private fun Connection.insertGame(name: String, developer: String): Int {
         val query = """insert into games(game_name, developer) values (?, ?)""".trimIndent()
@@ -108,7 +132,7 @@ class GamesPostgres(private val conn: () -> Connection) : GamesData {
         }
     }
 
-    private fun fetchGame(identifier: String, value: String): Game =
+    private fun fetchGame(identifier: String, value: String): Game? =
         conn().useWithRollback {
             val query =
                 """
@@ -131,7 +155,8 @@ class GamesPostgres(private val conn: () -> Connection) : GamesData {
                 return resultSet.toGame(genres.toSet())
             }
 
-            throw NoSuchElementException("Could not get Game, $value was not found")
+            return null
+            //throw NoSuchElementException("Could not get Game, $value was not found")
         }
 
     private fun buildSearchQuery(searchParams: GameSearch): String {

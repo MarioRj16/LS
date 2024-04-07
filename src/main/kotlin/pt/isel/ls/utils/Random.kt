@@ -37,7 +37,7 @@ fun generateRandomString(): String {
  * @return A set of randomly generated integers.
  * @throws IllegalArgumentException If `size` is negative or `min` is greater than `max`.
  */
-private fun generateSetOfRandomInts(size: Int, min: Int = 0, max: Int = 10): Set<Int> {
+fun generateSetOfRandomInts(size: Int, min: Int = 0, max: Int = 10): Set<Int> {
     require(size >= 0) { "Size must be a non-negative number" }
     require(min <= max) { "Minimum value must be less than or equal to the maximum value" }
 

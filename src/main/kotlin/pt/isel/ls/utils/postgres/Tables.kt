@@ -2,9 +2,9 @@ package pt.isel.ls.utils.postgres
 
 import kotlinx.datetime.toKotlinLocalDateTime
 import pt.isel.ls.domain.Game
-import pt.isel.ls.domain.GamingSession
 import pt.isel.ls.domain.Genre
 import pt.isel.ls.domain.Player
+import pt.isel.ls.domain.Session
 import java.sql.ResultSet
 import java.util.*
 
@@ -45,13 +45,13 @@ fun ResultSet.toGame(genres: Set<Genre>, game: Int = getInt("game_id")): Game =
     )
 
 /**
- * Converts a [ResultSet] into a [GamingSession] object.
+ * Converts a [ResultSet] into a [Session] object.
  *
  * @param players Set of players participating in the gaming session.
- * @return The converted [GamingSession] object.
+ * @return The converted [Session] object.
  */
-fun ResultSet.toGamingSession(players: Set<Player>): GamingSession =
-    GamingSession(
+fun ResultSet.toGamingSession(players: Set<Player>): Session =
+    Session(
         id = getInt("gaming_session_id"),
         gameId = getInt("game"),
         hostId = getInt("creator"),

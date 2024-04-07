@@ -9,7 +9,9 @@ interface PlayersData {
         playerCreate: PlayerCreate,
     ): Player
 
-    fun get(id: Int): Player
+    fun get(id: Int): Player?
 
-    fun getByToken(token: UUID): Player
+    fun get(token: UUID): Player?
+
+    fun get(email: String): Player?
 }

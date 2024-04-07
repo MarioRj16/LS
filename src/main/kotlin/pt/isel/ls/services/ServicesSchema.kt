@@ -13,10 +13,7 @@ abstract class ServicesSchema(internal val data: Data) {
     }
 
     protected fun bearerToken(token: UUID): Player {
-        try {
-            return data.players.getByToken(token)
-        } catch (e: NoSuchElementException) {
-            throw AuthorizationException()
-        }
+            return data.players.get(token)
+                ?: throw AuthorizationException("Missing or invalid bearer token")
     }
 }

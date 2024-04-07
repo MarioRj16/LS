@@ -65,7 +65,7 @@ class SessionsAPI(private val services: SessionServices) : APISchema() {
         request.useWithException { token ->
             val sessionId = request.path("sessionId")?.toInt().validateInt { it.isPositive() }
             services.deleteSession(sessionId, token)
-            Response(Status.NO_CONTENT).json("")
+            Response(Status.NO_CONTENT)
         }
 
     fun addPlayerToSession(request: Request): Response =
@@ -81,6 +81,6 @@ class SessionsAPI(private val services: SessionServices) : APISchema() {
             val sessionId = request.path("sessionId")?.toInt().validateInt { it.isPositive() }
             val playerId = request.path("playerId")?.toInt().validateInt { it.isPositive() }
             services.removePlayerFromSession(sessionId, token, playerId)
-            Response(Status.NO_CONTENT).json("")
+            Response(Status.NO_CONTENT)
         }
 }

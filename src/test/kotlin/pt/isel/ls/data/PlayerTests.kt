@@ -58,9 +58,9 @@ class PlayerTests : AbstractDataTests() {
     }
 
     @Test
-    fun `get() throws exception for non existing player`() {
-        assertThrows<NoSuchElementException> {
-            players.get(1)
-        }
+    fun `get() returns null for non existing player`() {
+        val player = players.get(1)
+
+        assertTrue(player == null)
     }
 }

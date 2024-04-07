@@ -4,8 +4,8 @@ import kotlinx.datetime.LocalDateTime
 import pt.isel.ls.api.models.sessions.SessionSearch
 import pt.isel.ls.api.models.sessions.SessionUpdate
 import pt.isel.ls.data.GamingSessionsData
-import pt.isel.ls.domain.GamingSession
 import pt.isel.ls.domain.Player
+import pt.isel.ls.domain.Session
 import pt.isel.ls.utils.paginate
 import pt.isel.ls.utils.postgres.toGamingSession
 import pt.isel.ls.utils.postgres.toPlayer
@@ -20,8 +20,8 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
         capacity: Int,
         game: Int,
         date: LocalDateTime,
-        playerId: Int,
-    ): GamingSession =
+        hostId: Int,
+    ): Session =
         conn().useWithRollback {
             val statement =
                 it.prepareStatement(
@@ -40,12 +40,12 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
             val generatedKeys = statement.generatedKeys
 
             if (generatedKeys.next()) {
-                return GamingSession(generatedKeys.getInt(1), game, playerId, capacity, date, emptySet())
+                return Session(generatedKeys.getInt(1), game, hostId, capacity, date, emptySet())
             }
             throw SQLException("Creating gaming session failed, no ID was created")
         }
 
-    override fun get(sessionId: Int): GamingSession =
+    override fun get(sessionId: Int): Session? =
         conn().useWithRollback {
             val statement =
                 it.prepareStatement(
@@ -70,10 +70,10 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
                     return resultSet.toGamingSession(players)
                 }
             }
-            throw NoSuchElementException("Could not get gaming session, session with id $sessionId was not found")
+            return null
         }
 
-    override fun search(sessionParameters: SessionSearch, limit: Int, skip: Int): List<GamingSession> =
+    override fun search(sessionParameters: SessionSearch, limit: Int, skip: Int): List<Session> =
         conn().useWithRollback {
             val (game, date, isOpen, player) = sessionParameters
             val query =
@@ -104,7 +104,7 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
 
             val resultSet = statement.executeQuery()
 
-            val sessions = mutableListOf<GamingSession>()
+            val sessions = mutableListOf<Session>()
             val players = mutableSetOf<Player>()
 
             var previousSessionId: Int? = null
@@ -121,39 +121,21 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
             return sessions.paginate(skip, limit)
         }
 
-    override fun update(sessionId: Int, sessionUpdate: SessionUpdate): GamingSession =
+    override fun update(sessionId: Int, sessionUpdate: SessionUpdate) =
         conn().useWithRollback {
             val (capacity, startingDate) = sessionUpdate
-            val stm2 = it.prepareStatement(
-                """
-                select * from players where player_id in (select player from players_sessions where gaming_session = ?)
-                """.trimIndent(),
-            ).apply {
-                setInt(1, sessionId)
-            }
-
-            val resultSet2 = stm2.executeQuery()
-
-            val players = mutableSetOf<Player>()
-
-            while (resultSet2.next()) {
-                players += resultSet2.toPlayer()
-            }
 
             val stm =
                 it.prepareStatement(
-                    """update gaming_sessions set capacity = ?, starting_date = ? where gaming_session_id = ? RETURNING *""",
+                    """update gaming_sessions set capacity = ?, starting_date = ? where gaming_session_id = ?""",
                 ).apply {
                     setInt(1, capacity)
                     setTimestamp(2, startingDate.toTimeStamp())
                     setInt(3, sessionId)
                 }
 
-            val resultSet = stm.executeQuery()
-            while (resultSet.next()) {
-                return resultSet.toGamingSession(players)
-            }
-            throw SQLException("Updating gaming session failed, no rows affected")
+            if(stm.executeUpdate() == 0)
+                throw SQLException("Updating gaming session failed, no rows affected")
         }
 
     override fun delete(sessionId: Int) =
@@ -172,7 +154,6 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
         session: Int,
         player: Int,
     ) = conn().useWithRollback {
-        // TODO Throw ConflictException if the same player tries enter twice in the same session
         val stm =
             it.prepareStatement(
                 """insert into players_sessions(player, gaming_session) values (?, ?)""",
@@ -220,6 +201,6 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
             if (resultSet.next()) {
                 return resultSet.toGamingSession(emptySet()).hostId == playerId
             }
-            throw NoSuchElementException("No session $sessionId was found")
+            return false
         }
 }

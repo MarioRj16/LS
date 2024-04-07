@@ -15,7 +15,7 @@ import pt.isel.ls.api.API
 import pt.isel.ls.api.models.players.PlayerResponse
 import pt.isel.ls.data.mem.DataMem
 import pt.isel.ls.domain.Game
-import pt.isel.ls.domain.GamingSession
+import pt.isel.ls.domain.Session
 import pt.isel.ls.services.Services
 import pt.isel.ls.utils.generateRandomEmail
 
@@ -78,11 +78,11 @@ abstract class IntegrationTests() {
 
         fun searchHelpSessions(
             repetitions: Int,
-            entity: (Int, Int) -> GamingSession,
+            entity: (Int, Int) -> Session,
             game: Int,
             owner: Int,
-        ): List<GamingSession> {
-            val list = mutableListOf<GamingSession>()
+        ): List<Session> {
+            val list = mutableListOf<Session>()
             repeat(repetitions) {
                 list.add(entity(game, owner))
             }

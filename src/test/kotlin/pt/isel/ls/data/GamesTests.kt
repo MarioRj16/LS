@@ -1,10 +1,8 @@
 package pt.isel.ls.data
 
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import pt.isel.ls.DEFAULT_LIMIT
 import pt.isel.ls.DEFAULT_SKIP
-import pt.isel.ls.api.models.games.GameCreate
 import pt.isel.ls.domain.Genre
 import pt.isel.ls.utils.generateRandomGameSearch
 import pt.isel.ls.utils.generateRandomString
@@ -27,25 +25,12 @@ class GamesTests : AbstractDataTests() {
         val name = generateRandomString()
         val developer = generateRandomString()
         val genres = setOf(genres[0])
-        val gameCreate = GameCreate(name, developer, genres)
-        val game = games.create(gameCreate)
+        val game = games.create(name, developer, genres)
 
         assertTrue(game.id == 1)
         assertEquals(name, game.name)
         assertEquals(developer, game.developer)
         assertEquals(genres, game.genres)
-    }
-
-    @Test
-    fun `create() throws exception for non unique name`() {
-        val name = generateRandomString()
-        val gameCreate1 = GameCreate(name, generateRandomString(), setOf(genres[0]))
-        val gameCreate2 = GameCreate(name, generateRandomString(), setOf(genres[1]))
-        games.create(gameCreate1)
-
-        assertThrows<IllegalArgumentException> {
-            games.create(gameCreate2)
-        }
     }
 
     @Test
@@ -56,10 +41,10 @@ class GamesTests : AbstractDataTests() {
     }
 
     @Test
-    fun `get() throws exception for non existing game`() {
-        assertThrows<NoSuchElementException> {
-            games.get("game")
-        }
+    fun `get() returns null for non existing game`() {
+        val game = games.get(generateRandomString())
+
+        assertTrue(game == null)
     }
 
     @Test
@@ -70,10 +55,10 @@ class GamesTests : AbstractDataTests() {
     }
 
     @Test
-    fun `getById() throws exception for non existing game`() {
-        assertThrows<NoSuchElementException> {
-            games.get(1)
-        }
+    fun `getById() returns null for non existing game`() {
+        val game = games.get(1)
+
+        assertTrue(game == null)
     }
 
     @Test

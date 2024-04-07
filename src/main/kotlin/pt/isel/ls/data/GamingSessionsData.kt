@@ -3,25 +3,25 @@ package pt.isel.ls.data
 import kotlinx.datetime.LocalDateTime
 import pt.isel.ls.api.models.sessions.SessionSearch
 import pt.isel.ls.api.models.sessions.SessionUpdate
-import pt.isel.ls.domain.GamingSession
+import pt.isel.ls.domain.Session
 
 interface GamingSessionsData {
     fun create(
         capacity: Int,
         game: Int,
         date: LocalDateTime,
-        playerId: Int,
-    ): GamingSession
+        hostId: Int,
+    ): Session
 
-    fun get(sessionId: Int): GamingSession
+    fun get(sessionId: Int): Session?
 
     fun search(
         sessionParameters: SessionSearch,
         limit: Int,
         skip: Int,
-    ): List<GamingSession>
+    ): List<Session>
 
-    fun update(sessionId: Int, sessionUpdate: SessionUpdate): GamingSession
+    fun update(sessionId: Int, sessionUpdate: SessionUpdate)
 
     fun delete(sessionId: Int)
 

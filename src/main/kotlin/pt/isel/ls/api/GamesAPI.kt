@@ -8,7 +8,6 @@ import org.http4k.routing.path
 import pt.isel.ls.DEFAULT_LIMIT
 import pt.isel.ls.DEFAULT_SKIP
 import pt.isel.ls.api.models.games.GameCreate
-import pt.isel.ls.api.models.games.GameResponse
 import pt.isel.ls.api.models.games.GameSearch
 import pt.isel.ls.services.GamesServices
 import pt.isel.ls.utils.isNotNegative
@@ -32,9 +31,8 @@ class GamesAPI(private val services: GamesServices) : APISchema() {
     fun createGame(request: Request): Response =
         request.useWithException { token ->
             val gameInput = Json.decodeFromString<GameCreate>(request.bodyString())
-            val gameId = services.createGame(gameInput, token)
             Response(Status.CREATED)
-                .json(GameResponse(gameId))
+                .json(services.createGame(gameInput, token))
         }
 
     fun getGame(request: Request): Response =

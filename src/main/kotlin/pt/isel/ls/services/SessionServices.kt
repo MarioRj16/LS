@@ -1,11 +1,8 @@
 package pt.isel.ls.services
 
-import pt.isel.ls.api.models.sessions.SessionCreate
-import pt.isel.ls.api.models.sessions.SessionResponse
-import pt.isel.ls.api.models.sessions.SessionSearch
-import pt.isel.ls.api.models.sessions.SessionUpdate
+import pt.isel.ls.api.models.sessions.*
 import pt.isel.ls.data.Data
-import pt.isel.ls.domain.GamingSession
+import pt.isel.ls.domain.Session
 import pt.isel.ls.utils.exceptions.ForbiddenException
 import pt.isel.ls.utils.isPast
 import java.util.*
@@ -16,14 +13,19 @@ open class SessionServices(internal val db: Data) : ServicesSchema(db) {
         token: UUID,
         skip: Int,
         limit: Int,
-    ): List<GamingSession> = withAuthorization(token) {
-        return@withAuthorization db.gamingSessions.search(sessionSearch, limit, skip)
+    ): SessionListResponse = withAuthorization(token) {
+        if(db.games.get(sessionSearch.game) == null){
+            throw NoSuchElementException("No game with id ${sessionSearch.game} was found")
+        }
+        val sessions = db.gamingSessions.search(sessionSearch, limit, skip).map { SessionResponse(it) }
+        return@withAuthorization SessionListResponse(sessions)
     }
 
     fun createSession(
         sessionInput: SessionCreate,
         token: UUID,
-    ): SessionResponse = withAuthorization(token) { user ->
+    ): SessionCreateResponse = withAuthorization(token) { user ->
+        require(db.games.get(sessionInput.gameId) != null) { "The provided game does not exist" }
         val session =
             db.gamingSessions.create(
                 sessionInput.capacity,
@@ -31,48 +33,66 @@ open class SessionServices(internal val db: Data) : ServicesSchema(db) {
                 sessionInput.startingDate,
                 user.id,
             )
-        return@withAuthorization SessionResponse(session.id)
+        return@withAuthorization SessionCreateResponse(session.id)
     }
 
     fun getSession(
         sessionId: Int,
         token: UUID,
-    ): GamingSession = withAuthorization(token) {
+    ): Session = withAuthorization(token) {
         return@withAuthorization db.gamingSessions.get(sessionId)
+            ?: throw NoSuchElementException("No gaming session with id $sessionId was found")
     }
 
     fun updateSession(
         sessionId: Int,
         sessionUpdate: SessionUpdate,
         token: UUID,
-    ): GamingSession = withAuthorization(token) { user ->
-        require(!sessionUpdate.startingDate.isPast()) { "LocalDateTime cannot be in past" }
-        val currentSession = db.gamingSessions.get(sessionId)
-        if (user.id != currentSession.hostId) {
+    ): SessionUpdate = withAuthorization(token) { user ->
+        val session = db.gamingSessions.get(sessionId)
+            ?: throw NoSuchElementException("No session $sessionId was found")
+        if(!session.state){
+            throw ForbiddenException("Cannot update a closed session")
+        }
+        if(session.startingDate.isPast()){
+            throw ForbiddenException("Cannot update a session that has already started")
+        }
+        if (user.id != session.hostId) {
             throw ForbiddenException("Changes can only be made by the creator of the session")
         }
-        require(currentSession.players.size <= sessionUpdate.capacity) {
-            "Cannot update session capacity to a value lower than the number of players currently in session"
+        if(sessionUpdate.capacity < session.players.size) {
+            throw IllegalArgumentException("Cannot reduce capacity to less than the number of players in the session")
         }
-
-        return@withAuthorization db.gamingSessions.update(sessionId, sessionUpdate)
+        db.gamingSessions.update(sessionId, sessionUpdate)
+        return@withAuthorization SessionUpdate(db.gamingSessions.get(sessionId)!!)
     }
 
     fun deleteSession(
         sessionId: Int,
         token: UUID,
     ) = withAuthorization(token) { user ->
-        if (db.gamingSessions.isOwner(sessionId, user.id)) {
-            return@withAuthorization db.gamingSessions.delete(sessionId)
-        }
+        val session = db.gamingSessions.get(sessionId)
+            ?: throw NoSuchElementException("No session $sessionId was found")
 
-        throw ForbiddenException("You can only delete games you created")
+        if (session.hostId != user.id) {
+            throw ForbiddenException("You can only delete games you created")
+        }
+        return@withAuthorization db.gamingSessions.delete(sessionId)
+
     }
 
     fun addPlayerToSession(
         sessionId: Int,
         token: UUID,
     ): Int = withAuthorization(token) { user ->
+        val session = db.gamingSessions.get(sessionId)
+            ?: throw NoSuchElementException("No session $sessionId was found")
+        if(!session.state){
+            throw IllegalArgumentException("Cannot add player to closed session")
+        }
+        if(user in session.players){
+            throw IllegalArgumentException("User is already in session")
+        }
         db.gamingSessions.addPlayer(sessionId, user.id)
         return@withAuthorization user.id
     }
@@ -83,8 +103,15 @@ open class SessionServices(internal val db: Data) : ServicesSchema(db) {
         playerId: Int,
     ) = withAuthorization(token) { user ->
         val session = db.gamingSessions.get(sessionId)
+            ?: throw NoSuchElementException("No session $sessionId was found")
         if (session.hostId != user.id) {
             throw ForbiddenException("Changes can only be made by the creator of the session")
+        }
+        if(!session.state){
+            throw IllegalArgumentException("Cannot remove player from closed session")
+        }
+        if(session.players.none { it.id == playerId }){
+            throw IllegalArgumentException("Player is not in session")
         }
         db.gamingSessions.removePlayer(sessionId, playerId)
     }

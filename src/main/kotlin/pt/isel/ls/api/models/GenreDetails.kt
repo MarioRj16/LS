@@ -1,19 +1,16 @@
-package pt.isel.ls.api.models.games
+package pt.isel.ls.api.models
 
 import kotlinx.serialization.Serializable
-import pt.isel.ls.domain.Game
+import pt.isel.ls.domain.Genre
 
 @Serializable
-class GameResponse private constructor(
-    val id: Int,
-    val name: String,
+class GenreDetails private constructor(
+    val genreId: Int,
+    val name: String
 ) {
     companion object {
-        operator fun invoke(game: Game): GameResponse{
-            return GameResponse(
-                game.id,
-                game.name
-            )
+        operator fun invoke(genre: Genre): GenreDetails {
+            return GenreDetails(genre.genreId, genre.name)
         }
     }
 
@@ -21,16 +18,16 @@ class GameResponse private constructor(
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as GameResponse
+        other as GenreDetails
 
-        if (id != other.id) return false
+        if (genreId != other.genreId) return false
         if (name != other.name) return false
 
         return true
     }
 
     override fun hashCode(): Int {
-        var result = id
+        var result = genreId
         result = 31 * result + name.hashCode()
         return result
     }
