@@ -1,8 +1,8 @@
 import {FetchAPI} from "../../utils/FetchAPI";
 import {GetPlayer} from "../../components/players/GetPlayer";
 
-export async function PlayersDetailsPage(state){
+export async function GamesDetailsPage(state){
     const id = state.params.id;
-    const player = await FetchAPI(`/players/${id}`)
-    return GetPlayer(player)
+    const game = await FetchAPI(`/games/${id}`)
+    return GetGame(game)
 }
