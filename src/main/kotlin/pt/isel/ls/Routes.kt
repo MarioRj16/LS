@@ -1,8 +1,11 @@
 package pt.isel.ls
 
+import org.http4k.core.ContentType
 import org.http4k.core.Method
+import org.http4k.routing.ResourceLoader
 import org.http4k.routing.bind
 import org.http4k.routing.routes
+import org.http4k.routing.singlePageApp
 import pt.isel.ls.api.API
 
 class Routes(api: API) {
@@ -29,5 +32,8 @@ class Routes(api: API) {
             playerRoutes,
             gameRoutes,
             sessionRoutes,
+            singlePageApp(ResourceLoader.Directory("static-content")
+                    , "js" to ContentType("application/javascript")
+            ),
         )
 }

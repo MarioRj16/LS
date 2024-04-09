@@ -1,6 +1,7 @@
-import Router from "./router";
+import Router from "./Router";
+import {PlayersDetailsPage} from "../pages/players/PlayersDetailsPage";
 
-const router= Router
+const router = Router
 
 router.addRouteHandler('/:id',PlayersDetailsPage)
 

@@ -1,7 +1,7 @@
 import { div, h1, input, select, option, button } from "../../utils/Elements";
 import {FetchAPI} from "../../utils/FetchAPI"; // Import necessary elements from your utility file
 
-export async function GamesSearchPage() {
+export async function GamesSearchPage(state) {
 
     const genres= await FetchAPI(`/genres`)
     const handleSearch = async () => {

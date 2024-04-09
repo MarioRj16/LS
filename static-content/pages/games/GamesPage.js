@@ -8,7 +8,7 @@ export async function GamesPage(state) {
     const handleGameClick = (gameId) => {
 
         console.log('Redirecting to game details:', gameId);
-        window.location.href = `/games/${gameId}`;
+        window.location.href = `#games/${gameId}`;
     };
 
     return div(
@@ -18,7 +18,6 @@ export async function GamesPage(state) {
             games.map(game => (
                 a(
                     {
-                        href: `#`,
                         onclick: () => handleGameClick(game.id),
                         key: game.id
                     },

@@ -8,7 +8,7 @@ export async function NavBar(state){
             a({class: "nav-link", href: "#"}, "Home"),
             a({class: "nav-link", href: "#games/search"}, "GamesSearch"),
             a({class: "nav-link", href: "#sessions/search",}, "SessionsSearch"),
-            a({class: "nav-link", href: `#player/${playerId}`}, "PlayerDetails"),
+            //a({class: "nav-link", href: `#player/${playerId}`}, "PlayerDetails"),
         )
     )
     let active = window.location.hash;

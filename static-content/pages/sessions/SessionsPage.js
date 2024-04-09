@@ -9,7 +9,7 @@ export async function SessionsPage(state) {
     const handleSessionClick = (sessionId) => {
         // Redirect to session details page using sessionId (replace with your actual redirect logic)
         console.log('Redirecting to session details:', sessionId);
-        window.location.href = `/sessions/${sessionId}`;
+        window.location.href = `#sessions/${sessionId}`;
     };
 
     return div(
@@ -19,7 +19,6 @@ export async function SessionsPage(state) {
             sessions.map(session => (
                 a(
                     {
-                        href: `#`, // Placeholder link (replace with actual link)
                         onclick: () => handleSessionClick(session.id),
                         key: session.id
                     },
