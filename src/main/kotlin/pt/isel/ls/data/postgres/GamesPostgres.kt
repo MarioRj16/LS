@@ -34,7 +34,7 @@ class GamesPostgres(private val conn: () -> Connection) : GamesData {
 
     override fun get(name: String): Game? = fetchGame("game_name", name)
 
-    override fun get(id: Int): Game? = fetchGame("game_id", "$id")
+    override fun get(id: Int): Game? = fetchGame("game_id", id)
     override fun search(
         searchParams: GameSearch,
         limit: Int,
@@ -69,26 +69,23 @@ class GamesPostgres(private val conn: () -> Connection) : GamesData {
 
     override fun genresExist(genreIds: Set<Int>): Boolean = conn().useWithRollback {
         val query = """SELECT COUNT(*) FROM genres WHERE genre_id IN (${genreIds.joinToString(", ")})"""
-        return conn().useWithRollback {
-            val statement = it.prepareStatement(query)
-            val resultSet = statement.executeQuery()
-            resultSet.next()
-            resultSet.getInt(1) == genreIds.size
-        }
+        val statement = it.prepareStatement(query)
+        val resultSet = statement.executeQuery()
+        resultSet.next()
+        resultSet.getInt(1) == genreIds.size
     }
 
     override fun getGenres(genreIds: Set<Int>): Set<Genre> = conn().useWithRollback {
         val query = """SELECT * FROM genres WHERE genre_id IN (${genreIds.joinToString(", ")})"""
-        return conn().useWithRollback {
-            val statement = it.prepareStatement(query)
-            val resultSet = statement.executeQuery()
-            val genres = mutableSetOf<Genre>()
+        val statement = it.prepareStatement(query)
+        val resultSet = statement.executeQuery()
+        val genres = mutableSetOf<Genre>()
 
-            while (resultSet.next())
-                genres += resultSet.toGenre()
-
-            return genres
+        while (resultSet.next()) {
+            genres += resultSet.toGenre()
         }
+
+        return genres
     }
 
     private fun Connection.insertGame(name: String, developer: String): Int {
@@ -132,31 +129,30 @@ class GamesPostgres(private val conn: () -> Connection) : GamesData {
         }
     }
 
-    private fun fetchGame(identifier: String, value: String): Game? =
+    private fun fetchGame(identifier: String, value: Any): Game? =
         conn().useWithRollback {
             val query =
                 """
                 SELECT * FROM games 
                 INNER JOIN games_genres ON games.game_id = games_genres.game
+                INNER JOIN genres ON games_genres.genre = genres.genre_id
                 WHERE $identifier = ?
                 """.trimIndent()
 
             val statement = it.prepareStatement(query).apply {
-                setString(1, value)
+                setObject(1, value)
             }
 
             val resultSet = statement.executeQuery()
             val genres = mutableSetOf<Genre>()
 
-            while (resultSet.next())
+            while (resultSet.next()) {
                 genres += resultSet.toGenre()
-
-            if (genres.isNotEmpty()) {
-                return resultSet.toGame(genres.toSet())
+                if (resultSet.isLast && genres.isNotEmpty()) {
+                    return resultSet.toGame(genres.toSet())
+                }
             }
-
             return null
-            //throw NoSuchElementException("Could not get Game, $value was not found")
         }
 
     private fun buildSearchQuery(searchParams: GameSearch): String {

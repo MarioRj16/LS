@@ -6,11 +6,11 @@ import pt.isel.ls.domain.Genre
 @Serializable
 class GenreDetails private constructor(
     val genreId: Int,
-    val name: String
+    val name: String,
 ) {
     companion object {
         operator fun invoke(genre: Genre): GenreDetails {
-            return GenreDetails(genre.genreId, genre.name)
+            return GenreDetails(genre.genreId, genre.genreName)
         }
     }
 

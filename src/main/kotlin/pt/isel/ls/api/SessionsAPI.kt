@@ -23,7 +23,7 @@ class SessionsAPI(private val services: SessionServices) : APISchema() {
             val date = request.query("date")?.toLocalDateTime()
             val state = request.query("state")?.toBoolean()
             var playerId = request.query("player")?.toIntOrNull()
-            if(playerId != null){
+            if (playerId != null) {
                 playerId = playerId.validateInt { it.isPositive() }
             }
             val sessionSearch = SessionSearch(gameId, date, state, playerId)
@@ -48,9 +48,7 @@ class SessionsAPI(private val services: SessionServices) : APISchema() {
         request.useWithException { token ->
             val sessionId = request.path("sessionId")?.toInt().validateInt { it.isPositive() }
             Response(Status.OK)
-                .json(
-                    services.getSession(sessionId, token),
-                )
+                .json(services.getSession(sessionId, token))
         }
 
     fun updateSession(request: Request): Response =

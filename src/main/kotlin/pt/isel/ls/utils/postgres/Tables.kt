@@ -27,7 +27,7 @@ fun ResultSet.toPlayer(): Player {
  *
  * @return The converted [Genre] object.
  */
-fun ResultSet.toGenre(): Genre = Genre(getInt("genre_id"), getString("genre"))
+fun ResultSet.toGenre(): Genre = Genre(getInt("genre_id"), getString("genre_name"))
 
 /**
  * Converts a [ResultSet] into a [Game] object.

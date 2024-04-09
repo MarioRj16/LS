@@ -17,7 +17,7 @@ class DataPostgres(connectionString: String) : Data {
 
     fun create() {
         conn().runSQLScript("createSchema.sql")
-        conn().runSQLScript("createGenres.sql")
+        conn().runSQLScript("insertGenres.sql")
     }
 
     fun delete() {

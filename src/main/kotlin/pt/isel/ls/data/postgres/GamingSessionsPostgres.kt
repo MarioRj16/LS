@@ -25,12 +25,13 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
         conn().useWithRollback {
             val statement =
                 it.prepareStatement(
-                    """insert into gaming_sessions(capacity, starting_date, game) values (?, ?, ?)""",
+                    """insert into gaming_sessions(capacity, starting_date, game, creator) values (?, ?, ?, ?)""",
                     Statement.RETURN_GENERATED_KEYS,
                 ).apply {
                     setInt(1, capacity)
                     setTimestamp(2, date.toTimeStamp())
                     setInt(3, game)
+                    setInt(4, hostId)
                 }
 
             if (statement.executeUpdate() == 0) {
@@ -65,7 +66,9 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
             val players = mutableSetOf<Player>()
 
             while (resultSet.next()) {
-                players += resultSet.toPlayer()
+                if (resultSet.getString("player_id") != null) {
+                    players += resultSet.toPlayer()
+                }
                 if (resultSet.isLast) {
                     return resultSet.toGamingSession(players)
                 }
@@ -79,11 +82,9 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
             val query =
                 """
                 select * from gaming_sessions 
-                full outer join players_sessions
-                on gaming_sessions.gaming_session_id = players_sessions.gaming_session
-                full outer join players
-                on players_sessions.player = players.player_id
-                where game = $game
+                ${if (player != null) "full outer join players_sessions on gaming_session_id = gaming_session" else ""}
+                ${if (player != null) "full outer join players on player = player_id" else ""}
+                where game = ?
                 ${if (date != null) " and startingDate = ?" else ""}
                 ${if (isOpen != null) " and startingDate <= CURRENT_TIMESTAMP" else ""}
                 ${if (player != null) " and player = ?" else ""}
@@ -105,20 +106,12 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
             val resultSet = statement.executeQuery()
 
             val sessions = mutableListOf<Session>()
-            val players = mutableSetOf<Player>()
 
-            var previousSessionId: Int? = null
             while (resultSet.next()) {
-                players += resultSet.toPlayer()
-                val currentSessionId = resultSet.getInt("gaming_session_id")
-                if (previousSessionId == currentSessionId) {
-                    sessions += resultSet.toGamingSession(players.toSet())
-                    players.clear()
-                    continue
-                }
-                previousSessionId = currentSessionId
+                sessions += resultSet.toGamingSession(emptySet())
             }
-            return sessions.paginate(skip, limit)
+
+            return sessions.distinct().paginate(skip, limit)
         }
 
     override fun update(sessionId: Int, sessionUpdate: SessionUpdate) =
@@ -134,8 +127,9 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
                     setInt(3, sessionId)
                 }
 
-            if(stm.executeUpdate() == 0)
+            if (stm.executeUpdate() == 0) {
                 throw SQLException("Updating gaming session failed, no rows affected")
+            }
         }
 
     override fun delete(sessionId: Int) =
