@@ -1,6 +1,4 @@
-
-const API_BASE_URL = `http://localhost:8000`
-
+/*
 function getHome(mainContent){
     const h1 = document.createElement("h1")
     const searchGamesA = document.createElement("a")
@@ -173,7 +171,9 @@ function playerDetails(mainContent){
  *         })
  * @type {{getHome: getHome, searchGames: searchGames}}
  */
+const API_BASE_URL = `http://localhost:8000`
 
+/*
 export const handlers = {
     getHome,
     searchGames,
@@ -181,3 +181,5 @@ export const handlers = {
 }
 
 export default handlers
+
+ */

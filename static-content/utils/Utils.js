@@ -1,4 +1,4 @@
-
+export const API_URL=`http://localhost:3000`
 
 export async function createElement(tag, attributes, ...children) {
 
@@ -13,7 +13,7 @@ export async function createElement(tag, attributes, ...children) {
         setAttributes(element, attributes);
 
     else if (attributes != null)
-        throw new LogError("Invalid attributes for createElement");
+        throw new console.log("Invalid attributes for createElement");
 
     for (let child of children) {
         child = await child;
@@ -22,7 +22,7 @@ export async function createElement(tag, attributes, ...children) {
             appendChild(element, child);
 
         else if (child != null)
-            throw new LogError("Invalid child:", child, "for element:", element);
+            throw new console.log("Invalid child:", child, "for element:", element);
     }
 
     return element;
@@ -81,3 +81,4 @@ function isElement(obj) {
             obj && typeof obj === "object" && obj.nodeType === 1 && typeof obj.nodeName === "string"
     );
 }
+
