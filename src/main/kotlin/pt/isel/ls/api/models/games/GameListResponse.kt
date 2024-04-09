@@ -6,7 +6,7 @@ import pt.isel.ls.domain.Game
 @Serializable
 class GameListResponse private constructor(
     val games: List<GameResponse>,
-    val total: Int
+    val total: Int,
 ) {
     companion object {
         operator fun invoke(games: List<Game>): GameListResponse {

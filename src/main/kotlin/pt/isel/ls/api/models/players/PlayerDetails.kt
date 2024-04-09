@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 import pt.isel.ls.domain.Player
 
 @Serializable
-class PlayerDetails private constructor(val id: Int, val name: String, val email: String){
+class PlayerDetails private constructor(val id: Int, val name: String, val email: String) {
 
     companion object {
         operator fun invoke(player: Player): PlayerDetails {

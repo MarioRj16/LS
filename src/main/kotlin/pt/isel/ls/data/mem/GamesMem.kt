@@ -13,7 +13,7 @@ class GamesMem(
         Genre(2, "Adventure"),
         Genre(3, "RPG"),
         Genre(4, "Simulation"),
-        Genre(5, "Strategy")
+        Genre(5, "Strategy"),
     ).associateBy { it.genreId },
 ) : GamesData {
     override fun create(
@@ -44,9 +44,7 @@ class GamesMem(
 
     override fun genresExist(genreIds: Set<Int>): Boolean = genreIds.all { genreDB.containsKey(it) }
 
-
     override fun getGenres(genreIds: Set<Int>): Set<Genre> = genreIds.mapNotNull { genreDB[it] }.toSet()
 
     override fun get(id: Int): Game? = gamesDB.table.values.find { it.id == id }
-
 }

@@ -17,5 +17,4 @@ data class SessionUpdate constructor(val capacity: Int, val startingDate: LocalD
             return SessionUpdate(session.maxCapacity, session.startingDate)
         }
     }
-
 }

@@ -63,7 +63,6 @@ class GamesTests : AbstractDataTests() {
 
     @Test
     fun `search() returns games successfully`() {
-
         var searchResults = games.search(generateRandomGameSearch(), DEFAULT_LIMIT, DEFAULT_SKIP)
 
         assertTrue(searchResults.isEmpty())

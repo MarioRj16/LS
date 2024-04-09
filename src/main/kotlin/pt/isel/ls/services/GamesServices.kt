@@ -1,6 +1,10 @@
 package pt.isel.ls.services
 
-import pt.isel.ls.api.models.games.*
+import pt.isel.ls.api.models.games.GameCreate
+import pt.isel.ls.api.models.games.GameCreateResponse
+import pt.isel.ls.api.models.games.GameDetails
+import pt.isel.ls.api.models.games.GameListResponse
+import pt.isel.ls.api.models.games.GameSearch
 import pt.isel.ls.data.Data
 import pt.isel.ls.utils.exceptions.ConflictException
 import java.util.*
@@ -22,11 +26,13 @@ open class GamesServices(data: Data) : ServicesSchema(data) {
         token: UUID,
     ): GameCreateResponse =
         withAuthorization(token) {
-            if(data.games.get(gameInput.name) != null) 
+            if (data.games.get(gameInput.name) != null) {
                 throw ConflictException("The name of a game has to be unique")
+            }
             val (name, developer, genreIds) = gameInput
-            if(!data.games.genresExist(genreIds))
+            if (!data.games.genresExist(genreIds)) {
                 throw IllegalArgumentException("The genres provided do not exist")
+            }
             // TODO: Create a table for the genres maybe?
             val genres = data.games.getGenres(genreIds)
             val game = data.games.create(name, developer, genres)

@@ -10,11 +10,10 @@ class PlayerResponse private constructor(
     @Serializable(with = UUIDSerializer::class)
     val token: UUID,
     val playerId: Int,
-){
+) {
     companion object {
         operator fun invoke(player: Player): PlayerResponse {
             return PlayerResponse(player.token, player.id)
         }
-
     }
 }

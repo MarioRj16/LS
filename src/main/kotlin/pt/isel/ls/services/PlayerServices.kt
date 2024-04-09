@@ -10,8 +10,9 @@ import java.util.*
 
 open class PlayerServices(internal val db: Data) : ServicesSchema(db) {
     fun createPlayer(playerCreate: PlayerCreate): PlayerResponse {
-        if(db.players.get(playerCreate.email) != null)
+        if (db.players.get(playerCreate.email) != null) {
             throw ConflictException("The given email is not unique")
+        }
         val player = db.players.create(playerCreate)
         return PlayerResponse(player)
     }
@@ -22,7 +23,7 @@ open class PlayerServices(internal val db: Data) : ServicesSchema(db) {
     ): PlayerDetails = withAuthorization(token) { user ->
         if (user.id != playerId) {
             throw ForbiddenException(
-                "You dont have authorization to see this player, instead you can see your own id ${user.id}"
+                "You dont have authorization to see this player, instead you can see your own id ${user.id}",
             )
         }
         val player = db.players.get(playerId)

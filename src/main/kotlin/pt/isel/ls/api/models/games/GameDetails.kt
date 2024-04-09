@@ -9,8 +9,8 @@ class GameDetails private constructor(
     val id: Int,
     val name: String,
     val developer: String,
-    val genres: Set<GenreDetails>
-)   {
+    val genres: Set<GenreDetails>,
+) {
     companion object {
         operator fun invoke(game: Game): GameDetails {
             val genres = game.genres.map { GenreDetails(it) }.toSet()

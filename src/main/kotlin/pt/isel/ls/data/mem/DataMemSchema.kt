@@ -15,7 +15,7 @@ abstract class DataMemSchema {
         Genre(2, "Adventure"),
         Genre(3, "RPG"),
         Genre(4, "Simulation"),
-        Genre(5, "Strategy")
+        Genre(5, "Strategy"),
     )
     val genreDB = genres.associateBy { it.genreId }
 

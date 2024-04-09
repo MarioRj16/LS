@@ -9,10 +9,10 @@ class GameResponse private constructor(
     val name: String,
 ) {
     companion object {
-        operator fun invoke(game: Game): GameResponse{
+        operator fun invoke(game: Game): GameResponse {
             return GameResponse(
                 game.id,
-                game.name
+                game.name,
             )
         }
     }

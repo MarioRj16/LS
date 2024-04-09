@@ -128,11 +128,11 @@ class SessionTests : AbstractDataTests() {
         val game = gameFactory.createRandomGame()
         val session = gamingSessionFactory.createRandomGamingSession(game.id, player.id)
         val newDate = plusDaysToCurrentDateTime()
-        val newCapacity: Int
-        if(session.maxCapacity in 2..3)
-            newCapacity = Random.nextInt(session.maxCapacity, 33)
-        else
-            newCapacity = Random.nextInt(2, session.maxCapacity)
+        val newCapacity: Int = if (session.maxCapacity in 2..3) {
+            Random.nextInt(session.maxCapacity, 33)
+        } else {
+            Random.nextInt(2, session.maxCapacity)
+        }
         val expected = session.copy(startingDate = newDate, maxCapacity = newCapacity)
         val sessionUpdate = SessionUpdate(newCapacity, newDate)
         gamingSessions.update(session.id, sessionUpdate)

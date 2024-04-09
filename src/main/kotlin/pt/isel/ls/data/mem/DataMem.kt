@@ -17,5 +17,4 @@ open class DataMem : Data, DataMemSchema() {
     override val gamingSessions: GamingSessionsData = GamingSessionsMem(sessionsDB, playersDB, gamesDB)
 
     override val games: GamesData = GamesMem(gamesDB, genreDB)
-
 }

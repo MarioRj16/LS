@@ -5,7 +5,11 @@ import org.http4k.core.Request
 import org.http4k.core.Status
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
-import pt.isel.ls.api.models.sessions.*
+import pt.isel.ls.api.models.sessions.SessionCreate
+import pt.isel.ls.api.models.sessions.SessionCreateResponse
+import pt.isel.ls.api.models.sessions.SessionListResponse
+import pt.isel.ls.api.models.sessions.SessionResponse
+import pt.isel.ls.api.models.sessions.SessionUpdate
 import pt.isel.ls.domain.Session
 import pt.isel.ls.integration.IntegrationTests
 import pt.isel.ls.utils.factories.GameFactory
@@ -95,7 +99,7 @@ class SessionsTests : IntegrationTests() {
             val response = Json.decodeFromString<SessionUpdate>(bodyString())
             val expectedSession =
                 SessionUpdate(
-                    session.copy(maxCapacity = requestBody.capacity, startingDate = requestBody.startingDate)
+                    session.copy(maxCapacity = requestBody.capacity, startingDate = requestBody.startingDate),
                 )
             assertEquals(expectedSession, response)
         }

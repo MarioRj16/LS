@@ -44,7 +44,7 @@ class PlayersPostgres(private val conn: () -> Connection) : PlayersData {
         conn().useWithRollback {
             val statement =
                 it.prepareStatement(
-                    """select * from players where player_id = ?""".trimIndent()
+                    """select * from players where player_id = ?""".trimIndent(),
                 ).apply {
                     setInt(1, id)
                 }
