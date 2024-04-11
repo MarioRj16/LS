@@ -1,5 +1,5 @@
-import { div, h1, input, select, option, button } from "../../utils/Elements";
-import {FetchAPI} from "../../utils/FetchAPI"; // Import necessary elements from your utility file
+import { div, h1, input, select, option, button } from "../../utils/Elements.js";
+import {FetchAPI} from "../../utils/FetchAPI.js"; // Import necessary elements from your utility file
 
 export async function GamesSearchPage(state) {
 

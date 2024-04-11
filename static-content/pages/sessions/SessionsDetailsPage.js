@@ -1,6 +1,5 @@
-import {FetchAPI} from "../../utils/FetchAPI";
-import {GetPlayer} from "../../components/players/GetPlayer";
-import {GetSession} from "../../components/sessions/GetSession";
+import {FetchAPI} from "../../utils/FetchAPI.js";
+import {GetSession} from "../../components/sessions/GetSession.js";
 
 export async function SessionsDetailsPage(state){
     const id = state.params.id;

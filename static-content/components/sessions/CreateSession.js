@@ -1,4 +1,4 @@
-import {div, h1} from "../../utils/Elements";
+import {div, h1} from "../../utils/Elements.js";
 
 async function CreateSession(){
 

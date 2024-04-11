@@ -1,5 +1,5 @@
-import {button, div, h1, input} from "../../utils/Elements";
-import {SearchSessions} from "../../components/sessions/SearchSessions";
+import {button, div, h1, input} from "../../utils/Elements.js";
+import {SearchSessions} from "../../components/sessions/SearchSessions.js";
 
 export async function SessionsSearchPage(state){
 

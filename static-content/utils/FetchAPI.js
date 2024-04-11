@@ -1,4 +1,4 @@
-import {API_URL} from "./Utils";
+import {API_URL} from "./Utils.js";
 
 export async function FetchAPI(path){
     try{

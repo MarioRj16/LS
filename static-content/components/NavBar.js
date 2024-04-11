@@ -1,4 +1,4 @@
-import {a, div, nav} from "../utils/Elements";
+import {a, div, nav} from "../utils/Elements.js";
 
 export async function NavBar(state){
     //TODO(GET USER)

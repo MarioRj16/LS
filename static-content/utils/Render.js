@@ -1,8 +1,7 @@
 
 export function render(element){
-    console.log("Element in render:", element);
-    const main = document.getElementById("mainContent")
-    main.replaceChildren(element)
+    const content = document.getElementById("mainContent")
+    content.replaceChildren(element)
 }
 
 export function parseUrl(origin){

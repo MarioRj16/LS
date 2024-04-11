@@ -1,5 +1,5 @@
-import {FetchAPI} from "../../utils/FetchAPI";
-import {GetPlayer} from "../../components/players/GetPlayer";
+import {FetchAPI} from "../../utils/FetchAPI.js";
+import {GetPlayer} from "../../components/players/GetPlayer.js";
 
 export async function PlayersDetailsPage(state){
     const id = state.params.id;

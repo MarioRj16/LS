@@ -1,4 +1,4 @@
-import {createElement} from "./Utils";
+import {createElement} from "./Utils.js";
 
 // noinspection JSUnusedGlobalSymbols
 
