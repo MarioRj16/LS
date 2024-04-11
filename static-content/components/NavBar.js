@@ -5,6 +5,7 @@ export async function NavBar(state){
 
     const navbar= await div(
         nav(
+            {class: "navbar navbar-expand-lg bg-body-tertiary"},
             a({class: "nav-link", href: "#"}, "Home"),
             a({class: "nav-link", href: "#games/search"}, "GamesSearch"),
             a({class: "nav-link", href: "#sessions/search",}, "SessionsSearch"),
