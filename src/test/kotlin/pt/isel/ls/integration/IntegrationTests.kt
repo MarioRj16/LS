@@ -12,10 +12,10 @@ import org.junit.jupiter.api.BeforeAll
 import pt.isel.ls.Routes
 import pt.isel.ls.TEST_PORT
 import pt.isel.ls.api.API
-import pt.isel.ls.api.models.PlayerResponse
+import pt.isel.ls.api.models.players.PlayerResponse
 import pt.isel.ls.data.mem.DataMem
 import pt.isel.ls.domain.Game
-import pt.isel.ls.domain.GamingSession
+import pt.isel.ls.domain.Session
 import pt.isel.ls.services.Services
 import pt.isel.ls.utils.generateRandomEmail
 
@@ -27,7 +27,7 @@ abstract class IntegrationTests() {
         val db = DataMem()
         var api = API(Services(db))
 
-        var jettyServer = Routes(api).app.asServer(Jetty(TEST_PORT))
+        private var jettyServer = Routes(api).app.asServer(Jetty(TEST_PORT))
 
         @JvmStatic
         @BeforeAll
@@ -78,11 +78,11 @@ abstract class IntegrationTests() {
 
         fun searchHelpSessions(
             repetitions: Int,
-            entity: (Int, Int) -> GamingSession,
+            entity: (Int, Int) -> Session,
             game: Int,
             owner: Int,
-        ): List<GamingSession> {
-            val list = mutableListOf<GamingSession>()
+        ): List<Session> {
+            val list = mutableListOf<Session>()
             repeat(repetitions) {
                 list.add(entity(game, owner))
             }

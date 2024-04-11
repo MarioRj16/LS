@@ -12,39 +12,54 @@ import pt.isel.ls.utils.exceptions.AuthorizationException
 import pt.isel.ls.utils.exceptions.ConflictException
 import pt.isel.ls.utils.exceptions.ForbiddenException
 import java.sql.Timestamp
+import java.util.*
 
 abstract class APISchema {
+
     inline fun <reified T> Response.json(body: T): Response {
         return this
             .header("content-type", "application/json")
             .body(Json.encodeToString(body))
     }
 
-    inline fun useWithException(block: () -> Response): Response {
+    private fun validateToken(authHeader: String?): UUID {
+        if ((!authHeader.isNullOrEmpty() && authHeader.startsWith("Bearer "))) {
+            try {
+                return UUID.fromString(authHeader.removePrefix("Bearer "))
+            } catch (e: IllegalArgumentException) {
+                throw AuthorizationException()
+            }
+        }
+        throw AuthorizationException()
+    }
+
+    fun Request.useWithException(block: (UUID) -> Response): Response {
         return try {
+            logRequest()
+            val token = validateToken(header("Authorization"))
+            block(token)
+        } catch (e: Exception) {
+            httpException(e)
+        }
+    }
+
+    fun Request.useWithExceptionNoToken(block: () -> Response): Response {
+        return try {
+            logRequest()
             block()
         } catch (e: Exception) {
             httpException(e)
         }
     }
 
-/*
-    fun getDate(request: Request): Response {
-        return Response(Status.OK)
-                .header("content-type", "text/plain")
-                .body(Clock.System.now().toString())
-    }
-
- */
-
-    fun logRequest(request: Request) {
+    private fun Request.logRequest() {
         logger.info(
             "{} -> incoming request: method={}, uri={}, content-type={} accept={}",
             Timestamp(System.currentTimeMillis()),
-            request.method,
-            request.uri,
-            request.header("content-type"),
-            request.header("accept"),
+            method,
+            uri,
+            header("content-type"),
+            header("accept"),
         )
     }
 

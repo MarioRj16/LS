@@ -1,14 +1,12 @@
 package pt.isel.ls.domain
 
 import kotlinx.datetime.LocalDateTime
-import kotlinx.serialization.Serializable
 import pt.isel.ls.utils.isPast
 
-@Serializable
-data class GamingSession(
+data class Session(
     val id: Int,
     val gameId: Int,
-    val creatorId: Int,
+    val hostId: Int,
     val maxCapacity: Int,
     val startingDate: LocalDateTime,
     val players: Set<Player>,

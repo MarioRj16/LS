@@ -4,6 +4,7 @@ import org.http4k.core.Response
 import org.http4k.core.Status
 import org.junit.jupiter.api.Test
 import pt.isel.ls.api.APISchema
+import pt.isel.ls.api.models.GenreDetails
 import pt.isel.ls.domain.Genre
 import pt.isel.ls.utils.exceptions.AuthorizationException
 import pt.isel.ls.utils.exceptions.ConflictException
@@ -13,7 +14,7 @@ import kotlin.test.assertEquals
 class HTTPResponseTests : APISchema() {
     @Test
     fun `json() returns response with body in json successfully`() {
-        val testData = Genre(1, "FPS")
+        val testData = GenreDetails(Genre(1, "FPS"))
 
         val response = Response(Status.OK).json(testData)
 

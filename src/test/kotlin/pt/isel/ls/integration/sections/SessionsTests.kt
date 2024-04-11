@@ -5,11 +5,12 @@ import org.http4k.core.Request
 import org.http4k.core.Status
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
-import pt.isel.ls.api.models.SessionCreate
-import pt.isel.ls.api.models.SessionResponse
-import pt.isel.ls.api.models.SessionSearch
-import pt.isel.ls.api.models.SessionUpdate
-import pt.isel.ls.domain.GamingSession
+import pt.isel.ls.api.models.sessions.SessionCreate
+import pt.isel.ls.api.models.sessions.SessionCreateResponse
+import pt.isel.ls.api.models.sessions.SessionListResponse
+import pt.isel.ls.api.models.sessions.SessionResponse
+import pt.isel.ls.api.models.sessions.SessionUpdate
+import pt.isel.ls.domain.Session
 import pt.isel.ls.integration.IntegrationTests
 import pt.isel.ls.utils.factories.GameFactory
 import pt.isel.ls.utils.factories.GamingSessionFactory
@@ -19,11 +20,11 @@ import kotlin.random.Random
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class GamingSessionsTests : IntegrationTests() {
+class SessionsTests : IntegrationTests() {
     companion object {
         val player = PlayerFactory(db.players).createRandomPlayer()
-        val game = GameFactory(db.games).createRandomGame()
-        val sessions: List<GamingSession> =
+        val game = GameFactory(db.games, db.genreDB).createRandomGame()
+        val sessions: List<Session> =
             searchHelpSessions(10, GamingSessionFactory(db.gamingSessions)::createRandomGamingSession, game.id, player.id)
     }
 
@@ -37,7 +38,7 @@ class GamingSessionsTests : IntegrationTests() {
         client(request)
             .apply {
                 assertEquals(Status.CREATED, status)
-                assertDoesNotThrow { Json.decodeFromString<SessionResponse>(bodyString()) }
+                assertDoesNotThrow { Json.decodeFromString<SessionCreateResponse>(bodyString()) }
             }
     }
 
@@ -70,18 +71,17 @@ class GamingSessionsTests : IntegrationTests() {
 
     @Test
     fun searchSessions() {
-        val requestBody = SessionSearch(game.id)
         val request =
             Request(Method.GET, "$URI_PREFIX/sessions")
-                .json(requestBody)
+                .query("gameId", game.id.toString())
                 .token(user!!.token)
         client(request)
             .apply {
                 assertEquals(Status.OK, status)
-                val response: List<GamingSession> = Json.decodeFromString<List<GamingSession>>(bodyString())
+                val response = Json.decodeFromString<SessionListResponse>(bodyString()).sessions
                 assertTrue {
                     sessions.all { x ->
-                        response.contains(x)
+                        response.contains(SessionResponse(x))
                     }
                 }
             }
@@ -96,9 +96,11 @@ class GamingSessionsTests : IntegrationTests() {
             Request(Method.PUT, "$URI_PREFIX/sessions/${session.id}").json(requestBody).token(user!!.token)
         client(request).apply {
             assertEquals(Status.OK, status)
-            val response = Json.decodeFromString<GamingSession>(bodyString())
+            val response = Json.decodeFromString<SessionUpdate>(bodyString())
             val expectedSession =
-                session.copy(maxCapacity = requestBody.capacity, startingDate = requestBody.startingDate)
+                SessionUpdate(
+                    session.copy(maxCapacity = requestBody.capacity, startingDate = requestBody.startingDate),
+                )
             assertEquals(expectedSession, response)
         }
     }

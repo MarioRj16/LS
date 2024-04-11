@@ -2,17 +2,13 @@ package pt.isel.ls.domain
 
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import pt.isel.ls.utils.generateRandomEmail
-import pt.isel.ls.utils.generateRandomString
-import pt.isel.ls.utils.minusDaysToCurrentDateTime
-import pt.isel.ls.utils.plusDaysToCurrentDateTime
-import pt.isel.ls.utils.plusMillisecondsToCurrentDateTime
-import java.util.UUID
+import pt.isel.ls.utils.*
+import java.util.*
 import kotlin.random.Random
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-class GamingSessionsTests {
+class SessionsTests {
     private val validSessionId = 1
     private val validGameId = 1
     private val validMaxCapacity = 2
@@ -43,7 +39,7 @@ class GamingSessionsTests {
     @Test
     fun `gaming session state is true when starting date is in the future and players are not at max capacity`() {
         val session =
-            GamingSession(
+            Session(
                 validSessionId,
                 validGameId,
                 validCreatorId,
@@ -58,7 +54,7 @@ class GamingSessionsTests {
     fun `gaming session state is false when starting date is in the past`() {
         val timeToWait = 100L
         val session =
-            GamingSession(
+            Session(
                 validSessionId,
                 validGameId,
                 validCreatorId,
@@ -73,7 +69,7 @@ class GamingSessionsTests {
     @Test
     fun `gaming session state is false when players are at max capacity`() {
         val session =
-            GamingSession(
+            Session(
                 validSessionId,
                 validGameId,
                 validCreatorId,
@@ -88,7 +84,7 @@ class GamingSessionsTests {
     fun `gaming session state is false when players are at max capacity and starting date is in the past`() {
         val timeToWait = 100L
         val session =
-            GamingSession(
+            Session(
                 validSessionId,
                 validGameId,
                 validCreatorId,
@@ -103,7 +99,7 @@ class GamingSessionsTests {
     @Test
     fun `throws exception for non positive integer maxCapacity`() {
         assertThrows<IllegalArgumentException> {
-            GamingSession(
+            Session(
                 validSessionId,
                 validGameId,
                 validCreatorId,
@@ -117,29 +113,29 @@ class GamingSessionsTests {
     @Test
     fun `throws exception non positive game`() {
         assertThrows<IllegalArgumentException> {
-            GamingSession(validSessionId, -1, validCreatorId, validMaxCapacity, validStartingDate, emptySetOfPlayers)
+            Session(validSessionId, -1, validCreatorId, validMaxCapacity, validStartingDate, emptySetOfPlayers)
         }
 
         assertThrows<IllegalArgumentException> {
-            GamingSession(validSessionId, 0, validCreatorId, validMaxCapacity, validStartingDate, emptySetOfPlayers)
+            Session(validSessionId, 0, validCreatorId, validMaxCapacity, validStartingDate, emptySetOfPlayers)
         }
     }
 
     @Test
     fun `throws exception for non positive ID`() {
         assertThrows<IllegalArgumentException> {
-            GamingSession(-1, validGameId, validCreatorId, validMaxCapacity, validStartingDate, emptySetOfPlayers)
+            Session(-1, validGameId, validCreatorId, validMaxCapacity, validStartingDate, emptySetOfPlayers)
         }
 
         assertThrows<IllegalArgumentException> {
-            GamingSession(0, validGameId, validCreatorId, validMaxCapacity, validStartingDate, emptySetOfPlayers)
+            Session(0, validGameId, validCreatorId, validMaxCapacity, validStartingDate, emptySetOfPlayers)
         }
     }
 
     @Test
     fun `throws exception for maxCapacity lower than number of players in session`() {
         assertThrows<IllegalArgumentException> {
-            GamingSession(
+            Session(
                 validSessionId,
                 validGameId,
                 validCreatorId,

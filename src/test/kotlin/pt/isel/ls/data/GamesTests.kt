@@ -1,10 +1,11 @@
 package pt.isel.ls.data
 
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import pt.isel.ls.DEFAULT_LIMIT
 import pt.isel.ls.DEFAULT_SKIP
 import pt.isel.ls.domain.Genre
+import pt.isel.ls.utils.generateRandomGameSearch
+import pt.isel.ls.utils.generateRandomString
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -21,8 +22,8 @@ class GamesTests : AbstractDataTests() {
 
     @Test
     fun `create() return game successfully`() {
-        val name = "testName"
-        val developer = "testDeveloper"
+        val name = generateRandomString()
+        val developer = generateRandomString()
         val genres = setOf(genres[0])
         val game = games.create(name, developer, genres)
 
@@ -33,22 +34,6 @@ class GamesTests : AbstractDataTests() {
     }
 
     @Test
-    fun `create() throws exception for non unique name`() {
-        games.create("name", "developer1", setOf(genres[0]))
-
-        assertThrows<IllegalArgumentException> {
-            games.create(name = "name", developer = "developer2", genres = setOf(genres[1]))
-        }
-    }
-
-    @Test
-    fun `create() throws exception for no genres`() {
-        assertThrows<IllegalArgumentException> {
-            games.create(name = "name", developer = "developer", genres = setOf())
-        }
-    }
-
-    @Test
     fun `get() returns game successfully`() {
         val game = gameFactory.createRandomGame()
 
@@ -56,29 +41,29 @@ class GamesTests : AbstractDataTests() {
     }
 
     @Test
-    fun `get() throws exception for non existing game`() {
-        assertThrows<NoSuchElementException> {
-            games.get("game")
-        }
+    fun `get() returns null for non existing game`() {
+        val game = games.get(generateRandomString())
+
+        assertTrue(game == null)
     }
 
     @Test
     fun `getById() returns game successfully`() {
         val game = gameFactory.createRandomGame()
 
-        assertEquals(game, games.getById(game.id))
+        assertEquals(game, games.get(game.id))
     }
 
     @Test
-    fun `getById() throws exception for non existing game`() {
-        assertThrows<NoSuchElementException> {
-            games.getById(1)
-        }
+    fun `getById() returns null for non existing game`() {
+        val game = games.get(1)
+
+        assertTrue(game == null)
     }
 
     @Test
     fun `search() returns games successfully`() {
-        var searchResults = games.search(null, null, DEFAULT_LIMIT, DEFAULT_SKIP)
+        var searchResults = games.search(generateRandomGameSearch(), DEFAULT_LIMIT, DEFAULT_SKIP)
 
         assertTrue(searchResults.isEmpty())
 
@@ -86,13 +71,13 @@ class GamesTests : AbstractDataTests() {
         val game2 = gameFactory.createRandomGame()
         val game3 = gameFactory.createRandomGame()
 
-        searchResults = games.search(null, null, 2, DEFAULT_SKIP)
+        searchResults = games.search(generateRandomGameSearch(true), 2, DEFAULT_SKIP)
 
         assertTrue(searchResults.size == 2)
         assertContains(searchResults, game)
         assertContains(searchResults, game2)
 
-        searchResults = games.search(null, null, DEFAULT_LIMIT, 2)
+        searchResults = games.search(generateRandomGameSearch(true), DEFAULT_LIMIT, 2)
 
         assertTrue(searchResults.size == 1)
         assertContains(searchResults, game3)

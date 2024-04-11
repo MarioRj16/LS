@@ -14,7 +14,7 @@ abstract class AbstractDataTests {
     protected val gamingSessions = db.gamingSessions
 
     protected val playerFactory = PlayerFactory(db.players)
-    protected val gameFactory = GameFactory(db.games)
+    protected val gameFactory = GameFactory(db.games, db.genreDB)
     protected val gamingSessionFactory = GamingSessionFactory(db.gamingSessions)
 
     @BeforeEach

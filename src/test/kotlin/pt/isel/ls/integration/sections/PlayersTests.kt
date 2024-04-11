@@ -5,9 +5,9 @@ import org.http4k.core.Request
 import org.http4k.core.Status
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
-import pt.isel.ls.api.models.PlayerCreate
-import pt.isel.ls.api.models.PlayerResponse
-import pt.isel.ls.domain.Player
+import pt.isel.ls.api.models.players.PlayerCreate
+import pt.isel.ls.api.models.players.PlayerDetails
+import pt.isel.ls.api.models.players.PlayerResponse
 import pt.isel.ls.integration.IntegrationTests
 import kotlin.test.assertEquals
 
@@ -34,7 +34,7 @@ class PlayersTests : IntegrationTests() {
         client(request)
             .apply {
                 assertEquals(Status.OK, status)
-                assertEquals(Json.decodeFromString<Player>(bodyString()).id, user!!.playerId)
+                assertEquals(Json.decodeFromString<PlayerDetails>(bodyString()).id, user!!.playerId)
             }
     }
 }
