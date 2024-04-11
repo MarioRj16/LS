@@ -2,6 +2,7 @@ package pt.isel.ls.data
 
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import pt.isel.ls.api.models.players.PlayerCreate
 import pt.isel.ls.utils.exceptions.ConflictException
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -12,7 +13,8 @@ class PlayerTests : AbstractDataTests() {
     fun `create() creates player successfully`() {
         val name = "testName"
         val email = "test@email.com"
-        val player = players.create(name, email)
+        val playerCreate = PlayerCreate(name, email)
+        val player = players.create(playerCreate)
 
         assertEquals(name, player.name)
         assertEquals(email, player.email)
@@ -23,24 +25,28 @@ class PlayerTests : AbstractDataTests() {
     @Test
     fun `create() throws exception for non unique email`() {
         val email = "email@email.com"
-        players.create("name", email)
+        val playerCreate = PlayerCreate("name", email)
+        players.create(playerCreate)
         assertThrows<ConflictException> {
-            players.create("name2", email)
+            players.create(playerCreate.copy(name = "name2"))
         }
     }
 
     @Test
     fun `create() throws exception for email in invalid format`() {
         assertThrows<IllegalArgumentException> {
-            players.create("name", "invalidEmail")
+            val playerCreate = PlayerCreate("name", "email")
+            players.create(playerCreate)
         }
 
         assertThrows<IllegalArgumentException> {
-            players.create("name2", "invalid@email")
+            val playerCreate = PlayerCreate("name", "email@")
+            players.create(playerCreate)
         }
 
         assertThrows<IllegalArgumentException> {
-            players.create("name3", "invalid@email.")
+            val playerCreate = PlayerCreate("name", "email@email.@.uk")
+            players.create(playerCreate)
         }
     }
 
@@ -52,9 +58,9 @@ class PlayerTests : AbstractDataTests() {
     }
 
     @Test
-    fun `get() throws exception for non existing player`() {
-        assertThrows<NoSuchElementException> {
-            players.get(1)
-        }
+    fun `get() returns null for non existing player`() {
+        val player = players.get(1)
+
+        assertTrue(player == null)
     }
 }

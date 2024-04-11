@@ -3,73 +3,80 @@ package pt.isel.ls.services
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import pt.isel.ls.DEFAULT_LIMIT
+import pt.isel.ls.DEFAULT_SKIP
+import pt.isel.ls.api.models.games.GameCreate
+import pt.isel.ls.api.models.games.GameDetails
+import pt.isel.ls.api.models.games.GameResponse
 import pt.isel.ls.data.mem.DataMem
+import pt.isel.ls.domain.Genre
 import pt.isel.ls.domain.Player
+import pt.isel.ls.utils.exceptions.ConflictException
 import pt.isel.ls.utils.factories.GameFactory
 import pt.isel.ls.utils.factories.PlayerFactory
+import pt.isel.ls.utils.generateRandomGameSearch
 import pt.isel.ls.utils.generateRandomString
-import kotlin.test.assertContains
+import java.util.*
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class GamesServicesTests : GamesServices(DataMem()) {
-    private lateinit var bearerToken: String
+    private lateinit var token: UUID
     private lateinit var user: Player
-    private val playerFactory = PlayerFactory(db.players)
-    private val gameFactory = GameFactory(db.games)
+    private val playerFactory = PlayerFactory(data.players)
+    private val gameFactory = GameFactory(data.games, DataMem().genreDB)
 
     @BeforeEach
     fun setUp() {
-        db.reset()
+        data.reset()
         user = playerFactory.createRandomPlayer()
-        bearerToken = "Bearer ${user.token}"
+        token = user.token
     }
 
     @Test
     fun `createGame() returns created game id successfully`() {
         val name = generateRandomString()
         val developer = generateRandomString()
-        val genre = "Action"
-        val input =
-            """
-            {
-                "name": "$name",
-                "developer": "$developer",
-                "genres": [
-                    {
-                        "genre": "$genre"
-                    }
-                ]
-            }
-            """.trimIndent()
-        val gameId = createGame(input, bearerToken)
-        assertTrue(gameId == 1)
+        val genre = Genre(1, "Action")
+        val gameCreate = GameCreate(name, developer, setOf(1))
+        val gameId = createGame(gameCreate, token)
+        assertTrue(gameId.id == 1)
+    }
+
+    @Test
+    fun `createGame() throws exception for non unique name`() {
+        val name = generateRandomString()
+        val developer = generateRandomString()
+        val genre = Genre(1, "Action")
+        val gameCreate = GameCreate(name, developer, setOf(1))
+        createGame(gameCreate, token)
+        assertThrows<ConflictException> {
+            createGame(gameCreate, token)
+        }
+    }
+
+    @Test
+    fun `createGame() throws exception for non existing genre`() {
+        val name = generateRandomString()
+        val developer = generateRandomString()
+        val gameCreate = GameCreate(name, developer, setOf(20))
+        assertThrows<IllegalArgumentException> {
+            createGame(gameCreate, token)
+        }
     }
 
     @Test
     fun `getGame() returns game successfully`() {
         val game = gameFactory.createRandomGame()
-        val returnedGame = getGame(game.id, bearerToken)
-        assertEquals(game, returnedGame)
-    }
-
-    @Test
-    fun `getGame() throws exception for null id`() {
-        assertThrows<IllegalArgumentException> {
-            getGame(null, bearerToken)
-        }
+        val expected = GameDetails(game)
+        assertEquals(expected, getGame(game.id, token))
     }
 
     @Test
     fun `searchGames() returns games successfully`() {
-        val game1 = gameFactory.createRandomGame()
-        val game2 = gameFactory.createRandomGame()
-        val game3 = gameFactory.createRandomGame()
-        val input = "{}"
-        val searchResults = searchGames(input, bearerToken, null, null)
-        assertTrue(searchResults.size == 3)
-        assertContains(searchResults, game1)
-        assertContains(searchResults, game2)
-        assertContains(searchResults, game3)
+        val games = List(3) { gameFactory.createRandomGame() }
+        val searchResults = searchGames(generateRandomGameSearch(true), token, DEFAULT_SKIP, DEFAULT_LIMIT)
+        assertEquals(searchResults.games.size, games.size)
+        assertTrue(games.all { game -> searchResults.games.contains(GameResponse(game)) })
     }
 }

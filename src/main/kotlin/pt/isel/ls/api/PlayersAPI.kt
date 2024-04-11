@@ -1,30 +1,29 @@
 package pt.isel.ls.api
 
+import kotlinx.serialization.json.Json
 import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status
 import org.http4k.routing.path
-import pt.isel.ls.api.models.PlayerResponse
+import pt.isel.ls.api.models.players.PlayerCreate
 import pt.isel.ls.services.PlayerServices
+import pt.isel.ls.utils.isPositive
+import pt.isel.ls.utils.validateInt
 
-class PlayersAPI(private val services: PlayerServices) : APISchema() {
+class PlayersAPI(val services: PlayerServices) : APISchema() {
     fun createPlayer(request: Request): Response =
-        useWithException {
-            logRequest(request)
-            val player = services.createPlayer(request.bodyString())
+        request.useWithExceptionNoToken {
+            val input = Json.decodeFromString<PlayerCreate>(request.bodyString())
             Response(Status.CREATED)
-                .json(PlayerResponse(player.token, player.id))
+                .json(services.createPlayer(input))
         }
 
     fun getPlayer(request: Request): Response =
-        useWithException {
-            logRequest(request)
+        request.useWithException { token ->
+            val playerId = request.path("playerId")?.toInt().validateInt { it.isPositive() }
             Response(Status.OK)
                 .json(
-                    services.getPlayer(
-                        request.path("playerId")?.toInt(),
-                        request.header("Authorization"),
-                    ),
+                    services.getPlayer(playerId, token),
                 )
         }
 }

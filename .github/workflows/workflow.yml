@@ -1,4 +1,4 @@
-name: Java Gradle CI
+name: CI
 
 on:
   push:
@@ -14,8 +14,14 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
-      - name: Build with Gradle
-        run: ./gradlew build
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+          distribution: 'adopt'
+
+      - name: Build Gradle
+        run: ./gradlew clean build
 
       - name: Run ktlint
         run: ./gradlew ktlintFormat

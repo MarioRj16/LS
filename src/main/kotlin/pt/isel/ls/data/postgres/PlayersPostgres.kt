@@ -1,5 +1,6 @@
 package pt.isel.ls.data.postgres
 
+import pt.isel.ls.api.models.players.PlayerCreate
 import pt.isel.ls.data.PlayersData
 import pt.isel.ls.domain.Player
 import pt.isel.ls.utils.postgres.toPlayer
@@ -11,10 +12,10 @@ import java.util.*
 
 class PlayersPostgres(private val conn: () -> Connection) : PlayersData {
     override fun create(
-        name: String,
-        email: String,
+        playerCreate: PlayerCreate,
     ): Player =
         conn().useWithRollback {
+            val (name, email) = playerCreate
             val token = UUID.randomUUID()
             val statement =
                 it.prepareStatement(
@@ -39,13 +40,11 @@ class PlayersPostgres(private val conn: () -> Connection) : PlayersData {
             throw SQLException("Creating user failed, no ID was created")
         }
 
-    override fun get(id: Int): Player =
+    override fun get(id: Int): Player? =
         conn().useWithRollback {
             val statement =
                 it.prepareStatement(
-                    """
-                    select * from players where player_id = ?    
-                    """.trimIndent(),
+                    """select * from players where player_id = ?""".trimIndent(),
                 ).apply {
                     setInt(1, id)
                 }
@@ -55,16 +54,14 @@ class PlayersPostgres(private val conn: () -> Connection) : PlayersData {
             if (resultSet.next()) {
                 return resultSet.toPlayer()
             }
-            throw NoSuchElementException("Could not get user, id $id was not found")
+            return null
         }
 
-    override fun getByToken(token: UUID): Player =
+    override fun get(token: UUID): Player? =
         conn().useWithRollback {
             val statement =
                 it.prepareStatement(
-                    """
-                    select * from players where token = ?    
-                    """.trimIndent(),
+                    """select * from players where token = ?""".trimIndent(),
                 ).apply {
                     setObject(1, token)
                 }
@@ -74,6 +71,23 @@ class PlayersPostgres(private val conn: () -> Connection) : PlayersData {
             if (resultSet.next()) {
                 return resultSet.toPlayer()
             }
-            throw NoSuchElementException("Could not get user, token $token was not found")
+            return null
+        }
+
+    override fun get(email: String): Player? =
+        conn().useWithRollback {
+            val statement =
+                it.prepareStatement(
+                    """select * from players where email = ?""".trimIndent(),
+                ).apply {
+                    setString(1, email)
+                }
+
+            val resultSet = statement.executeQuery()
+
+            if (resultSet.next()) {
+                return resultSet.toPlayer()
+            }
+            return null
         }
 }

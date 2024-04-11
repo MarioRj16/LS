@@ -1,64 +1,124 @@
 package pt.isel.ls.services
 
-import kotlinx.serialization.json.Json
-import pt.isel.ls.DEFAULT_LIMIT
-import pt.isel.ls.DEFAULT_SKIP
-import pt.isel.ls.api.models.SessionCreate
-import pt.isel.ls.api.models.SessionResponse
-import pt.isel.ls.api.models.SessionSearch
+import pt.isel.ls.api.models.sessions.SessionCreate
+import pt.isel.ls.api.models.sessions.SessionCreateResponse
+import pt.isel.ls.api.models.sessions.SessionDetails
+import pt.isel.ls.api.models.sessions.SessionListResponse
+import pt.isel.ls.api.models.sessions.SessionResponse
+import pt.isel.ls.api.models.sessions.SessionSearch
+import pt.isel.ls.api.models.sessions.SessionUpdate
 import pt.isel.ls.data.Data
-import pt.isel.ls.domain.GamingSession
+import pt.isel.ls.utils.exceptions.ForbiddenException
+import pt.isel.ls.utils.isPast
+import java.util.*
 
-open class SessionServices(internal val db: Data) : ServicesSchema() {
+open class SessionServices(internal val db: Data) : ServicesSchema(db) {
     fun searchSessions(
-        input: String,
-        authorization: String?,
-        skip: Int?,
-        limit: Int?,
-    ): List<GamingSession> {
-        bearerToken(authorization, db).id
-        val sessionInput = Json.decodeFromString<SessionSearch>(input)
-        return db.gamingSessions.search(
-            sessionInput.game,
-            sessionInput.date,
-            sessionInput.state,
-            sessionInput.playerId,
-            limit ?: DEFAULT_LIMIT,
-            skip ?: DEFAULT_SKIP,
-        )
+        sessionSearch: SessionSearch,
+        token: UUID,
+        skip: Int,
+        limit: Int,
+    ): SessionListResponse = withAuthorization(token) {
+        if (db.games.get(sessionSearch.game) == null) {
+            throw NoSuchElementException("No game with id ${sessionSearch.game} was found")
+        }
+        val sessions = db.gamingSessions.search(sessionSearch, limit, skip).map { SessionResponse(it) }
+        return@withAuthorization SessionListResponse(sessions)
     }
 
     fun createSession(
-        input: String,
-        authorization: String?,
-    ): SessionResponse {
-        bearerToken(authorization, db).id
-        val sessionInput = Json.decodeFromString<SessionCreate>(input)
+        sessionInput: SessionCreate,
+        token: UUID,
+    ): SessionCreateResponse = withAuthorization(token) { user ->
+        require(db.games.get(sessionInput.gameId) != null) { "The provided game does not exist" }
         val session =
             db.gamingSessions.create(
                 sessionInput.capacity,
                 sessionInput.gameId,
                 sessionInput.startingDate,
+                user.id,
             )
-        return SessionResponse(session.id)
+        return@withAuthorization SessionCreateResponse(session.id)
     }
 
     fun getSession(
-        id: Int?,
-        authorization: String?,
-    ): GamingSession {
-        requireNotNull(id) { "Invalid argument id can't be null" }
-        bearerToken(authorization, db).id
-        return db.gamingSessions.get(id)
+        sessionId: Int,
+        token: UUID,
+    ): SessionDetails = withAuthorization(token) {
+        val session = db.gamingSessions.get(sessionId)
+            ?: throw NoSuchElementException("No gaming session with id $sessionId was found")
+        return@withAuthorization SessionDetails(session)
+    }
+
+    fun updateSession(
+        sessionId: Int,
+        sessionUpdate: SessionUpdate,
+        token: UUID,
+    ): SessionUpdate = withAuthorization(token) { user ->
+        val session = db.gamingSessions.get(sessionId)
+            ?: throw NoSuchElementException("No session $sessionId was found")
+        if (!session.state) {
+            throw ForbiddenException("Cannot update a closed session")
+        }
+        if (session.startingDate.isPast()) {
+            throw ForbiddenException("Cannot update a session that has already started")
+        }
+        if (user.id != session.hostId) {
+            throw ForbiddenException("Changes can only be made by the creator of the session")
+        }
+        if (sessionUpdate.capacity < session.players.size) {
+            throw IllegalArgumentException("Cannot reduce capacity to less than the number of players in the session")
+        }
+        db.gamingSessions.update(sessionId, sessionUpdate)
+        return@withAuthorization SessionUpdate(db.gamingSessions.get(sessionId)!!)
+    }
+
+    fun deleteSession(
+        sessionId: Int,
+        token: UUID,
+    ) = withAuthorization(token) { user ->
+        val session = db.gamingSessions.get(sessionId)
+            ?: throw NoSuchElementException("No session $sessionId was found")
+
+        if (session.hostId != user.id) {
+            throw ForbiddenException("You can only delete games you created")
+        }
+        return@withAuthorization db.gamingSessions.delete(sessionId)
     }
 
     fun addPlayerToSession(
-        sessionId: Int?,
-        authorization: String?,
-    ): Int {
-        requireNotNull(sessionId) { "Invalid argument id can't be null" }
-        val playerId = bearerToken(authorization, db).id
-        db.gamingSessions.addPlayer(sessionId, playerId)
-        return playerId
+        sessionId: Int,
+        token: UUID,
+    ): Int = withAuthorization(token) { user ->
+        val session = db.gamingSessions.get(sessionId)
+            ?: throw NoSuchElementException("No session $sessionId was found")
+        println("debug")
+        if (!session.state) {
+            throw IllegalArgumentException("Cannot add player to closed session")
+        }
+        if (user in session.players) {
+            throw IllegalArgumentException("User is already in session")
+        }
+        db.gamingSessions.addPlayer(sessionId, user.id)
+        return@withAuthorization user.id
+    }
+
+    fun removePlayerFromSession(
+        sessionId: Int,
+        token: UUID,
+        playerId: Int,
+    ) = withAuthorization(token) { user ->
+        val session = db.gamingSessions.get(sessionId)
+            ?: throw NoSuchElementException("No session $sessionId was found")
+        if (session.hostId != user.id) {
+            throw ForbiddenException("Changes can only be made by the creator of the session")
+        }
+        if (!session.state) {
+            throw IllegalArgumentException("Cannot remove player from closed session")
+        }
+        if (session.players.none { it.id == playerId }) {
+            throw IllegalArgumentException("Player is not in session")
+        }
+        db.gamingSessions.removePlayer(sessionId, playerId)
     }
 }

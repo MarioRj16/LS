@@ -94,7 +94,7 @@ paths:
               schema:
                 type: array
                 items:
-                $ref: "#/components/schemas/Player"
+                  $ref: "#/components/schemas/Player"
         404:
           $ref: "#/components/responses/404NotFound"
 
@@ -271,7 +271,7 @@ paths:
     get:
       tags:
         - Sessions
-      summary: Get a sessions given its ID
+      summary: Gets a session given its ID
       security:
         - bearerAuth: []
       parameters:
@@ -329,7 +329,87 @@ paths:
           $ref: "#/components/responses/404NotFound"
         409:
           $ref: "#/components/responses/409AlreadyExists"
-
+    put:
+      tags:
+        - Sessions
+      summary: Updates a session
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - name: sessionID
+          in: path
+          description: ID of the session
+          required: true
+          schema:
+            type: integer
+            minimum: 0
+      responses:
+        200:
+          description: Session was updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Session"
+        400:
+          $ref: "#/components/responses/400BadRequest"
+        401:
+          $ref: "#/components/responses/401Unauthorized"
+        404:
+          $ref: "#/components/responses/404NotFound"
+    delete:
+      tags:
+        - Sessions
+      summary: Deletes a session
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: sessionID
+          in: path
+          description: ID of the session
+          required: true
+          schema:
+            type: integer
+            minimum: 0
+      responses:
+        204:
+          description: Session was deleted successfully
+        400:
+          $ref: "#/components/responses/400BadRequest"
+        401:
+          $ref: "#/components/responses/401Unauthorized"
+        404:
+          $ref: "#/components/responses/404NotFound"
+  /sessions/{sessionID}/players/{playerID}:
+    delete:
+      tags:
+        - Sessions
+      summary: Removes player from session
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: sessionID
+          in: path
+          description: ID of the session
+          required: true
+          schema:
+            type: integer
+            minimum: 0
+        - name: playerID
+          in: path
+          description: ID of the player
+          required: true
+          schema:
+            type: integer
+            minimum: 0
+      responses:
+        204:
+          description: Session was deleted successfully
+        400:
+          $ref: "#/components/responses/400BadRequest"
+        401:
+          $ref: "#/components/responses/401Unauthorized"
+        404:
+          $ref: "#/components/responses/404NotFound"
 components:
   securitySchemes:
     bearerAuth:

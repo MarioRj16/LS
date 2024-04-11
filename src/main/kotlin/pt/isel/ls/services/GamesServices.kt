@@ -1,46 +1,51 @@
 package pt.isel.ls.services
 
-import kotlinx.serialization.json.Json
-import pt.isel.ls.DEFAULT_LIMIT
-import pt.isel.ls.DEFAULT_SKIP
-import pt.isel.ls.api.models.GameCreate
-import pt.isel.ls.api.models.GameSearch
+import pt.isel.ls.api.models.games.GameCreate
+import pt.isel.ls.api.models.games.GameCreateResponse
+import pt.isel.ls.api.models.games.GameDetails
+import pt.isel.ls.api.models.games.GameListResponse
+import pt.isel.ls.api.models.games.GameSearch
 import pt.isel.ls.data.Data
-import pt.isel.ls.domain.Game
+import pt.isel.ls.utils.exceptions.ConflictException
+import java.util.*
 
-open class GamesServices(internal val db: Data) : ServicesSchema() {
+open class GamesServices(data: Data) : ServicesSchema(data) {
     fun searchGames(
-        input: String,
-        authorization: String?,
-        skip: Int?,
-        limit: Int?,
-    ): List<Game> {
-        bearerToken(authorization, db)
-        val gameInput = Json.decodeFromString<GameSearch>(input)
-        return db.games.search(
-            gameInput.developer,
-            gameInput.genres,
-            limit ?: DEFAULT_LIMIT,
-            skip ?: DEFAULT_SKIP,
-        )
-    }
+        searchParameters: GameSearch,
+        token: UUID,
+        skip: Int,
+        limit: Int,
+    ): GameListResponse =
+        withAuthorization(token) {
+            val games = data.games.search(searchParameters, limit, skip)
+            return@withAuthorization GameListResponse(games)
+        }
 
     fun createGame(
-        input: String,
-        authorization: String?,
-    ): Int {
-        bearerToken(authorization, db)
-        val gameInput = Json.decodeFromString<GameCreate>(input)
-        val game = db.games.create(gameInput.name, gameInput.developer, gameInput.genres)
-        return game.id
-    }
+        gameInput: GameCreate,
+        token: UUID,
+    ): GameCreateResponse =
+        withAuthorization(token) {
+            if (data.games.get(gameInput.name) != null) {
+                throw ConflictException("The name of a game has to be unique")
+            }
+            val (name, developer, genreIds) = gameInput
+            if (!data.games.genresExist(genreIds)) {
+                throw IllegalArgumentException("The genres provided do not exist")
+            }
+            // TODO: Create a table for the genres maybe?
+            val genres = data.games.getGenres(genreIds)
+            val game = data.games.create(name, developer, genres)
+            return@withAuthorization GameCreateResponse(game.id)
+        }
 
     fun getGame(
-        id: Int?,
-        authorization: String?,
-    ): Game {
-        requireNotNull(id) { "Invalid argument id can't be null" }
-        bearerToken(authorization, db)
-        return db.games.getById(id)
-    }
+        id: Int,
+        token: UUID,
+    ): GameDetails =
+        withAuthorization(token) {
+            val game = data.games.get(id)
+                ?: throw NoSuchElementException("No game with id $id was found")
+            return@withAuthorization GameDetails(game)
+        }
 }

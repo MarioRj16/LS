@@ -17,7 +17,7 @@ class DataPostgres(connectionString: String) : Data {
 
     fun create() {
         conn().runSQLScript("createSchema.sql")
-        conn().runSQLScript("createGenres.sql")
+        conn().runSQLScript("insertGenres.sql")
     }
 
     fun delete() {
@@ -34,7 +34,7 @@ class DataPostgres(connectionString: String) : Data {
 
     override val players: PlayersData = PlayersPostgres(::conn)
 
-    override val gamingSessions: GamingSessionsData = GamingSessionPostgres(::conn)
+    override val gamingSessions: GamingSessionsData = GamingSessionsPostgres(::conn)
 
     override val games: GamesData = GamesPostgres(::conn)
 }
