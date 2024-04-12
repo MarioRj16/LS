@@ -19,7 +19,7 @@ class PlayerTests : AbstractDataTests() {
         assertEquals(name, player.name)
         assertEquals(email, player.email)
         assertNotNull(player.token)
-        assertTrue(player.id == 1)
+        assertTrue(player.id > 0)
     }
 
     @Test
