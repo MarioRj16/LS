@@ -6,24 +6,38 @@ export async function SessionsSearchPage(state) {
 
         const gameInput = document.getElementById('gameInput').value;
         const dateInput = document.getElementById('dateInput').value;
-        const stateInput = document.getElementById('stateInput').checked;
+        const stateInput = document.getElementById('stateInput').value;
         const playerIdInput = document.getElementById('playerIdInput').value;
 
-        const searchCriteria = {
-            game: gameInput ? parseInt(gameInput) : null,
-            date: dateInput ? new Date(dateInput) : null,
-            state: stateInput,
-            playerId: playerIdInput ? parseInt(playerIdInput) : null
-        };
-        window.location.href=`/pessoa`
-        //window.location.href = `#sessions?${new URLSearchParams(searchCriteria).toString()}`;
+
+        const searchCriteria = {};
+
+        // Add non-null values to the search criteria
+        if (gameInput) {
+            searchCriteria.game = parseInt(gameInput);
+        }
+        if (dateInput) {
+            searchCriteria.date = new Date(dateInput);
+        }
+        if (stateInput !== "") {
+            searchCriteria.state = stateInput === "true";
+        }
+        if (playerIdInput) {
+            searchCriteria.playerId = parseInt(playerIdInput);
+        }
+
+        const queryString = new URLSearchParams(searchCriteria).toString();
+        window.location.href = `#sessions?${queryString}`;
     }
+
+    const submitButton = button({ class: "btn btn-primary", type: "submit" }, "Search");
+     (await submitButton).addEventListener('click', handleFormSubmit);
 
     return div(
         { class: "card mx-auto justify-content-center w-50 maxH-50" },
         div(
             { class: "card-header" },
-            h1({}, "Sessions Search"),
+            h1({}, "Sessions Search")
         ),
         div(
             { class: "card-body" },
@@ -58,7 +72,7 @@ export async function SessionsSearchPage(state) {
                 ),
                 div(
                     { class: "mx-auto" },
-                    button({ class: "btn btn-primary", type: "submit" }, "Search")
+                    submitButton
                 )
             )
         )
