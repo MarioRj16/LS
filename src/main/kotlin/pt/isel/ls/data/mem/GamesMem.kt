@@ -19,7 +19,7 @@ class GamesMem(
 
     init{
         gamesDB.table[999] = Game(999, "The Witcher 3", "CD Projekt Red", setOf(genreDB[3]!!))
-        gamesDB.table[1000] = Game(1000,"Cyberpunk 2077", "CD Projekt Red", setOf(genreDB[1]!!))
+        gamesDB.table[1000] = Game(1000,"Cyberpunk 2077", "CD Projekt Red", setOf(genreDB[1]!!,genreDB[2]!!,genreDB[4]!!))
     }
     override fun create(
         name: String,
