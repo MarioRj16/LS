@@ -1,6 +1,5 @@
-import {FetchAPI} from "../../utils/FetchAPI";
-import {GetPlayer} from "../../components/players/GetPlayer";
-import {GetGame} from "../../components/games/GetGame";
+import {FetchAPI} from "../../utils/FetchAPI.js";
+import {GetGame} from "../../components/games/GetGame.js";
 
 export async function GamesDetailsPage(state){
     const id = state.params.id;

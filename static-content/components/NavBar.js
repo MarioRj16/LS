@@ -1,14 +1,15 @@
-import {a, div, nav} from "../utils/Elements";
+import {a, div, nav} from "../utils/Elements.js";
 
 export async function NavBar(state){
     //TODO(GET USER)
 
     const navbar= await div(
         nav(
-            a({class: "nav-link", href: "#"}, "Home"),
+            {class: "navbar navbar-expand-lg bg-body-tertiary"},
+            a({class: "nav-link", href: "#home"}, "Home"),
             a({class: "nav-link", href: "#games/search"}, "GamesSearch"),
             a({class: "nav-link", href: "#sessions/search",}, "SessionsSearch"),
-            //a({class: "nav-link", href: `#player/${playerId}`}, "PlayerDetails"),
+            a({class: "nav-link", href: "#players/999"}, "PlayerDetails"),
         )
     )
     let active = window.location.hash;

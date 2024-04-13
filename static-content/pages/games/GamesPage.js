@@ -1,5 +1,5 @@
-import { div, h1, a, h2, h3 } from "../../utils/Elements";
-import { FetchAPI } from "../../utils/FetchAPI";
+import { div, h1, a, h2, h3 } from "../../utils/Elements.js";
+import { FetchAPI } from "../../utils/FetchAPI.js";
 
 export async function GamesPage(state) {
 

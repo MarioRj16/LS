@@ -1,4 +1,4 @@
-import {div, h1, h2, h3} from "../../utils/Elements";
+import {div, h1, h2, h3} from "../../utils/Elements.js";
 
 
 export async function GetSession(session,players,creator){

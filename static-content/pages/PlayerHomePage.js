@@ -1,9 +1,9 @@
-import {div, h1} from "../utils/Elements";
+import {div, h1} from "../utils/Elements.js";
 
 
 export async function PlayerHomePage(state){
 
-    return div(
+    return await div(
         h1({class: "Title"}, "PlayerHome" )
     )
 }
