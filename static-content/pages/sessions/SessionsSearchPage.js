@@ -1,4 +1,5 @@
 import { button, div, form, h1, input, label, option, select } from "../../utils/Elements.js";
+import {FetchAPI} from "../../utils/FetchAPI.js";
 
 export async function SessionsSearchPage(state) {
     function handleFormSubmit(event) {
@@ -33,6 +34,24 @@ export async function SessionsSearchPage(state) {
     const submitButton = button({ class: "btn btn-primary", type: "submit" }, "Search");
      (await submitButton).addEventListener('click', handleFormSubmit);
 
+     const games=await GamesOptions(await FetchAPI(`/games`))
+
+    async function GamesOptions(games) {
+        // Create a <select> element for games with single selection
+        const optionsContainer = select({ id: "gameInput", placeholder: "Select a game" });
+        console.log(games.games)
+        // Map each game to an <option> element and append to the optionsContainer <select>
+        if(games.games.length!==0) {
+            games.forEach(game => {
+                const optionElement = option({value: game.id}, game.title);
+                optionsContainer.appendChild(optionElement);
+            });
+        }
+        // Return the <div> containing the <select> element with options
+        return div({ class: "select-input" }, optionsContainer);
+    }
+
+
     return div(
         { class: "card mx-auto justify-content-center w-50 maxH-50" },
         div(
@@ -48,8 +67,9 @@ export async function SessionsSearchPage(state) {
                 },
                 div(
                     {},
-                    label({ class: "form-label", for: "gameInput" }, "Game ID"),
-                    input({ class: "form-control", type: "number", id: "gameInput", placeholder: "Game ID", min: 1, required: true })
+                    label({ class: "form-label", for: "gameInput" }, "Game "),
+                    //input({ class: "form-control", type: "number", id: "gameInput", placeholder: "Game ID", min: 1, required: true })
+                    games
                 ),
                 div(
                     {},
