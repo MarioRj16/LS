@@ -34,22 +34,33 @@ export async function SessionsSearchPage(state) {
     const submitButton = button({ class: "btn btn-primary", type: "submit" }, "Search");
      (await submitButton).addEventListener('click', handleFormSubmit);
 
-     const games=await GamesOptions(await FetchAPI(`/games`))
+     const games=await GamesOptions((await FetchAPI(`/games`)))
 
     async function GamesOptions(games) {
-        // Create a <select> element for games with single selection
-        const optionsContainer = select({ id: "gameInput", placeholder: "Select a game" });
-        console.log(games.games)
-        // Map each game to an <option> element and append to the optionsContainer <select>
-        if(games.games.length!==0) {
-            games.forEach(game => {
-                const optionElement = option({value: game.id}, game.title);
-                optionsContainer.appendChild(optionElement);
-            });
+            // Create a <select> element for games
+
+        if (!Array.isArray(games.games)) {
+            console.error('Games must be provided as an array.');
+            return null;
         }
-        // Return the <div> containing the <select> element with options
-        return div({ class: "select-input" }, optionsContainer);
-    }
+
+        // Create a <select> element for games
+        const selectElement = document.createElement('select')
+        selectElement.id = "gameInput";
+        selectElement.placeholder = "Select a game";
+        selectElement.class = "form-control";
+        console.log(games.games)
+        // Iterate over each game in the games array
+        games.games.forEach(game => {
+            const optionElement = document.createElement('option');
+            optionElement.value = game.id;
+            optionElement.textContent = game.name;
+            selectElement.appendChild(optionElement);
+        });
+
+       return selectElement;
+       // return div({ class: "form-control"},selectElement);
+        }
 
 
     return div(

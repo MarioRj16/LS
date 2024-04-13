@@ -16,6 +16,11 @@ class GamesMem(
         Genre(5, "Strategy"),
     ).associateBy { it.genreId },
 ) : GamesData {
+
+    init{
+        gamesDB.table[999] = Game(999, "The Witcher 3", "CD Projekt Red", setOf(genreDB[3]!!))
+        gamesDB.table[1000] = Game(1000,"Cyberpunk 2077", "CD Projekt Red", setOf(genreDB[1]!!))
+    }
     override fun create(
         name: String,
         developer: String,

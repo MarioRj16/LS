@@ -12,9 +12,11 @@ export async function FetchAPI(path){
             headers:headers})
         console.log(response)
         let json = await response.json()
+       // console.log(json)
         if(response.ok) return json;
     } catch (e){
         console.log(e)
+        console.log("sou paneleiro")
         //TODO(throw alert or something)
     }
 }
