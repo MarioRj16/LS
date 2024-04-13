@@ -20,4 +20,6 @@ interface GamesData {
     fun genresExist(genreIds: Set<Int>): Boolean
 
     fun getGenres(genreIds: Set<Int>): Set<Genre>
+
+    fun getAllGenres():Map<Int,Genre>
 }
