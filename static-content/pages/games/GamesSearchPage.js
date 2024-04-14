@@ -6,12 +6,11 @@ export async function GamesSearchPage(state) {
     const genres = await FetchAPI(`/games/genres`);
     console.log("Genres: ", genres)
 
-    const formSubmitHandler = async () => {
-        event.preventDefault()
+    const formSubmitHandler = async (event) => {
+        event.preventDefault();
 
         const developerInput = document.getElementById('developerInput').value;
-      //  console.log("genre", document.getElementById('genreInput'))
-        //const genreInput = document.getElementById('genreInput').value.split(',').map(genre => genre.trim());
+
         const genreInput = [];
         const checkboxes = document.querySelectorAll('input[type="checkbox"][id^="genre_"]');
         checkboxes.forEach(checkbox => {
@@ -20,21 +19,27 @@ export async function GamesSearchPage(state) {
                 genreInput.push(genreId);
             }
         });
-        console.log(genreInput)
+
         const searchCriteria = {};
 
-        // Add non-null values to the search criteria
-        if (developerInput) {
-            searchCriteria.developer = developerInput;
-        }
-        if (genreInput.length > 0 ) {
-            console.log(genreInput)
-            searchCriteria.genres = genreInput;
+        // Add developer input to search criteria if provided
+        if (developerInput.trim() !== "") {
+            searchCriteria.developer = developerInput.trim();
         }
 
+        // Add selected genre IDs to search criteria as a single 'genres' parameter
+        if (genreInput.length > 0) {
+            searchCriteria.genres = genreInput.join(',');
+        }
+
+        // Construct the query string using URLSearchParams
         const queryString = new URLSearchParams(searchCriteria).toString();
+
+        // Navigate to the games page with the constructed query string appended to the URL
         window.location.href = `#games?${queryString}`;
     };
+
+
 
     const genresOptions = await GenresOptions(genres);
 
@@ -52,7 +57,7 @@ export async function GamesSearchPage(state) {
             form(
                 {
                     class: "sessions-search-container d-flex flex-column gap-4",
-                    onsubmit: formSubmitHandler // Use the function to handle form submission
+                    onsubmit: formSubmitHandler
                 },
                 div(
                     { class: "text-center" },

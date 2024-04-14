@@ -19,7 +19,7 @@ import pt.isel.ls.utils.validateInt
 class SessionsAPI(private val services: SessionServices) : APISchema() {
     fun searchSessions(request: Request): Response =
         request.useWithException { token ->
-            val gameId = request.query("gameId")?.toIntOrNull().validateInt { it.isPositive() }
+            val gameId = request.query("gameId")?.toIntOrNull()
             val date = request.query("date")?.toLocalDateTime()
             val state = request.query("state")?.toBoolean()
             var playerId = request.query("player")?.toIntOrNull()

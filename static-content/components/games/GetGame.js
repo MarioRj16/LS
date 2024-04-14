@@ -4,12 +4,11 @@ export async function GetGame(game){
     const submitButton = button({ class: "btn btn-primary", type: "submit" }, "Search");
     (await submitButton).addEventListener('click', searchGameSession);
     function searchGameSession(){
-        window.location.href = `#sessions?game=${game.id}`;
+        window.location.href = `#sessions?gameId=${game.id}`;
     }
     const renderGenresHeaders = () => {
         const genresElement = document.createElement("genreList")
         game.genres.forEach(genre => {
-            console.log(genre)
             const addGenre = document.createElement("genre")
             addGenre.value = genre.id
             addGenre.textContent = genre.name
