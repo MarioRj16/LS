@@ -5,22 +5,22 @@ export async function GamesPage(state) {
 
     const gamesResponse = await FetchAPI(`/games?${state.query}`);
     const games = gamesResponse.games;
-    function handleGameClick(gameId) {
+    function handleClick(gameId) {
         return () => {
             console.log(gameId);
             window.location.href = `#games/${gameId}`;
         };
     }
 
-    function gameCard(game) {
+    async function gameCard(game) {
         const detailsButton = button(
             { class: "btn btn-primary", type: "button" },
             "Details"
         );
-        detailsButton.onclick = handleGameClick(game.id);
 
+        (await detailsButton).addEventListener('click', handleClick(game.id))
         return form(
-            { class: "game-form d-flex flex-column gap-4", onsubmit: handleGameClick(game.id) },
+            { class: "game-form d-flex flex-column gap-4", onsubmit: handleClick(game.id) },
             div(
                 { class: "game-details" },
                 h2({}, `Game ID: ${game.id}`),
