@@ -1,0 +1,55 @@
+/* Styles for the multi-select dropdown */
+.multiselect {
+    width: 200px;
+    position: relative;
+}
+
+/* Styles for the select box */
+.selectBox {
+    border: 1px solid #ccc;
+    cursor: pointer;
+    position: relative;
+}
+
+.selectBox select {
+    width: 100%;
+    font-weight: bold;
+    padding: 8px;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-color: #fff;
+    cursor: pointer;
+}
+
+.overSelect {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+
+/* Styles for the checkboxes container */
+#checkboxes {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    border: 1px solid #dadada;
+    background-color: #fff;
+    z-index: 999;
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+#checkboxes label {
+    display: block;
+    padding: 8px;
+    cursor: pointer;
+}
+
+#checkboxes label:hover {
+    background-color: #1e90ff;
+}

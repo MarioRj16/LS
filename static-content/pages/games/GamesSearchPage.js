@@ -1,23 +1,34 @@
-import { div, h1, input, select, option, button } from "../../utils/Elements.js";
+import {div, h1, input, select, option, button, form, label} from "../../utils/Elements.js";
 import { FetchAPI } from "../../utils/FetchAPI.js";
 import { GenresOptions } from "../../components/GenresOptions.js";
 
 export async function GamesSearchPage(state) {
-    const genres = await FetchAPI(`/genres`);
+    const genres = await FetchAPI(`/games/genres`);
+    console.log("Genres: ", genres)
 
     const formSubmitHandler = async () => {
         event.preventDefault()
 
         const developerInput = document.getElementById('developerInput').value;
-        const genreInput = document.getElementById('genreInput').value.split(',').map(genre => genre.trim());
-
+      //  console.log("genre", document.getElementById('genreInput'))
+        //const genreInput = document.getElementById('genreInput').value.split(',').map(genre => genre.trim());
+        const genreInput = [];
+        const checkboxes = document.querySelectorAll('input[type="checkbox"][id^="genre_"]');
+        checkboxes.forEach(checkbox => {
+            if (checkbox.checked) {
+                const genreId = checkbox.value;
+                genreInput.push(genreId);
+            }
+        });
+        console.log(genreInput)
         const searchCriteria = {};
 
         // Add non-null values to the search criteria
         if (developerInput) {
             searchCriteria.developer = developerInput;
         }
-        if (genreInput.length > 0) {
+        if (genreInput.length > 0 ) {
+            console.log(genreInput)
             searchCriteria.genres = genreInput;
         }
 
@@ -30,20 +41,36 @@ export async function GamesSearchPage(state) {
     const searchButton = button({ type: "button"}, "Search"); // Create search button with onclick event
     (await searchButton).addEventListener('click', formSubmitHandler);
 
-
-
-
     return div(
-        { class: "game-search-container" },
-        h1({}, "Search Games"),
+        { class: "card mx-auto justify-content-center w-50 maxH-50" },
         div(
-            { class: "search-form" },
+            { class: "card-header text-center" },
+            h1({}, "Search Games")
+        ),
+        div(
+            { class: "card-body d-flex flex-column align-items-center" },
             form(
-                { onsubmit: formSubmitHandler },
-                input({ type: "text", id: "developerInput", placeholder: "Developer (optional)" }),
-                select({ id: "genreInput" }, genresOptions),
-                searchButton
+                {
+                    class: "sessions-search-container d-flex flex-column gap-4",
+                    onsubmit: formSubmitHandler // Use the function to handle form submission
+                },
+                div(
+                    { class: "text-center" },
+                    label({ class: "form-label", for: "developerInput" }, "Developer"),
+                    input({ type: "text", class: "form-control text-center", id: "developerInput", placeholder: "(optional)" })
+                ),
+                div(
+                    { class: "text-center" },
+                    label({ class: "form-label", for: "genreInput" }, "Genres"),
+                    genresOptions
+                ),
+                div(
+                    { class: "text-center" },
+                    searchButton
+                )
             )
         )
     );
+
+
 }
