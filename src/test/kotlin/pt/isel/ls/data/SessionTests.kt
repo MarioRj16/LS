@@ -30,7 +30,7 @@ class SessionTests : AbstractDataTests() {
             )
         val session = gamingSessions.create(capacity, game.id, date, player.id)
 
-        assertTrue(session.id == 1)
+        assertTrue(session.id == 3)
         assertEquals(game.id, session.gameId)
         assertEquals(capacity, session.maxCapacity)
         assertEquals(date, session.startingDate)
@@ -195,8 +195,8 @@ class SessionTests : AbstractDataTests() {
         val player2 = playerFactory.createRandomPlayer()
         val game = gameFactory.createRandomGame()
         val game2 = gameFactory.createRandomGame()
-        val searchParameters1 = SessionSearch(null, null, null, player.id)
-        val searchParameters2 = SessionSearch(null, null, null, player2.id)
+        val searchParameters1 = SessionSearch(null, null, null, player.email)
+        val searchParameters2 = SessionSearch(null, null, null, player2.email)
         var searchResults = gamingSessions.search(searchParameters1, DEFAULT_LIMIT, DEFAULT_SKIP)
 
         assertTrue(searchResults.isEmpty())

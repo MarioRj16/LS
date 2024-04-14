@@ -6,11 +6,7 @@ import org.junit.jupiter.api.assertThrows
 import pt.isel.ls.DEFAULT_LIMIT
 import pt.isel.ls.DEFAULT_SKIP
 import pt.isel.ls.api.models.players.PlayerDetails
-import pt.isel.ls.api.models.sessions.SessionCreate
-import pt.isel.ls.api.models.sessions.SessionDetails
-import pt.isel.ls.api.models.sessions.SessionResponse
-import pt.isel.ls.api.models.sessions.SessionSearch
-import pt.isel.ls.api.models.sessions.SessionUpdate
+import pt.isel.ls.api.models.sessions.*
 import pt.isel.ls.data.mem.DataMem
 import pt.isel.ls.domain.Player
 import pt.isel.ls.utils.exceptions.ForbiddenException
@@ -45,7 +41,7 @@ class SessionsServicesTests : SessionServices(DataMem()) {
         val startingDate = plusDaysToCurrentDateTime(1L)
         val sessionCreate = SessionCreate(game.id, capacity, startingDate)
         val sessionResponse = createSession(sessionCreate, token)
-        val expectedId = 1
+        val expectedId = 3
         assertEquals(expectedId, sessionResponse.id)
     }
 

@@ -10,6 +10,6 @@ class GenreFactoryTests {
     fun `test generate random genres`() {
         val generatedGenres = GenresFactory().generateRandomGenres()
         val genres = GamesMem().getAllGenres()
-        assertTrue(generatedGenres.all { it in genres.values })
+        assertTrue(generatedGenres.all { it in genres })
     }
 }
