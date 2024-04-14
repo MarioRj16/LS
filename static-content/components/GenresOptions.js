@@ -1,21 +1,19 @@
-import {div, option, select} from "../utils/Elements.js";
-
+import { div, select, option } from "../utils/Elements.js";
 
 export async function GenresOptions(genres) {
 
-        // Map each genre to an <option> element
-    const optionsContainer = select({ id: "genreInput", multiple: true, placeholder: "Select genres (optional)" },);
-    console.log(genres.size)
-    // Map each genre to an <option> element and append to the optionsContainer <div>
-    genres.forEach(genre => {
-        const optionElement = option({ value: genre.id }, genre.name);
-        optionsContainer.appendChild(optionElement);
-    });
+        const selectElement = document.createElement('select');
+        selectElement.id = "genreInput";
+        selectElement.multiple = true;
+        selectElement.placeholder = "Select genres (optional)";
 
-    // Return the <div> containing all the <option> elements
-    return div({ class: "select-input" },
+        genres.forEach(genre => {
+            const optionElement = document.createElement('option');
+            optionElement.value = genre.genreId;
+            optionElement.textContent = genre.genreName;
+            selectElement.appendChild(optionElement);
+        });
 
-    optionsContainer
+        return selectElement;
 
-    );
 }

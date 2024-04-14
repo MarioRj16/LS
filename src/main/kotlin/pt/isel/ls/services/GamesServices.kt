@@ -46,7 +46,7 @@ open class GamesServices(data: Data) : ServicesSchema(data) {
             return@withAuthorization GameDetails(game)
         }
 
-    fun getGenres():Map<Int,Genre>{
+    fun getGenres():Set<Genre>{
         return data.games.getAllGenres()
     }
 }

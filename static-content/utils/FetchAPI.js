@@ -10,7 +10,7 @@ export async function FetchAPI(path){
         const response = await fetch(`${API_URL}${path}`, {
             method:'GET',
             headers:headers})
-        console.log(response)
+        console.log("resposta",response)
         let json = await response.json()
        // console.log(json)
         if(response.ok) return json;

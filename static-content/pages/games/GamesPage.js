@@ -1,35 +1,53 @@
-import { div, h1, a, h2, h3 } from "../../utils/Elements.js";
+import { div, h1, a, h2, h3, button, form, label, input } from "../../utils/Elements.js";
 import { FetchAPI } from "../../utils/FetchAPI.js";
 
 export async function GamesPage(state) {
 
-    const games = await FetchAPI(`/games?${state.query}`);
+    const gamesResponse = await FetchAPI(`/games?${state.query}`);
+    const games = gamesResponse.games;
+    function handleGameClick(gameId) {
+        return () => {
+            console.log(gameId);
+            window.location.href = `#games/${gameId}`;
+        };
+    }
 
-    const handleGameClick = (gameId) => {
+    function gameCard(game) {
+        const detailsButton = button(
+            { class: "btn btn-primary", type: "button" },
+            "Details"
+        );
+        detailsButton.onclick = handleGameClick(game.id);
 
-        console.log('Redirecting to game details:', gameId);
-        window.location.href = `#games/${gameId}`;
-    };
+        return form(
+            { class: "game-form d-flex flex-column gap-4", onsubmit: handleGameClick(game.id) },
+            div(
+                { class: "game-details" },
+                h2({}, `Game ID: ${game.id}`),
+                h3({}, `Name: ${game.name}`),
+                detailsButton
+            )
+        );
+    }
+
+
+    async function paginate(cards, skip = 0, limit = 10) {
+        const paginatedCards = cards.slice(skip, skip + limit);
+        return div(...paginatedCards);
+    }
+
+    const cards = games.map(game => gameCard(game));
+
+    const paginatedCards = await paginate(cards);
 
     return div(
-        h1({ class: "" }, `Games`),
+        h1({ class: "" }, "Games"),
         div(
             { class: "game-list" },
-            games.map(game => (
-                a(
-                    {
-                        onclick: () => handleGameClick(game.id),
-                        key: game.id
-                    },
-                    div(
-                        { class: "game-item" },
-                        h2({}, `Game ID: ${game.id}`),
-                        h3({}, `Title: ${game.title}`),
-                        h3({}, `Developer: ${game.developer || 'Unknown'}`),
-                        h3({}, `Genres: ${game.genres.join(', ') || 'N/A'}`)
-                    )
-                )
-            ))
+            paginatedCards
+        ),
+        div(
+            //TODO(add next and previous buttons)
         )
     );
 }

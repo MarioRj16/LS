@@ -21,5 +21,5 @@ interface GamesData {
 
     fun getGenres(genreIds: Set<Int>): Set<Genre>
 
-    fun getAllGenres():Map<Int,Genre>
+    fun getAllGenres():Set<Genre>
 }

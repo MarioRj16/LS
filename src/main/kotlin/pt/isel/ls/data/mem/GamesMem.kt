@@ -51,7 +51,7 @@ class GamesMem(
 
     override fun getGenres(genreIds: Set<Int>): Set<Genre> = genreIds.mapNotNull { genreDB[it] }.toSet()
 
-    override fun getAllGenres():Map<Int,Genre> = genreDB
+    override fun getAllGenres():Set<Genre> = genreDB.values.toSet()
 
     override fun get(id: Int): Game? = gamesDB.table.values.find { it.id == id }
 }

@@ -17,8 +17,9 @@ class Routes(api: API) {
         routes(
             "games" bind Method.GET to api.gamesAPI::searchGames,
             "games" bind Method.POST to api.gamesAPI::createGame,
-            "games/{gameId}" bind Method.GET to api.gamesAPI::getGame,
-            "games/genres" bind Method.GET to api.gamesAPI::getGenres
+            "games/genres" bind Method.GET to api.gamesAPI::getGenres,
+            "games/{gameId}" bind Method.GET to api.gamesAPI::getGame
+
         )
     private val sessionRoutes =
         routes(
