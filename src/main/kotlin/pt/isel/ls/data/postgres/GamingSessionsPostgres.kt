@@ -78,16 +78,16 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
 
     override fun search(sessionParameters: SessionSearch, limit: Int, skip: Int): List<Session> =
         conn().useWithRollback {
-            val (game, date, isOpen, player) = sessionParameters
+            val (game, date, isOpen, playerEmail) = sessionParameters
             val query =
                 """
                 select * from gaming_sessions 
-                ${if (player != null) "full outer join players_sessions on gaming_session_id = gaming_session" else ""}
-                ${if (player != null) "full outer join players on player = player_id" else ""}
+                ${if (playerEmail != null) "full outer join players_sessions on gaming_session_id = gaming_session" else ""}
+                ${if (playerEmail != null) "full outer join players on player = player_id" else ""}
                 where game = ?
                 ${if (date != null) " and startingDate = ?" else ""}
                 ${if (isOpen != null) " and startingDate <= CURRENT_TIMESTAMP" else ""}
-                ${if (player != null) " and player = ?" else ""}
+                ${if (playerEmail != null) " and email = ?" else ""}
                 order by gaming_sessions.gaming_session_id
                 """.trimIndent()
 
@@ -98,8 +98,8 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
                     date?.let {
                         setTimestamp(parameterIndex++, date.toTimeStamp())
                     }
-                    player?.let {
-                        setInt(parameterIndex++, player)
+                    playerEmail?.let {
+                        setString(parameterIndex++, playerEmail)
                     }
                 }
 

@@ -22,11 +22,8 @@ class SessionsAPI(private val services: SessionServices) : APISchema() {
             val gameId = request.query("gameId")?.toIntOrNull()
             val date = request.query("date")?.toLocalDateTime()
             val state = request.query("state")?.toBoolean()
-            var playerId = request.query("player")?.toIntOrNull()
-            if (playerId != null) {
-                playerId = playerId.validateInt { it.isPositive() }
-            }
-            val sessionSearch = SessionSearch(gameId, date, state, playerId)
+            val playerEmail = request.query("player")
+            val sessionSearch = SessionSearch(gameId, date, state, playerEmail)
             val skip = request.query("skip")?.toInt().validateInt(DEFAULT_SKIP) { it.isNotNegative() }
             val limit = request.query("limit")?.toInt().validateInt(DEFAULT_LIMIT) { it.isNotNegative() }
             Response(Status.OK)
