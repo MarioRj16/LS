@@ -31,8 +31,42 @@ export async function GamesPage(state) {
         );
     }
 
+    const previousButton = button(
+        { class: "btn btn-primary", type: "button" },
+        "Previous"
+    );
+    (await previousButton).addEventListener('click', previousPage)
+    function changePage(jump){
+        const skipParam = new URLSearchParams(state.query).get("skip");
+        const currentLimit = new URLSearchParams(state.query).get("limit");
+        console.log(`${skipParam},${currentLimit}`)
+        const currentSkip = skipParam ? parseInt(skipParam) : 1;
+        const newLimit = currentLimit ? parseInt(currentLimit) : 30
+        const newSkip = currentSkip + (jump*currentLimit);
+        if (nextPage < 0) {
+            alert("You are on the first page");
+            return;
+        }
+        window.location.href = `#games?skip=${newSkip}&limit=${newLimit}`
+        return (newSkip,newLimit)
+    }
+    function previousPage(){
+        const x = changePage(-1)
+        paginate(cards,x.first,x.second)
+    }
 
-    async function paginate(cards, skip = 0, limit = 10) {
+    const nextButton = button(
+        { class: "btn btn-primary", type: "button" },
+        "Next"
+    );
+    (await nextButton).addEventListener('click', nextPage)
+
+    function nextPage(){
+        const x = changePage(+1)
+        paginate(cards,x.first,x.second)
+    }
+
+    async function paginate(cards, skip = 0, limit = 1) {
         const paginatedCards = cards.slice(skip, skip + limit);
         return div(...paginatedCards);
     }
@@ -48,7 +82,8 @@ export async function GamesPage(state) {
             paginatedCards
         ),
         div(
-            //TODO(add next and previous buttons)
+            previousButton,
+            nextButton
         )
     );
 }
