@@ -36,27 +36,33 @@ export async function SessionsSearchPage(state) {
      const games=await GamesOptions((await FetchAPI(`/games`)).games)
 
     async function GamesOptions(games) {
-            // Create a <select> element for games
 
         if (!Array.isArray(games)) {
             console.error('Games must be provided as an array.');
             return null;
         }
 
-        // Create a <select> element for games
-        const selectElement = document.createElement('select')
+        const selectElement = document.createElement('select');
         selectElement.id = "gameInput";
-        selectElement.placeholder = "Select a game";
-        selectElement.class = "form-control";
-        games.forEach(game => {
-            const optionElement = document.createElement('option');
-            optionElement.value = game.id;
-            optionElement.textContent = game.name;
-            selectElement.appendChild(optionElement);
-        });
+        selectElement.classList.add("form-control"); // Add CSS class for styling
+        const defaultOption = document.createElement('option');
+        defaultOption.textContent = "Select a game";
+        //defaultOption.disabled = true;
+        defaultOption.selected = true;
+        selectElement.appendChild(defaultOption);
 
-       return selectElement
-     }
+        if (games.length > 0) {
+            games.forEach(game => {
+                const optionElement = document.createElement('option');
+                optionElement.value = game.id;
+                optionElement.textContent = game.name;
+                selectElement.appendChild(optionElement);
+            });
+        }
+
+        return selectElement;
+    }
+
 
 
     return div(
