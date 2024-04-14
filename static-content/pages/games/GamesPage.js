@@ -3,7 +3,7 @@ import { FetchAPI } from "../../utils/FetchAPI.js";
 import {objectToQueryString} from "../../utils/FetchAPI.js";
 
 export async function GamesPage(state) {
-    console.log(`/games${objectToQueryString(state.query)}`)
+    console.log(state.query)
     const gamesResponse = await FetchAPI(`/games${objectToQueryString(state.query)}`);
     const games = gamesResponse.games;
     function handleClick(gameId) {
