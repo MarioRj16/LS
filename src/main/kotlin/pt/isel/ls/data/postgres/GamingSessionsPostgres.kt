@@ -94,7 +94,7 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
             val statement =
                 it.prepareStatement(query).apply {
                     var parameterIndex = 1
-                    setInt(parameterIndex++, game)
+                    setInt(parameterIndex++, game!!)
                     date?.let {
                         setTimestamp(parameterIndex++, date.toTimeStamp())
                     }
