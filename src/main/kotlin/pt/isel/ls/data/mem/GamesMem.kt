@@ -42,7 +42,7 @@ class GamesMem(
         val list =
             gamesDB.table.values.filter {
                 (developer.isNullOrBlank() || it.developer == developer) &&
-                    (genres.isEmpty() || it.genres.intersect(genres).isNotEmpty())
+                    (genres.isEmpty() || it.genres.map{i -> i.genreId}.intersect(genres).isNotEmpty())
             }
         return list.paginate(skip, limit)
     }

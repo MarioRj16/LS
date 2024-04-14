@@ -41,25 +41,22 @@ class GamingSessionsMem(
         skip: Int,
     ): List<Session> {
         val (game, date, state, player) = sessionParameters
-        var sessions = sessions.table.filter { (_, value) -> value.gameId == game }
+        var sessions = sessions.table.values.toList()
 
-        if (sessions.isEmpty()) {
-            return sessions.values.toList()
+        if (game != null) {
+            sessions = sessions.filter { it.gameId == game }
         }
-
         if (player != null) {
-            sessions = sessions.filter { (_, value) -> value.players.find { it.id == player } is Player }
+            sessions = sessions.filter { it.players.any { it.id == player } }
         }
-
         if (state != null) {
-            sessions = sessions.filter { (_, value) -> value.state == state }
+            sessions = sessions.filter { it.state == state }
         }
-
         if (date != null) {
-            return sessions.values.filter { it.startingDate == date }
+            sessions = sessions.filter { it.startingDate == date }
         }
 
-        return sessions.values.toList().paginate(skip, limit)
+        return sessions.paginate(skip, limit)
     }
 
     override fun update(sessionId: Int, sessionUpdate: SessionUpdate) {

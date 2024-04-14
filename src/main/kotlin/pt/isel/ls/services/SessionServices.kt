@@ -14,7 +14,7 @@ open class SessionServices(internal val db: Data) : ServicesSchema(db) {
         limit: Int,
     ): SessionListResponse = withAuthorization(token) {
         if (db.games.get(sessionSearch.game!!) == null && db.games.get(sessionSearch.playerId!!)== null) {
-            throw NoSuchElementException("No game with id ${sessionSearch.game} was found")
+            throw NoSuchElementException("No session with game id ${sessionSearch.game} or player id ${sessionSearch.playerId} was found")
         }
         val sessions = db.gamingSessions.search(sessionSearch, limit, skip).map { SessionResponse(it) }
         return@withAuthorization SessionListResponse(sessions)

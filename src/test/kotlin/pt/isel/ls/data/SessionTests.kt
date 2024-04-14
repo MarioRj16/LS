@@ -188,4 +188,32 @@ class SessionTests : AbstractDataTests() {
         assertTrue(gamingSessions.isOwner(session1.id, player1.id))
         assertFalse(gamingSessions.isOwner(session1.id, player2.id))
     }
+    @Test
+    fun `search() returns gaming sessions without game id parameter`() {
+        val player = playerFactory.createRandomPlayer()
+        val player2 = playerFactory.createRandomPlayer()
+        val game = gameFactory.createRandomGame()
+        val game2 = gameFactory.createRandomGame()
+        val searchParameters1 = SessionSearch(null,null,null,player.id)
+        val searchParameters2 = SessionSearch(null,null,null,player2.id)
+        var searchResults = gamingSessions.search(searchParameters1, DEFAULT_LIMIT, DEFAULT_SKIP)
+
+        assertTrue(searchResults.isEmpty())
+
+        val session = gamingSessionFactory.createRandomGamingSession(game.id, player.id,setOf(player))
+        val session2 = gamingSessionFactory.createRandomGamingSession(game.id, player2.id,setOf(player2))
+        val session3 = gamingSessionFactory.createRandomGamingSession(game2.id, player.id,setOf(player,player2))
+
+        searchResults =
+            gamingSessions.search(searchParameters1, DEFAULT_LIMIT, DEFAULT_SKIP)
+        assertTrue(searchResults.size == 2)
+        assertContains(searchResults, session)
+        assertContains(searchResults, session3)
+
+        searchResults =
+            gamingSessions.search(searchParameters2, 1, 0)
+
+        assertTrue(searchResults.size == 1)
+        assertContains(searchResults, session2)
+    }
 }
