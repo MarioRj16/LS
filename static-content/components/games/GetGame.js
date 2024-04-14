@@ -1,20 +1,30 @@
-import {div, h1, h2, h3} from "../../utils/Elements.js";
+import {button, div, h1, h2, h3, h4, h5} from "../../utils/Elements.js";
 
 export async function GetGame(game){
-
-//TODO(add on click to redirect to sessions)
+    const submitButton = button({ class: "btn btn-primary", type: "submit" }, "Search");
+    (await submitButton).addEventListener('click', searchGameSession);
+    function searchGameSession(){
+        window.location.href = `#sessions?game=${game.id}`;
+    }
     const renderGenresHeaders = () => {
-        return game.genres.map((genre) => {
-            return h3({}, `Genres: ${genre.name}`);
-        });
+        const genresElement = document.createElement("genreList")
+        game.genres.forEach(genre => {
+            console.log(genre)
+            const addGenre = document.createElement("genre")
+            addGenre.value = genre.id
+            addGenre.textContent = genre.name
+            genresElement.appendChild(addGenre)
+            }
+        )
+        return genresElement
     };
 
 
     return div(
         h1(game.name),
         h2(game.developer),
-        div(
-            renderGenresHeaders()
-        )
+        h5("","Genres:"),
+        renderGenresHeaders(),
+        submitButton
     )
 }
