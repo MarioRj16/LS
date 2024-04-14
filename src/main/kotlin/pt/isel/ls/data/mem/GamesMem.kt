@@ -17,9 +17,9 @@ class GamesMem(
     ).associateBy { it.genreId },
 ) : GamesData {
 
-    init {
+    init{
         gamesDB.table[999] = Game(999, "The Witcher 3", "CD Projekt Red", setOf(genreDB[3]!!))
-        gamesDB.table[1000] = Game(1000, "Cyberpunk 2077", "CD Projekt Red", setOf(genreDB[1]!!, genreDB[2]!!, genreDB[4]!!))
+        gamesDB.table[1000] = Game(1000,"Cyberpunk 2077", "CD Projekt Red", setOf(genreDB[1]!!,genreDB[2]!!,genreDB[4]!!))
     }
     override fun create(
         name: String,
@@ -42,7 +42,7 @@ class GamesMem(
         val list =
             gamesDB.table.values.filter {
                 (developer.isNullOrBlank() || it.developer == developer) &&
-                    (genres.isEmpty() || it.genres.map { i -> i.genreId }.intersect(genres).isNotEmpty())
+                    (genres.isEmpty() || it.genres.intersect(genres).isNotEmpty())
             }
         return list.paginate(skip, limit)
     }
@@ -51,7 +51,7 @@ class GamesMem(
 
     override fun getGenres(genreIds: Set<Int>): Set<Genre> = genreIds.mapNotNull { genreDB[it] }.toSet()
 
-    override fun getAllGenres(): Map<Int, Genre> = genreDB
+    override fun getAllGenres():Set<Genre> = genreDB.values.toSet()
 
     override fun get(id: Int): Game? = gamesDB.table.values.find { it.id == id }
 }

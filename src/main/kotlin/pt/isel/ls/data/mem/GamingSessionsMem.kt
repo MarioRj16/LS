@@ -14,6 +14,11 @@ class GamingSessionsMem(
     private val players: DataMemTable<Player> = DataMemTable(),
     private val games: DataMemTable<Game> = DataMemTable(),
 ) : GamingSessionsData {
+
+    init{
+        sessions.table[999]=Session(999,1000,999,4,LocalDateTime.parse("2021-06-01T00:00:00"), emptySet())
+        sessions.table[1000]=Session(1000,999,999,2,LocalDateTime.parse("2021-06-01T00:00:00"), emptySet())
+    }
     override fun create(
         capacity: Int,
         game: Int,
