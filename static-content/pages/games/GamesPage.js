@@ -1,9 +1,10 @@
 import { div, h1, a, h2, h3, button, form, label, input } from "../../utils/Elements.js";
 import { FetchAPI } from "../../utils/FetchAPI.js";
+import {objectToQueryString} from "../../utils/FetchAPI.js";
 
 export async function GamesPage(state) {
-
-    const gamesResponse = await FetchAPI(`/games?${state.query}`);
+    console.log(`/games${objectToQueryString(state.query)}`)
+    const gamesResponse = await FetchAPI(`/games${objectToQueryString(state.query)}`);
     const games = gamesResponse.games;
     function handleClick(gameId) {
         return () => {

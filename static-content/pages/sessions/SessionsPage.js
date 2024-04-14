@@ -1,9 +1,10 @@
 import {div, h1, a, h2, h3, button, form} from "../../utils/Elements.js";
 import { FetchAPI } from "../../utils/FetchAPI.js";
+import {objectToQueryString} from "../../utils/FetchAPI.js";
 
 export async function SessionsPage(state) {
-
-    const sessionsResponse = await FetchAPI(`/sessions?gameId=${state.query.game}`);
+    console.log(`/sessions${objectToQueryString(state.query)}`)
+    const sessionsResponse = await FetchAPI(`/sessions${objectToQueryString(state.query)}`);
     console.log(sessionsResponse)
     const sessions= sessionsResponse.sessions;
 

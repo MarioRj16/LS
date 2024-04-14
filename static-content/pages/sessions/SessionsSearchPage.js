@@ -13,9 +13,8 @@ export async function SessionsSearchPage(state) {
 
         const searchCriteria = {};
 
-        // Add non-null values to the search criteria
         if (gameInput) {
-            searchCriteria.game = parseInt(gameInput);
+            searchCriteria.gameId = parseInt(gameInput);
         }
         if (dateInput) {
             searchCriteria.date = new Date(dateInput);
@@ -34,12 +33,12 @@ export async function SessionsSearchPage(state) {
     const submitButton = button({ class: "btn btn-primary", type: "submit" }, "Search");
      (await submitButton).addEventListener('click', handleFormSubmit);
 
-     const games=await GamesOptions((await FetchAPI(`/games`)))
+     const games=await GamesOptions((await FetchAPI(`/games`)).games)
 
     async function GamesOptions(games) {
             // Create a <select> element for games
 
-        if (!Array.isArray(games.games)) {
+        if (!Array.isArray(games)) {
             console.error('Games must be provided as an array.');
             return null;
         }
@@ -49,18 +48,15 @@ export async function SessionsSearchPage(state) {
         selectElement.id = "gameInput";
         selectElement.placeholder = "Select a game";
         selectElement.class = "form-control";
-        console.log(games.games)
-        // Iterate over each game in the games array
-        games.games.forEach(game => {
+        games.forEach(game => {
             const optionElement = document.createElement('option');
             optionElement.value = game.id;
             optionElement.textContent = game.name;
             selectElement.appendChild(optionElement);
         });
 
-       return selectElement;
-       // return div({ class: "form-control"},selectElement);
-        }
+       return selectElement
+     }
 
 
     return div(

@@ -10,15 +10,24 @@ export async function GamesSearchPage(state) {
         event.preventDefault()
 
         const developerInput = document.getElementById('developerInput').value;
-        const genreInput = document.getElementById('genreInput').value.split(',').map(genre => genre.trim());
-
+      //  console.log("genre", document.getElementById('genreInput'))
+        //const genreInput = document.getElementById('genreInput').value.split(',').map(genre => genre.trim());
+        const genreInput = [];
+        const checkboxes = document.querySelectorAll('input[type="checkbox"][id^="genre_"]');
+        checkboxes.forEach(checkbox => {
+            if (checkbox.checked) {
+                const genreId = checkbox.value;
+                genreInput.push(genreId);
+            }
+        });
+        console.log(genreInput)
         const searchCriteria = {};
 
         // Add non-null values to the search criteria
         if (developerInput) {
             searchCriteria.developer = developerInput;
         }
-        if (genreInput.length > 0 && genreInput[0] !== "") {
+        if (genreInput.length > 0 ) {
             console.log(genreInput)
             searchCriteria.genres = genreInput;
         }
