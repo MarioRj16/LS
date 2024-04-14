@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class SessionSearch(
-    val game: Int,
+    val game: Int?,
     val date: LocalDateTime? = null,
     val state: Boolean? = null,
     val playerId: Int? = null,

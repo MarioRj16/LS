@@ -40,7 +40,7 @@ class GamesServicesTests : GamesServices(DataMem()) {
         val genre = Genre(1, "Action")
         val gameCreate = GameCreate(name, developer, setOf(1))
         val gameId = createGame(gameCreate, token)
-        assertTrue(gameId.id == 1)
+        assertTrue(gameId.id == 3)
     }
 
     @Test

@@ -31,8 +31,4 @@ class GameFactory(
             randomName = generateRandomString()
         }
     }
-
-    private fun generateRandomGenres(): Set<Genre> {
-        return List(Random.nextInt(1, genresDB.size + 1)) { genresDB.values.random() }.toSet()
-    }
 }
