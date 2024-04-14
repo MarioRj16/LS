@@ -37,7 +37,6 @@ class Routes(api: API) {
             gameRoutes,
             sessionRoutes,
             singlePageApp(ResourceLoader.Directory("static-content")
-                 //   , "js" to ContentType("application/javascript")
             ),
         )
 }

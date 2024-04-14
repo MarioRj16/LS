@@ -1,13 +1,37 @@
-import {div, h1, h2, h3} from "../../utils/Elements.js";
+import {button, div, h1, h2, h3} from "../../utils/Elements.js";
 
 
-export async function GetSession(session,players,creator){
-    //TODO(add on click to redirect to player details)
-    const renderPlayerHeaders = () => {
-        return players.map((player) => {
-            return h3({}, `Player: ${player.name}`);
+export async function GetSession(session,players,host){
+
+    const renderPlayerHeaders= PlayerHeaders()
+    async function PlayerHeaders (){
+
+        players.map => {
+            const detailsButton = button(
+                {class: "btn btn-primary", type: "button"},
+                "Details"
+            );
+
+            (await detailsButton).addEventListener('click', handleClick(player.id))
+            return div(
+                h3({}, `Player: ${player.name}`),
+                detailsButton
+            );
         });
-    };
+    }}
+    /*async function handleClick(id){
+        event.preventDefault();
+        window.location.href = `#sessions?playerId=${id}`;
+    }
+
+     */
+    function handleClick(playerId) {
+        return () => {
+            window.location.href = `#playerId/${playerId}`;
+        };
+    }
+
+
 
 
     return div(
@@ -16,8 +40,9 @@ export async function GetSession(session,players,creator){
         div(
             h2({}, `Game: ${session.game}`),
             h2({}, `Capacity: ${session.capacity}`),
-            h2({}, `StartingDate: ${session.startingDate}`),
-            h2({},`Creator: ${creator}`),
+            h2({}, `StartingDate: ${session.date}`),
+            h2({},`Creator: ${host.name}`),
+
             h2({},`Participants:`),
             div(
                 renderPlayerHeaders()
