@@ -86,8 +86,8 @@ class SessionsTests : IntegrationTests() {
     @Test
     fun updateSession() {
         var session = GamingSessionFactory(db.gamingSessions).createRandomGamingSession(game.id, user!!.playerId)
-        while(session.maxCapacity<=2){
-        session= GamingSessionFactory(db.gamingSessions).createRandomGamingSession(game.id, user!!.playerId)
+        while (session.maxCapacity <= 2) {
+            session = GamingSessionFactory(db.gamingSessions).createRandomGamingSession(game.id, user!!.playerId)
         }
         val requestBody =
             SessionUpdate(Random.nextInt(2, session.maxCapacity), plusDaysToCurrentDateTime(1))

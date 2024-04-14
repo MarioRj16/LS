@@ -1,6 +1,12 @@
 package pt.isel.ls.services
 
-import pt.isel.ls.api.models.sessions.*
+import pt.isel.ls.api.models.sessions.SessionCreate
+import pt.isel.ls.api.models.sessions.SessionCreateResponse
+import pt.isel.ls.api.models.sessions.SessionDetails
+import pt.isel.ls.api.models.sessions.SessionListResponse
+import pt.isel.ls.api.models.sessions.SessionResponse
+import pt.isel.ls.api.models.sessions.SessionSearch
+import pt.isel.ls.api.models.sessions.SessionUpdate
 import pt.isel.ls.data.Data
 import pt.isel.ls.utils.exceptions.ForbiddenException
 import pt.isel.ls.utils.isPast
@@ -13,7 +19,7 @@ open class SessionServices(internal val db: Data) : ServicesSchema(db) {
         skip: Int,
         limit: Int,
     ): SessionListResponse = withAuthorization(token) {
-        if (db.games.get(sessionSearch.game!!) == null && db.games.get(sessionSearch.playerId!!)== null) {
+        if (db.games.get(sessionSearch.game!!) == null && db.games.get(sessionSearch.playerId!!) == null) {
             throw NoSuchElementException("No session with game id ${sessionSearch.game} or player id ${sessionSearch.playerId} was found")
         }
         val sessions = db.gamingSessions.search(sessionSearch, limit, skip).map { SessionResponse(it) }

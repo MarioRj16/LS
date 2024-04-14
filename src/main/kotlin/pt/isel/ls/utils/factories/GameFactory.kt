@@ -31,6 +31,4 @@ class GameFactory(
             randomName = generateRandomString()
         }
     }
-
-
 }

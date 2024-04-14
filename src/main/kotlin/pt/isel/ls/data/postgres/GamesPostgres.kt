@@ -180,17 +180,17 @@ class GamesPostgres(private val conn: () -> Connection) : GamesData {
     }
 
     override fun getAllGenres(): Map<Int, Genre> {
-        conn().useWithRollback { 
+        conn().useWithRollback {
             val query = """
                 SELECT * FROM genres
-                """.trimIndent()
+            """.trimIndent()
             val statement = it.prepareStatement(query)
-            
+
             val resultSet = statement.executeQuery()
-            val resultMap = mutableMapOf<Int,Genre>()
-            while(resultSet.next()){
+            val resultMap = mutableMapOf<Int, Genre>()
+            while (resultSet.next()) {
                 val x = resultSet.toGenre()
-                resultMap[x.genreId]= x
+                resultMap[x.genreId] = x
             }
             return resultMap
         }
