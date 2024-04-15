@@ -41,7 +41,7 @@ class SessionsServicesTests : SessionServices(DataMem()) {
         val startingDate = plusDaysToCurrentDateTime(1L)
         val sessionCreate = SessionCreate(game.id, capacity, startingDate)
         val sessionResponse = createSession(sessionCreate, token)
-        val expectedId = 3
+        val expectedId = 1
         assertEquals(expectedId, sessionResponse.id)
     }
 

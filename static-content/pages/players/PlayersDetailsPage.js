@@ -6,13 +6,12 @@ export async function PlayersDetailsPage(state){
 
     //TODO(how are we suposed to search for game session, do we have to give gameid?)
     const id = state.params.id;
-    console.log(id)
     const player = await FetchAPI(`/player/${id}`)
     const submitButton = button({ class: "btn btn-primary ", type: "submit" }, "Search");
     (await submitButton).addEventListener('click', SearchSessionsParticipations);
 
     async function SearchSessionsParticipations(){
-        window.location.href = `#sessions?playerId=${id}`;
+        window.location.href = `#sessions?playerEmail=${player.email}`;
     }
 
     return div(

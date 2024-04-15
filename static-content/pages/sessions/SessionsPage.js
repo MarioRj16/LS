@@ -3,9 +3,7 @@ import { FetchAPI } from "../../utils/FetchAPI.js";
 import {objectToQueryString} from "../../utils/FetchAPI.js";
 
 export async function SessionsPage(state) {
-    console.log(`/sessions${objectToQueryString(state.query)}`)
     const sessionsResponse = await FetchAPI(`/sessions${objectToQueryString(state.query)}`);
-    console.log(sessionsResponse)
     const sessions= sessionsResponse.sessions;
 
     function handleClick(sessionId) {

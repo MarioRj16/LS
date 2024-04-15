@@ -6,9 +6,9 @@ export async function GetSession(session,players,host){
     const renderPlayerHeaders= await PlayerHeaders()
     async function PlayerHeaders (){
 
-        players.map(player =>
+       const x= players.map(player =>
             playerCard(player))
-        return div(...players)
+        return div(...x)
     }
 
     async function playerCard(player) {
@@ -19,7 +19,7 @@ export async function GetSession(session,players,host){
 
         (await detailsButton).addEventListener('click', handleClick(player.id))
         return div(
-            h3({}, `Player: ${player.name}`),
+            h3({}, `Player: ${await player.name}`),
             detailsButton
         );
     }

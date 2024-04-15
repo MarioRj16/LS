@@ -4,7 +4,6 @@ import { GenresOptions } from "../../components/GenresOptions.js";
 
 export async function GamesSearchPage(state) {
     const genres = await FetchAPI(`/games/genres`);
-    console.log("Genres: ", genres)
 
     const formSubmitHandler = async (event) => {
         event.preventDefault();

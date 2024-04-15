@@ -82,11 +82,21 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
             val query =
                 """
                 select * from gaming_sessions 
-                ${if (playerEmail != null) "full outer join players_sessions on gaming_session_id = gaming_session" else ""}
-                ${if (playerEmail != null) "full outer join players on player = player_id" else ""}
-                where game = ?
-                ${if (date != null) " and startingDate = ?" else ""}
-                ${if (isOpen != null) " and startingDate <= CURRENT_TIMESTAMP" else ""}
+                
+                ${if (playerEmail != null) " full outer join players_sessions on gaming_session_id = gaming_session" else ""}
+                ${if (playerEmail != null) " full outer join players on player = player_id" else ""}
+                where 1 = 1
+                ${if (game != null) " and game = ?" else ""}
+                ${if (date != null) " and starting_date = ?" else ""}
+                ${
+                    if (isOpen != null) 
+                        if(isOpen) 
+                            " and starting_date > CURRENT_TIMESTAMP" 
+                        else 
+                            " and starting_date <= CURRENT_TIMESTAMP" 
+                    else 
+                        ""
+                }
                 ${if (playerEmail != null) " and email = ?" else ""}
                 order by gaming_sessions.gaming_session_id
                 """.trimIndent()
@@ -94,7 +104,7 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
             val statement =
                 it.prepareStatement(query).apply {
                     var parameterIndex = 1
-                    setInt(parameterIndex++, game!!)
+                    game?.let{setInt(parameterIndex++, game)}
                     date?.let {
                         setTimestamp(parameterIndex++, date.toTimeStamp())
                     }
