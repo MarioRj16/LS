@@ -195,7 +195,7 @@ paths:
         - name: gid
           in: query
           description: Game Identifier
-          required: true
+          required: false
           schema:
             type: integer
             minimum: 0
@@ -213,12 +213,13 @@ paths:
           required: false
           schema:
             type: string
-        - name: pid
+        - name: playerEmail
           in: query
-          description: Player ID
+          description: Player email
           required: false
           schema:
-            type: integer
+            type: string
+            example: test@test.com
       responses:
         200:
           description: Got sessions that match the given parameteres
