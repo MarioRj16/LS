@@ -5,7 +5,6 @@ import pt.isel.ls.api.models.players.PlayerDetails
 import pt.isel.ls.api.models.players.PlayerResponse
 import pt.isel.ls.data.Data
 import pt.isel.ls.utils.exceptions.ConflictException
-import pt.isel.ls.utils.exceptions.ForbiddenException
 import java.util.*
 
 open class PlayerServices(internal val db: Data) : ServicesSchema(db) {
@@ -21,11 +20,6 @@ open class PlayerServices(internal val db: Data) : ServicesSchema(db) {
         playerId: Int,
         token: UUID,
     ): PlayerDetails = withAuthorization(token) { user ->
-        if (user.id != playerId) {
-            throw ForbiddenException(
-                "You dont have authorization to see this player, instead you can see your own id ${user.id}",
-            )
-        }
         val player = db.players.get(playerId)
             ?: throw NoSuchElementException("No player with id $playerId was found")
         return@withAuthorization PlayerDetails(player)

@@ -8,23 +8,24 @@ export async function SessionsSearchPage(state) {
         const gameInput = document.getElementById('gameInput').value;
         const dateInput = document.getElementById('dateInput').value;
         const stateInput = document.getElementById('stateInput').value;
-        const playerIdInput = document.getElementById('playerIdInput').value;
+        const playerEmailInput = document.getElementById('playerEmailInput').value;
 
 
         const searchCriteria = {};
 
-        if (gameInput) {
+        if (gameInput && gameInput !== "Select a game") {
             searchCriteria.gameId = parseInt(gameInput);
         }
         if (dateInput) {
-            searchCriteria.date = new Date(dateInput);
+            searchCriteria.date = new Date(dateInput).getTime();
         }
         if (stateInput !== "") {
             searchCriteria.state = stateInput === "true";
         }
-        if (playerIdInput) {
-            searchCriteria.playerId = parseInt(playerIdInput);
+        if (playerEmailInput) {
+            searchCriteria.playerEmail = playerEmailInput;
         }
+
 
         const queryString = new URLSearchParams(searchCriteria).toString();
         window.location.href = `#sessions?${queryString}`;
@@ -91,8 +92,8 @@ export async function SessionsSearchPage(state) {
                 ),
                 div(
                     {},
-                    label({ class: "form-label", for: "playerIdInput" }, "Player ID"),
-                    input({ class: "form-control", type: "number", id: "playerIdInput", placeholder: "Player ID", min: 1 })
+                    label({ class: "form-label", for: "playerEmail" }, "Player Email"),
+                    input({ class: "form-control", id: "playerEmailInput", placeholder: "Player Email" })
                 ),
                 div(
                     {},

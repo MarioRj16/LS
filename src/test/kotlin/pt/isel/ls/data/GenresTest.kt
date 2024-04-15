@@ -17,6 +17,6 @@ class GenresTest {
             Genre(5, "Strategy"),
         )
         val actualGenres = gamesMem.getAllGenres()
-        assertEquals(expectedGenres, actualGenres.toSet())
+        assertEquals(expectedGenres, actualGenres)
     }
 }

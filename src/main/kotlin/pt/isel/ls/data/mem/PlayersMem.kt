@@ -8,9 +8,6 @@ import java.util.*
 
 class PlayersMem(private val players: DataMemTable<Player> = DataMemTable()) : PlayersData {
 
-    init {
-        players.table[999] = Player(999, "admin", "admin@gmail.com", UUID.fromString("00000000-0000-0000-0000-000000000000"))
-    }
     override fun create(
         playerCreate: PlayerCreate,
     ): Player {

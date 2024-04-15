@@ -1,5 +1,7 @@
 package pt.isel.ls.api
 
+import kotlinx.datetime.Instant
+import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.json.Json
 import org.http4k.core.Request
@@ -20,7 +22,11 @@ class SessionsAPI(private val services: SessionServices) : APISchema() {
     fun searchSessions(request: Request): Response =
         request.useWithException { token ->
             val gameId = request.query("gameId")?.toIntOrNull()
-            val date = request.query("date")?.toLocalDateTime()
+            val date = run {
+                val query = request.query("date") ?: return@run null
+                val instant = Instant.fromEpochMilliseconds(query.toLong())
+                return@run instant.toLocalDateTime(TimeZone.UTC)
+            }
             val state = request.query("state")?.toBoolean()
             val playerEmail = request.query("player")
             val sessionSearch = SessionSearch(gameId, date, state, playerEmail)

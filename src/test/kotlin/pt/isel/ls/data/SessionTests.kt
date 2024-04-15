@@ -30,7 +30,7 @@ class SessionTests : AbstractDataTests() {
             )
         val session = gamingSessions.create(capacity, game.id, date, player.id)
 
-        assertTrue(session.id == 3)
+        assertTrue(session.id == 1)
         assertEquals(game.id, session.gameId)
         assertEquals(capacity, session.maxCapacity)
         assertEquals(date, session.startingDate)

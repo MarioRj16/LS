@@ -52,19 +52,33 @@ class GamesPostgres(private val conn: () -> Connection) : GamesData {
 
             while (resultSet.next()) {
                 val currentGameId = resultSet.getInt("game_id")
-                if (currentGameId != previousGameId && previousGameId != null) {
+                games += resultSet.toGame(setOf(resultSet.toGenre()), currentGameId)
+               /* if (currentGameId != previousGameId && previousGameId != null) {
                     games += resultSet.toGame(foundGenres.toSet(), previousGameId)
                     foundGenres.clear()
                 }
                 foundGenres += resultSet.toGenre()
                 previousGameId = currentGameId
+                if(resultSet.isLast){
+                    games += resultSet.toGame(foundGenres.toSet(), previousGameId)
+                }
+
+                */
+            }
+            val final=games.groupBy { it.id }.map { (_, gameList) ->
+                val game = gameList.first()
+               game.copy(genres= gameList.flatMap { it.genres }.toSet())
             }
 
-            if (previousGameId != null) {
-                games += resultSet.toGame(foundGenres.toSet(), previousGameId)
+
+
+           /* if (previousGameId != null) {
+               // games += resultSet.toGame(foundGenres.toSet(), previousGameId)
             }
 
-            return games.paginate(skip, limit)
+            */
+
+            return final.paginate(skip, limit)
         }
 
     override fun genresExist(genreIds: Set<Int>): Boolean = conn().useWithRollback {
@@ -165,7 +179,8 @@ class GamesPostgres(private val conn: () -> Connection) : GamesData {
         return (
             """
             SELECT * FROM games 
-            FULL OUTER JOIN games_genres ON games.game_id = games_genres.game 
+            JOIN games_genres ON games.game_id = games_genres.game 
+            JOIN genres ON games_genres.genre = genres.genre_id
             WHERE 1 = 1 $genreCondition $developerCondition
             """.trimIndent()
             )

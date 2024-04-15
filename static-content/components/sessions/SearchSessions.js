@@ -28,6 +28,6 @@ export function SearchSessions(){
 
    // window.location.href = `#sessions?${searchParams.toString()}`;
     //window.location.href = `#sessions?$)}`;
-   // console.log(searchCriteria)
+
 
 }

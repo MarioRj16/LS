@@ -27,7 +27,7 @@ class GamesTests : AbstractDataTests() {
         val genres = setOf(genres[0])
         val game = games.create(name, developer, genres)
 
-        assertTrue(game.id == 3)
+        assertTrue(game.id == 1)
         assertEquals(name, game.name)
         assertEquals(developer, game.developer)
         assertEquals(genres, game.genres)

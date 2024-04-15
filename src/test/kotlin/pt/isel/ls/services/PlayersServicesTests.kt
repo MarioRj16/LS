@@ -8,7 +8,6 @@ import pt.isel.ls.api.models.players.PlayerDetails
 import pt.isel.ls.data.mem.DataMem
 import pt.isel.ls.domain.Player
 import pt.isel.ls.utils.exceptions.ConflictException
-import pt.isel.ls.utils.exceptions.ForbiddenException
 import pt.isel.ls.utils.factories.PlayerFactory
 import java.util.*
 import kotlin.test.assertEquals
@@ -50,12 +49,6 @@ class PlayersServicesTests : PlayerServices(DataMem()) {
         assertEquals(PlayerDetails(user), returnedPlayer)
     }
 
-    @Test
-    fun `getPlayer() throws ForbiddenException when user id is different from playerId`() {
-        val playerId = user.id + 1
-        val exception = assertThrows<ForbiddenException> {
-            getPlayer(playerId, token)
-        }
-        assertEquals("You dont have authorization to see this player, instead you can see your own id ${user.id}", exception.message)
-    }
+
+
 }
