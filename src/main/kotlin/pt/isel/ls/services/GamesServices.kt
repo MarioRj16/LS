@@ -1,10 +1,14 @@
 package pt.isel.ls.services
 
-import pt.isel.ls.api.models.games.*
+import java.util.*
+import pt.isel.ls.api.models.games.GameCreate
+import pt.isel.ls.api.models.games.GameCreateResponse
+import pt.isel.ls.api.models.games.GameDetails
+import pt.isel.ls.api.models.games.GameListResponse
+import pt.isel.ls.api.models.games.GameSearch
 import pt.isel.ls.data.Data
 import pt.isel.ls.domain.Genre
 import pt.isel.ls.utils.exceptions.ConflictException
-import java.util.*
 
 open class GamesServices(data: Data) : ServicesSchema(data) {
     fun searchGames(

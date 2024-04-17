@@ -18,7 +18,7 @@ class Routes(api: API) {
             "games" bind Method.GET to api.gamesAPI::searchGames,
             "games" bind Method.POST to api.gamesAPI::createGame,
             "games/genres" bind Method.GET to api.gamesAPI::getGenres,
-            "games/{gameId}" bind Method.GET to api.gamesAPI::getGame
+            "games/{gameId}" bind Method.GET to api.gamesAPI::getGame,
 
         )
     private val sessionRoutes =
@@ -36,7 +36,8 @@ class Routes(api: API) {
             playerRoutes,
             gameRoutes,
             sessionRoutes,
-            singlePageApp(ResourceLoader.Directory("static-content")
+            singlePageApp(
+                ResourceLoader.Directory("static-content"),
             ),
         )
 }

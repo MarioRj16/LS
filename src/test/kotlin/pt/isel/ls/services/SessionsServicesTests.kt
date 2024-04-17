@@ -1,12 +1,17 @@
 package pt.isel.ls.services
 
+import java.util.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import pt.isel.ls.DEFAULT_LIMIT
 import pt.isel.ls.DEFAULT_SKIP
 import pt.isel.ls.api.models.players.PlayerDetails
-import pt.isel.ls.api.models.sessions.*
+import pt.isel.ls.api.models.sessions.SessionCreate
+import pt.isel.ls.api.models.sessions.SessionDetails
+import pt.isel.ls.api.models.sessions.SessionResponse
+import pt.isel.ls.api.models.sessions.SessionSearch
+import pt.isel.ls.api.models.sessions.SessionUpdate
 import pt.isel.ls.data.mem.DataMem
 import pt.isel.ls.domain.Player
 import pt.isel.ls.utils.exceptions.ForbiddenException
@@ -14,7 +19,6 @@ import pt.isel.ls.utils.factories.GameFactory
 import pt.isel.ls.utils.factories.GamingSessionFactory
 import pt.isel.ls.utils.factories.PlayerFactory
 import pt.isel.ls.utils.plusDaysToCurrentDateTime
-import java.util.*
 import kotlin.random.Random
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
@@ -104,7 +108,13 @@ class SessionsServicesTests : SessionServices(DataMem()) {
             playerFactory.createRandomPlayer()
         }.toSet()
         val game = gameFactory.createRandomGame()
-        val session = gamingSessionFactory.createRandomGamingSession(game.id, user.id, players)
+        val session = run {
+            var session = gamingSessionFactory.createRandomGamingSession(game.id, user.id, players)
+            while (session.maxCapacity == players.size) {
+                session = gamingSessionFactory.createRandomGamingSession(game.id, user.id, players)
+            }
+            return@run session
+        }
         val capacity = Random.nextInt(2, players.size)
         val sessionUpdate = SessionUpdate(capacity, plusDaysToCurrentDateTime(600))
         assertThrows<IllegalArgumentException> {

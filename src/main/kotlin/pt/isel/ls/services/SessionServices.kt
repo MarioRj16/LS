@@ -1,10 +1,16 @@
 package pt.isel.ls.services
 
-import pt.isel.ls.api.models.sessions.*
+import java.util.*
+import pt.isel.ls.api.models.sessions.SessionCreate
+import pt.isel.ls.api.models.sessions.SessionCreateResponse
+import pt.isel.ls.api.models.sessions.SessionDetails
+import pt.isel.ls.api.models.sessions.SessionListResponse
+import pt.isel.ls.api.models.sessions.SessionResponse
+import pt.isel.ls.api.models.sessions.SessionSearch
+import pt.isel.ls.api.models.sessions.SessionUpdate
 import pt.isel.ls.data.Data
 import pt.isel.ls.utils.exceptions.ForbiddenException
 import pt.isel.ls.utils.isPast
-import java.util.*
 
 open class SessionServices(internal val db: Data) : ServicesSchema(db) {
     fun searchSessions(
@@ -83,7 +89,6 @@ open class SessionServices(internal val db: Data) : ServicesSchema(db) {
     ): Int = withAuthorization(token) { user ->
         val session = db.gamingSessions.get(sessionId)
             ?: throw NoSuchElementException("No session $sessionId was found")
-        println("debug")
         if (!session.state) {
             throw IllegalArgumentException("Cannot add player to closed session")
         }

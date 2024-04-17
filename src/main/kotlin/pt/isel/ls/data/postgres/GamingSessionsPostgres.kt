@@ -1,5 +1,8 @@
 package pt.isel.ls.data.postgres
 
+import java.sql.Connection
+import java.sql.SQLException
+import java.sql.Statement
 import kotlinx.datetime.LocalDateTime
 import pt.isel.ls.api.models.sessions.SessionSearch
 import pt.isel.ls.api.models.sessions.SessionUpdate
@@ -11,9 +14,6 @@ import pt.isel.ls.utils.postgres.toGamingSession
 import pt.isel.ls.utils.postgres.toPlayer
 import pt.isel.ls.utils.postgres.useWithRollback
 import pt.isel.ls.utils.toTimeStamp
-import java.sql.Connection
-import java.sql.SQLException
-import java.sql.Statement
 
 class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSessionsData {
     override fun create(
@@ -89,13 +89,15 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
                 ${if (game != null) " and game = ?" else ""}
                 ${if (date != null) " and starting_date = ?" else ""}
                 ${
-                    if (isOpen != null) 
-                        if(isOpen) 
-                            " and starting_date > CURRENT_TIMESTAMP" 
-                        else 
-                            " and starting_date <= CURRENT_TIMESTAMP" 
-                    else 
+                    if (isOpen != null) {
+                        if (isOpen) {
+                            " and starting_date > CURRENT_TIMESTAMP"
+                        } else {
+                            " and starting_date <= CURRENT_TIMESTAMP"
+                        }
+                    } else {
                         ""
+                    }
                 }
                 ${if (playerEmail != null) " and email = ?" else ""}
                 order by gaming_sessions.gaming_session_id
@@ -104,7 +106,7 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
             val statement =
                 it.prepareStatement(query).apply {
                     var parameterIndex = 1
-                    game?.let{setInt(parameterIndex++, game)}
+                    game?.let { setInt(parameterIndex++, game) }
                     date?.let {
                         setTimestamp(parameterIndex++, date.toTimeStamp())
                     }
