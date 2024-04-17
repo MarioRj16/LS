@@ -1,5 +1,9 @@
 package pt.isel.ls.data.postgres
 
+import java.sql.Connection
+import java.sql.PreparedStatement
+import java.sql.SQLException
+import java.sql.Statement
 import pt.isel.ls.api.models.games.GameSearch
 import pt.isel.ls.data.GamesData
 import pt.isel.ls.domain.Game
@@ -8,10 +12,6 @@ import pt.isel.ls.utils.paginate
 import pt.isel.ls.utils.postgres.toGame
 import pt.isel.ls.utils.postgres.toGenre
 import pt.isel.ls.utils.postgres.useWithRollback
-import java.sql.Connection
-import java.sql.PreparedStatement
-import java.sql.SQLException
-import java.sql.Statement
 
 class GamesPostgres(private val conn: () -> Connection) : GamesData {
     override fun create(
@@ -65,12 +65,10 @@ class GamesPostgres(private val conn: () -> Connection) : GamesData {
 
                 */
             }
-            val final=games.groupBy { it.id }.map { (_, gameList) ->
+            val final = games.groupBy { it.id }.map { (_, gameList) ->
                 val game = gameList.first()
-               game.copy(genres= gameList.flatMap { it.genres }.toSet())
+                game.copy(genres = gameList.flatMap { it.genres }.toSet())
             }
-
-
 
            /* if (previousGameId != null) {
                // games += resultSet.toGame(foundGenres.toSet(), previousGameId)
@@ -194,16 +192,16 @@ class GamesPostgres(private val conn: () -> Connection) : GamesData {
         developer?.let { statement.setString(parameterIdx, developer) }
     }
 
-    override fun getAllGenres(): Set< Genre> {
-        conn().useWithRollback { 
+    override fun getAllGenres(): Set<Genre> {
+        conn().useWithRollback {
             val query = """
                 SELECT * FROM genres
-                """.trimIndent()
+            """.trimIndent()
             val statement = it.prepareStatement(query)
-            
+
             val resultSet = statement.executeQuery()
             val set = mutableSetOf<Genre>()
-            while(resultSet.next()){
+            while (resultSet.next()) {
                 set.add(resultSet.toGenre())
             }
             return set

@@ -38,7 +38,7 @@ class GamesMem(
         val list =
             gamesDB.table.values.filter {
                 (developer.isNullOrBlank() || it.developer == developer) &&
-                    (genres.isEmpty() || it.genres.map{i->i.genreId}.intersect(genres).isNotEmpty())
+                    (genres.isEmpty() || it.genres.map { i -> i.genreId }.intersect(genres).isNotEmpty())
             }
         return list.paginate(skip, limit)
     }
@@ -47,7 +47,7 @@ class GamesMem(
 
     override fun getGenres(genreIds: Set<Int>): Set<Genre> = genreIds.mapNotNull { genreDB[it] }.toSet()
 
-    override fun getAllGenres():Set<Genre> = genreDB.values.toSet()
+    override fun getAllGenres(): Set<Genre> = genreDB.values.toSet()
 
     override fun get(id: Int): Game? = gamesDB.table.values.find { it.id == id }
 }

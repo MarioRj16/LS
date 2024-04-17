@@ -18,7 +18,7 @@ class GamesAPI(private val services: GamesServices) : APISchema() {
     fun searchGames(request: Request): Response =
         request.useWithException { token ->
             val developer = request.query("developer")
-            val genres = request.query("genres")?.split(",")?.map{it.toInt()}?.toSet() ?: emptySet()
+            val genres = request.query("genres")?.split(",")?.map { it.toInt() }?.toSet() ?: emptySet()
             val searchParameters = GameSearch(developer, genres)
             val skip = request.query("skip")?.toInt().validateInt(DEFAULT_SKIP) { it.isNotNegative() }
             val limit = request.query("limit")?.toInt().validateInt(DEFAULT_LIMIT) { it.isNotNegative() }

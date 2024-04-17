@@ -4,6 +4,7 @@ plugins {
     kotlin("jvm") version "1.8.10"
     kotlin("plugin.serialization") version "1.8.10"
     id("org.jlleitschuh.gradle.ktlint") version "12.1.0"
+    application
 }
 
 repositories {
@@ -21,6 +22,10 @@ dependencies {
     testImplementation(kotlin("test"))
 }
 
+application {
+    mainClassName = "pt.isel.ls.ServerKt"
+}
+
 tasks.test {
     useJUnitPlatform()
 }
@@ -33,3 +38,4 @@ tasks.register<Copy>("copyRuntimeDependencies") {
     into("build/libs")
     from(configurations.runtimeClasspath)
 }
+
