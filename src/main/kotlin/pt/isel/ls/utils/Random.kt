@@ -37,7 +37,7 @@ fun generateRandomString(): String {
  * @return A set of randomly generated integers.
  * @throws IllegalArgumentException If `size` is negative or `min` is greater than `max`.
  */
-fun generateSetOfRandomInts(size: Int, min: Int = 0, max: Int = 10): Set<Int> {
+fun generateSetOfRandomInts(size: Int, min: Int = 1, max: Int = 10): Set<Int> {
     require(size >= 0) { "Size must be a non-negative number" }
     require(min <= max) { "Minimum value must be less than or equal to the maximum value" }
 
@@ -54,12 +54,11 @@ fun generateSetOfRandomInts(size: Int, min: Int = 0, max: Int = 10): Set<Int> {
  * @return A randomly generated `GameSearch` object.
  */
 fun generateRandomGameSearch(isEmpty: Boolean = false): GameSearch {
-    if (isEmpty) {
+    if (isEmpty)
         return GameSearch(null, emptySet())
-    }
 
     val developer = generateRandomString()
-    val genres = generateSetOfRandomInts(Random.nextInt(0, 6))
+    val genres = generateSetOfRandomInts(Random.nextInt(1, 6))
 
     return GameSearch(developer, genres)
 }
