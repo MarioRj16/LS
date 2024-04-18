@@ -23,7 +23,7 @@ dependencies {
 }
 
 application {
-    mainClassName = "pt.isel.ls.ServerKt"
+    mainClass.set("pt.isel.ls.ServerKt")
 }
 
 tasks.test {
@@ -38,4 +38,3 @@ tasks.register<Copy>("copyRuntimeDependencies") {
     into("build/libs")
     from(configurations.runtimeClasspath)
 }
-
