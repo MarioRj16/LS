@@ -1,6 +1,5 @@
 package pt.isel.ls.services
 
-import java.util.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -10,6 +9,7 @@ import pt.isel.ls.data.mem.DataMem
 import pt.isel.ls.domain.Player
 import pt.isel.ls.utils.exceptions.ConflictException
 import pt.isel.ls.utils.factories.PlayerFactory
+import java.util.*
 import kotlin.test.assertEquals
 
 class PlayersServicesTests : PlayerServices(DataMem()) {
