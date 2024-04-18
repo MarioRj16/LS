@@ -59,7 +59,7 @@ fun generateRandomGameSearch(isEmpty: Boolean = false): GameSearch {
     }
 
     val developer = generateRandomString()
-    val genres = generateSetOfRandomInts(Random.nextInt(0, 6))
+    val genres = generateSetOfRandomInts(Random.nextInt(1, 6))
 
     return GameSearch(developer, genres)
 }
