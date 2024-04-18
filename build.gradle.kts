@@ -23,7 +23,7 @@ dependencies {
 }
 
 application {
-    mainClass.set("pt.isel.ls.ServerKt")
+    mainClassName = "pt.isel.ls.ServerKt"
 }
 
 tasks.test {
