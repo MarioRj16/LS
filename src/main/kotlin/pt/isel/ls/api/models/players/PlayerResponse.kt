@@ -2,7 +2,7 @@ package pt.isel.ls.api.models.players
 
 import kotlinx.serialization.Serializable
 import pt.isel.ls.domain.Player
-import pt.isel.ls.utils.UUIDSerializer
+import pt.isel.ls.utils.serializers.UUIDSerializer
 import java.util.*
 
 @Serializable

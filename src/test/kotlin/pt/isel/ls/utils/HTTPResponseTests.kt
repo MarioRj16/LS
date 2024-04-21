@@ -4,10 +4,10 @@ import org.http4k.core.Response
 import org.http4k.core.Status
 import org.junit.jupiter.api.Test
 import pt.isel.ls.api.APISchema
-import pt.isel.ls.api.models.GenreDetails
+import pt.isel.ls.api.models.genres.GenreDetails
 import pt.isel.ls.domain.Genre
 import pt.isel.ls.utils.exceptions.AuthorizationException
-import pt.isel.ls.utils.exceptions.ConflictException
+import pt.isel.ls.utils.exceptions.BadRequestException
 import pt.isel.ls.utils.exceptions.ForbiddenException
 import kotlin.test.assertEquals
 
@@ -28,14 +28,14 @@ class HTTPResponseTests : APISchema() {
         val illegalArgumentException = IllegalArgumentException("Invalid argument")
         val authorizationException = AuthorizationException("Unauthorized access")
         val forbiddenException = ForbiddenException("Forbidden access")
-        val conflictException = ConflictException("Conflict occurred")
+        val badRequestException = BadRequestException("Conflict occurred")
         val otherException = RuntimeException("Some other error")
 
         val responseNotFound = httpException(notFoundException)
         val responseIllegalArgument = httpException(illegalArgumentException)
         val responseAuthorization = httpException(authorizationException)
         val responseForbidden = httpException(forbiddenException)
-        val responseConflict = httpException(conflictException)
+        val responseBadRequest = httpException(badRequestException)
         val responseOther = httpException(otherException)
 
         assertEquals(404, responseNotFound.status.code)
@@ -44,14 +44,14 @@ class HTTPResponseTests : APISchema() {
         assertEquals(400, responseIllegalArgument.status.code)
         assertEquals("application/json", responseIllegalArgument.header("content-type"))
 
+        assertEquals(400, responseBadRequest.status.code)
+        assertEquals("application/json", responseBadRequest.header("content-type"))
+
         assertEquals(401, responseAuthorization.status.code)
         assertEquals("application/json", responseAuthorization.header("content-type"))
 
         assertEquals(403, responseForbidden.status.code)
         assertEquals("application/json", responseForbidden.header("content-type"))
-
-        assertEquals(409, responseConflict.status.code)
-        assertEquals("application/json", responseConflict.header("content-type"))
 
         assertEquals(500, responseOther.status.code)
         assertEquals("application/json", responseOther.header("content-type"))

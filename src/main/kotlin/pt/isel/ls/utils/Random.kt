@@ -11,7 +11,7 @@ import kotlin.random.Random
  *
  * @return A randomly generated email address.
  */
-fun generateRandomEmail(): String = "${generateRandomString()}@${generateRandomString()}.com"
+fun generateRandomEmail(): Email = Email("${generateRandomString()}@${generateRandomString()}.com")
 
 /**
  * Generates a random string of characters.

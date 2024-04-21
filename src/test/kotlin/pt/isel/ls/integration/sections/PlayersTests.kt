@@ -9,14 +9,15 @@ import pt.isel.ls.api.models.players.PlayerCreate
 import pt.isel.ls.api.models.players.PlayerDetails
 import pt.isel.ls.api.models.players.PlayerResponse
 import pt.isel.ls.integration.IntegrationTests
+import pt.isel.ls.utils.Email
 import kotlin.test.assertEquals
 
 class PlayersTests : IntegrationTests() {
     @Test
     fun createPlayer() {
-        val requestBody = PlayerCreate("diferente", "diferente@gmail.com")
+        val requestBody = PlayerCreate("diferente", Email("diferente@gmail.com"))
         val request =
-            Request(Method.POST, "$URI_PREFIX/player")
+            Request(Method.POST, "$URI_PREFIX/players")
                 .json(requestBody)
         client(request)
             .apply {
@@ -28,7 +29,7 @@ class PlayersTests : IntegrationTests() {
     @Test
     fun getPlayer() {
         val request =
-            Request(Method.GET, "$URI_PREFIX/player/${user!!.playerId}")
+            Request(Method.GET, "$URI_PREFIX/players/${user!!.playerId}")
                 .json("")
                 .token(user!!.token)
         client(request)
