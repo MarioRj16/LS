@@ -1,6 +1,5 @@
 package pt.isel.ls.services
 
-import java.util.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -13,6 +12,7 @@ import pt.isel.ls.utils.exceptions.BadRequestException
 import pt.isel.ls.utils.factories.PlayerFactory
 import pt.isel.ls.utils.generateRandomEmail
 import pt.isel.ls.utils.generateRandomString
+import java.util.*
 import kotlin.test.assertEquals
 
 class PlayersServicesTests : PlayerServices(DataMem()) {

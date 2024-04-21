@@ -3,8 +3,8 @@ package pt.isel.ls.data.mem
 import pt.isel.ls.api.models.players.PlayerCreate
 import pt.isel.ls.data.PlayersData
 import pt.isel.ls.domain.Player
-import java.util.*
 import pt.isel.ls.utils.Email
+import java.util.*
 
 class PlayersMem(private val players: DataMemTable<Player> = DataMemTable()) : PlayersData {
 
@@ -24,5 +24,4 @@ class PlayersMem(private val players: DataMemTable<Player> = DataMemTable()) : P
     override fun get(email: Email): Player? = players.table.values.find { it.email == email }
 
     override fun get(username: String): Player? = players.table.values.find { it.name == username }
-
 }

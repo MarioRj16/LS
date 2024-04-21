@@ -5,9 +5,9 @@ import pt.isel.ls.domain.Game
 import pt.isel.ls.domain.Genre
 import pt.isel.ls.domain.Player
 import pt.isel.ls.domain.Session
+import pt.isel.ls.utils.Email
 import java.sql.ResultSet
 import java.util.*
-import pt.isel.ls.utils.Email
 
 /**
  * Converts a [ResultSet] into a [Player] object.

@@ -1,6 +1,5 @@
 package pt.isel.ls.services
 
-import java.util.*
 import pt.isel.ls.api.models.games.GameCreate
 import pt.isel.ls.api.models.games.GameCreateResponse
 import pt.isel.ls.api.models.games.GameDetails
@@ -9,6 +8,7 @@ import pt.isel.ls.api.models.games.GameSearch
 import pt.isel.ls.data.Data
 import pt.isel.ls.domain.Genre
 import pt.isel.ls.utils.exceptions.BadRequestException
+import java.util.*
 
 open class GamesServices(data: Data) : ServicesSchema(data) {
     fun searchGames(

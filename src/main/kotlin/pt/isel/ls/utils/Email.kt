@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 @JvmInline
 @Serializable
-value class Email(val email: String){
+value class Email(val email: String) {
     init {
         require(validEmail.matches(email)) { "Invalid email format" }
     }

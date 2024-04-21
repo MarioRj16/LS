@@ -54,8 +54,9 @@ fun generateSetOfRandomInts(size: Int, min: Int = 1, max: Int = 10): Set<Int> {
  * @return A randomly generated `GameSearch` object.
  */
 fun generateRandomGameSearch(isEmpty: Boolean = false): GameSearch {
-    if (isEmpty)
+    if (isEmpty) {
         return GameSearch(null, emptySet())
+    }
 
     val developer = generateRandomString()
     val genres = generateSetOfRandomInts(Random.nextInt(1, 6))

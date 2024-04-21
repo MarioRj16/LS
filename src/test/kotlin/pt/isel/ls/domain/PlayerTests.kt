@@ -3,8 +3,8 @@ package pt.isel.ls.domain
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
-import java.util.*
 import pt.isel.ls.utils.Email
+import java.util.*
 
 class PlayerTests {
     private val validId = 1

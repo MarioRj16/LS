@@ -9,7 +9,7 @@ import java.util.*
 
 open class PlayerServices(internal val db: Data) : ServicesSchema(db) {
     fun createPlayer(playerCreate: PlayerCreate): PlayerResponse {
-        if(db.players.get(playerCreate.name) != null) {
+        if (db.players.get(playerCreate.name) != null) {
             throw BadRequestException("The given username is not unique")
         }
 
