@@ -18,6 +18,7 @@ import pt.isel.ls.domain.Game
 import pt.isel.ls.domain.Session
 import pt.isel.ls.services.Services
 import pt.isel.ls.utils.generateRandomEmail
+import pt.isel.ls.utils.generateRandomString
 
 abstract class IntegrationTests {
     companion object {
@@ -55,7 +56,9 @@ abstract class IntegrationTests {
         @JvmStatic
         @BeforeAll
         fun createUser() {
-            val requestBody = mapOf("name" to "user", "email" to generateRandomEmail().email)
+            val username = generateRandomString()
+            val email = generateRandomEmail().email
+            val requestBody = mapOf("name" to username, "email" to email)
             val request =
                 Request(Method.POST, "$URI_PREFIX/player")
                     .json(requestBody)

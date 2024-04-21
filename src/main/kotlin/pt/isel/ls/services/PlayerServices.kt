@@ -9,6 +9,10 @@ import java.util.*
 
 open class PlayerServices(internal val db: Data) : ServicesSchema(db) {
     fun createPlayer(playerCreate: PlayerCreate): PlayerResponse {
+        if(db.players.get(playerCreate.name) != null) {
+            throw ConflictException("The given username is not unique")
+        }
+
         if (db.players.get(playerCreate.email) != null) {
             throw ConflictException("The given email is not unique")
         }

@@ -91,4 +91,21 @@ class PlayersPostgres(private val conn: () -> Connection) : PlayersData {
             }
             return null
         }
+
+    override fun get(username: String): Player? =
+        conn().useWithRollback {
+            val statement =
+                it.prepareStatement(
+                    """select * from players where player_name = ?""".trimIndent(),
+                ).apply {
+                    setString(1, username)
+                }
+
+            val resultSet = statement.executeQuery()
+
+            if (resultSet.next()) {
+                return resultSet.toPlayer()
+            }
+            return null
+        }
 }

@@ -6,9 +6,7 @@ import java.util.*
 import pt.isel.ls.utils.Email
 
 interface PlayersData {
-    fun create(
-        playerCreate: PlayerCreate,
-    ): Player
+    fun create(playerCreate: PlayerCreate, ): Player
 
     fun get(id: Int): Player?
 
@@ -16,4 +14,5 @@ interface PlayersData {
 
     fun get(email: Email): Player?
 
+    fun get(username: String): Player?
 }

@@ -11,6 +11,8 @@ import pt.isel.ls.domain.Player
 import pt.isel.ls.utils.Email
 import pt.isel.ls.utils.exceptions.ConflictException
 import pt.isel.ls.utils.factories.PlayerFactory
+import pt.isel.ls.utils.generateRandomEmail
+import pt.isel.ls.utils.generateRandomString
 import kotlin.test.assertEquals
 
 class PlayersServicesTests : PlayerServices(DataMem()) {
@@ -39,9 +41,17 @@ class PlayersServicesTests : PlayerServices(DataMem()) {
     @Test
     fun `createPlayer() throws ConflictException when email is not unique`() {
         val exception = assertThrows<ConflictException> {
-            createPlayer(PlayerCreate(user.name, user.email))
+            createPlayer(PlayerCreate(generateRandomString(), user.email))
         }
         assertEquals("The given email is not unique", exception.message)
+    }
+
+    @Test
+    fun `createPlayer() throws ConflictException when username is not unique`() {
+        val exception = assertThrows<ConflictException> {
+            createPlayer(PlayerCreate(user.name, generateRandomEmail()))
+        }
+        assertEquals("The given username is not unique", exception.message)
     }
 
     @Test
