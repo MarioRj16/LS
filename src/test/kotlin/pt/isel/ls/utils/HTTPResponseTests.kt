@@ -35,7 +35,7 @@ class HTTPResponseTests : APISchema() {
         val responseIllegalArgument = httpException(illegalArgumentException)
         val responseAuthorization = httpException(authorizationException)
         val responseForbidden = httpException(forbiddenException)
-        val responseConflict = httpException(badRequestException)
+        val responseBadRequest = httpException(badRequestException)
         val responseOther = httpException(otherException)
 
         assertEquals(404, responseNotFound.status.code)
@@ -44,14 +44,14 @@ class HTTPResponseTests : APISchema() {
         assertEquals(400, responseIllegalArgument.status.code)
         assertEquals("application/json", responseIllegalArgument.header("content-type"))
 
+        assertEquals(400, responseBadRequest.status.code)
+        assertEquals("application/json", responseBadRequest.header("content-type"))
+
         assertEquals(401, responseAuthorization.status.code)
         assertEquals("application/json", responseAuthorization.header("content-type"))
 
         assertEquals(403, responseForbidden.status.code)
         assertEquals("application/json", responseForbidden.header("content-type"))
-
-        assertEquals(409, responseConflict.status.code)
-        assertEquals("application/json", responseConflict.header("content-type"))
 
         assertEquals(500, responseOther.status.code)
         assertEquals("application/json", responseOther.header("content-type"))
