@@ -29,4 +29,18 @@ class UtilsTests {
             l.paginate(-1, -2)
         }
     }
+
+    @Test
+    fun `Email() creates instance if email is valid`() {
+        val emailValue = "email@email.com"
+        val email = Email(emailValue)
+        assertEquals(emailValue, email.email)
+    }
+
+    @Test
+    fun `Email() throws exception if email is invalid`() {
+        assertThrows<IllegalArgumentException> {
+            Email("invalidEmail")
+        }
+    }
 }
