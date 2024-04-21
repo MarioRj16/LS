@@ -3,8 +3,8 @@ package pt.isel.ls.data
 import org.junit.jupiter.api.Test
 import pt.isel.ls.DEFAULT_LIMIT
 import pt.isel.ls.DEFAULT_SKIP
+import pt.isel.ls.api.models.games.GameSearch
 import pt.isel.ls.domain.Genre
-import pt.isel.ls.utils.generateRandomGameSearch
 import pt.isel.ls.utils.generateRandomString
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
@@ -62,24 +62,60 @@ class GamesTests : AbstractDataTests() {
     }
 
     @Test
-    fun `search() returns games successfully`() {
-        var searchResults = games.search(generateRandomGameSearch(), DEFAULT_LIMIT, DEFAULT_SKIP)
+    fun `search() with no games returns empty list`(){
+        val searchParams = GameSearch(null, null, emptySet())
+        val searchResults = games.search(searchParams, DEFAULT_LIMIT, DEFAULT_SKIP)
 
         assertTrue(searchResults.isEmpty())
+    }
 
+    @Test
+    fun `search() returns all games successfully`(){
+        val gamesList = List(5){ gameFactory.createRandomGame() }
+        val searchParams = GameSearch(null, null, emptySet())
+        val searchResults = games.search(searchParams, DEFAULT_LIMIT, DEFAULT_SKIP)
+
+        assertEquals(gamesList.size, searchResults.size)
+        assertEquals(searchResults, gamesList)
+    }
+
+    @Test
+    fun `search() by name returns games successfully`(){
         val game = gameFactory.createRandomGame()
-        val game2 = gameFactory.createRandomGame()
-        val game3 = gameFactory.createRandomGame()
+        val searchParams = GameSearch(game.name, null, emptySet())
+        val searchResults = games.search(searchParams, DEFAULT_LIMIT, DEFAULT_SKIP)
 
-        searchResults = games.search(generateRandomGameSearch(true), 2, DEFAULT_SKIP)
-
-        assertTrue(searchResults.size == 2)
+        assertEquals(1, searchResults.size)
         assertContains(searchResults, game)
-        assertContains(searchResults, game2)
+    }
 
-        searchResults = games.search(generateRandomGameSearch(true), DEFAULT_LIMIT, 2)
+    @Test
+    fun `search() by partial name returns games successfully`(){
+        val game = gameFactory.createRandomGame()
+        val searchParams = GameSearch(game.name.take(1), null, emptySet())
+        val searchResults = games.search(searchParams, DEFAULT_LIMIT, DEFAULT_SKIP)
 
-        assertTrue(searchResults.size == 1)
-        assertContains(searchResults, game3)
+        assertEquals(1, searchResults.size)
+        assertContains(searchResults, game)
+    }
+
+    @Test
+    fun `search() by developer returns games successfully`(){
+        val game = gameFactory.createRandomGame()
+        val searchParams = GameSearch(null, game.developer, emptySet())
+        val searchResults = games.search(searchParams, DEFAULT_LIMIT, DEFAULT_SKIP)
+
+        assertEquals(1, searchResults.size)
+        assertContains(searchResults, game)
+    }
+
+    @Test
+    fun `search() by genre returns games successfully`(){
+        val game = gameFactory.createRandomGame()
+        val searchParams = GameSearch(null, null, setOf(game.genres.random().genreId))
+        val searchResults = games.search(searchParams, DEFAULT_LIMIT, DEFAULT_SKIP)
+
+        assertEquals(1, searchResults.size)
+        assertContains(searchResults, game)
     }
 }

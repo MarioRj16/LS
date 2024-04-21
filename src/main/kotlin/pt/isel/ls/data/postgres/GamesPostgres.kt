@@ -35,12 +35,13 @@ class GamesPostgres(private val conn: () -> Connection) : GamesData {
     override fun get(name: String): Game? = fetchGame("game_name", name)
 
     override fun get(id: Int): Game? = fetchGame("game_id", id)
+
     override fun search(
         searchParams: GameSearch,
         limit: Int,
         skip: Int,
     ): List<Game> =
-        conn().useWithRollback {
+        conn().useWithRollback { it ->
             val query = buildSearchQuery(searchParams)
             val statement = it.prepareStatement(query)
             setStatementParameters(statement, searchParams)
@@ -149,28 +150,29 @@ class GamesPostgres(private val conn: () -> Connection) : GamesData {
         }
 
     private fun buildSearchQuery(searchParams: GameSearch): String {
-        val (developer, genres) = searchParams
-
+        val (name, developer, genres) = searchParams
         val genreParams = genres.joinToString(", ") { "?" }
         val genreCondition = if (genres.isEmpty()) "" else " AND genre_id IN ($genreParams)"
         val developerCondition = if (developer.isNullOrEmpty()) "" else " AND developer = ?"
+        val nameCondition = if(name.isNullOrEmpty()) "" else " AND game_name LIKE ?"
 
         return (
             """
             SELECT * FROM games 
             JOIN games_genres ON games.game_id = games_genres.game 
             JOIN genres ON games_genres.genre = genres.genre_id
-            WHERE 1 = 1 $genreCondition $developerCondition
+            WHERE 1 = 1 $genreCondition $developerCondition $nameCondition
             """.trimIndent()
             )
     }
 
     private fun setStatementParameters(statement: PreparedStatement, searchParams: GameSearch) {
-        val (developer, genres) = searchParams
+        val (name, developer, genres) = searchParams
         var parameterIdx = 1
 
         genres.forEach { genre -> statement.setInt(parameterIdx++, genre) }
-        developer?.let { statement.setString(parameterIdx, developer) }
+        developer?.let { statement.setString(parameterIdx++, developer) }
+        name?.let { statement.setString(parameterIdx, name) }
     }
 
     override fun getAllGenres(): Set<Genre> {

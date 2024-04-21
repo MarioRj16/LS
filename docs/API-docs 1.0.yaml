@@ -108,6 +108,12 @@ paths:
       security:
         - bearerAuth: []
       parameters:
+        - name: name
+          in: query
+          description: Game name
+          schema:
+            type: string
+            example: examplegamename
         - name: genre
           in: query
           description: Game genre
