@@ -4,11 +4,12 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
 import java.util.*
+import pt.isel.ls.utils.Email
 
 class PlayerTests {
     private val validId = 1
     private val validName = "testName"
-    private val validEmail = "testEmail@email.com"
+    private val validEmail = Email("testEmail@email.com")
     private val token = UUID.randomUUID()
 
     @Test
@@ -25,19 +26,6 @@ class PlayerTests {
         }
         assertThrows<IllegalArgumentException> {
             Player(0, validName, validEmail, token)
-        }
-    }
-
-    @Test
-    fun `Player throws exception with email in invalid format`() {
-        assertThrows<IllegalArgumentException> {
-            Player(validId, validName, "email@email.", token)
-        }
-        assertThrows<IllegalArgumentException> {
-            Player(validId, validName, "@mail.com", token)
-        }
-        assertThrows<IllegalArgumentException> {
-            Player(validId, validName, "", token)
         }
     }
 

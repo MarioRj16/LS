@@ -1,4 +1,4 @@
-package pt.isel.ls.api.models
+package pt.isel.ls.api.models.genres
 
 import kotlinx.serialization.Serializable
 import pt.isel.ls.domain.Genre

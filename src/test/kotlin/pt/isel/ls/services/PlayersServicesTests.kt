@@ -8,6 +8,7 @@ import pt.isel.ls.api.models.players.PlayerCreate
 import pt.isel.ls.api.models.players.PlayerDetails
 import pt.isel.ls.data.mem.DataMem
 import pt.isel.ls.domain.Player
+import pt.isel.ls.utils.Email
 import pt.isel.ls.utils.exceptions.ConflictException
 import pt.isel.ls.utils.factories.PlayerFactory
 import kotlin.test.assertEquals
@@ -27,7 +28,7 @@ class PlayersServicesTests : PlayerServices(DataMem()) {
     @Test
     fun `createPlayer() should create a player successfully`() {
         val name = "testName"
-        val email = "testEmail@gmail.com"
+        val email = Email("testEmail@gmail.com")
         val playerInfo = PlayerCreate(name, email)
         val createdPlayer = createPlayer(playerInfo)
         val player = getPlayer(createdPlayer.playerId, createdPlayer.token)

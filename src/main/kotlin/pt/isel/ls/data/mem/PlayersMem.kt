@@ -5,6 +5,7 @@ import pt.isel.ls.data.PlayersData
 import pt.isel.ls.domain.Player
 import pt.isel.ls.utils.exceptions.ConflictException
 import java.util.*
+import pt.isel.ls.utils.Email
 
 class PlayersMem(private val players: DataMemTable<Player> = DataMemTable()) : PlayersData {
 
@@ -23,7 +24,7 @@ class PlayersMem(private val players: DataMemTable<Player> = DataMemTable()) : P
     override fun get(token: UUID): Player? =
         players.table.values.find { it.token == token }
 
-    override fun get(email: String): Player? = players.table.values.find { it.email == email }
+    override fun get(email: Email): Player? = players.table.values.find { it.email == email }
 
-    private fun emailExists(email: String): Boolean = players.table.any { it.value.email == email }
+    private fun emailExists(email: Email): Boolean = players.table.any { it.value.email == email }
 }

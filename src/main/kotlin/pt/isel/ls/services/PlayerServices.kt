@@ -19,7 +19,7 @@ open class PlayerServices(internal val db: Data) : ServicesSchema(db) {
     fun getPlayer(
         playerId: Int,
         token: UUID,
-    ): PlayerDetails = withAuthorization(token) { user ->
+    ): PlayerDetails = withAuthorization(token) {
         val player = db.players.get(playerId)
             ?: throw NoSuchElementException("No player with id $playerId was found")
         return@withAuthorization PlayerDetails(player)

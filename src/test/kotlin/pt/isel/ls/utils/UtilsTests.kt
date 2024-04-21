@@ -3,7 +3,6 @@ package pt.isel.ls.utils
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import kotlin.test.assertEquals
-import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class UtilsTests {
@@ -29,17 +28,5 @@ class UtilsTests {
         assertThrows<IllegalArgumentException> {
             l.paginate(-1, -2)
         }
-    }
-
-    @Test
-    fun `emailIsValid() validates email correctly`() {
-        assertTrue(emailIsValid("email@email.com"))
-        assertTrue(emailIsValid("email@email.org"))
-        assertTrue(emailIsValid("email@email.co.uk"))
-        assertTrue(emailIsValid("e.mail@e.mail.gov"))
-        assertFalse(emailIsValid("email.com"))
-        assertFalse(emailIsValid("@email"))
-        assertFalse(emailIsValid("@email.com"))
-        assertFalse(emailIsValid("email@email."))
     }
 }

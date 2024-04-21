@@ -3,6 +3,7 @@ package pt.isel.ls.data
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import pt.isel.ls.api.models.players.PlayerCreate
+import pt.isel.ls.utils.Email
 import pt.isel.ls.utils.exceptions.ConflictException
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -12,7 +13,7 @@ class PlayerTests : AbstractDataTests() {
     @Test
     fun `create() creates player successfully`() {
         val name = "testName"
-        val email = "test@email.com"
+        val email = Email("test@email.com")
         val playerCreate = PlayerCreate(name, email)
         val player = players.create(playerCreate)
 
@@ -24,7 +25,7 @@ class PlayerTests : AbstractDataTests() {
 
     @Test
     fun `create() throws exception for non unique email`() {
-        val email = "email@email.com"
+        val email = Email("email@email.com")
         val playerCreate = PlayerCreate("name", email)
         players.create(playerCreate)
         assertThrows<ConflictException> {
@@ -35,17 +36,17 @@ class PlayerTests : AbstractDataTests() {
     @Test
     fun `create() throws exception for email in invalid format`() {
         assertThrows<IllegalArgumentException> {
-            val playerCreate = PlayerCreate("name", "email")
+            val playerCreate = PlayerCreate("name", Email("email"))
             players.create(playerCreate)
         }
 
         assertThrows<IllegalArgumentException> {
-            val playerCreate = PlayerCreate("name", "email@")
+            val playerCreate = PlayerCreate("name", Email("email@"))
             players.create(playerCreate)
         }
 
         assertThrows<IllegalArgumentException> {
-            val playerCreate = PlayerCreate("name", "email@email.@.uk")
+            val playerCreate = PlayerCreate("name", Email("email@email.@.uk"))
             players.create(playerCreate)
         }
     }

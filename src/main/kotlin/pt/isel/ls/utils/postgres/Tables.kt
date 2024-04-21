@@ -7,6 +7,7 @@ import pt.isel.ls.domain.Player
 import pt.isel.ls.domain.Session
 import java.sql.ResultSet
 import java.util.*
+import pt.isel.ls.utils.Email
 
 /**
  * Converts a [ResultSet] into a [Player] object.
@@ -17,7 +18,7 @@ fun ResultSet.toPlayer(): Player {
     return Player(
         id = getInt("player_id"),
         name = getString("player_name"),
-        email = getString("email"),
+        email = Email(getString("email")),
         token = UUID.fromString(getString("token")),
     )
 }

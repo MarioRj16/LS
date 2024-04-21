@@ -20,17 +20,6 @@ fun <T> List<T>.paginate(
 }
 
 /**
- * Checks if an email address is valid.
- *
- * @param email The email address to check.
- * @return `true` if the email address is valid, `false` otherwise.
- */
-fun emailIsValid(email: String): Boolean {
-    val emailRegex = Regex("^\\w+([.-]?\\w+)*@\\w+([.-]?\\w+)*(\\.\\w{2,})+$")
-    return emailRegex.matches(email)
-}
-
-/**
  * Checks if an integer is positive.
  *
  * @return `true` if the integer is positive, `false` otherwise.

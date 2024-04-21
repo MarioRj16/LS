@@ -111,7 +111,7 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
                         setTimestamp(parameterIndex++, date.toTimeStamp())
                     }
                     playerEmail?.let {
-                        setString(parameterIndex++, playerEmail)
+                        setString(parameterIndex++, playerEmail.email)
                     }
                 }
 

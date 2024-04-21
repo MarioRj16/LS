@@ -4,7 +4,7 @@ import org.http4k.core.Response
 import org.http4k.core.Status
 import org.junit.jupiter.api.Test
 import pt.isel.ls.api.APISchema
-import pt.isel.ls.api.models.GenreDetails
+import pt.isel.ls.api.models.genres.GenreDetails
 import pt.isel.ls.domain.Genre
 import pt.isel.ls.utils.exceptions.AuthorizationException
 import pt.isel.ls.utils.exceptions.ConflictException

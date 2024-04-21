@@ -1,4 +1,4 @@
-package pt.isel.ls.utils
+package pt.isel.ls.utils.serializers
 
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.PrimitiveKind
