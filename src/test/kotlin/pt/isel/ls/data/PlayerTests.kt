@@ -1,5 +1,6 @@
 package pt.isel.ls.data
 
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
 import pt.isel.ls.api.models.players.PlayerCreate
 import pt.isel.ls.utils.Email
@@ -30,8 +31,6 @@ class PlayerTests : AbstractDataTests() {
 
     @Test
     fun `get() returns null for non existing player`() {
-        val player = players.get(1)
-
-        assertTrue(player == null)
+        assertNull(players.get(1))
     }
 }
