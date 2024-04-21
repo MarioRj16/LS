@@ -9,7 +9,7 @@ import pt.isel.ls.api.models.players.PlayerDetails
 import pt.isel.ls.data.mem.DataMem
 import pt.isel.ls.domain.Player
 import pt.isel.ls.utils.Email
-import pt.isel.ls.utils.exceptions.ConflictException
+import pt.isel.ls.utils.exceptions.BadRequestException
 import pt.isel.ls.utils.factories.PlayerFactory
 import pt.isel.ls.utils.generateRandomEmail
 import pt.isel.ls.utils.generateRandomString
@@ -40,7 +40,7 @@ class PlayersServicesTests : PlayerServices(DataMem()) {
 
     @Test
     fun `createPlayer() throws ConflictException when email is not unique`() {
-        val exception = assertThrows<ConflictException> {
+        val exception = assertThrows<BadRequestException> {
             createPlayer(PlayerCreate(generateRandomString(), user.email))
         }
         assertEquals("The given email is not unique", exception.message)
@@ -48,7 +48,7 @@ class PlayersServicesTests : PlayerServices(DataMem()) {
 
     @Test
     fun `createPlayer() throws ConflictException when username is not unique`() {
-        val exception = assertThrows<ConflictException> {
+        val exception = assertThrows<BadRequestException> {
             createPlayer(PlayerCreate(user.name, generateRandomEmail()))
         }
         assertEquals("The given username is not unique", exception.message)

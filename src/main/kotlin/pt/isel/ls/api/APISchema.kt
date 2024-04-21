@@ -9,7 +9,7 @@ import org.postgresql.util.PSQLException
 import pt.isel.ls.api.models.ExceptionResponse
 import pt.isel.ls.logger
 import pt.isel.ls.utils.exceptions.AuthorizationException
-import pt.isel.ls.utils.exceptions.ConflictException
+import pt.isel.ls.utils.exceptions.BadRequestException
 import pt.isel.ls.utils.exceptions.ForbiddenException
 import java.sql.Timestamp
 import java.util.*
@@ -69,7 +69,7 @@ abstract class APISchema {
             is IllegalArgumentException -> Response(Status.BAD_REQUEST).json(ExceptionResponse(e.message))
             is AuthorizationException -> Response(Status.UNAUTHORIZED).json(ExceptionResponse(e.message))
             is ForbiddenException -> Response(Status.FORBIDDEN).json(ExceptionResponse(e.message))
-            is ConflictException -> Response(Status.CONFLICT).json(ExceptionResponse(e.message))
+            is BadRequestException -> Response(Status.CONFLICT).json(ExceptionResponse(e.message))
             is PSQLException -> Response(Status.CONFLICT).json(ExceptionResponse(e.message))
             else -> Response(Status.INTERNAL_SERVER_ERROR).json(ExceptionResponse(e.message))
         }

@@ -17,7 +17,7 @@ class PlayersTests : IntegrationTests() {
     fun createPlayer() {
         val requestBody = PlayerCreate("diferente", Email("diferente@gmail.com"))
         val request =
-            Request(Method.POST, "$URI_PREFIX/player")
+            Request(Method.POST, "$URI_PREFIX/players")
                 .json(requestBody)
         client(request)
             .apply {
@@ -29,7 +29,7 @@ class PlayersTests : IntegrationTests() {
     @Test
     fun getPlayer() {
         val request =
-            Request(Method.GET, "$URI_PREFIX/player/${user!!.playerId}")
+            Request(Method.GET, "$URI_PREFIX/players/${user!!.playerId}")
                 .json("")
                 .token(user!!.token)
         client(request)

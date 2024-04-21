@@ -60,7 +60,7 @@ abstract class IntegrationTests {
             val email = generateRandomEmail().email
             val requestBody = mapOf("name" to username, "email" to email)
             val request =
-                Request(Method.POST, "$URI_PREFIX/player")
+                Request(Method.POST, "$URI_PREFIX/players")
                     .json(requestBody)
             client(request)
                 .apply {

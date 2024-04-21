@@ -4,4 +4,4 @@ class AuthorizationException(message: String = "Missing or invalid Bearer token"
 
 class ForbiddenException(message: String) : Exception(message)
 
-class ConflictException(message: String) : Exception(message)
+class BadRequestException(message: String) : Exception(message)

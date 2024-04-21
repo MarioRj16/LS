@@ -17,7 +17,7 @@ tags:
   - name: Sessions
 
 paths:
-  /player:
+  /players:
     post:
       tags:
         - Player
@@ -70,7 +70,7 @@ paths:
         409:
           $ref: "#/components/responses/409AlreadyExists"
     description: Resource that handles players.
-  /player/{playerID}:
+  /players/{playerID}:
     get:
       tags:
         - Player
