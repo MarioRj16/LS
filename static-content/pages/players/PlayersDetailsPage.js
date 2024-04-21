@@ -11,7 +11,7 @@ export async function PlayersDetailsPage(state){
     (await submitButton).addEventListener('click', SearchSessionsParticipations);
 
     async function SearchSessionsParticipations(){
-        window.location.href = `#sessions?playerEmail=${player.email}`;
+        window.location.href = `#sessions?player=${player.email}`;
     }
 
     return div(
