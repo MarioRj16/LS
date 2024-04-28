@@ -19,21 +19,28 @@ export async function GamesPage(state) {
         );
 
         (await detailsButton).addEventListener('click', handleClick(game.id))
-        return form(
-            { class: "game-form d-flex flex-column gap-4", onsubmit: handleClick(game.id) },
-            div(
-                { class: "game-details" },
-                h2({}, `Game ID: ${game.id}`),
-                h3({}, `Name: ${game.name}`),
-                detailsButton
+        return div(
+            {class: "card mx-auto justify-content-center w-50 maxH-50 m-2"},
+            form(
+                { class: "game-form", onsubmit: handleClick(game.id) },
+                div(
+                    { class: "game-details" },
+                    h3({class: "card-header text-center"}, `${game.name}`),
+                    div(
+                        { class: "card-body text-center"},
+                        h3({class:"justify-content-center"}, `Developer: ${game.developer}`),
+                        detailsButton
+                    )
+                )
             )
-        );
+        )
     }
 
 
-    async function paginate(cards, skip = 0, limit = 10) {
-        const paginatedCards = cards.slice(skip, skip + limit);
-        return div(...paginatedCards);
+    async function paginate(cards) {
+        return div({class:"card-container"},
+            ...cards)
+            ;
     }
 
     const cards = games.map(game => gameCard(game));
@@ -41,7 +48,7 @@ export async function GamesPage(state) {
     const paginatedCards = await paginate(cards);
 
     return div(
-        h1({ class: "" }, "Games"),
+        h1({ class: "d-flex justify-content-center" }, "Games"),
         div(
             { class: "game-list" },
             paginatedCards
