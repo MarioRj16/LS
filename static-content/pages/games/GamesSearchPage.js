@@ -8,6 +8,8 @@ export async function GamesSearchPage(state) {
     const formSubmitHandler = async (event) => {
         event.preventDefault();
 
+        const nameInput = document.getElementById('nameInput').value;
+
         const developerInput = document.getElementById('developerInput').value;
 
         const genreInput = [];
@@ -21,20 +23,20 @@ export async function GamesSearchPage(state) {
 
         const searchCriteria = {};
 
-        // Add developer input to search criteria if provided
+        if (nameInput.trim() !== "") {
+            searchCriteria.name = nameInput.trim();
+        }
+
         if (developerInput.trim() !== "") {
             searchCriteria.developer = developerInput.trim();
         }
 
-        // Add selected genre IDs to search criteria as a single 'genres' parameter
         if (genreInput.length > 0) {
             searchCriteria.genres = genreInput.join(',');
         }
 
-        // Construct the query string using URLSearchParams
         const queryString = new URLSearchParams(searchCriteria).toString();
 
-        // Navigate to the games page with the constructed query string appended to the URL
         window.location.href = `#games?${queryString}`;
     };
 
@@ -42,34 +44,40 @@ export async function GamesSearchPage(state) {
 
     const genresOptions = await GenresOptions(genres);
 
-    const searchButton = button({ type: "button"}, "Search"); // Create search button with onclick event
+    const searchButton = button({class: "btn btn-primary", type: "button"}, "Search"); // Create search button with onclick event
     (await searchButton).addEventListener('click', formSubmitHandler);
 
     return div(
         { class: "card mx-auto justify-content-center w-50 maxH-50" },
         div(
-            { class: "card-header text-center" },
+            { class: "card-header" },
             h1({}, "Search Games")
         ),
         div(
-            { class: "card-body d-flex flex-column align-items-center" },
+            { class: "card-body" },
             form(
                 {
-                    class: "sessions-search-container d-flex flex-column gap-4",
+                    class: "games-search-container d-flex flex-column gap-4",
                     onsubmit: formSubmitHandler
                 },
                 div(
-                    { class: "text-center" },
+                    {},
+                    label({ class: "form-label", for: "nameInput" }, "Name"),
+                    input({ type: "text", class: "form-control", id: "nameInput", placeholder: "(optional)" })
+                ),
+
+                div(
+                    {},
                     label({ class: "form-label", for: "developerInput" }, "Developer"),
-                    input({ type: "text", class: "form-control text-center", id: "developerInput", placeholder: "(optional)" })
+                    input({ type: "text", class: "form-control", id: "developerInput", placeholder: "(optional)" })
                 ),
                 div(
-                    { class: "text-center" },
+                    {},
                     label({ class: "form-label", for: "genreInput" }, "Genres"),
                     genresOptions
                 ),
                 div(
-                    { class: "text-center" },
+                    { class: "mx-auto" },
                     searchButton
                 )
             )

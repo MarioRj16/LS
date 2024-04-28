@@ -93,7 +93,7 @@ export async function SessionsSearchPage(state) {
                 div(
                     {},
                     label({ class: "form-label", for: "playerEmail" }, "Player Email"),
-                    input({ class: "form-control", id: "playerEmailInput", placeholder: "Player Email" })
+                    input({ class: "form-control", id: "playerEmailInput", placeholder: "(optional)" })
                 ),
                 div(
                     {},
