@@ -5,11 +5,11 @@ export async function NavBar(state){
 
     const navbar= await div(
         nav(
-            {class: "navbar navbar-expand-lg bg-body-tertiary"},
-            a({class: "nav-link", href: "#home"}, "Home"),
-            a({class: "nav-link", href: "#games/search"}, "GamesSearch"),
-            a({class: "nav-link", href: "#sessions/search",}, "SessionsSearch"),
-            a({class: "nav-link", href: "#player/11"}, "PlayerDetails"),
+            {class: "nav nav-pills"},
+            a({class: "h4 nav-link", href: "#home"}, "Home"),
+            a({class: "h4 nav-link", href: "#games/search"}, "GamesSearch"),
+            a({class: "h4 nav-link", href: "#sessions/search",}, "SessionsSearch"),
+            a({class: "h4 nav-link", href: "#player/11"}, "PlayerDetails"),
         )
     )
     let active = window.location.hash;
