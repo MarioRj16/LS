@@ -21,8 +21,6 @@ export async function GamesPage(state) {
         (await detailsButton).addEventListener('click', handleClick(game.id))
         return div(
             {class: "card mx-auto justify-content-center w-50 maxH-50 m-2"},
-            form(
-                { class: "game-form", onsubmit: handleClick(game.id) },
                 div(
                     { class: "game-details" },
                     h3({class: "card-header text-center"}, `${game.name}`),
@@ -31,7 +29,7 @@ export async function GamesPage(state) {
                         h3({class:"justify-content-center"}, `Developer: ${game.developer}`),
                         detailsButton
                     )
-                )
+
             )
         )
     }

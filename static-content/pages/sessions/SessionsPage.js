@@ -16,9 +16,10 @@ export async function SessionsPage(state) {
         return div(h1({}, "No sessions found."));
     }
 
-    async function paginate(cards, skip = 0, limit = 10) {
-        const paginatedCards = cards.slice(skip, skip + limit);
-        return div(...paginatedCards);
+    async function paginate(cards) {
+        return div({class:"card-container"},
+            ...cards)
+            ;
     }
 
     const cards = sessions.map(session => sessionCard(session));
@@ -33,17 +34,29 @@ export async function SessionsPage(state) {
 
         (await detailsButton).addEventListener('click', handleClick(session.id))
 
-        return form(
-            div({ class: "session-item" },
-                h2({}, `Session ID: ${session.id}`),
-                h3({}, `Game: ${session.game}`),
-                detailsButton
+        return div(
+            {class: "card mx-auto justify-content-center w-50 maxH-50 m-2"},
+            div(
+                { class: "session-details" },
+                h3({class:"card-header  text-center"}, `Game: ${session.game}`),
+                div(
+                    { class: "card-body text-center"},
+                    h3({},`StartDate: ${session.date}`),
+                    h3({},`Capacity: ${session.players}/${session.capacity}`),
+                    detailsButton
+                )
             ))
         }
 
         return div(
-            h1({}, `Sessions`),
-            paginatedCards
+            h1({ class: "d-flex justify-content-center"}, `Sessions`),
+            div(
+                { class: "session-list" },
+                paginatedCards
+            ),
+            div(
+                //TODO(add next and previous buttons)
+            )
         );
 
 }

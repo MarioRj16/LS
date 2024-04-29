@@ -24,9 +24,10 @@ export async function PlayersDetailsPage(state){
 
     return div(
         { class: "card" },
+        h1({ class: "card-header text-center mb-4" }, `${player.name}'s details`),
         div(
             { class: "card-body" },
-            h1({ class: "card-title text-center mb-4" }, `${player.name}'s details`),
+
             div(
             { class: "d-flex flex-column align-items-center" },
             GetPlayer(player),
