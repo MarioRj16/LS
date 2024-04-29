@@ -45,6 +45,10 @@ export async function GamesPage(state) {
 
     const paginatedCards = await paginate(cards);
 
+    if(!Array.isArray(games) || games.length === 0){
+        return div(h1({class:"text-center"}, "No games found"));
+    }
+
     return div(
         h1({ class: "d-flex justify-content-center" }, "Games"),
         div(

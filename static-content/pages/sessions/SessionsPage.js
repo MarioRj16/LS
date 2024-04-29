@@ -13,7 +13,7 @@ export async function SessionsPage(state) {
     }
 
     if (!Array.isArray(sessions) || sessions.length === 0) {
-        return div(h1({}, "No sessions found."));
+        return div(h1({class:"text-center"}, "No sessions found"));
     }
 
     async function paginate(cards) {

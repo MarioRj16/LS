@@ -19,7 +19,7 @@ export async function GetSession(session, players, host) {
             }
         }, []);
 
-        return div({ class: "player-list" }, ...joinedPlayerLinks);
+        return div({ class: "h2 player-list" }, ...joinedPlayerLinks);
     }
 
     const hostLink = a(
@@ -33,7 +33,7 @@ export async function GetSession(session, players, host) {
     );
 
     return div(
-        { class: "card row justify-content-evenly" },
+        { class: "card mx-auto justify-content-center w-50 maxH-50" },
         h1({ class: "card-header text-center" }, `${host.name}'s Session`),
         div(
             { class: "card-body text-center" },

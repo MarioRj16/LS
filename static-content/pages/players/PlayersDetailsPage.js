@@ -23,7 +23,7 @@ export async function PlayersDetailsPage(state){
     }
 
     return div(
-        { class: "card" },
+        { class: "card mx-auto justify-content-center w-50 maxH-50" },
         h1({ class: "card-header text-center mb-4" }, `${player.name}'s details`),
         div(
             { class: "card-body" },
