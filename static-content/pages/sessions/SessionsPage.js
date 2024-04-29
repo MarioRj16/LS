@@ -38,7 +38,7 @@ export async function SessionsPage(state) {
             {class: "card mx-auto justify-content-center w-50 maxH-50 m-2"},
             div(
                 { class: "session-details" },
-                h3({class:"card-header  text-center"}, `Game: ${session.game}`),
+                h3({class:"card-header  text-center"}, `${session.game} Session`),
                 div(
                     { class: "card-body text-center"},
                     h3({},`StartDate: ${session.date}`),
