@@ -21,23 +21,28 @@ export async function GamesCreatePage(state) {
             }
         });
 
-        const searchCriteria = {};
-
-        if (nameInput.trim() !== "") {
-            searchCriteria.name = nameInput.trim();
+        if (nameInput.trim() === "") {
+            alert("Please enter a name");
+            return;
         }
 
-        if (developerInput.trim() !== "") {
-            searchCriteria.developer = developerInput.trim();
+        if (developerInput.trim() === "") {
+            alert("Please enter a developer");
+            return;
         }
 
-        if (genreInput.length > 0) {
-            searchCriteria.genres = genreInput.join(',');
+        if (genreInput.length <= 0) {
+            alert("Please select at least one genre");
+            return;
         }
-
-        const queryString = new URLSearchParams(searchCriteria).toString();
-
-        window.location.href = `#games?${queryString}`;
+        const params={
+            name : nameInput.trim(),
+            developer : developerInput.trim(),
+            genres : genreInput
+        }
+        console.log(params)
+        const create = await FetchAPI(`/games`, 'POST', params)
+        console.log(create)
     };
 
 

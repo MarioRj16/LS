@@ -2,7 +2,7 @@ import { button, div, form, h1, input, label, select } from "../../utils/Element
 import { FetchAPI } from "../../utils/FetchAPI.js";
 
 export async function SessionsCreatePage(state) {
-    function handleFormSubmit(event) {
+    async function handleFormSubmit(event) {
         event.preventDefault();
 
         const gameInput = document.getElementById('gameInput').value;
@@ -29,16 +29,15 @@ export async function SessionsCreatePage(state) {
             return;
         }
 
-
-
-        const searchCriteria = {
+        const params = {
             gameId: parseInt(gameInput),
-            date: new Date(dateInput).getTime(),
+            startingDate: new Date(dateInput).getTime(),
             capacity: capacity
         };
+        console.log(params)
+        const create = await FetchAPI(`/sessions`, 'POST', params)
+        console.log(create)
 
-        const queryString = new URLSearchParams(searchCriteria).toString();
-        window.location.href = `#sessions?${queryString}`;
     }
 
     const submitButton = await button({ class: "btn btn-primary", type: "submit" }, "Create");
