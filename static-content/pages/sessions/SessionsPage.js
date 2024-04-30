@@ -1,6 +1,7 @@
 import {div, h1, a, h2, h3, button, form} from "../../utils/Elements.js";
 import { FetchAPI } from "../../utils/FetchAPI.js";
 import {objectToQueryString} from "../../utils/FetchAPI.js";
+import {changePage} from "../../components/Paginate.js";
 
 export async function SessionsPage(state) {
     const sessionsResponse = await FetchAPI(`/sessions${objectToQueryString(state.query)}`);
@@ -47,6 +48,26 @@ export async function SessionsPage(state) {
                 )
             ))
         }
+    const previousButton = button(
+        { class: "btn btn-primary", type: "button" },
+        "Previous"
+    );
+    (await previousButton).addEventListener('click', previousPage)
+
+    const nextButton = button(
+        { class: "btn btn-primary", type: "button" },
+        "Next"
+    );
+    (await nextButton).addEventListener('click', nextPage)
+
+
+    function previousPage(){
+        changePage(-1, "sessions", state.query)
+    }
+
+    function nextPage(){
+        changePage(1, "sessions", state.query)
+    }
 
         return div(
             h1({ class: "d-flex justify-content-center"}, `Sessions`),
@@ -55,7 +76,9 @@ export async function SessionsPage(state) {
                 paginatedCards
             ),
             div(
-                //TODO(add next and previous buttons)
+                {class:"d-flex justify-content-center gap-4"},
+                previousButton,
+                nextButton
             )
         );
 

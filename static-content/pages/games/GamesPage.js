@@ -1,6 +1,7 @@
 import { div, h1, a, h2, h3, button, form, label, input } from "../../utils/Elements.js";
 import { FetchAPI } from "../../utils/FetchAPI.js";
 import {objectToQueryString} from "../../utils/FetchAPI.js";
+import {changePage} from "../../components/Paginate.js";
 
 export async function GamesPage(state) {
     console.log(state.query)
@@ -40,24 +41,6 @@ export async function GamesPage(state) {
         "Previous"
     );
     (await previousButton).addEventListener('click', previousPage)
-    function changePage(jump){
-        const skipParam = new URLSearchParams(state.query).get("skip");
-        const currentLimit = new URLSearchParams(state.query).get("limit");
-        console.log(`${skipParam},${currentLimit}`)
-        const currentSkip = skipParam ? parseInt(skipParam) : 1;
-        const newLimit = currentLimit ? parseInt(currentLimit) : 30
-        const newSkip = currentSkip + (jump*currentLimit);
-        if (nextPage < 0) {
-            alert("You are on the first page");
-            return;
-        }
-        window.location.href = `#games?skip=${newSkip}&limit=${newLimit}`
-        return (newSkip,newLimit)
-    }
-    function previousPage(){
-        const x = changePage(-1)
-        paginate(cards,x.first,x.second)
-    }
 
     const nextButton = button(
         { class: "btn btn-primary", type: "button" },
@@ -65,6 +48,13 @@ export async function GamesPage(state) {
     );
     (await nextButton).addEventListener('click', nextPage)
 
+    function previousPage(){
+        changePage(-1, "games", state.query)
+    }
+
+    function nextPage(){
+        changePage(1, "games", state.query)
+    }
     async function paginate(cards) {
         return div({class:"card-container"},
             ...cards)
@@ -86,6 +76,7 @@ export async function GamesPage(state) {
             paginatedCards
         ),
         div(
+            {class:"d-flex justify-content-center gap-4"},
             previousButton,
             nextButton
         )
