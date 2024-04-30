@@ -44,14 +44,14 @@ export async function GamesCreatePage(state) {
 
     const genresOptions = await GenresOptions(genres);
 
-    const searchButton = button({class: "btn btn-primary", type: "button"}, "Search"); // Create search button with onclick event
-    (await searchButton).addEventListener('click', formSubmitHandler);
+    const createButton = button({class: "btn btn-primary", type: "button"}, "Create"); // Create search button with onclick event
+    (await createButton).addEventListener('click', formSubmitHandler);
 
     return div(
         { class: "card mx-auto justify-content-center w-50 maxH-50" },
         div(
             { class: "card-header" },
-            h1({}, "Search Games")
+            h1({}, "Create a Game")
         ),
         div(
             { class: "card-body" },
@@ -63,13 +63,13 @@ export async function GamesCreatePage(state) {
                 div(
                     {},
                     label({ class: "form-label", for: "nameInput" }, "Name"),
-                    input({ type: "text", class: "form-control", id: "nameInput", placeholder: "(optional)" })
+                    input({ type: "text", class: "form-control", id: "nameInput", placeholder: "name (must be unique)" })
                 ),
 
                 div(
                     {},
                     label({ class: "form-label", for: "developerInput" }, "Developer"),
-                    input({ type: "text", class: "form-control", id: "developerInput", placeholder: "(optional)" })
+                    input({ type: "text", class: "form-control", id: "developerInput", placeholder: "developer" })
                 ),
                 div(
                     {},
@@ -78,7 +78,7 @@ export async function GamesCreatePage(state) {
                 ),
                 div(
                     { class: "mx-auto" },
-                    searchButton
+                    createButton
                 )
             )
         )

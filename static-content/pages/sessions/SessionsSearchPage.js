@@ -51,7 +51,7 @@ export async function SessionsSearchPage(state) {
 
         const selectElement = document.createElement('select');
         selectElement.id = "gameInput";
-        selectElement.classList.add("form-control"); // Add CSS class for styling
+        selectElement.classList.add("form-control");
         const defaultOption = document.createElement('option');
         defaultOption.textContent = "Select a game";
         //defaultOption.disabled = true;
