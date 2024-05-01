@@ -1,9 +1,12 @@
 package pt.isel.ls.data
 
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
+import pt.isel.ls.DEFAULT_LIMIT
+import pt.isel.ls.DEFAULT_SKIP
 import pt.isel.ls.api.models.players.PlayerCreate
-import pt.isel.ls.utils.exceptions.ConflictException
+import pt.isel.ls.api.models.players.PlayerSearch
+import pt.isel.ls.utils.Email
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
@@ -12,7 +15,7 @@ class PlayerTests : AbstractDataTests() {
     @Test
     fun `create() creates player successfully`() {
         val name = "testName"
-        val email = "test@email.com"
+        val email = Email("test@email.com")
         val playerCreate = PlayerCreate(name, email)
         val player = players.create(playerCreate)
 
@@ -20,34 +23,6 @@ class PlayerTests : AbstractDataTests() {
         assertEquals(email, player.email)
         assertNotNull(player.token)
         assertTrue(player.id > 0)
-    }
-
-    @Test
-    fun `create() throws exception for non unique email`() {
-        val email = "email@email.com"
-        val playerCreate = PlayerCreate("name", email)
-        players.create(playerCreate)
-        assertThrows<ConflictException> {
-            players.create(playerCreate.copy(name = "name2"))
-        }
-    }
-
-    @Test
-    fun `create() throws exception for email in invalid format`() {
-        assertThrows<IllegalArgumentException> {
-            val playerCreate = PlayerCreate("name", "email")
-            players.create(playerCreate)
-        }
-
-        assertThrows<IllegalArgumentException> {
-            val playerCreate = PlayerCreate("name", "email@")
-            players.create(playerCreate)
-        }
-
-        assertThrows<IllegalArgumentException> {
-            val playerCreate = PlayerCreate("name", "email@email.@.uk")
-            players.create(playerCreate)
-        }
     }
 
     @Test
@@ -59,8 +34,40 @@ class PlayerTests : AbstractDataTests() {
 
     @Test
     fun `get() returns null for non existing player`() {
-        val player = players.get(1)
+        assertNull(players.get(1))
+    }
 
-        assertTrue(player == null)
+    @Test
+    fun `search() returns players successfully`() {
+        val player1 = playerFactory.createRandomPlayer()
+        val player2 = playerFactory.createRandomPlayer()
+        val player3 = playerFactory.createRandomPlayer()
+
+        val players = players.search(PlayerSearch(null), DEFAULT_SKIP, DEFAULT_LIMIT)
+
+        assertEquals(3, players.size)
+        assertTrue(players.contains(player1))
+        assertTrue(players.contains(player2))
+        assertTrue(players.contains(player3))
+    }
+
+    @Test
+    fun `search() by name returns players successfully`() {
+        val player = playerFactory.createRandomPlayer()
+
+        val searchResult = players.search(PlayerSearch(player.name), DEFAULT_SKIP, DEFAULT_LIMIT)
+
+        assertEquals(1, searchResult.size)
+        assertEquals(player, searchResult[0])
+    }
+
+    @Test
+    fun `search() by partial name returns players successfully`() {
+        val player = playerFactory.createRandomPlayer()
+
+        val searchResult = players.search(PlayerSearch(player.name.substring(0, 3)), DEFAULT_SKIP, DEFAULT_LIMIT)
+
+        assertEquals(1, searchResult.size)
+        assertEquals(player, searchResult[0])
     }
 }

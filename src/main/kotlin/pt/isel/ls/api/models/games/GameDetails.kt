@@ -1,7 +1,7 @@
 package pt.isel.ls.api.models.games
 
 import kotlinx.serialization.Serializable
-import pt.isel.ls.api.models.GenreDetails
+import pt.isel.ls.api.models.genres.GenreDetails
 import pt.isel.ls.domain.Game
 
 @Serializable

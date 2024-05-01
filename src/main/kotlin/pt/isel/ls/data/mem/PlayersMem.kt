@@ -1,9 +1,11 @@
 package pt.isel.ls.data.mem
 
 import pt.isel.ls.api.models.players.PlayerCreate
+import pt.isel.ls.api.models.players.PlayerSearch
 import pt.isel.ls.data.PlayersData
 import pt.isel.ls.domain.Player
-import pt.isel.ls.utils.exceptions.ConflictException
+import pt.isel.ls.utils.Email
+import pt.isel.ls.utils.paginate
 import java.util.*
 
 class PlayersMem(private val players: DataMemTable<Player> = DataMemTable()) : PlayersData {
@@ -12,7 +14,6 @@ class PlayersMem(private val players: DataMemTable<Player> = DataMemTable()) : P
         playerCreate: PlayerCreate,
     ): Player {
         val (name, email) = playerCreate
-        if (emailExists(email)) throw ConflictException("The given email is not unique")
         val player = Player(players.nextId.get(), name, email)
         players.table[players.nextId.get()] = player
         return player
@@ -20,10 +21,19 @@ class PlayersMem(private val players: DataMemTable<Player> = DataMemTable()) : P
 
     override fun get(id: Int): Player? = players.table[id]
 
-    override fun get(token: UUID): Player? =
-        players.table.values.find { it.token == token }
+    override fun get(token: UUID): Player? = players.table.values.find { it.token == token }
 
-    override fun get(email: String): Player? = players.table.values.find { it.email == email }
+    override fun get(email: Email): Player? = players.table.values.find { it.email == email }
 
-    private fun emailExists(email: String): Boolean = players.table.any { it.value.email == email }
+    override fun get(username: String): Player? = players.table.values.find { it.name == username }
+
+    override fun search(searchParameters: PlayerSearch, skip: Int, limit: Int): List<Player> {
+        val username = searchParameters.username
+        val list = if (username != null) {
+            players.table.values.filter { it.name.startsWith(username) }
+        } else {
+            players.table.values.toList()
+        }
+        return list.paginate(skip, limit)
+    }
 }

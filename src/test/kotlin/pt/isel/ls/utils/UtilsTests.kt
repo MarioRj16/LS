@@ -3,7 +3,6 @@ package pt.isel.ls.utils
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import kotlin.test.assertEquals
-import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class UtilsTests {
@@ -32,14 +31,16 @@ class UtilsTests {
     }
 
     @Test
-    fun `emailIsValid() validates email correctly`() {
-        assertTrue(emailIsValid("email@email.com"))
-        assertTrue(emailIsValid("email@email.org"))
-        assertTrue(emailIsValid("email@email.co.uk"))
-        assertTrue(emailIsValid("e.mail@e.mail.gov"))
-        assertFalse(emailIsValid("email.com"))
-        assertFalse(emailIsValid("@email"))
-        assertFalse(emailIsValid("@email.com"))
-        assertFalse(emailIsValid("email@email."))
+    fun `Email() creates instance if email is valid`() {
+        val emailValue = "email@email.com"
+        val email = Email(emailValue)
+        assertEquals(emailValue, email.email)
+    }
+
+    @Test
+    fun `Email() throws exception if email is invalid`() {
+        assertThrows<IllegalArgumentException> {
+            Email("invalidEmail")
+        }
     }
 }

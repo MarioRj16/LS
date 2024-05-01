@@ -21,18 +21,6 @@ class PlayersModelsTests {
     }
 
     @Test
-    fun `PlayerCreate should throw exception when email is not valid`() {
-        val name = generateRandomString()
-        val email = "john.doe.com"
-
-        val exception = assertThrows<IllegalArgumentException> {
-            PlayerCreate(name, email)
-        }
-
-        assertEquals("The given email is not in the right format", exception.message)
-    }
-
-    @Test
     fun `PlayerCreate should throw exception when name is blank`() {
         val name = ""
         val email = generateRandomEmail()

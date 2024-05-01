@@ -2,14 +2,15 @@ package pt.isel.ls.api.models.players
 
 import kotlinx.serialization.Serializable
 import pt.isel.ls.domain.Player
-import pt.isel.ls.utils.Email
 
 @Serializable
-class PlayerDetails private constructor(val id: Int, val name: String, val email: Email) {
-
+class PlayerListElement private constructor(
+    val id: Int,
+    val name: String,
+) {
     companion object {
-        operator fun invoke(player: Player): PlayerDetails {
-            return PlayerDetails(player.id, player.name, player.email)
+        operator fun invoke(player: Player): PlayerListElement {
+            return PlayerListElement(player.id, player.name)
         }
     }
 
@@ -17,11 +18,10 @@ class PlayerDetails private constructor(val id: Int, val name: String, val email
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as PlayerDetails
+        other as PlayerListElement
 
         if (id != other.id) return false
         if (name != other.name) return false
-        if (email != other.email) return false
 
         return true
     }
@@ -29,7 +29,6 @@ class PlayerDetails private constructor(val id: Int, val name: String, val email
     override fun hashCode(): Int {
         var result = id
         result = 31 * result + name.hashCode()
-        result = 31 * result + email.hashCode()
         return result
     }
 }

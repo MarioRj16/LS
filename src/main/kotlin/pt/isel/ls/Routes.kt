@@ -10,8 +10,9 @@ import pt.isel.ls.api.API
 class Routes(api: API) {
     private val playerRoutes =
         routes(
-            "player" bind Method.POST to api.playerAPI::createPlayer,
-            "player/{playerId}" bind Method.GET to api.playerAPI::getPlayer,
+            "players" bind Method.GET to api.playerAPI::searchPlayers,
+            "players" bind Method.POST to api.playerAPI::createPlayer,
+            "players/{playerId}" bind Method.GET to api.playerAPI::getPlayer,
         )
     private val gameRoutes =
         routes(

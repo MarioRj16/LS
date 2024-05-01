@@ -34,10 +34,11 @@ class GamesMem(
         limit: Int,
         skip: Int,
     ): List<Game> {
-        val (developer, genres) = searchParams
+        val (name, developer, genres) = searchParams
         val list =
             gamesDB.table.values.filter {
-                (developer.isNullOrBlank() || it.developer == developer) &&
+                (name.isNullOrBlank() || it.name.contains(name)) &&
+                    (developer.isNullOrBlank() || it.developer == developer) &&
                     (genres.isEmpty() || it.genres.map { i -> i.genreId }.intersect(genres).isNotEmpty())
             }
         return list.paginate(skip, limit)

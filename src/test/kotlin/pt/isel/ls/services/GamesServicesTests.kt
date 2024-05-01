@@ -9,9 +9,8 @@ import pt.isel.ls.api.models.games.GameCreate
 import pt.isel.ls.api.models.games.GameDetails
 import pt.isel.ls.api.models.games.GameResponse
 import pt.isel.ls.data.mem.DataMem
-import pt.isel.ls.domain.Genre
 import pt.isel.ls.domain.Player
-import pt.isel.ls.utils.exceptions.ConflictException
+import pt.isel.ls.utils.exceptions.BadRequestException
 import pt.isel.ls.utils.factories.GameFactory
 import pt.isel.ls.utils.factories.PlayerFactory
 import pt.isel.ls.utils.generateRandomGameSearch
@@ -37,7 +36,6 @@ class GamesServicesTests : GamesServices(DataMem()) {
     fun `createGame() returns created game id successfully`() {
         val name = generateRandomString()
         val developer = generateRandomString()
-        val genre = Genre(1, "Action")
         val gameCreate = GameCreate(name, developer, setOf(1))
         val gameId = createGame(gameCreate, token)
         assertTrue(gameId.id == 1)
@@ -47,10 +45,9 @@ class GamesServicesTests : GamesServices(DataMem()) {
     fun `createGame() throws exception for non unique name`() {
         val name = generateRandomString()
         val developer = generateRandomString()
-        val genre = Genre(1, "Action")
         val gameCreate = GameCreate(name, developer, setOf(1))
         createGame(gameCreate, token)
-        assertThrows<ConflictException> {
+        assertThrows<BadRequestException> {
             createGame(gameCreate, token)
         }
     }

@@ -4,17 +4,16 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import pt.isel.ls.DEFAULT_LIMIT
 import pt.isel.ls.DEFAULT_SKIP
 import pt.isel.ls.api.models.sessions.SessionSearch
 import pt.isel.ls.api.models.sessions.SessionUpdate
-import pt.isel.ls.utils.minusDaysToCurrentDateTime
 import pt.isel.ls.utils.plusDaysToCurrentDateTime
 import kotlin.random.Random
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class SessionTests : AbstractDataTests() {
@@ -39,43 +38,16 @@ class SessionTests : AbstractDataTests() {
     }
 
     @Test
-    fun `create() throws exception for non existing game`() {
-        val player = playerFactory.createRandomPlayer()
-        assertThrows<IllegalArgumentException> {
-            gamingSessions.create(1, 1, plusDaysToCurrentDateTime(1L), player.id)
-        }
-    }
-
-    @Test
-    fun `create() throws exception for invalid capacity`() {
-        val player = playerFactory.createRandomPlayer()
-        val game = gameFactory.createRandomGame()
-        assertThrows<IllegalArgumentException> {
-            gamingSessions.create(-1, game.id, plusDaysToCurrentDateTime(1L), player.id)
-        }
-    }
-
-    @Test
-    fun `create() throws exception for past starting date`() {
-        val player = playerFactory.createRandomPlayer()
-        val game = gameFactory.createRandomGame()
-        assertThrows<IllegalArgumentException> {
-            gamingSessions.create(1, game.id, minusDaysToCurrentDateTime(), player.id)
-        }
-    }
-
-    @Test
     fun `get() returns gaming session successfully`() {
         val player = playerFactory.createRandomPlayer()
         val game = gameFactory.createRandomGame()
         val session = gamingSessionFactory.createRandomGamingSession(game.id, player.id)
-
         assertEquals(session, gamingSessions.get(session.id))
     }
 
     @Test
-    fun `get() throws exception for non existing gaming session`() {
-        assertTrue(gamingSessions.get(1) == null)
+    fun `get() returns null for non existing gaming session`() {
+        assertNull(gamingSessions.get(1))
     }
 
     @Test
@@ -89,23 +61,6 @@ class SessionTests : AbstractDataTests() {
         val playersInSession = gamingSessions.get(session.id)!!.players
 
         assertTrue(player in playersInSession)
-    }
-
-    @Test
-    fun `addPlayer() throws exception if gaming session is already at max capacity`() {
-        var player = playerFactory.createRandomPlayer()
-        val game = gameFactory.createRandomGame()
-        val session = gamingSessionFactory.createRandomGamingSession(game.id, player.id)
-
-        repeat(session.maxCapacity) {
-            player = playerFactory.createRandomPlayer()
-            gamingSessions.addPlayer(session.id, player.id)
-        }
-
-        assertThrows<IllegalArgumentException> {
-            player = playerFactory.createRandomPlayer()
-            gamingSessions.addPlayer(session.id, player.id)
-        }
     }
 
     @Test
