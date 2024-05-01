@@ -62,7 +62,7 @@ class PlayerTests : AbstractDataTests() {
     }
 
     @Test
-    fun `search() by partial name returns players successfully`(){
+    fun `search() by partial name returns players successfully`() {
         val player = playerFactory.createRandomPlayer()
 
         val searchResult = players.search(PlayerSearch(player.name.substring(0, 3)), DEFAULT_SKIP, DEFAULT_LIMIT)

@@ -12,7 +12,7 @@ class GameListResponse private constructor(
         operator fun invoke(games: List<Game>): GameListResponse {
             return GameListResponse(
                 games.map { game -> GameResponse(game) },
-                games.size
+                games.size,
             )
         }
     }

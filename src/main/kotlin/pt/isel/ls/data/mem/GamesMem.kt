@@ -39,7 +39,7 @@ class GamesMem(
             gamesDB.table.values.filter {
                 (name.isNullOrBlank() || it.name.contains(name)) &&
                     (developer.isNullOrBlank() || it.developer == developer) &&
-                        (genres.isEmpty() || it.genres.map { i -> i.genreId }.intersect(genres).isNotEmpty())
+                    (genres.isEmpty() || it.genres.map { i -> i.genreId }.intersect(genres).isNotEmpty())
             }
         return list.paginate(skip, limit)
     }

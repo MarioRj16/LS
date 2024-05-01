@@ -6,13 +6,13 @@ import pt.isel.ls.domain.Player
 @Serializable
 class PlayerListResponse private constructor(
     val players: List<PlayerListElement>,
-    val total: Int
-){
+    val total: Int,
+) {
     companion object {
         operator fun invoke(players: List<Player>): PlayerListResponse {
             return PlayerListResponse(
-                players.map{player -> PlayerListElement(player) },
-                players.size
+                players.map { player -> PlayerListElement(player) },
+                players.size,
             )
         }
     }

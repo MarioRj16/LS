@@ -3,8 +3,12 @@ package pt.isel.ls.services
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import pt.isel.ls.DEFAULT_LIMIT
+import pt.isel.ls.DEFAULT_SKIP
 import pt.isel.ls.api.models.players.PlayerCreate
 import pt.isel.ls.api.models.players.PlayerDetails
+import pt.isel.ls.api.models.players.PlayerListElement
+import pt.isel.ls.api.models.players.PlayerSearch
 import pt.isel.ls.data.mem.DataMem
 import pt.isel.ls.domain.Player
 import pt.isel.ls.utils.Email
@@ -13,10 +17,6 @@ import pt.isel.ls.utils.factories.PlayerFactory
 import pt.isel.ls.utils.generateRandomEmail
 import pt.isel.ls.utils.generateRandomString
 import java.util.*
-import pt.isel.ls.DEFAULT_LIMIT
-import pt.isel.ls.DEFAULT_SKIP
-import pt.isel.ls.api.models.players.PlayerListElement
-import pt.isel.ls.api.models.players.PlayerSearch
 import kotlin.test.assertEquals
 
 class PlayersServicesTests : PlayerServices(DataMem()) {

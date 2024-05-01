@@ -1,6 +1,7 @@
 package pt.isel.ls.data.postgres
 
 import pt.isel.ls.api.models.players.PlayerCreate
+import pt.isel.ls.api.models.players.PlayerSearch
 import pt.isel.ls.data.PlayersData
 import pt.isel.ls.domain.Player
 import pt.isel.ls.utils.Email
@@ -10,7 +11,6 @@ import java.sql.Connection
 import java.sql.SQLException
 import java.sql.Statement
 import java.util.*
-import pt.isel.ls.api.models.players.PlayerSearch
 
 class PlayersPostgres(private val conn: () -> Connection) : PlayersData {
     override fun create(
@@ -117,7 +117,7 @@ class PlayersPostgres(private val conn: () -> Connection) : PlayersData {
                 it.prepareStatement(
                     """select * from players where player_name like ?""".trimIndent(),
                 ).apply {
-                    setString(1, "${username}%")
+                    setString(1, "$username%")
                 }
 
             val resultSet = statement.executeQuery()

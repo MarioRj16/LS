@@ -6,7 +6,7 @@ import pt.isel.ls.domain.Player
 @Serializable
 class PlayerListElement private constructor(
     val id: Int,
-    val name: String
+    val name: String,
 ) {
     companion object {
         operator fun invoke(player: Player): PlayerListElement {

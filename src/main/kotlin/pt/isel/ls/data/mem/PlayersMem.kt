@@ -1,12 +1,12 @@
 package pt.isel.ls.data.mem
 
 import pt.isel.ls.api.models.players.PlayerCreate
+import pt.isel.ls.api.models.players.PlayerSearch
 import pt.isel.ls.data.PlayersData
 import pt.isel.ls.domain.Player
 import pt.isel.ls.utils.Email
-import java.util.*
-import pt.isel.ls.api.models.players.PlayerSearch
 import pt.isel.ls.utils.paginate
+import java.util.*
 
 class PlayersMem(private val players: DataMemTable<Player> = DataMemTable()) : PlayersData {
 
@@ -29,7 +29,7 @@ class PlayersMem(private val players: DataMemTable<Player> = DataMemTable()) : P
 
     override fun search(searchParameters: PlayerSearch, skip: Int, limit: Int): List<Player> {
         val username = searchParameters.username
-        val list = if(username != null) {
+        val list = if (username != null) {
             players.table.values.filter { it.name.startsWith(username) }
         } else {
             players.table.values.toList()

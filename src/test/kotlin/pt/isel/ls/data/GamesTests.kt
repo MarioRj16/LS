@@ -62,7 +62,7 @@ class GamesTests : AbstractDataTests() {
     }
 
     @Test
-    fun `search() with no games returns empty list`(){
+    fun `search() with no games returns empty list`() {
         val searchParams = GameSearch(null, null, emptySet())
         val searchResults = games.search(searchParams, DEFAULT_LIMIT, DEFAULT_SKIP)
 
@@ -70,8 +70,8 @@ class GamesTests : AbstractDataTests() {
     }
 
     @Test
-    fun `search() returns all games successfully`(){
-        val gamesList = List(5){ gameFactory.createRandomGame() }
+    fun `search() returns all games successfully`() {
+        val gamesList = List(5) { gameFactory.createRandomGame() }
         val searchParams = GameSearch(null, null, emptySet())
         val searchResults = games.search(searchParams, DEFAULT_LIMIT, DEFAULT_SKIP)
 
@@ -80,7 +80,7 @@ class GamesTests : AbstractDataTests() {
     }
 
     @Test
-    fun `search() by name returns games successfully`(){
+    fun `search() by name returns games successfully`() {
         val game = gameFactory.createRandomGame()
         val searchParams = GameSearch(game.name, null, emptySet())
         val searchResults = games.search(searchParams, DEFAULT_LIMIT, DEFAULT_SKIP)
@@ -90,7 +90,7 @@ class GamesTests : AbstractDataTests() {
     }
 
     @Test
-    fun `search() by partial name returns games successfully`(){
+    fun `search() by partial name returns games successfully`() {
         val game = gameFactory.createRandomGame()
         val searchParams = GameSearch(game.name.take(1), null, emptySet())
         val searchResults = games.search(searchParams, DEFAULT_LIMIT, DEFAULT_SKIP)
@@ -100,7 +100,7 @@ class GamesTests : AbstractDataTests() {
     }
 
     @Test
-    fun `search() by developer returns games successfully`(){
+    fun `search() by developer returns games successfully`() {
         val game = gameFactory.createRandomGame()
         val searchParams = GameSearch(null, game.developer, emptySet())
         val searchResults = games.search(searchParams, DEFAULT_LIMIT, DEFAULT_SKIP)
@@ -110,7 +110,7 @@ class GamesTests : AbstractDataTests() {
     }
 
     @Test
-    fun `search() by genre returns games successfully`(){
+    fun `search() by genre returns games successfully`() {
         val game = gameFactory.createRandomGame()
         val searchParams = GameSearch(null, null, setOf(game.genres.random().genreId))
         val searchResults = games.search(searchParams, DEFAULT_LIMIT, DEFAULT_SKIP)

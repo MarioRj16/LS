@@ -41,7 +41,7 @@ class PlayersTests : IntegrationTests() {
     }
 
     @Test
-    fun searchPlayer(){
+    fun searchPlayer() {
         val request = Request(Method.GET, "$URI_PREFIX/players")
             .json("")
             .token(user!!.token)

@@ -154,7 +154,7 @@ class GamesPostgres(private val conn: () -> Connection) : GamesData {
         val genreParams = genres.joinToString(", ") { "?" }
         val genreCondition = if (genres.isEmpty()) "" else " AND genre_id IN ($genreParams)"
         val developerCondition = if (developer.isNullOrEmpty()) "" else " AND developer = ?"
-        val nameCondition = if(name.isNullOrEmpty()) "" else " AND game_name LIKE ?"
+        val nameCondition = if (name.isNullOrEmpty()) "" else " AND game_name LIKE ?"
 
         return (
             """
@@ -172,7 +172,7 @@ class GamesPostgres(private val conn: () -> Connection) : GamesData {
 
         genres.forEach { genre -> statement.setInt(parameterIdx++, genre) }
         developer?.let { statement.setString(parameterIdx++, developer) }
-        name?.let { statement.setString(parameterIdx, "${name}%") }
+        name?.let { statement.setString(parameterIdx, "$name%") }
     }
 
     override fun getAllGenres(): Set<Genre> {

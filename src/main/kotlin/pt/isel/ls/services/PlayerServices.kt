@@ -2,12 +2,12 @@ package pt.isel.ls.services
 
 import pt.isel.ls.api.models.players.PlayerCreate
 import pt.isel.ls.api.models.players.PlayerDetails
+import pt.isel.ls.api.models.players.PlayerListResponse
 import pt.isel.ls.api.models.players.PlayerResponse
+import pt.isel.ls.api.models.players.PlayerSearch
 import pt.isel.ls.data.Data
 import pt.isel.ls.utils.exceptions.BadRequestException
 import java.util.*
-import pt.isel.ls.api.models.players.PlayerListResponse
-import pt.isel.ls.api.models.players.PlayerSearch
 
 open class PlayerServices(internal val db: Data) : ServicesSchema(db) {
     fun createPlayer(playerCreate: PlayerCreate): PlayerResponse {
@@ -35,8 +35,8 @@ open class PlayerServices(internal val db: Data) : ServicesSchema(db) {
         searchParameters: PlayerSearch,
         token: UUID,
         skip: Int,
-        limit: Int
-    ): PlayerListResponse = withAuthorization(token){
+        limit: Int,
+    ): PlayerListResponse = withAuthorization(token) {
         val players = db.players.search(searchParameters, skip, limit)
         return@withAuthorization PlayerListResponse(players)
     }
