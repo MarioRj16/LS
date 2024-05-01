@@ -6,4 +6,5 @@ open class Services(val data: Data) {
     val playersServices = PlayerServices(data)
     val gamesServices = GamesServices(data)
     val gamingSessionsServices = SessionServices(data)
+    val genresServices = GenresServices(data)
 }

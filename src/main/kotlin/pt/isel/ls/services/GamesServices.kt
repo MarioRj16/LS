@@ -1,14 +1,13 @@
 package pt.isel.ls.services
 
+import java.util.*
 import pt.isel.ls.api.models.games.GameCreate
 import pt.isel.ls.api.models.games.GameCreateResponse
 import pt.isel.ls.api.models.games.GameDetails
 import pt.isel.ls.api.models.games.GameListResponse
 import pt.isel.ls.api.models.games.GameSearch
 import pt.isel.ls.data.Data
-import pt.isel.ls.domain.Genre
 import pt.isel.ls.utils.exceptions.BadRequestException
-import java.util.*
 
 open class GamesServices(data: Data) : ServicesSchema(data) {
     fun searchGames(
@@ -31,11 +30,11 @@ open class GamesServices(data: Data) : ServicesSchema(data) {
                 throw BadRequestException("The name of a game has to be unique")
             }
             val (name, developer, genreIds) = gameInput
-            if (!data.games.genresExist(genreIds)) {
+            if (!data.genres.genresExist(genreIds)) {
                 throw IllegalArgumentException("The genres provided do not exist")
             }
             // TODO: Create a table for the genres maybe?
-            val genres = data.games.getGenres(genreIds)
+            val genres = data.genres.getGenres(genreIds)
             val game = data.games.create(name, developer, genres)
             return@withAuthorization GameCreateResponse(game.id)
         }
@@ -49,8 +48,4 @@ open class GamesServices(data: Data) : ServicesSchema(data) {
                 ?: throw NoSuchElementException("No game with id $id was found")
             return@withAuthorization GameDetails(game)
         }
-
-    fun getGenres(): Set<Genre> {
-        return data.games.getAllGenres()
-    }
 }

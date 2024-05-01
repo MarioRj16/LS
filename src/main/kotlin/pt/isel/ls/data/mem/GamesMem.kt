@@ -8,13 +8,6 @@ import pt.isel.ls.utils.paginate
 
 class GamesMem(
     private val gamesDB: DataMemTable<Game> = DataMemTable(),
-    private val genreDB: Map<Int, Genre> = setOf(
-        Genre(1, "Action"),
-        Genre(2, "Adventure"),
-        Genre(3, "RPG"),
-        Genre(4, "Simulation"),
-        Genre(5, "Strategy"),
-    ).associateBy { it.genreId },
 ) : GamesData {
 
     override fun create(
@@ -22,8 +15,8 @@ class GamesMem(
         developer: String,
         genres: Set<Genre>,
     ): Game {
-        val game = Game(gamesDB.nextId.get(), name, developer, genres)
-        gamesDB.table[gamesDB.nextId.get()] = game
+        val game = Game(gamesDB.nextId, name, developer, genres)
+        gamesDB.table[gamesDB.nextId] = game
         return game
     }
 
@@ -43,12 +36,6 @@ class GamesMem(
             }
         return list.paginate(skip, limit)
     }
-
-    override fun genresExist(genreIds: Set<Int>): Boolean = genreIds.all { genreDB.containsKey(it) }
-
-    override fun getGenres(genreIds: Set<Int>): Set<Genre> = genreIds.mapNotNull { genreDB[it] }.toSet()
-
-    override fun getAllGenres(): Set<Genre> = genreDB.values.toSet()
 
     override fun get(id: Int): Game? = gamesDB.table.values.find { it.id == id }
 }

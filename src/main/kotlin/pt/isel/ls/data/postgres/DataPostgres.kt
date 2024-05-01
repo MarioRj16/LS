@@ -37,4 +37,6 @@ class DataPostgres(connectionString: String) : Data {
     override val gamingSessions: GamingSessionsData = GamingSessionsPostgres(::conn)
 
     override val games: GamesData = GamesPostgres(::conn)
+
+    override val genres: GenresPostgres = GenresPostgres(::conn)
 }

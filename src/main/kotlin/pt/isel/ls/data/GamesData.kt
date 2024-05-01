@@ -16,10 +16,4 @@ interface GamesData {
     ): List<Game>
 
     fun get(id: Int): Game?
-
-    fun genresExist(genreIds: Set<Int>): Boolean
-
-    fun getGenres(genreIds: Set<Int>): Set<Genre>
-
-    fun getAllGenres(): Set<Genre>
 }
