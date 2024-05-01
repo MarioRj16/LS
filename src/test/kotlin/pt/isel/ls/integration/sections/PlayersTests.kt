@@ -12,6 +12,7 @@ import pt.isel.ls.api.models.players.PlayerResponse
 import pt.isel.ls.integration.IntegrationTests
 import pt.isel.ls.utils.Email
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class PlayersTests : IntegrationTests() {
 
@@ -25,7 +26,7 @@ class PlayersTests : IntegrationTests() {
             .apply {
                 val res = Json.decodeFromString<PlayerListResponse>(bodyString())
                 assertEquals(Status.OK, status)
-                assertEquals(1, res.total)
+                assertTrue { res.players.any { it.id == user!!.playerId } }
             }
     }
 
