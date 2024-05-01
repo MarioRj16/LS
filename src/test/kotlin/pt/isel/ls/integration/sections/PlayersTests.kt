@@ -54,5 +54,4 @@ class PlayersTests : IntegrationTests() {
                 assertEquals(Json.decodeFromString<PlayerDetails>(bodyString()).id, user!!.playerId)
             }
     }
-
 }

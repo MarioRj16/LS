@@ -23,14 +23,14 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
+      - name: Run ktlint
+        run: ./gradlew ktlintFormat --no-daemon
+
       - name: Clean Gradle
         run: ./gradlew clean --no-daemon
 
       - name: Build Gradle
         run: ./gradlew build --no-daemon
-
-      - name: Run ktlint
-        run: ./gradlew ktlintFormat --no-daemon
 
       - name: Run Tests
         run: ./gradlew test --no-daemon
