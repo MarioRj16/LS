@@ -1,29 +1,27 @@
-import {button, div, h1, h2, h3, h4, h5} from "../../utils/Elements.js";
+import { button, div, h1, h2, h3, h4, h5, label } from "../../utils/Elements.js";
 
-export async function GetGame(game){
+export async function GetGame(game) {
     const submitButton = button({ class: "btn btn-primary", type: "submit" }, "Search");
     (await submitButton).addEventListener('click', searchGameSession);
-    function searchGameSession(){
+
+    function searchGameSession() {
         window.location.href = `#sessions?gameId=${game.id}`;
     }
-    const renderGenresHeaders = () => {
-        const genresElement = document.createElement("genreList")
-        game.genres.forEach(genre => {
-            const addGenre = document.createElement("genre")
-            addGenre.value = genre.id
-            addGenre.textContent = genre.name
-            genresElement.appendChild(addGenre)
-            }
-        )
-        return genresElement
+
+    const renderGenres = () => {
+        const genresList = game.genres.map(genre => genre.name).join(", ");
+        return h2({}, genresList);
     };
 
-
     return div(
-        h1(game.name),
-        h2(game.developer),
-        h5("","Genres:"),
-        renderGenresHeaders(),
-        submitButton
-    )
+        { class: "card mx-auto justify-content-center w-50 maxH-50" },
+        h1({ class: "card-header text-center " }, game.name),
+        div(
+            { class: "card-body text-center" },
+            h2({}, `Developer: ${game.developer}`),
+            label({ class: "h2" }, "Genres: "),
+            renderGenres(),
+            div(submitButton)
+        )
+    );
 }

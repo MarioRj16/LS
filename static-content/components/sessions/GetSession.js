@@ -1,56 +1,59 @@
-import {button, div, h1, h2, h3} from "../../utils/Elements.js";
+import {div, h1, h2, a, label} from "../../utils/Elements.js";
 
+export async function GetSession(session, players, host) {
+    const renderPlayerLinks = await PlayerLinks();
 
-export async function GetSession(session,players,host){
+    async function PlayerLinks() {
+        const playerLinks = players.map(player => {
+            return a(
+                { href: `#player/${player.id}`, class:"h2" },
+                `${player.name}`
+            );
+        });
 
-    const renderPlayerHeaders= await PlayerHeaders()
-    async function PlayerHeaders (){
+        const joinedPlayerLinks = playerLinks.reduce((accumulator, currentValue, index) => {
+            if (index === 0) {
+                return [currentValue];
+            } else {
+                return [...accumulator, ", ", currentValue];
+            }
+        }, []);
 
-       const x= players.map(player =>
-            playerCard(player))
-        return div(...x)
+        return div({ class: "h2 player-list" }, ...joinedPlayerLinks);
     }
 
-    async function playerCard(player) {
-        const detailsButton = button(
-            {class: "btn btn-primary", type: "button"},
-            "Details"
-        );
-
-        (await detailsButton).addEventListener('click', handleClick(player.id))
-        return div(
-            h3({}, `Player: ${await player.name}`),
-            detailsButton
-        );
-    }
-
-    function handleClick(playerId) {
-        return () => {
-            window.location.href = `#player/${playerId}`;
-        };
-    }
-
-    const detailsButton = button(
-        {class: "btn btn-primary", type: "button"},
-        "Details"
+    const hostLink = a(
+        { href: `#player/${host.id}`, class:"h2" },
+        `${host.name}`
     );
 
-    (await detailsButton).addEventListener('click', handleClick(host.id))
-
+    const gameLink = a(
+        { href: `#games/${session.game}`, class:"h2" },
+        `${session.game}`
+    );
 
     return div(
-        {class: "row justify-content-evenly"},
-        h1({class:""},`Session`),
+        { class: "card mx-auto justify-content-center w-50 maxH-50" },
+        h1({ class: "card-header text-center" }, `${host.name}'s Session`),
         div(
-            h2({}, `Game: ${session.game}`),
-            h2({}, `Capacity: ${session.capacity}`),
-            h2({}, `StartingDate: ${session.date}`),
-            h2({},`Creator: ${host.name}`),
-            detailsButton,
-            h2({},`Participants:`),
+            { class: "card-body text-center" },
             div(
-                renderPlayerHeaders
-            )
+                { class: "session-details" },
+                label({class:"h2"}, "Game: "),
+                gameLink
+            ),
+            h2({}, `Capacity: ${players.length}/${session.capacity}`),
+            h2({}, `Starting Date: ${session.date}`),
+            div(
+                { class: "session-details" },
+                label({class:"h2"}, `Host: `),
+                hostLink,
+            ),
+            div(
+                { class: "session-details" },
+                label({class:"h2"}, `Participants: `),
+                renderPlayerLinks
+            ),
         )
-    )
+    );
 }

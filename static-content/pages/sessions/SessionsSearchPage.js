@@ -10,6 +10,12 @@ export async function SessionsSearchPage(state) {
         const stateInput = document.getElementById('stateInput').value;
         const playerEmailInput = document.getElementById('playerEmailInput').value;
 
+        const enteredDate = new Date(dateInput);
+        const earliestDate = new Date("1970-01-01T00:00:00");
+        if (enteredDate < earliestDate) {
+            alert("Please enter a date and time after January 1, 1970.");
+            return;
+        }
 
         const searchCriteria = {};
 
@@ -45,7 +51,7 @@ export async function SessionsSearchPage(state) {
 
         const selectElement = document.createElement('select');
         selectElement.id = "gameInput";
-        selectElement.classList.add("form-control"); // Add CSS class for styling
+        selectElement.classList.add("form-control");
         const defaultOption = document.createElement('option');
         defaultOption.textContent = "Select a game";
         //defaultOption.disabled = true;
@@ -93,7 +99,7 @@ export async function SessionsSearchPage(state) {
                 div(
                     {},
                     label({ class: "form-label", for: "playerEmail" }, "Player Email"),
-                    input({ class: "form-control", id: "playerEmailInput", placeholder: "Player Email" })
+                    input({ class: "form-control", id: "playerEmailInput", placeholder: "(optional)" })
                 ),
                 div(
                     {},
