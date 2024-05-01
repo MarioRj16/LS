@@ -48,8 +48,9 @@ class PlayersTests : IntegrationTests() {
 
         client(request)
             .apply {
+                val res = Json.decodeFromString<PlayerListResponse>(bodyString())
                 assertEquals(Status.OK, status)
-                assertEquals(1, Json.decodeFromString<PlayerListResponse>(bodyString()).total)
+                assertEquals(1, res.total)
             }
     }
 }
