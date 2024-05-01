@@ -10,7 +10,10 @@ class GameListResponse private constructor(
 ) {
     companion object {
         operator fun invoke(games: List<Game>): GameListResponse {
-            return GameListResponse(games.map { GameResponse(it) }, games.size)
+            return GameListResponse(
+                games.map { game -> GameResponse(game) },
+                games.size
+            )
         }
     }
 }

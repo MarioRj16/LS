@@ -172,7 +172,7 @@ class GamesPostgres(private val conn: () -> Connection) : GamesData {
 
         genres.forEach { genre -> statement.setInt(parameterIdx++, genre) }
         developer?.let { statement.setString(parameterIdx++, developer) }
-        name?.let { statement.setString(parameterIdx, name) }
+        name?.let { statement.setString(parameterIdx, "${name}%") }
     }
 
     override fun getAllGenres(): Set<Genre> {

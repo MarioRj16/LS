@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
 import pt.isel.ls.api.models.players.PlayerCreate
 import pt.isel.ls.api.models.players.PlayerDetails
+import pt.isel.ls.api.models.players.PlayerListResponse
 import pt.isel.ls.api.models.players.PlayerResponse
 import pt.isel.ls.integration.IntegrationTests
 import pt.isel.ls.utils.Email
@@ -36,6 +37,19 @@ class PlayersTests : IntegrationTests() {
             .apply {
                 assertEquals(Status.OK, status)
                 assertEquals(Json.decodeFromString<PlayerDetails>(bodyString()).id, user!!.playerId)
+            }
+    }
+
+    @Test
+    fun searchPlayer(){
+        val request = Request(Method.GET, "$URI_PREFIX/players")
+            .json("")
+            .token(user!!.token)
+
+        client(request)
+            .apply {
+                assertEquals(Status.OK, status)
+                assertEquals(1, Json.decodeFromString<PlayerListResponse>(bodyString()).total)
             }
     }
 }

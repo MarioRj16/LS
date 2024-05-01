@@ -5,6 +5,8 @@ import pt.isel.ls.data.PlayersData
 import pt.isel.ls.domain.Player
 import pt.isel.ls.utils.Email
 import java.util.*
+import pt.isel.ls.api.models.players.PlayerSearch
+import pt.isel.ls.utils.paginate
 
 class PlayersMem(private val players: DataMemTable<Player> = DataMemTable()) : PlayersData {
 
@@ -24,4 +26,14 @@ class PlayersMem(private val players: DataMemTable<Player> = DataMemTable()) : P
     override fun get(email: Email): Player? = players.table.values.find { it.email == email }
 
     override fun get(username: String): Player? = players.table.values.find { it.name == username }
+
+    override fun search(searchParameters: PlayerSearch, skip: Int, limit: Int): List<Player> {
+        val username = searchParameters.username
+        val list = if(username != null) {
+            players.table.values.filter { it.name.startsWith(username) }
+        } else {
+            players.table.values.toList()
+        }
+        return list.paginate(skip, limit)
+    }
 }

@@ -18,6 +18,31 @@ tags:
 
 paths:
   /players:
+    get:
+      tags:
+        - Players
+      summary: Resource that gets all players.
+      description: Get all players.
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - name: username
+          in: query
+          description: Player username
+          schema:
+            type: string
+            example: exampleusername
+      responses:
+        200:
+          description: Got all players.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Player"
+        400:
+          $ref: "#/components/responses/400BadRequest"
     post:
       tags:
         - Player
