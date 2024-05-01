@@ -10,7 +10,7 @@ class GamingSessionFactory(private val gamingSessions: GamingSessionsData) {
     fun createRandomGamingSession(
         gameId: Int,
         playerId: Int,
-        players: Set<Player> = emptySet<Player>(),
+        players: Set<Player> = emptySet(),
     ): Session {
         val randomCapacity =
             if (players.size >= 2) Random.nextInt(players.size, 33) else Random.nextInt(2, 33)

@@ -9,6 +9,7 @@ import java.sql.Connection
  * @param path The path to the SQL script.
  * @throws SQLException If an error occurs while executing the SQL script.
  */
+@Suppress("KDocUnresolvedReference")
 fun Connection.runSQLScript(path: String) {
     val script = File("src/main/sql/$path").readText()
     prepareStatement(script).executeUpdate()

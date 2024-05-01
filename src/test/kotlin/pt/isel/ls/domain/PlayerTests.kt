@@ -1,10 +1,10 @@
 package pt.isel.ls.domain
 
+import java.util.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
 import pt.isel.ls.utils.Email
-import java.util.*
 
 class PlayerTests {
     private val validId = 1

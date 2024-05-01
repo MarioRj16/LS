@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package pt.isel.ls.data.postgres
 
 import org.postgresql.ds.PGSimpleDataSource
@@ -7,6 +9,7 @@ import pt.isel.ls.data.GamingSessionsData
 import pt.isel.ls.data.PlayersData
 import pt.isel.ls.utils.postgres.runSQLScript
 
+@Suppress("unused")
 class DataPostgres(connectionString: String) : Data {
     private val dataSource = PGSimpleDataSource().apply { setURL(connectionString) }
 

@@ -1,5 +1,6 @@
 package pt.isel.ls.domain
 
+import java.util.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import pt.isel.ls.utils.generateRandomEmail
@@ -7,7 +8,6 @@ import pt.isel.ls.utils.generateRandomString
 import pt.isel.ls.utils.minusDaysToCurrentDateTime
 import pt.isel.ls.utils.plusDaysToCurrentDateTime
 import pt.isel.ls.utils.plusMillisecondsToCurrentDateTime
-import java.util.UUID
 import kotlin.random.Random
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue

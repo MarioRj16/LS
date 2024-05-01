@@ -48,7 +48,7 @@ class GamesTests : IntegrationTests() {
                 assertEquals(Status.OK, status)
                 val response = Json.decodeFromString<GameListResponse>(bodyString())
                 assertTrue {
-                    list.filter { it.developer == search.developer && it.genres.containsAll(search.genres.map { Genre(it, "") }) }
+                    list.filter { it -> it.developer == search.developer && it.genres.containsAll(search.genres.map { Genre(it, "") }) }
                         .map { GameResponse(it) }
                         .all { x ->
                             response.games.contains(x)
