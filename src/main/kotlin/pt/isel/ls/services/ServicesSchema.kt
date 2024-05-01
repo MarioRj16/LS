@@ -1,9 +1,9 @@
 package pt.isel.ls.services
 
+import java.util.*
 import pt.isel.ls.data.Data
 import pt.isel.ls.domain.Player
 import pt.isel.ls.utils.exceptions.AuthorizationException
-import java.util.*
 
 abstract class ServicesSchema(internal val data: Data) {
 

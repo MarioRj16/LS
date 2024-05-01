@@ -1,5 +1,8 @@
 package pt.isel.ls.data.postgres
 
+import java.sql.Connection
+import java.sql.SQLException
+import java.sql.Statement
 import kotlinx.datetime.LocalDateTime
 import pt.isel.ls.api.models.sessions.SessionSearch
 import pt.isel.ls.api.models.sessions.SessionUpdate
@@ -11,9 +14,6 @@ import pt.isel.ls.utils.postgres.toGamingSession
 import pt.isel.ls.utils.postgres.toPlayer
 import pt.isel.ls.utils.postgres.useWithRollback
 import pt.isel.ls.utils.toTimeStamp
-import java.sql.Connection
-import java.sql.SQLException
-import java.sql.Statement
 
 class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSessionsData {
     override fun create(

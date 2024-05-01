@@ -1,9 +1,9 @@
 package pt.isel.ls.utils
 
-import kotlinx.datetime.toJavaLocalDateTime
-import kotlinx.datetime.toKotlinLocalDateTime
 import java.sql.Timestamp
 import java.time.LocalDateTime
+import kotlinx.datetime.toJavaLocalDateTime
+import kotlinx.datetime.toKotlinLocalDateTime
 
 /**
  * Adds the specified number of days to the current date and time.

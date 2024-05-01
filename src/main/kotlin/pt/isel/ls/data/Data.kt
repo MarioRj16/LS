@@ -6,4 +6,5 @@ interface Data {
     val players: PlayersData
     val gamingSessions: GamingSessionsData
     val games: GamesData
+    val genres: GenresData
 }

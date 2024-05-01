@@ -4,7 +4,6 @@ import kotlinx.datetime.LocalDateTime
 import pt.isel.ls.api.models.sessions.SessionSearch
 import pt.isel.ls.api.models.sessions.SessionUpdate
 import pt.isel.ls.data.GamingSessionsData
-import pt.isel.ls.domain.Game
 import pt.isel.ls.domain.Player
 import pt.isel.ls.domain.Session
 import pt.isel.ls.utils.paginate
@@ -12,7 +11,6 @@ import pt.isel.ls.utils.paginate
 class GamingSessionsMem(
     private val sessions: DataMemTable<Session> = DataMemTable(),
     private val players: DataMemTable<Player> = DataMemTable(),
-    private val games: DataMemTable<Game> = DataMemTable(),
 ) : GamingSessionsData {
 
     override fun create(
@@ -23,14 +21,14 @@ class GamingSessionsMem(
     ): Session {
         val obj =
             Session(
-                sessions.nextId.get(),
+                sessions.nextId,
                 game,
                 hostId,
                 capacity,
                 date,
                 emptySet(),
             )
-        sessions.table[sessions.nextId.get()] = obj
+        sessions.table[sessions.nextId] = obj
         return obj
     }
 

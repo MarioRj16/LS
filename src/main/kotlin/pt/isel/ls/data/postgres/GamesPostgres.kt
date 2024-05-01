@@ -1,5 +1,9 @@
 package pt.isel.ls.data.postgres
 
+import java.sql.Connection
+import java.sql.PreparedStatement
+import java.sql.SQLException
+import java.sql.Statement
 import pt.isel.ls.api.models.games.GameSearch
 import pt.isel.ls.data.GamesData
 import pt.isel.ls.domain.Game
@@ -8,10 +12,6 @@ import pt.isel.ls.utils.paginate
 import pt.isel.ls.utils.postgres.toGame
 import pt.isel.ls.utils.postgres.toGenre
 import pt.isel.ls.utils.postgres.useWithRollback
-import java.sql.Connection
-import java.sql.PreparedStatement
-import java.sql.SQLException
-import java.sql.Statement
 
 class GamesPostgres(private val conn: () -> Connection) : GamesData {
     override fun create(
@@ -60,27 +60,6 @@ class GamesPostgres(private val conn: () -> Connection) : GamesData {
 
             return final.paginate(skip, limit)
         }
-
-    override fun genresExist(genreIds: Set<Int>): Boolean = conn().useWithRollback {
-        val query = """SELECT COUNT(*) FROM genres WHERE genre_id IN (${genreIds.joinToString(", ")})"""
-        val statement = it.prepareStatement(query)
-        val resultSet = statement.executeQuery()
-        resultSet.next()
-        resultSet.getInt(1) == genreIds.size
-    }
-
-    override fun getGenres(genreIds: Set<Int>): Set<Genre> = conn().useWithRollback {
-        val query = """SELECT * FROM genres WHERE genre_id IN (${genreIds.joinToString(", ")})"""
-        val statement = it.prepareStatement(query)
-        val resultSet = statement.executeQuery()
-        val genres = mutableSetOf<Genre>()
-
-        while (resultSet.next()) {
-            genres += resultSet.toGenre()
-        }
-
-        return genres
-    }
 
     private fun Connection.insertGame(name: String, developer: String): Int {
         val query = """insert into games(game_name, developer) values (?, ?)""".trimIndent()
@@ -173,21 +152,5 @@ class GamesPostgres(private val conn: () -> Connection) : GamesData {
         genres.forEach { genre -> statement.setInt(parameterIdx++, genre) }
         developer?.let { statement.setString(parameterIdx++, developer) }
         name?.let { statement.setString(parameterIdx, "$name%") }
-    }
-
-    override fun getAllGenres(): Set<Genre> {
-        conn().useWithRollback {
-            val query = """
-                SELECT * FROM genres
-            """.trimIndent()
-            val statement = it.prepareStatement(query)
-
-            val resultSet = statement.executeQuery()
-            val set = mutableSetOf<Genre>()
-            while (resultSet.next()) {
-                set.add(resultSet.toGenre())
-            }
-            return set
-        }
     }
 }

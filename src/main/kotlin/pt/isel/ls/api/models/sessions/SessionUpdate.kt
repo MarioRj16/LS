@@ -6,7 +6,7 @@ import pt.isel.ls.domain.Session
 import pt.isel.ls.utils.isFuture
 
 @Serializable
-data class SessionUpdate constructor(val capacity: Int, val startingDate: LocalDateTime) {
+data class SessionUpdate(val capacity: Int, val startingDate: LocalDateTime) {
     init {
         require(capacity >= 2) { "Capacity must be greater than 1" }
         require(startingDate.isFuture()) { "Starting date must be in the future" }

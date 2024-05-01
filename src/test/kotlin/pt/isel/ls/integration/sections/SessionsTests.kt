@@ -1,4 +1,4 @@
-
+package pt.isel.ls.integration.sections
 import kotlinx.serialization.json.Json
 import org.http4k.core.Method
 import org.http4k.core.Request

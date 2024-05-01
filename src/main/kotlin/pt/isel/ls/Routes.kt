@@ -18,7 +18,6 @@ class Routes(api: API) {
         routes(
             "games" bind Method.GET to api.gamesAPI::searchGames,
             "games" bind Method.POST to api.gamesAPI::createGame,
-            "games/genres" bind Method.GET to api.gamesAPI::getGenres,
             "games/{gameId}" bind Method.GET to api.gamesAPI::getGame,
 
         )
@@ -32,11 +31,18 @@ class Routes(api: API) {
             "sessions/{sessionId}" bind Method.DELETE to api.sessionsAPI::deleteSession,
             "sessions/{sessionId}/players/{playerId}" bind Method.DELETE to api.sessionsAPI::removePlayerFromSession,
         )
+
+    private val genresRoutes =
+        routes(
+            "genres" bind Method.GET to api.genresAPI::getGenres,
+        )
+
     val app =
         routes(
             playerRoutes,
             gameRoutes,
             sessionRoutes,
+            genresRoutes,
             singlePageApp(
                 ResourceLoader.Directory("static-content"),
             ),

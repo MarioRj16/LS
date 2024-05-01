@@ -42,9 +42,4 @@ class GamesAPI(private val services: GamesServices) : APISchema() {
             Response(Status.OK)
                 .json(services.getGame(gameId, token))
         }
-
-    fun getGenres(request: Request): Response =
-        request.useWithExceptionNoToken {
-            Response(Status.OK).json(services.getGenres())
-        }
 }

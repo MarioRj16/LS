@@ -1,4 +1,4 @@
-
+package pt.isel.ls.integration.sections
 import kotlinx.serialization.json.Json
 import org.http4k.core.Method
 import org.http4k.core.Request
@@ -32,7 +32,7 @@ class PlayersTests : IntegrationTests() {
 
     @Test
     fun createPlayer() {
-        val requestBody = PlayerCreate("diferente", Email("diferente@gmail.com"))
+        val requestBody = PlayerCreate("different", Email("different@gmail.com"))
         val request =
             Request(Method.POST, "$URI_PREFIX/players")
                 .json(requestBody)

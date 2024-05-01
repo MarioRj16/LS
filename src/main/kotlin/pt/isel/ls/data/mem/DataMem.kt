@@ -6,6 +6,7 @@ import pt.isel.ls.data.GamingSessionsData
 import pt.isel.ls.data.PlayersData
 
 open class DataMem : Data, DataMemSchema() {
+
     override fun reset() {
         playersDB.table.clear()
         sessionsDB.table.clear()
@@ -14,7 +15,9 @@ open class DataMem : Data, DataMemSchema() {
 
     override val players: PlayersData = PlayersMem(playersDB)
 
-    override val gamingSessions: GamingSessionsData = GamingSessionsMem(sessionsDB, playersDB, gamesDB)
+    override val gamingSessions: GamingSessionsData = GamingSessionsMem(sessionsDB, playersDB)
 
-    override val games: GamesData = GamesMem(gamesDB, genreDB)
+    override val games: GamesData = GamesMem(gamesDB)
+
+    override val genres: GenresMem = GenresMem(genreDB)
 }

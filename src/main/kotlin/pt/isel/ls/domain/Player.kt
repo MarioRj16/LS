@@ -1,9 +1,9 @@
 package pt.isel.ls.domain
 
+import java.util.*
 import kotlinx.serialization.Serializable
 import pt.isel.ls.utils.Email
 import pt.isel.ls.utils.serializers.UUIDSerializer
-import java.util.*
 
 data class Player(
     val id: Int,
