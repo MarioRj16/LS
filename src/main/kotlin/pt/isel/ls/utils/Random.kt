@@ -55,11 +55,12 @@ fun generateSetOfRandomInts(size: Int, min: Int = 1, max: Int = 10): Set<Int> {
  */
 fun generateRandomGameSearch(isEmpty: Boolean = false): GameSearch {
     if (isEmpty) {
-        return GameSearch(null, emptySet())
+        return GameSearch(null, null, emptySet())
     }
 
+    val name = generateRandomString()
     val developer = generateRandomString()
     val genres = generateSetOfRandomInts(Random.nextInt(1, 6))
 
-    return GameSearch(developer, genres)
+    return GameSearch(name, developer, genres)
 }

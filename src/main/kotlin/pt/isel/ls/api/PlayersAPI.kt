@@ -5,8 +5,12 @@ import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status
 import org.http4k.routing.path
+import pt.isel.ls.DEFAULT_LIMIT
+import pt.isel.ls.DEFAULT_SKIP
 import pt.isel.ls.api.models.players.PlayerCreate
+import pt.isel.ls.api.models.players.PlayerSearch
 import pt.isel.ls.services.PlayerServices
+import pt.isel.ls.utils.isNotNegative
 import pt.isel.ls.utils.isPositive
 import pt.isel.ls.utils.validateInt
 
@@ -24,6 +28,18 @@ class PlayersAPI(val services: PlayerServices) : APISchema() {
             Response(Status.OK)
                 .json(
                     services.getPlayer(playerId, token),
+                )
+        }
+
+    fun searchPlayers(request: Request): Response =
+        request.useWithException { token ->
+            val username = request.query("username")
+            val skip = request.query("skip")?.toInt().validateInt(DEFAULT_SKIP) { it.isNotNegative() }
+            val limit = request.query("limit")?.toInt().validateInt(DEFAULT_LIMIT) { it.isNotNegative() }
+            val searchParams = PlayerSearch(username)
+            Response(Status.OK)
+                .json(
+                    services.searchPlayers(searchParams, token, skip, limit),
                 )
         }
 }

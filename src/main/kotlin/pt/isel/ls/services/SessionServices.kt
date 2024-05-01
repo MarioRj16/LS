@@ -4,7 +4,6 @@ import pt.isel.ls.api.models.sessions.SessionCreate
 import pt.isel.ls.api.models.sessions.SessionCreateResponse
 import pt.isel.ls.api.models.sessions.SessionDetails
 import pt.isel.ls.api.models.sessions.SessionListResponse
-import pt.isel.ls.api.models.sessions.SessionResponse
 import pt.isel.ls.api.models.sessions.SessionSearch
 import pt.isel.ls.api.models.sessions.SessionUpdate
 import pt.isel.ls.data.Data
@@ -19,7 +18,7 @@ open class SessionServices(internal val db: Data) : ServicesSchema(db) {
         skip: Int,
         limit: Int,
     ): SessionListResponse = withAuthorization(token) {
-        val sessions = db.gamingSessions.search(sessionSearch, limit, skip).map { SessionResponse(it) }
+        val sessions = db.gamingSessions.search(sessionSearch, limit, skip)
         return@withAuthorization SessionListResponse(sessions)
     }
 

@@ -1,6 +1,7 @@
 package pt.isel.ls.data.postgres
 
 import pt.isel.ls.api.models.players.PlayerCreate
+import pt.isel.ls.api.models.players.PlayerSearch
 import pt.isel.ls.data.PlayersData
 import pt.isel.ls.domain.Player
 import pt.isel.ls.utils.Email
@@ -107,5 +108,25 @@ class PlayersPostgres(private val conn: () -> Connection) : PlayersData {
                 return resultSet.toPlayer()
             }
             return null
+        }
+
+    override fun search(searchParameters: PlayerSearch, skip: Int, limit: Int): List<Player> =
+        conn().useWithRollback {
+            val username = searchParameters.username
+            val statement =
+                it.prepareStatement(
+                    """select * from players where player_name like ?""".trimIndent(),
+                ).apply {
+                    setString(1, "$username%")
+                }
+
+            val resultSet = statement.executeQuery()
+            val players = mutableListOf<Player>()
+
+            while (resultSet.next()) {
+                players.add(resultSet.toPlayer())
+            }
+
+            return players
         }
 }
