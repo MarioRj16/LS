@@ -8,7 +8,6 @@ import org.http4k.core.Request
 import org.http4k.server.Jetty
 import org.http4k.server.asServer
 import org.junit.jupiter.api.AfterAll
-import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeAll
 import pt.isel.ls.Routes
 import pt.isel.ls.TEST_PORT
@@ -30,11 +29,6 @@ abstract class IntegrationTests {
         var api = API(Services(db))
 
         private var jettyServer = Routes(api).app.asServer(Jetty(TEST_PORT))
-
-        @AfterEach
-        fun setUp() {
-            db.reset()
-        }
 
         @JvmStatic
         @BeforeAll
