@@ -7,11 +7,8 @@ export async function GamesCreatePage(state) {
 
     const formSubmitHandler = async (event) => {
         event.preventDefault();
-
         const nameInput = document.getElementById('nameInput').value;
-
         const developerInput = document.getElementById('developerInput').value;
-
         const genreInput = [];
         const checkboxes = document.querySelectorAll('input[type="checkbox"][id^="genre_"]');
         checkboxes.forEach(checkbox => {
@@ -44,8 +41,6 @@ export async function GamesCreatePage(state) {
         const create = await FetchAPI(`/games`, 'POST', params)
         console.log(create)
     };
-
-
 
     const genresOptions = await GenresOptions(genres);
 
@@ -88,6 +83,4 @@ export async function GamesCreatePage(state) {
             )
         )
     );
-
-
 }
