@@ -14,6 +14,21 @@ import pt.isel.ls.utils.Email
 import kotlin.test.assertEquals
 
 class PlayersTests : IntegrationTests() {
+
+    @Test
+    fun searchPlayer() {
+        val request = Request(Method.GET, "$URI_PREFIX/players")
+            .json("")
+            .token(user!!.token)
+
+        client(request)
+            .apply {
+                val res = Json.decodeFromString<PlayerListResponse>(bodyString())
+                assertEquals(Status.OK, status)
+                assertEquals(1, res.total)
+            }
+    }
+
     @Test
     fun createPlayer() {
         val requestBody = PlayerCreate("diferente", Email("diferente@gmail.com"))
@@ -40,17 +55,4 @@ class PlayersTests : IntegrationTests() {
             }
     }
 
-    @Test
-    fun searchPlayer() {
-        val request = Request(Method.GET, "$URI_PREFIX/players")
-            .json("")
-            .token(user!!.token)
-
-        client(request)
-            .apply {
-                val res = Json.decodeFromString<PlayerListResponse>(bodyString())
-                assertEquals(Status.OK, status)
-                assertEquals(1, res.total)
-            }
-    }
 }
