@@ -4,7 +4,7 @@ import {API_URL} from "./Utils.js";
 
 export async function FetchAPI(path, method = 'GET', data = null) {
     try {
-        const token = '17b66abc-3057-48ac-9ef4-cc4c4f111c62'
+        const token = '4fd05dc8-2508-44e7-9b4c-9c5253027f11'
         const headers = {
             'Authorization': `Bearer ${token}`, // Include the bearer token in the Authorization header
             'Content-Type': 'application/json' // Set content type if needed
