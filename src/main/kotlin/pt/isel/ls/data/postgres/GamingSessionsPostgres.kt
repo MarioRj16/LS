@@ -88,18 +88,19 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
                 where 1 = 1
                 ${if (game != null) " and game = ?" else ""}
                 ${if (date != null) " and starting_date = ?" else ""}
+                ${if (playerEmail != null) " and email = ?" else ""}
                 ${
                     if (isOpen != null) {
                         if (isOpen) {
-                            " and starting_date > CURRENT_TIMESTAMP"
+                            " and starting_date > CURRENT_TIMESTAMP and count(player_id) < capacity"
                         } else {
-                            " and starting_date <= CURRENT_TIMESTAMP"
+                            " and starting_date <= CURRENT_TIMESTAMP or count(player_id) >= capacity"
                         }
                     } else {
                         ""
                     }
                 }
-                ${if (playerEmail != null) " and email = ?" else ""}
+                ${if(isOpen != null) " group by gaming_session_id" else ""}
                 order by gaming_sessions.gaming_session_id
                 """.trimIndent()
 
