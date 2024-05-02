@@ -3,6 +3,9 @@ import {div, h1, h2, a, label} from "../../utils/Elements.js";
 export async function GetSession(session, players, host) {
     const renderPlayerLinks = await PlayerLinks();
 
+    //get player who's using
+    const user = 11
+
     async function PlayerLinks() {
         const playerLinks = players.map(player => {
             return a(
@@ -31,6 +34,26 @@ export async function GetSession(session, players, host) {
         { href: `#games/${session.game}`, class:"h2" },
         `${session.game}`
     );
+
+    const hostButtons = await getHostButtons()
+    const playerButtons = await getPlayerButtons()
+    async function getHostButtons(){
+        if (user === host.id){
+            return div(
+                {class: "d-flex justify-content-between gap-4 "},
+                hostButton,
+            )
+        }else return div()
+    }
+
+    async function getPlayerButtons(){
+        if(players.find(player => player.id === user)){
+            return div(
+                {class: "d-flex justify-content-between gap-4 "},
+                playerButton
+            )
+        }else return div()
+    }
 
     return div(
         { class: "card mx-auto justify-content-center w-50 maxH-50" },
