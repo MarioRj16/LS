@@ -64,7 +64,7 @@ class SessionsServicesTests : SessionServices(DataMem()) {
     fun `getSession() returns gaming session successfully`() {
         val player = playerFactory.createRandomPlayer()
         val game = gameFactory.createRandomGame()
-        val expected = SessionDetails(gamingSessionFactory.createRandomGamingSession(game.id, player.id))
+        val expected = SessionDetails(gamingSessionFactory.createRandomGamingSession(game.id, player.id), game)
         val returnedSession = getSession(expected.id, token)
         assertEquals(expected, returnedSession)
     }
@@ -81,6 +81,7 @@ class SessionsServicesTests : SessionServices(DataMem()) {
         val game = gameFactory.createRandomGame()
         val session = SessionDetails(
             gamingSessionFactory.createRandomGamingSession(game.id, user.id),
+            game
         )
         val capacity =
             if (session.capacity > 3) {
@@ -246,6 +247,7 @@ class SessionsServicesTests : SessionServices(DataMem()) {
                 user.id,
                 setOf(player),
             ),
+            game
         )
         removePlayerFromSession(session.id, token, player.id)
         val updatedSession = getSession(session.id, token)

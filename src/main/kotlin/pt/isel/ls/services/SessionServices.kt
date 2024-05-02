@@ -43,7 +43,9 @@ open class SessionServices(internal val db: Data) : ServicesSchema(db) {
     ): SessionDetails = withAuthorization(token) {
         val session = db.gamingSessions.get(sessionId)
             ?: throw NoSuchElementException("No gaming session with id $sessionId was found")
-        return@withAuthorization SessionDetails(session)
+        // This second DB call is made so both the game's name and id can be returned
+        val game = db.games.get(session.gameId)!!
+        return@withAuthorization SessionDetails(session, game)
     }
 
     fun updateSession(
