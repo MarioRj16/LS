@@ -81,25 +81,31 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
             val (game, date, isOpen, playerEmail) = sessionParameters
             val query =
                 """
-                select * from gaming_sessions 
-                
-                ${if (playerEmail != null) " full outer join players_sessions on gaming_session_id = gaming_session" else ""}
+                select * from gaming_sessions
+                full outer join 
+                (select gaming_session, count(player) player_count from players_sessions group by gaming_session) as gspc 
+                on gaming_session_id = gspc.gaming_session
+                ${if (playerEmail != null) 
+                    " full outer join players_sessions on gaming_session_id = gspc.gaming_session"
+                else 
+                    ""
+                }
                 ${if (playerEmail != null) " full outer join players on player = player_id" else ""}
                 where 1 = 1
                 ${if (game != null) " and game = ?" else ""}
                 ${if (date != null) " and starting_date = ?" else ""}
+                ${if (playerEmail != null) " and email = ?" else ""}
                 ${
                     if (isOpen != null) {
                         if (isOpen) {
-                            " and starting_date > CURRENT_TIMESTAMP"
+                            " and starting_date > CURRENT_TIMESTAMP and player_count < capacity"
                         } else {
-                            " and starting_date <= CURRENT_TIMESTAMP"
+                            " and starting_date <= CURRENT_TIMESTAMP or player_count > capacity"
                         }
                     } else {
                         ""
                     }
                 }
-                ${if (playerEmail != null) " and email = ?" else ""}
                 order by gaming_sessions.gaming_session_id
                 """.trimIndent()
 
