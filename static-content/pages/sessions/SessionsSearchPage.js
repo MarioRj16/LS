@@ -1,5 +1,6 @@
 import {button, datalist, div, form, h1, input, label, option, select} from "../../utils/Elements.js";
 import {FetchAPI} from "../../utils/FetchAPI.js";
+import {createElement} from "../../utils/Utils.js";
 
 export async function SessionsSearchPage(state) {
     function handleFormSubmit(event) {
@@ -60,17 +61,17 @@ export async function SessionsSearchPage(state) {
 
 
     async function updateOptions(dataList){
-        dataList.innerHTML = '';
-        //dataList.children.forEach(child => child.remove());
         const input= document.getElementById('gameInput').value;
         if(input.length < 3) return;
-
-        const games = (await FetchAPI(`/games?name=${input}`)).games
-        console.log(games)
-        for (const game of games) {
-            const optionElement = option({ value: game.name , id: game.name, accessKey:game.id});
-            dataList.appendChild(await optionElement);
-        }
+        FetchAPI(`/games?name=${input}`).then(obj => {
+            const games = obj.games
+            //try to erase this by children
+            dataList.innerHTML = '';
+            for (const game of games) {
+                createElement("option",({value: game.name, id: game.name, accessKey: game.id}))
+                    .then(option => dataList.appendChild(option))
+            }
+        })
     }
 
 
