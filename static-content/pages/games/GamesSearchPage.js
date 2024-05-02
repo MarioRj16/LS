@@ -3,7 +3,7 @@ import { FetchAPI } from "../../utils/FetchAPI.js";
 import { GenresOptions } from "../../components/GenresOptions.js";
 
 export async function GamesSearchPage(state) {
-    const genres = await FetchAPI(`/games/genres`);
+    const genres = (await FetchAPI(`/genres`)).genres;
 
     const formSubmitHandler = async (event) => {
         event.preventDefault();

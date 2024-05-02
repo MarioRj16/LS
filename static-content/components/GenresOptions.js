@@ -16,11 +16,10 @@ export async function GenresOptions(genres) {
     defaultOption.disabled = true;
     defaultOption.selected = true;
     selectElement.appendChild(defaultOption);
-
     genres.forEach(genre => {
         const optionElement = document.createElement('option');
         optionElement.value = genre.genreId;
-        optionElement.textContent = genre.genreName;
+        optionElement.textContent = genre.name;
         selectElement.appendChild(optionElement);
     });
 
@@ -47,7 +46,7 @@ export async function GenresOptions(genres) {
         checkboxInput.value = genre.genreId;
 
         checkboxLabel.appendChild(checkboxInput);
-        checkboxLabel.appendChild(document.createTextNode(genre.genreName));
+        checkboxLabel.appendChild(document.createTextNode(genre.name));
         checkboxesContainer.appendChild(checkboxLabel);
     });
 
