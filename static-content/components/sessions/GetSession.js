@@ -6,7 +6,7 @@ export async function GetSession(session, players, host) {
     async function PlayerLinks() {
         const playerLinks = players.map(player => {
             return a(
-                { href: `#player/${player.id}`, class:"h2" },
+                { href: `#players/${player.id}`, class:"h2" },
                 `${player.name}`
             );
         });
@@ -23,7 +23,7 @@ export async function GetSession(session, players, host) {
     }
 
     const hostLink = a(
-        { href: `#player/${host.id}`, class:"h2" },
+        { href: `#players/${host.id}`, class:"h2" },
         `${host.name}`
     );
 

@@ -11,7 +11,7 @@ import {NavBar} from "../components/NavBar.js";
 const router = Router()
 
 router.addRouteHandler("/home", PlayerHomePage)
-router.addRouteHandler("/player", PlayersRouter)
+router.addRouteHandler("/players", PlayersRouter)
 router.addRouteHandler("/games", GamesRouter)
 router.addRouteHandler("/sessions", SessionsRouter)
 router.addDefaultNotFoundRouteHandler(NotFoundPage)

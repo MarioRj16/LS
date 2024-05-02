@@ -6,7 +6,7 @@ export async function PlayersDetailsPage(state){
 
     //TODO(how are we suposed to search for game session, do we have to give gameid?)
     const id = state.params.id;
-    const player = await FetchAPI(`/player/${id}`)
+    const player = await FetchAPI(`/players/${id}`)
     const hostButton = button({ class: "btn btn-primary ", type: "submit" }, "Hosted Sessions");
     (await hostButton).addEventListener('click', SearchSessionsHost);
 
