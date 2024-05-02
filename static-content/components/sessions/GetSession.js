@@ -3,6 +3,9 @@ import {div, h1, h2, a, label} from "../../utils/Elements.js";
 export async function GetSession(session, players, host , user) {
     const renderPlayerLinks = await PlayerLinks();
 
+    //get player who's using
+    const user = 11
+
     async function PlayerLinks() {
         const playerLinks = players.map(player => {
             return a(

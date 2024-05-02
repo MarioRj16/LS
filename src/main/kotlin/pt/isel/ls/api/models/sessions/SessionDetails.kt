@@ -2,23 +2,25 @@ package pt.isel.ls.api.models.sessions
 
 import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.Serializable
+import pt.isel.ls.api.models.games.GameResponse
 import pt.isel.ls.api.models.players.PlayerDetails
+import pt.isel.ls.domain.Game
 import pt.isel.ls.domain.Session
 
 @Serializable
 class SessionDetails private constructor(
     val id: Int,
-    val game: Int,
+    val game: GameResponse,
     val host: Int,
     val capacity: Int,
     val date: LocalDateTime,
     val players: Set<PlayerDetails>,
 ) {
     companion object {
-        operator fun invoke(session: Session): SessionDetails {
+        operator fun invoke(session: Session, game: Game): SessionDetails {
             return SessionDetails(
                 session.id,
-                session.gameId,
+                GameResponse(game),
                 session.hostId,
                 session.maxCapacity,
                 session.startingDate,
@@ -43,7 +45,7 @@ class SessionDetails private constructor(
 
     override fun hashCode(): Int {
         var result = id
-        result = 31 * result + game
+        result = 31 * result + game.hashCode()
         result = 31 * result + host
         result = 31 * result + capacity
         result = 31 * result + date.hashCode()
