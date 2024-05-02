@@ -209,4 +209,22 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
             }
             return false
         }
+
+    override fun getSessionsOfGame(game: Int): List<Session> =
+        conn().useWithRollback {
+            val stm = it.prepareStatement(
+                """select * from gaming_sessions where game = ?""",
+            ).apply {
+                setInt(1, game)
+            }
+
+            val resultSet = stm.executeQuery()
+            val sessions = mutableListOf<Session>()
+
+            while (resultSet.next()) {
+                sessions += resultSet.toGamingSession(emptySet())
+            }
+
+            return sessions
+        }
 }

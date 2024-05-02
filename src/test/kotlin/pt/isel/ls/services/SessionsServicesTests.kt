@@ -19,6 +19,7 @@ import pt.isel.ls.utils.factories.GamingSessionFactory
 import pt.isel.ls.utils.factories.PlayerFactory
 import pt.isel.ls.utils.plusDaysToCurrentDateTime
 import java.util.*
+import kotlin.NoSuchElementException
 import kotlin.random.Random
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
@@ -283,6 +284,34 @@ class SessionsServicesTests : SessionServices(DataMem()) {
 
         assertThrows<IllegalArgumentException> {
             removePlayerFromSession(session.id, token, player.id)
+        }
+    }
+
+    @Test
+    fun `getSessionsOfGame returns correctly`(){
+        val game = gameFactory.createRandomGame()
+        val player = playerFactory.createRandomPlayer()
+        repeat(2){
+            gamingSessionFactory.createRandomGamingSession(game.id, player.id)
+        }
+        val sessions = getSessionsOfGame(game.id, token)
+        assertEquals(2, sessions.nrOfSessions)
+    }
+
+    @Test
+    fun `getSessionsOfGame returns empty for no sessions of given game`(){
+        val game = gameFactory.createRandomGame()
+        val sessions = getSessionsOfGame(game.id, token)
+        assertEquals(0 ,sessions.nrOfSessions)
+    }
+
+    @Test
+    fun `getSessionsOfGame throws for non existing game`(){
+        val player = playerFactory.createRandomPlayer()
+        val game = gameFactory.createRandomGame()
+        gamingSessionFactory.createRandomGamingSession(game.id, player.id)
+        assertThrows<NoSuchElementException> {
+            getSessionsOfGame(100_000, token)
         }
     }
 }

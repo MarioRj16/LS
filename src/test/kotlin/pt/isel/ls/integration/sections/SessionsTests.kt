@@ -10,6 +10,7 @@ import pt.isel.ls.api.models.sessions.SessionCreateResponse
 import pt.isel.ls.api.models.sessions.SessionListResponse
 import pt.isel.ls.api.models.sessions.SessionResponse
 import pt.isel.ls.api.models.sessions.SessionUpdate
+import pt.isel.ls.api.models.sessions.SessionsOfGameResponse
 import pt.isel.ls.domain.Session
 import pt.isel.ls.integration.IntegrationTests
 import pt.isel.ls.utils.factories.GameFactory
@@ -128,6 +129,50 @@ class SessionsTests : IntegrationTests() {
         client(request)
             .apply {
                 assertEquals(Status.OK, status)
+            }
+    }
+
+    @Test
+    fun `getSessionsOfGame() returns 200 with info about sessions associated with a given name`(){
+        GamingSessionFactory(db.gamingSessions).createRandomGamingSession(game.id, player.id)
+        val request =
+            Request(Method.GET, "$URI_PREFIX/sessions/games/${game.id}")
+                .json("")
+                .token(user!!.token)
+        client(request)
+            .apply {
+                val response = Json.decodeFromString<SessionsOfGameResponse>(bodyString())
+                assertEquals(Status.OK, status)
+                assertEquals(response.gameId, game.id)
+                assertEquals(response.nrOfSessions, db.gamingSessions.getSessionsOfGame(game.id).size)
+            }
+    }
+
+    @Test
+    fun `getSessionsOfGame() returns 200 for no sessions associated with given name`(){
+        val newGame = GameFactory(db.games, db.genreDB).createRandomGame()
+        val request =
+            Request(Method.GET, "$URI_PREFIX/sessions/games/${newGame.id}")
+                .json("")
+                .token(user!!.token)
+        client(request)
+            .apply {
+                val response = Json.decodeFromString<SessionsOfGameResponse>(bodyString())
+                assertEquals(Status.OK, status)
+                assertEquals(response.gameId, newGame.id)
+                assertEquals(response.nrOfSessions, 0)
+            }
+    }
+
+    @Test
+    fun `getSessionsOfGame() returns 404 for non existing game`(){
+        val request =
+            Request(Method.GET, "$URI_PREFIX/sessions/games/1000")
+                .json("")
+                .token(user!!.token)
+        client(request)
+            .apply {
+                assertEquals(Status.NOT_FOUND, status)
             }
     }
 }

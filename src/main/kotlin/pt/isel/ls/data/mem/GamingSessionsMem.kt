@@ -97,4 +97,8 @@ class GamingSessionsMem(
         val session = sessions.table[sessionId]!!
         return session.hostId == playerId
     }
+
+    override fun getSessionsOfGame(game: Int): List<Session> {
+        return sessions.table.values.filter { it.gameId == game }
+    }
 }

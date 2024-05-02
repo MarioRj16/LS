@@ -84,4 +84,11 @@ class SessionsAPI(private val services: SessionServices) : APISchema() {
             services.removePlayerFromSession(sessionId, token, playerId)
             Response(Status.NO_CONTENT)
         }
+
+    fun getSessionsOfGame(request: Request): Response =
+        request.useWithException { token ->
+            val gameId = request.path("gameId")?.toInt().validateInt { it.isPositive() }
+            Response(Status.OK)
+                .json(services.getSessionsOfGame(gameId, token))
+        }
 }

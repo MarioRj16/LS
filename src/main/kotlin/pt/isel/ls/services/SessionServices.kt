@@ -11,6 +11,7 @@ import pt.isel.ls.data.Data
 import pt.isel.ls.utils.exceptions.ForbiddenException
 import pt.isel.ls.utils.isPast
 import java.util.*
+import pt.isel.ls.api.models.sessions.SessionsOfGameResponse
 
 open class SessionServices(internal val db: Data) : ServicesSchema(db) {
     fun searchSessions(
@@ -116,5 +117,17 @@ open class SessionServices(internal val db: Data) : ServicesSchema(db) {
             throw IllegalArgumentException("Player is not in session")
         }
         db.gamingSessions.removePlayer(sessionId, playerId)
+    }
+
+    fun getSessionsOfGame(
+        gameId: Int,
+        token: UUID,
+    ): SessionsOfGameResponse = withAuthorization(token) {
+        if(db.games.get(gameId) == null)
+            throw NoSuchElementException("No game with id $gameId was found")
+
+        val sessions = SessionsOfGameResponse(gameId, db.gamingSessions.getSessionsOfGame(gameId))
+
+        return@withAuthorization sessions
     }
 }

@@ -30,6 +30,7 @@ class Routes(api: API) {
             "sessions/{sessionId}" bind Method.PUT to api.sessionsAPI::updateSession,
             "sessions/{sessionId}" bind Method.DELETE to api.sessionsAPI::deleteSession,
             "sessions/{sessionId}/players/{playerId}" bind Method.DELETE to api.sessionsAPI::removePlayerFromSession,
+            "sessions/games/{gameId}" bind Method.GET to api.sessionsAPI::getSessionsOfGame,
         )
     val app =
         routes(

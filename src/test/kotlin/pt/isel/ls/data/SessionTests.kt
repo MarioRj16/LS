@@ -217,4 +217,16 @@ class SessionTests : AbstractDataTests() {
         assertTrue(searchResults.size == 1)
         assertContains(searchResults, session2)
     }
+
+    @Test
+    fun `getSessions() returns number of sessions correctly`(){
+        val host = playerFactory.createRandomPlayer()
+        val game = gameFactory.createRandomGame()
+        val session = List(5){
+            gamingSessionFactory.createRandomGamingSession(game.id, host.id)
+        }
+        val result = gamingSessions.getSessionsOfGame(game.id)
+        assertEquals(5, result.size)
+        assertTrue { result.containsAll(session) }
+    }
 }

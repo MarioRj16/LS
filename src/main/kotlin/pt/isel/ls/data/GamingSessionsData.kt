@@ -39,4 +39,6 @@ interface GamingSessionsData {
         sessionId: Int,
         playerId: Int,
     ): Boolean
+
+    fun getSessionsOfGame(game: Int): List<Session>
 }
