@@ -11,8 +11,9 @@ const router = Router()
 router.addRouteHandler('/search',SessionsSearchPage)
 router.addRouteHandler('/create',SessionsCreatePage)
 router.addRouteHandler('/',SessionsPage)
-router.addRouteHandler('/:id',SessionsDetailsPage)
 router.addRouteHandler('/:id/update',SessionsUpdatePage)
+router.addRouteHandler('/:id',SessionsDetailsPage)
+
 router.addDefaultNotFoundRouteHandler(NotFoundPage)
 
 export default router

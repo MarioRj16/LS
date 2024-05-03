@@ -47,16 +47,16 @@ export async function GetSession(session, players, host , user) {
         window.location.href=`#sessions/${session.id}/update`
     }
 
-    function leaveSession(){
-        FetchAPI(`/sessions/${session.id}/players/${user}`,`DELETE`)
-            .then(window.location.reload())
-
-        //add alert
+    async function leaveSession(){
+        await FetchAPI(`/sessions/${session.id}/players/${user}`,`DELETE`)
+        alert("Left Session Successfully")
+        window.location.reload()
     }
 
     async function joinSession(){
         await FetchAPI(`/sessions/${session.id}`,`POST`)
-        //add alert
+        alert("Joined Session Successfully")
+        window.location.reload()
     }
 
     async function getPlayerButtons(){
