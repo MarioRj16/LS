@@ -6,6 +6,7 @@ import {changePage} from "../../components/Paginate.js";
 export async function SessionsPage(state) {
     const sessionsResponse = await FetchAPI(`/sessions${objectToQueryString(state.query)}`);
     const sessions= sessionsResponse.sessions;
+    console.log(sessions)
 
     function handleClick(sessionId) {
         return () => {

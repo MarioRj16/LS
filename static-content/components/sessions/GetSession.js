@@ -1,10 +1,8 @@
-import {div, h1, h2, a, label} from "../../utils/Elements.js";
+import {div, h1, h2, a, label, button} from "../../utils/Elements.js";
+import {FetchAPI} from "../../utils/FetchAPI.js";
 
 export async function GetSession(session, players, host , user) {
     const renderPlayerLinks = await PlayerLinks();
-
-    //get player who's using
-    const user = 11
 
     async function PlayerLinks() {
         const playerLinks = players.map(player => {
@@ -31,28 +29,63 @@ export async function GetSession(session, players, host , user) {
     );
 
     const gameLink = a(
-        { href: `#games/${session.game}`, class:"h2" },
-        `${session.game}`
+        { href: `#games/${session.game.id}`, class:"h2" },
+        `${session.game.name}`
     );
 
     const hostButtons = await getHostButtons()
     const playerButtons = await getPlayerButtons()
     async function getHostButtons(){
         if (user === host.id){
+            const deleteButton = button({ class: "btn btn-primary ", type: "submit" }, "Delete Session");
+            (await deleteButton).addEventListener('click', deleteSession);
+
+            const updateButton = button({ class: "btn btn-primary ", type: "submit" }, "Update Session");
+            (await updateButton).addEventListener('click', updateSession);
             return div(
                 {class: "d-flex justify-content-between gap-4 "},
-                hostButton,
+                updateButton,
+                deleteButton,
             )
         }else return div()
     }
 
+
+    async function deleteSession(){
+        await FetchAPI(`/sessions/${session.id}`,`DELETE`)
+        window.location.href = `#home`;
+    }
+
+    async function updateSession(){
+        //create elements for update
+    }
+
+    async function leaveSession(){
+        await FetchAPI(`/sessions/${session.id}/players/${user}`,`DELETE`)
+        //add alert
+    }
+
+    async function joinSession(){
+        await FetchAPI(`/sessions/${session.id}`,`POST`)
+        //add alert
+    }
+
     async function getPlayerButtons(){
         if(players.find(player => player.id === user)){
+            const leaveButton = button({ class: "btn btn-primary ", type: "submit" }, "Leave Session");
+            (await leaveButton).addEventListener('click', leaveSession);
             return div(
                 {class: "d-flex justify-content-between gap-4 "},
-                playerButton
+                leaveButton
             )
-        }else return div()
+        }else if(session.state === true){
+            const joinButton = button({ class: "btn btn-primary ", type: "submit" }, "Join Session");
+            (await joinButton).addEventListener('click', joinSession);
+            return div(
+                {class: "d-flex justify-content-between gap-4 "},
+                joinButton
+            )
+        } else return div()
     }
 
     return div(
@@ -77,6 +110,8 @@ export async function GetSession(session, players, host , user) {
                 label({class:"h2"}, `Participants: `),
                 renderPlayerLinks
             ),
+            hostButtons,
+            playerButtons
         )
     );
 }
