@@ -1,4 +1,4 @@
-import {div, h1, h2, a, label, button} from "../../utils/Elements.js";
+import {div, h1, h2, a, label, button, input} from "../../utils/Elements.js";
 import {FetchAPI} from "../../utils/FetchAPI.js";
 
 export async function GetSession(session, players, host , user) {
@@ -7,9 +7,9 @@ export async function GetSession(session, players, host , user) {
     async function PlayerLinks() {
         const playerLinks = players.map(player => {
             return a(
-                { href: `#players/${player.id}`, class:"h2" },
-                `${player.name}`
-            );
+                    {href: `#players/${player.id}`, class: "h2"},
+                    `${player.name}`
+                )
         });
 
         const joinedPlayerLinks = playerLinks.reduce((accumulator, currentValue, index) => {
@@ -37,31 +37,20 @@ export async function GetSession(session, players, host , user) {
     const playerButtons = await getPlayerButtons()
     async function getHostButtons(){
         if (user === host.id){
-            const deleteButton = button({ class: "btn btn-primary ", type: "submit" }, "Delete Session");
-            (await deleteButton).addEventListener('click', deleteSession);
-
             const updateButton = button({ class: "btn btn-primary ", type: "submit" }, "Update Session");
             (await updateButton).addEventListener('click', updateSession);
-            return div(
-                {class: "d-flex justify-content-between gap-4 "},
-                updateButton,
-                deleteButton,
-            )
+            return updateButton
         }else return div()
     }
 
-
-    async function deleteSession(){
-        await FetchAPI(`/sessions/${session.id}`,`DELETE`)
-        window.location.href = `#home`;
-    }
-
     async function updateSession(){
-        //create elements for update
+        window.location.href=`#sessions/${session.id}/update`
     }
 
-    async function leaveSession(){
-        await FetchAPI(`/sessions/${session.id}/players/${user}`,`DELETE`)
+    function leaveSession(){
+        FetchAPI(`/sessions/${session.id}/players/${user}`,`DELETE`)
+            .then(window.location.reload())
+
         //add alert
     }
 
@@ -75,14 +64,14 @@ export async function GetSession(session, players, host , user) {
             const leaveButton = button({ class: "btn btn-primary ", type: "submit" }, "Leave Session");
             (await leaveButton).addEventListener('click', leaveSession);
             return div(
-                {class: "d-flex justify-content-between gap-4 "},
+                {class: "card-footer Text-center "},
                 leaveButton
             )
         }else if(session.state === true){
             const joinButton = button({ class: "btn btn-primary ", type: "submit" }, "Join Session");
             (await joinButton).addEventListener('click', joinSession);
             return div(
-                {class: "d-flex justify-content-between gap-4 "},
+                {class: "card-footer Text-center"},
                 joinButton
             )
         } else return div()

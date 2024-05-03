@@ -1,11 +1,12 @@
+import {DEFAULT_LIMIT, DEFAULT_SKIP} from "../utils/Configs.js";
+
 export async function changePage(jump, path, query) {
     const queryParams = new URLSearchParams(query);
     const skipParam = queryParams.get("skip");
     const currentLimit = queryParams.get("limit");
 
-    const defaultLimit = 30;
-    const currentSkip = skipParam ? parseInt(skipParam) : 0;
-    const limit = currentLimit ? parseInt(currentLimit) : defaultLimit;
+    const currentSkip = skipParam ? parseInt(skipParam) : DEFAULT_SKIP;
+    const limit = currentLimit ? parseInt(currentLimit) : DEFAULT_LIMIT;
 
     const newSkip = currentSkip + (jump * limit);
 
