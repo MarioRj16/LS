@@ -3,7 +3,7 @@ import {USER_TOKEN} from "./Configs.js";
 
 
 
-export async function FetchAPI(path, method = 'GET', data = null) {
+export async function FetchAPI(path, method = 'GET', bodyData = null) {
     try {
         const token = USER_TOKEN
         const headers = {
@@ -11,7 +11,8 @@ export async function FetchAPI(path, method = 'GET', data = null) {
             'Content-Type': 'application/json' // Set content type if needed
         };
         let init ={}
-        if(data == null){
+        console.log(bodyData)
+        if(bodyData == null){
             init= {
                 method: method,
                 headers: headers
@@ -20,7 +21,7 @@ export async function FetchAPI(path, method = 'GET', data = null) {
             init = {
                 method: method,
                 headers: headers,
-                body: JSON.stringify(data)
+                body: JSON.stringify(bodyData)
             }
         }
 
