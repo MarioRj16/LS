@@ -103,34 +103,6 @@ class SessionTests : AbstractDataTests() {
     }
 
     @Test
-    fun `search() returns gaming sessions successfully`() {
-        val player = playerFactory.createRandomPlayer()
-        val game = gameFactory.createRandomGame()
-        val game2 = gameFactory.createRandomGame()
-        val searchParameters1 = SessionSearch(game.id)
-        val searchParameters2 = SessionSearch(game2.id)
-        var searchResults = gamingSessions.search(searchParameters1, DEFAULT_LIMIT, DEFAULT_SKIP)
-
-        assertTrue(searchResults.isEmpty())
-
-        val session = gamingSessionFactory.createRandomGamingSession(game.id, player.id)
-        val session2 = gamingSessionFactory.createRandomGamingSession(game.id, player.id)
-        val session3 = gamingSessionFactory.createRandomGamingSession(game2.id, player.id)
-
-        searchResults =
-            gamingSessions.search(searchParameters1, DEFAULT_LIMIT, DEFAULT_SKIP)
-        assertTrue(searchResults.size == 2)
-        assertContains(searchResults, session)
-        assertContains(searchResults, session2)
-
-        searchResults =
-            gamingSessions.search(searchParameters2, 1, 0)
-
-        assertTrue(searchResults.size == 1)
-        assertContains(searchResults, session3)
-    }
-
-    @Test
     fun `isOwner() checks if player is owner successfully`() {
         val game = gameFactory.createRandomGame()
         val player1 = playerFactory.createRandomPlayer()
@@ -142,19 +114,54 @@ class SessionTests : AbstractDataTests() {
     }
 
     @Test
-    fun `search() returns gaming sessions without game id parameter`() {
+    fun `search() by game returns gaming sessions successfully`() {
+        val player = playerFactory.createRandomPlayer()
+        val game = gameFactory.createRandomGame()
+        val game2 = gameFactory.createRandomGame()
+        val searchParameters1 = SessionSearch(game.id, hostId = null)
+        var searchResults = gamingSessions.search(searchParameters1, DEFAULT_LIMIT, DEFAULT_SKIP)
+        assertTrue(searchResults.isEmpty())
+
+        val session = gamingSessionFactory.createRandomGamingSession(game.id, player.id)
+        val session2 = gamingSessionFactory.createRandomGamingSession(game.id, player.id)
+        val session3 = gamingSessionFactory.createRandomGamingSession(game2.id, player.id)
+
+        searchResults = gamingSessions.search(SessionSearch(game.id, hostId = null), DEFAULT_LIMIT, DEFAULT_SKIP)
+        assertEquals(2, searchResults.size)
+        assertEquals(listOf(session, session2), searchResults)
+
+        searchResults = gamingSessions.search(SessionSearch(game2.id, hostId = null), DEFAULT_LIMIT, DEFAULT_SKIP)
+        assertEquals(1, searchResults.size)
+        assertEquals(listOf(session3), searchResults)
+    }
+
+    @Test
+    fun `search() by player email returns gaming sessions successfully`() {
         val player = playerFactory.createRandomPlayer()
         val player2 = playerFactory.createRandomPlayer()
-        val searchParameters1 = SessionSearch(null, null, null, player.email)
-        SessionSearch(null, null, null, player2.email)
-        var searchResults = gamingSessions.search(searchParameters1, DEFAULT_LIMIT, DEFAULT_SKIP)
-
-        assertTrue(searchResults.isEmpty())
 
         val session = gamingSessionFactory.createRandomGamingSession(players = setOf(player))
         gamingSessionFactory.createRandomGamingSession(players = setOf(player2))
 
-        searchResults = gamingSessions.search(searchParameters1, DEFAULT_LIMIT, DEFAULT_SKIP)
+        val searchResults = gamingSessions.search(SessionSearch(playerEmail = player.email), DEFAULT_LIMIT, DEFAULT_SKIP)
+        assertEquals(1, searchResults.size)
+        assertContains(searchResults, session)
+    }
+
+    @Test
+    fun `search() by date returns gaming sessions successfully`() {
+        val session = gamingSessionFactory.createRandomGamingSession()
+        val date = session.startingDate
+        val searchResults = gamingSessions.search(SessionSearch(date = date, hostId = null), DEFAULT_LIMIT, DEFAULT_SKIP)
+        assertEquals(1, searchResults.size)
+        assertContains(searchResults, session)
+    }
+
+    @Test
+    fun `search() by state returns gaming sessions successfully`() {
+        val session = gamingSessionFactory.createRandomGamingSession()
+        gamingSessionFactory.createRandomGamingSession(isOpen = !session.state)
+        val searchResults = gamingSessions.search(SessionSearch(state = session.state, hostId = null), DEFAULT_LIMIT, DEFAULT_SKIP)
         assertEquals(1, searchResults.size)
         assertContains(searchResults, session)
     }

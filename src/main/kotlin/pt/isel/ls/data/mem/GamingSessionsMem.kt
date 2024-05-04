@@ -39,7 +39,7 @@ class GamingSessionsMem(
         limit: Int,
         skip: Int,
     ): List<Session> {
-        val (game, date, state, playerEmail) = sessionParameters
+        val (game, date, state, playerEmail, hostId) = sessionParameters
         var sessions = sessions.table.values.toList()
 
         if (game != null) {
@@ -50,6 +50,10 @@ class GamingSessionsMem(
                     session -> session.players.any { p -> p.email.email == playerEmail.email }
             }
         }
+        if (hostId != null) {
+            sessions = sessions.filter { it.hostId == hostId }
+        }
+
         if (state != null) {
             sessions = sessions.filter { it.state == state }
         }

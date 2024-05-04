@@ -246,11 +246,18 @@ paths:
             type: string
         - name: playerEmail
           in: query
-          description: Player email
+          description: Email of player in session
           required: false
           schema:
             type: string
             example: test@test.com
+        - name: hostId
+          in: query
+          description: Host ID
+          required: false
+          schema:
+            type: integer
+            minimum: 1
       responses:
         200:
           description: Got sessions that match the given parameteres
