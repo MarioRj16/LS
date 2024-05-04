@@ -1,15 +1,12 @@
 import {FetchAPI} from "../../utils/FetchAPI.js";
 import {GetSession} from "../../components/sessions/GetSession.js";
+import {USER_ID} from "../../utils/Configs.js";
 
 export async function SessionsDetailsPage(state){
     const id = state.params.id;
     const session = await FetchAPI(`/sessions/${id}`)
 
-    const playerPromises = session.players.map(player => FetchAPI(`/players/${player.id}`));
-
-    const players = await Promise.all(playerPromises);
-
     const host = await FetchAPI(`/players/${session.host}`);
 
-    return GetSession(session, players, host);
+    return GetSession(session, session.players, host, USER_ID);
 }

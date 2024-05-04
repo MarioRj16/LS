@@ -5,8 +5,9 @@ import {createElement} from "../../utils/Utils.js";
 export async function SessionsSearchPage(state) {
     function handleFormSubmit(event) {
         event.preventDefault(); // Prevent default form submission behavior
-        const gameInput = document.getElementById(
-            document.getElementById('gameInput').value).accessKey;
+
+        let gameInput = document.getElementById('gameInput').value;
+        if (gameInput!=null && gameInput!=="") gameInput=document.getElementById(gameInput).accessKey;
         const dateInput = document.getElementById('dateInput').value;
         const stateInput = document.getElementById('stateInput').value;
         const playerEmailInput = document.getElementById('playerEmailInput').value;
@@ -91,7 +92,6 @@ export async function SessionsSearchPage(state) {
                 div(
                     {},
                     label({ class: "form-label", for: "gameInput" }, "Game "),
-                    //input({ type: "text", class: "form-control", id: "game", placeholder: "Game Name", list: "games"}),
                     games
                 ),
                 div(

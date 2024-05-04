@@ -1,16 +1,18 @@
-import {API_URL} from "./Utils.js";
+import {API_URL} from "./Configs.js";
+import {USER_TOKEN} from "./Configs.js";
 
 
 
-export async function FetchAPI(path, method = 'GET', data = null) {
+export async function FetchAPI(path, method = 'GET', bodyData = null) {
     try {
-        const token = '4fd05dc8-2508-44e7-9b4c-9c5253027f11'
+        const token = USER_TOKEN
         const headers = {
             'Authorization': `Bearer ${token}`, // Include the bearer token in the Authorization header
             'Content-Type': 'application/json' // Set content type if needed
         };
         let init ={}
-        if(data == null){
+        console.log(bodyData)
+        if(bodyData == null){
             init= {
                 method: method,
                 headers: headers
@@ -19,7 +21,7 @@ export async function FetchAPI(path, method = 'GET', data = null) {
             init = {
                 method: method,
                 headers: headers,
-                body: JSON.stringify(data)
+                body: JSON.stringify(bodyData)
             }
         }
 

@@ -86,7 +86,7 @@ export async function SessionsCreatePage(state) {
                 div(
                     {},
                     label({ class: "form-label", for: "capacityInput" }, "Capacity"),
-                    input({ class: "form-control", type: "number", id: "capacityInput", min: 1, required: true })
+                    input({ class: "form-control", type: "number", placeholder:"(required)",id: "capacityInput", min: 1, required: true })
                 ),
                 div(
                     { class: "mx-auto" },
