@@ -10,6 +10,7 @@ data class SessionSearch(
     val date: LocalDateTime? = null,
     val state: Boolean? = null,
     val playerEmail: Email? = null,
+    val hostId: Int? = null,
 )
 
 /**
