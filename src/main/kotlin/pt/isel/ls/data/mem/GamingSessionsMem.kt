@@ -21,14 +21,14 @@ class GamingSessionsMem(
     ): Session {
         val obj =
             Session(
-                sessions.nextId,
+                sessions.nextId.get(),
                 game,
                 hostId,
                 capacity,
                 date,
                 emptySet(),
             )
-        sessions.table[sessions.nextId] = obj
+        sessions.table[sessions.nextId.get()] = obj
         return obj
     }
 

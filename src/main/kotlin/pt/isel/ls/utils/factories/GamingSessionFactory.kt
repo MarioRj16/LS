@@ -38,7 +38,7 @@ class GamingSessionFactory(
         val sessionCapacity = when{
             players.isNullOrEmpty() && isOpen -> Random.nextInt(SESSION_MIN_CAPACITY, SESSION_MAX_CAPACITY)
             players.isNullOrEmpty() -> Random.nextInt(SESSION_MIN_CAPACITY, SESSION_MAX_CAPACITY+1)
-            else -> Random.nextInt(players.size, SESSION_MAX_CAPACITY)
+            else -> Random.nextInt(maxOf(players.size, SESSION_MIN_CAPACITY), SESSION_MAX_CAPACITY)
         }
 
         val sessionDate = plusDaysToCurrentDateTime(Random.nextInt(1, 366).toLong())

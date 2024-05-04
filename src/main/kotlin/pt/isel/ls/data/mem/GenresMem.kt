@@ -13,7 +13,7 @@ class GenresMem(
             Genre(3, "RPG"),
             Genre(4, "Simulation"),
             Genre(5, "Strategy"),
-        ).forEach{ genreDB.table[genreDB.nextId] = it }
+        ).forEach{ genreDB.table[genreDB.nextId.get()] = it }
     }
 
     override fun getGenres(genreIds: Set<Int>): Set<Genre> =
