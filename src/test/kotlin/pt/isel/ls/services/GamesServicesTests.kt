@@ -23,7 +23,7 @@ class GamesServicesTests : GamesServices(DataMem()) {
     private lateinit var token: UUID
     private lateinit var user: Player
     private val playerFactory = PlayerFactory(data.players)
-    private val gameFactory = GameFactory(data.games, DataMem().genreDB)
+    private val gameFactory = GameFactory(data.games, data.genres)
 
     @BeforeEach
     fun setUp() {

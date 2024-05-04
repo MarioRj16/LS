@@ -10,14 +10,7 @@ abstract class DataMemSchema {
 
     val gamesDB = DataMemTable<Game>()
 
-    private val genres = setOf(
-        Genre(1, "Action"),
-        Genre(2, "Adventure"),
-        Genre(3, "RPG"),
-        Genre(4, "Simulation"),
-        Genre(5, "Strategy"),
-    )
-    val genreDB = genres.associateBy { it.genreId }
+    val genreDB = DataMemTable<Genre>()
 
     val sessionsDB = DataMemTable<Session>()
 }

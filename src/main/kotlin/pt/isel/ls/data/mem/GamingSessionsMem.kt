@@ -47,8 +47,7 @@ class GamingSessionsMem(
         }
         if (playerEmail != null) {
             sessions = sessions.filter {
-                    session ->
-                session.players.any { p -> p.email == playerEmail }
+                    session -> session.players.any { p -> p.email.email == playerEmail.email }
             }
         }
         if (state != null) {

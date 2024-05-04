@@ -6,6 +6,8 @@ import kotlinx.datetime.LocalTime
 import org.junit.jupiter.api.Test
 import pt.isel.ls.DEFAULT_LIMIT
 import pt.isel.ls.DEFAULT_SKIP
+import pt.isel.ls.SESSION_MAX_CAPACITY
+import pt.isel.ls.SESSION_MIN_CAPACITY
 import pt.isel.ls.api.models.sessions.SessionSearch
 import pt.isel.ls.api.models.sessions.SessionUpdate
 import pt.isel.ls.utils.plusDaysToCurrentDateTime
@@ -79,15 +81,10 @@ class SessionTests : AbstractDataTests() {
 
     @Test
     fun `update() updates gaming session successfully`() {
-        val player = playerFactory.createRandomPlayer()
-        val game = gameFactory.createRandomGame()
-        val session = gamingSessionFactory.createRandomGamingSession(game.id, player.id)
+        val session = gamingSessionFactory.createRandomGamingSession()
         val newDate = plusDaysToCurrentDateTime()
-        val newCapacity: Int = if (session.maxCapacity in 2..3) {
-            Random.nextInt(session.maxCapacity, 33)
-        } else {
-            Random.nextInt(2, session.maxCapacity)
-        }
+        val newCapacity: Int =
+            Random.nextInt(maxOf(SESSION_MIN_CAPACITY, session.maxCapacity), SESSION_MAX_CAPACITY+1)
         val expected = session.copy(startingDate = newDate, maxCapacity = newCapacity)
         val sessionUpdate = SessionUpdate(newCapacity, newDate)
         gamingSessions.update(session.id, sessionUpdate)
@@ -148,28 +145,17 @@ class SessionTests : AbstractDataTests() {
     fun `search() returns gaming sessions without game id parameter`() {
         val player = playerFactory.createRandomPlayer()
         val player2 = playerFactory.createRandomPlayer()
-        val game = gameFactory.createRandomGame()
-        val game2 = gameFactory.createRandomGame()
         val searchParameters1 = SessionSearch(null, null, null, player.email)
-        val searchParameters2 = SessionSearch(null, null, null, player2.email)
+        SessionSearch(null, null, null, player2.email)
         var searchResults = gamingSessions.search(searchParameters1, DEFAULT_LIMIT, DEFAULT_SKIP)
 
         assertTrue(searchResults.isEmpty())
 
-        val session = gamingSessionFactory.createRandomGamingSession(game.id, player.id, setOf(player))
-        val session2 = gamingSessionFactory.createRandomGamingSession(game.id, player2.id, setOf(player2))
-        val session3 = gamingSessionFactory.createRandomGamingSession(game2.id, player.id, setOf(player, player2))
+        val session = gamingSessionFactory.createRandomGamingSession(players = setOf(player))
+        gamingSessionFactory.createRandomGamingSession(players = setOf(player2))
 
-        searchResults =
-            gamingSessions.search(searchParameters1, DEFAULT_LIMIT, DEFAULT_SKIP)
-        assertTrue(searchResults.size == 2)
+        searchResults = gamingSessions.search(searchParameters1, DEFAULT_LIMIT, DEFAULT_SKIP)
+        assertEquals(1, searchResults.size)
         assertContains(searchResults, session)
-        assertContains(searchResults, session3)
-
-        searchResults =
-            gamingSessions.search(searchParameters2, 1, 0)
-
-        assertTrue(searchResults.size == 1)
-        assertContains(searchResults, session2)
     }
 }

@@ -18,7 +18,7 @@ class SessionsFactoryTests {
         val game = db.games.create(name, developer, genres)
         val playerCreate = PlayerCreate(generateRandomString(), generateRandomEmail())
         val player = db.players.create(playerCreate)
-        val gamingSessionFactory = GamingSessionFactory(db.gamingSessions)
+        val gamingSessionFactory = GamingSessionFactory(db.gamingSessions, db.games, db.genres, db.players)
         val session = gamingSessionFactory.createRandomGamingSession(game.id, player.id)
 
         assertEquals(session, db.gamingSessions.get(session.id))
