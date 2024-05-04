@@ -5,10 +5,16 @@ import kotlinx.serialization.Serializable
 import pt.isel.ls.domain.Session
 
 @Serializable
-class SessionResponse private constructor(val id: Int, val game: Int, val capacity: Int, val date: LocalDateTime) {
+class SessionResponse private constructor(
+    val id: Int,
+    val game: Int,
+    val capacity: Int,
+    val date: LocalDateTime,
+    val isOpen: Boolean
+) {
     companion object {
         operator fun invoke(session: Session): SessionResponse {
-            return SessionResponse(session.id, session.gameId, session.maxCapacity, session.startingDate)
+            return SessionResponse(session.id, session.gameId, session.maxCapacity, session.startingDate, session.state)
         }
     }
 
@@ -22,6 +28,7 @@ class SessionResponse private constructor(val id: Int, val game: Int, val capaci
         if (game != other.game) return false
         if (capacity != other.capacity) return false
         if (date != other.date) return false
+        if(isOpen != other.isOpen) return false
 
         return true
     }
