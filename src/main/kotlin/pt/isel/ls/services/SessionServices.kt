@@ -107,14 +107,14 @@ open class SessionServices(internal val db: Data) : ServicesSchema(db) {
     ) = withAuthorization(token) { user ->
         val session = db.gamingSessions.get(sessionId)
             ?: throw NoSuchElementException("No session $sessionId was found")
-        if (session.hostId != user.id) {
-            throw ForbiddenException("Changes can only be made by the creator of the session")
+        if (session.players.none { it.id == playerId }) {
+            throw IllegalArgumentException("Player is not in session")
+        }
+        if (session.hostId != user.id && session.players.none { it.id == user.id }) {
+            throw ForbiddenException("Player can only be removed by the host or the player itself")
         }
         if (!session.state) {
             throw IllegalArgumentException("Cannot remove player from closed session")
-        }
-        if (session.players.none { it.id == playerId }) {
-            throw IllegalArgumentException("Player is not in session")
         }
         db.gamingSessions.removePlayer(sessionId, playerId)
     }
