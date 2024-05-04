@@ -238,7 +238,7 @@ class SessionsServicesTests : SessionServices(DataMem()) {
     }
 
     @Test
-    fun `removePlayerFromSession() removes player successfully`() {
+    fun `removePlayerFromSession() removes player successfully if user is host`() {
         val game = gameFactory.createRandomGame()
         val player = playerFactory.createRandomPlayer()
         val session = SessionDetails(
@@ -258,6 +258,26 @@ class SessionsServicesTests : SessionServices(DataMem()) {
     }
 
     @Test
+    fun `removePlayerFromSession() removes player successfully if user is trying to remove himself`() {
+        val game = gameFactory.createRandomGame()
+        val player = playerFactory.createRandomPlayer()
+        val session = SessionDetails(
+            gamingSessionFactory.createRandomGamingSession(
+                game.id,
+                user.id,
+                setOf(player),
+            ),
+            game
+        )
+        removePlayerFromSession(session.id, player.token, player.id)
+        val updatedSession = getSession(session.id, token)
+
+        assertTrue(session.players.contains(PlayerDetails(player)))
+        assertTrue(session != updatedSession)
+        assertTrue(updatedSession.players.isEmpty())
+    }
+
+    @Test
     fun `removePlayerFromSession() throws exception for non existing gaming session`() {
         assertThrows<NoSuchElementException> {
             removePlayerFromSession(1, token, 1)
@@ -265,12 +285,14 @@ class SessionsServicesTests : SessionServices(DataMem()) {
     }
 
     @Test
-    fun `removePlayerFromSession() throws exception for non host user`() {
+    fun `removePlayerFromSession() throws exception for non authorized user`() {
+        val host = user
         val game = gameFactory.createRandomGame()
         val player = playerFactory.createRandomPlayer()
-        val session = gamingSessionFactory.createRandomGamingSession(gameId = game.id, hostId = user.id, setOf(player))
+        val player2 = playerFactory.createRandomPlayer()
+        val session = gamingSessionFactory.createRandomGamingSession(gameId = game.id, hostId = host.id, setOf(player2))
         assertThrows<ForbiddenException> {
-            removePlayerFromSession(session.id, player.token, player.id)
+            removePlayerFromSession(session.id, player.token, player2.id)
         }
     }
 
