@@ -21,14 +21,14 @@ class GamingSessionsMem(
     ): Session {
         val obj =
             Session(
-                sessions.nextId,
+                sessions.nextId.get(),
                 game,
                 hostId,
                 capacity,
                 date,
                 emptySet(),
             )
-        sessions.table[sessions.nextId] = obj
+        sessions.table[sessions.nextId.get()] = obj
         return obj
     }
 
@@ -47,8 +47,7 @@ class GamingSessionsMem(
         }
         if (playerEmail != null) {
             sessions = sessions.filter {
-                    session ->
-                session.players.any { p -> p.email == playerEmail }
+                    session -> session.players.any { p -> p.email.email == playerEmail.email }
             }
         }
         if (state != null) {

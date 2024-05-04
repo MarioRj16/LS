@@ -1,34 +1,27 @@
 package pt.isel.ls.utils.factories
 
+import java.util.UUID
 import pt.isel.ls.data.GamesData
+import pt.isel.ls.data.GenresData
 import pt.isel.ls.domain.Game
 import pt.isel.ls.domain.Genre
 import pt.isel.ls.utils.generateRandomString
-import kotlin.random.Random
 
 class GameFactory(
     private val games: GamesData,
-    private val genresDB: Map<Int, Genre> = setOf(
-        Genre(1, "Action"),
-        Genre(2, "Adventure"),
-        Genre(3, "RPG"),
-        Genre(4, "Simulation"),
-        Genre(5, "Strategy"),
-    ).associateBy { it.genreId },
+    genresDB: GenresData
 ) {
-    private val developers = listOf("Developer1", "Developer2", "Developer3")
+    private val genreFactory = GenresFactory(genresDB)
 
-    fun createRandomGame(): Game {
-        val randomDeveloper = developers.random()
-        var randomName = generateRandomString()
-        while (true) {
-            games.get(randomName)
-                ?: return games.create(
-                    randomName,
-                    randomDeveloper,
-                    List(Random.nextInt(1, 4)) { genresDB.values.random() }.toSet(),
-                )
-            randomName = generateRandomString()
-        }
+    fun createRandomGame(
+        name: String? = null,
+        developer: String? = null,
+        genres: Set<Genre>? = null,
+    ): Game {
+        // Name of game is a UUID turned to string to make sure the risk of collision is as low as possible
+        val gameName = name ?: UUID.randomUUID().toString()
+        val gameDeveloper = developer ?: generateRandomString()
+        val gameGenres = genres ?: genreFactory.random()
+        return games.create(gameName, gameDeveloper, gameGenres)
     }
 }

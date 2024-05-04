@@ -28,8 +28,8 @@ class SessionsServicesTests : SessionServices(DataMem()) {
     private lateinit var token: UUID
     private lateinit var user: Player
     private val playerFactory = PlayerFactory(db.players)
-    private val gamingSessionFactory = GamingSessionFactory(db.gamingSessions)
-    private val gameFactory = GameFactory(db.games, DataMem().genreDB)
+    private val gamingSessionFactory = GamingSessionFactory(db.gamingSessions, db.games, db.genres, db.players)
+    private val gameFactory = GameFactory(db.games, db.genres)
 
     @BeforeEach
     fun setUp() {
@@ -126,7 +126,7 @@ class SessionsServicesTests : SessionServices(DataMem()) {
     @Test
     fun `updateSession() throws exception for closed session`() {
         val game = gameFactory.createRandomGame()
-        val session = gamingSessionFactory.createRandomGamingSession(game.id, user.id)
+        val session = gamingSessionFactory.createRandomGamingSession(gameId = game.id, hostId = user.id, players = emptySet())
         repeat(session.maxCapacity) {
             val player = playerFactory.createRandomPlayer()
             db.gamingSessions.addPlayer(session.id, player.id)
@@ -210,7 +210,7 @@ class SessionsServicesTests : SessionServices(DataMem()) {
     @Test
     fun `addPlayerToSession() throws exception for closed session`() {
         val game = gameFactory.createRandomGame()
-        val session = gamingSessionFactory.createRandomGamingSession(game.id, user.id)
+        val session = gamingSessionFactory.createRandomGamingSession(gameId = game.id, hostId = user.id, players = setOf())
         repeat(session.maxCapacity) {
             val player = playerFactory.createRandomPlayer()
             db.gamingSessions.addPlayer(session.id, player.id)
@@ -268,7 +268,7 @@ class SessionsServicesTests : SessionServices(DataMem()) {
     fun `removePlayerFromSession() throws exception for non host user`() {
         val game = gameFactory.createRandomGame()
         val player = playerFactory.createRandomPlayer()
-        val session = gamingSessionFactory.createRandomGamingSession(game.id, user.id, setOf(player))
+        val session = gamingSessionFactory.createRandomGamingSession(gameId = game.id, hostId = user.id, setOf(player))
         assertThrows<ForbiddenException> {
             removePlayerFromSession(session.id, player.token, player.id)
         }

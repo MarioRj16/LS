@@ -19,7 +19,7 @@ import kotlin.test.assertTrue
 
 class GamesTests : IntegrationTests() {
     companion object {
-        val list = searchHelpGame(20, GameFactory(db.games, db.genreDB)::createRandomGame)
+        val list = searchHelpGame(20, GameFactory(db.games, db.genres)::createRandomGame)
     }
 
     @Test
@@ -79,7 +79,7 @@ class GamesTests : IntegrationTests() {
 
     @Test
     fun getGame() {
-        val game = GameFactory(db.games, db.genreDB).createRandomGame()
+        val game = GameFactory(db.games, db.genres).createRandomGame()
         val request =
             Request(Method.GET, "$URI_PREFIX/games/${game.id}")
                 .json("")

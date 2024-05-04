@@ -14,8 +14,8 @@ class PlayersMem(private val players: DataMemTable<Player> = DataMemTable()) : P
         playerCreate: PlayerCreate,
     ): Player {
         val (name, email) = playerCreate
-        val player = Player(players.nextId, name, email)
-        players.table[players.nextId] = player
+        val player = Player(players.nextId.get(), name, email)
+        players.table[players.nextId.get()] = player
         return player
     }
 

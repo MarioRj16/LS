@@ -15,8 +15,8 @@ class GamesMem(
         developer: String,
         genres: Set<Genre>,
     ): Game {
-        val game = Game(gamesDB.nextId, name, developer, genres)
-        gamesDB.table[gamesDB.nextId] = game
+        val game = Game(gamesDB.nextId.get(), name, developer, genres)
+        gamesDB.table[gamesDB.nextId.get()] = game
         return game
     }
 

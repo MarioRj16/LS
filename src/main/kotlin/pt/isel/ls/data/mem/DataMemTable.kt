@@ -1,5 +1,7 @@
 package pt.isel.ls.data.mem
 
+import java.util.concurrent.atomic.AtomicInteger
+
 class DataMemTable<T> {
     val table =
         object : HashMap<Int, T>() {
@@ -7,10 +9,10 @@ class DataMemTable<T> {
                 key: Int,
                 value: T,
             ): T? {
-                ++nextId
+                nextId.incrementAndGet()
                 return super.put(key, value)
             }
         }
-    var nextId = 1
+    var nextId = AtomicInteger(1)
         private set
 }
