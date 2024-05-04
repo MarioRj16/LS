@@ -1,11 +1,13 @@
-import { button, div, form, h1, input, label, option, select } from "../../utils/Elements.js";
+import {button, datalist, div, form, h1, input, label, option, select} from "../../utils/Elements.js";
 import {FetchAPI} from "../../utils/FetchAPI.js";
+import {createElement} from "../../utils/Utils.js";
 
 export async function SessionsSearchPage(state) {
     function handleFormSubmit(event) {
         event.preventDefault(); // Prevent default form submission behavior
 
-        const gameInput = document.getElementById('gameInput').value;
+        let gameInput = document.getElementById('gameInput').value;
+        if (gameInput!=null && gameInput!=="") gameInput=document.getElementById(gameInput).accessKey;
         const dateInput = document.getElementById('dateInput').value;
         const stateInput = document.getElementById('stateInput').value;
         const playerEmailInput = document.getElementById('playerEmailInput').value;
@@ -19,7 +21,7 @@ export async function SessionsSearchPage(state) {
 
         const searchCriteria = {};
 
-        if (gameInput && gameInput !== "Select a game") {
+        if (gameInput) {
             searchCriteria.gameId = parseInt(gameInput);
         }
         if (dateInput) {
@@ -40,36 +42,38 @@ export async function SessionsSearchPage(state) {
     const submitButton = button({ class: "btn btn-primary", type: "submit" }, "Search");
      (await submitButton).addEventListener('click', handleFormSubmit);
 
-     const games=await GamesOptions((await FetchAPI(`/games`)).games)
+     const games=await GamesOptions()
 
-    async function GamesOptions(games) {
+    async function GamesOptions() {
+        const dataList= await datalist({ id: "games" })
+        const textInput = await input({
+            type: "text",
+            class: "form-control",
+            id: "gameInput",
+            placeholder: "Game Name",
+            list: "games"
+        });
 
-        if (!Array.isArray(games)) {
-            console.error('Games must be provided as an array.');
-            return null;
-        }
-
-        const selectElement = document.createElement('select');
-        selectElement.id = "gameInput";
-        selectElement.classList.add("form-control");
-        const defaultOption = document.createElement('option');
-        defaultOption.textContent = "Select a game";
-        //defaultOption.disabled = true;
-        defaultOption.selected = true;
-        selectElement.appendChild(defaultOption);
-
-        if (games.length > 0) {
-            games.forEach(game => {
-                const optionElement = document.createElement('option');
-                optionElement.value = game.id;
-                optionElement.textContent = game.name;
-                selectElement.appendChild(optionElement);
-            });
-        }
-
-        return selectElement;
+        textInput.addEventListener('input', async () => {
+            await updateOptions(dataList)
+        });
+        return div({},textInput,dataList)
     }
 
+
+    async function updateOptions(dataList){
+        const input= document.getElementById('gameInput').value;
+        if(input.length < 3) return;
+        FetchAPI(`/games?name=${input}`).then(obj => {
+            const games = obj.games
+            //try to erase this by children
+            dataList.innerHTML = '';
+            for (const game of games) {
+                createElement("option",({value: game.name, id: game.name, accessKey: game.id}))
+                    .then(option => dataList.appendChild(option))
+            }
+        })
+    }
 
 
     return div(
@@ -88,7 +92,6 @@ export async function SessionsSearchPage(state) {
                 div(
                     {},
                     label({ class: "form-label", for: "gameInput" }, "Game "),
-                    //input({ class: "form-control", type: "number", id: "gameInput", placeholder: "Game ID", min: 1, required: true })
                     games
                 ),
                 div(

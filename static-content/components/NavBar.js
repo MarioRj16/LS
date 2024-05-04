@@ -1,4 +1,5 @@
 import {a, div, nav} from "../utils/Elements.js";
+import {USER_ID} from "../utils/Configs.js";
 
 export async function NavBar(state){
     //TODO(GET USER)
@@ -9,7 +10,7 @@ export async function NavBar(state){
             a({class: "h4 nav-link", href: "#home"}, "Home"),
             a({class: "h4 nav-link", href: "#games/search"}, "GamesSearch"),
             a({class: "h4 nav-link", href: "#sessions/search",}, "SessionsSearch"),
-            a({class: "h4 nav-link", href: "#players/11"}, "PlayerDetails"),
+            a({class: "h4 nav-link", href: `#players/${USER_ID}`}, "PlayerDetails"),
         )
     )
     let active = window.location.hash;
