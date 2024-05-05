@@ -27,7 +27,7 @@ INSERT INTO games (game_name, developer) VALUES
     ('Among Us', 'InnerSloth');
 
 -- Insert data into the gaming_sessions table
-INSERT INTO gaming_sessions (capacity, creator, starting_date, game) VALUES
+INSERT INTO gaming_sessions (capacity, host, starting_date, game_id) VALUES
     (4, 1, '2024-07-09 18:00:00', 1),
     (3, 2, '2024-07-10 19:00:00', 2),
     (5, 3, '2024-07-11 20:00:00', 3),
@@ -40,7 +40,7 @@ INSERT INTO gaming_sessions (capacity, creator, starting_date, game) VALUES
     (10, 10, '2024-08-18 03:00:00', 10);
 
 -- Insert data into the players_sessions table
-INSERT INTO players_sessions (player, gaming_session) VALUES
+INSERT INTO players_sessions (player_id, gaming_session_id) VALUES
     (1, 1), (2, 1), (3, 1), (4, 1),
     (1, 2), (2, 2), (3, 2),
     (1, 3), (2, 3), (3, 3), (4, 3),
@@ -52,7 +52,7 @@ INSERT INTO players_sessions (player, gaming_session) VALUES
     (1, 9), (2, 9), (3, 9), (4, 9),
     (1, 10), (2, 10), (3, 10), (4, 10), (5, 10), (6, 10), (7, 10), (8, 10), (9, 10), (10, 10);
 
-INSERT INTO games_genres (game, genre) VALUES
+INSERT INTO games_genres (game_id, genre_id) VALUES
     (1, 1), (1, 2),
     (2, 1), (2, 3),
     (3, 1), (3, 2),
