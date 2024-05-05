@@ -10,11 +10,12 @@ class SessionResponse private constructor(
     val game: Int,
     val capacity: Int,
     val date: LocalDateTime,
-    val isOpen: Boolean
+    val isOpen: Boolean,
+    val currentCapacity: Int
 ) {
     companion object {
         operator fun invoke(session: Session): SessionResponse {
-            return SessionResponse(session.id, session.gameId, session.maxCapacity, session.startingDate, session.state)
+            return SessionResponse(session.id, session.gameId, session.maxCapacity, session.startingDate, session.state, session.currentCapacity)
         }
     }
 
@@ -29,6 +30,7 @@ class SessionResponse private constructor(
         if (capacity != other.capacity) return false
         if (date != other.date) return false
         if (isOpen != other.isOpen) return false
+        if (currentCapacity != other.currentCapacity) return false
 
         return true
     }
@@ -38,6 +40,7 @@ class SessionResponse private constructor(
         result = 31 * result + game
         result = 31 * result + capacity
         result = 31 * result + date.hashCode()
+        result = 31 * result + currentCapacity
         return result
     }
 }

@@ -1,6 +1,5 @@
 package pt.isel.ls.services
 
-import java.util.*
 import pt.isel.ls.api.models.sessions.SessionCreate
 import pt.isel.ls.api.models.sessions.SessionCreateResponse
 import pt.isel.ls.api.models.sessions.SessionDetails
@@ -10,6 +9,7 @@ import pt.isel.ls.api.models.sessions.SessionUpdate
 import pt.isel.ls.data.Data
 import pt.isel.ls.utils.exceptions.ForbiddenException
 import pt.isel.ls.utils.isPast
+import java.util.*
 
 open class SessionServices(internal val db: Data) : ServicesSchema(db) {
     fun searchSessions(
@@ -19,6 +19,7 @@ open class SessionServices(internal val db: Data) : ServicesSchema(db) {
         limit: Int,
     ): SessionListResponse = withAuthorization(token) {
         val sessions = db.gamingSessions.search(sessionSearch, limit, skip)
+        println(sessions)
         return@withAuthorization SessionListResponse(sessions)
     }
 

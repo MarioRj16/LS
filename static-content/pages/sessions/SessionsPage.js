@@ -44,7 +44,7 @@ export async function SessionsPage(state) {
                 div(
                     { class: "card-body text-center"},
                     h3({},`StartDate: ${session.date}`),
-                    h3({},`Capacity: ${session.players}/${session.capacity}`),
+                    h3({},`Capacity: ${session.currentCapacity}/${session.capacity}`),
                     detailsButton
                 )
             ))

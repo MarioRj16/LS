@@ -1,8 +1,5 @@
 package pt.isel.ls.data.postgres
 
-import java.sql.Connection
-import java.sql.SQLException
-import java.sql.Statement
 import kotlinx.datetime.LocalDateTime
 import pt.isel.ls.api.models.sessions.SessionSearch
 import pt.isel.ls.api.models.sessions.SessionUpdate
@@ -14,6 +11,9 @@ import pt.isel.ls.utils.postgres.toGamingSession
 import pt.isel.ls.utils.postgres.toPlayer
 import pt.isel.ls.utils.postgres.useWithRollback
 import pt.isel.ls.utils.toTimeStamp
+import java.sql.Connection
+import java.sql.SQLException
+import java.sql.Statement
 
 class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSessionsData {
     override fun create(
@@ -70,7 +70,7 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
                     players += resultSet.toPlayer()
                 }
                 if (resultSet.isLast) {
-                    return resultSet.toGamingSession(players)
+                    return resultSet.toGamingSession(players,players.size)
                 }
             }
             return null
@@ -124,7 +124,7 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
             val sessions = mutableListOf<Session>()
 
             while (resultSet.next()) {
-                sessions += resultSet.toGamingSession(emptySet())
+                sessions += resultSet.toGamingSession(emptySet(),resultSet.getInt("player_count"))
             }
 
             return sessions.distinct().paginate(skip, limit)
@@ -209,7 +209,7 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
             val resultSet = stm.executeQuery()
 
             if (resultSet.next()) {
-                return resultSet.toGamingSession(emptySet()).hostId == playerId
+                return resultSet.toGamingSession(emptySet(),0).hostId == playerId
             }
             return false
         }
