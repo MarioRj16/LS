@@ -92,8 +92,6 @@ paths:
                   $ref: "#/components/schemas/Player"
         400:
           $ref: "#/components/responses/400BadRequest"
-        409:
-          $ref: "#/components/responses/409AlreadyExists"
     description: Resource that handles players.
   /players/{playerID}:
     get:

@@ -12,7 +12,7 @@ import kotlin.test.assertEquals
 class GenresTests: IntegrationTests() {
 
     @Test
-    fun getGenres() {
+    fun `getGenres returns 200 for good request`() {
         val request =
             Request(Method.GET, "$URI_PREFIX/genres")
                 .json("")

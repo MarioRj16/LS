@@ -17,6 +17,10 @@ import pt.isel.ls.data.mem.DataMem
 import pt.isel.ls.domain.Game
 import pt.isel.ls.domain.Session
 import pt.isel.ls.services.Services
+import pt.isel.ls.utils.factories.GameFactory
+import pt.isel.ls.utils.factories.GamingSessionFactory
+import pt.isel.ls.utils.factories.GenresFactory
+import pt.isel.ls.utils.factories.PlayerFactory
 import pt.isel.ls.utils.generateRandomEmail
 import pt.isel.ls.utils.generateRandomString
 
@@ -27,6 +31,11 @@ abstract class IntegrationTests {
         var user: PlayerResponse? = null
         val db = DataMem()
         var api = API(Services(db))
+        val genresFactory = GenresFactory(db.genres)
+        val playerFactory = PlayerFactory(db.players)
+        val gameFactory = GameFactory(db.games, db.genres)
+        val sessionFactory = GamingSessionFactory(db.gamingSessions, db.games, db.genres, db.players)
+
 
         private var jettyServer = Routes(api).app.asServer(Jetty(TEST_PORT))
 
