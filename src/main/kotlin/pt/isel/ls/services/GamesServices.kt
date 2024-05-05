@@ -33,7 +33,6 @@ open class GamesServices(data: Data) : ServicesSchema(data) {
             if (!data.genres.genresExist(genreIds)) {
                 throw IllegalArgumentException("The genres provided do not exist")
             }
-            // TODO: Create a table for the genres maybe?
             val genres = data.genres.getGenres(genreIds)
             val game = data.games.create(name, developer, genres)
             return@withAuthorization GameCreateResponse(game.id)
