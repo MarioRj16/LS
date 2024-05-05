@@ -3,7 +3,7 @@ import {FetchAPI} from "../../utils/FetchAPI.js";
 
 export async function GetSession(session, players, host , user) {
     const renderPlayerLinks = await PlayerLinks();
-
+    console.log(session)
     async function PlayerLinks() {
         const playerLinks = players.map(player => {
             return a(
@@ -67,7 +67,7 @@ export async function GetSession(session, players, host , user) {
                 {class: "card-footer Text-center "},
                 leaveButton
             )
-        }else if(session.state === true){
+        }else if(session.isOpen === true){
             const joinButton = button({ class: "btn btn-primary ", type: "submit" }, "Join Session");
             (await joinButton).addEventListener('click', joinSession);
             return div(
