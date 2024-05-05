@@ -21,7 +21,7 @@ class PlayersPostgres(private val conn: () -> Connection) : PlayersData {
             val token = UUID.randomUUID()
             val statement =
                 it.prepareStatement(
-                    """INSERT INTO PLAYERS(player_name, email, token) VALUES (?, ?, ?)""".trimIndent(),
+                    """INSERT INTO PLAYERS(player_name, email, token) VALUES (?, ?, ?)""",
                     Statement.RETURN_GENERATED_KEYS,
                 ).apply {
                     setString(1, name)
@@ -46,7 +46,7 @@ class PlayersPostgres(private val conn: () -> Connection) : PlayersData {
         conn().useWithRollback {
             val statement =
                 it.prepareStatement(
-                    """select * from players where player_id = ?""".trimIndent(),
+                    """select * from players where player_id = ?""",
                 ).apply {
                     setInt(1, id)
                 }
@@ -80,7 +80,7 @@ class PlayersPostgres(private val conn: () -> Connection) : PlayersData {
         conn().useWithRollback {
             val statement =
                 it.prepareStatement(
-                    """select * from players where email = ?""".trimIndent(),
+                    """select * from players where email = ?""",
                 ).apply {
                     setString(1, email.email)
                 }
@@ -97,7 +97,7 @@ class PlayersPostgres(private val conn: () -> Connection) : PlayersData {
         conn().useWithRollback {
             val statement =
                 it.prepareStatement(
-                    """select * from players where player_name = ?""".trimIndent(),
+                    """select * from players where player_name = ?""",
                 ).apply {
                     setString(1, username)
                 }
@@ -115,7 +115,7 @@ class PlayersPostgres(private val conn: () -> Connection) : PlayersData {
             val username = searchParameters.username
             val statement =
                 it.prepareStatement(
-                    """select * from players where player_name like ?""".trimIndent(),
+                    """select * from players where player_name like ?""",
                 ).apply {
                     setString(1, "$username%")
                 }

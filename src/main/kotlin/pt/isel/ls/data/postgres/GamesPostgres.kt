@@ -62,7 +62,7 @@ class GamesPostgres(private val conn: () -> Connection) : GamesData {
         }
 
     private fun Connection.insertGame(name: String, developer: String): Int {
-        val query = """insert into games(game_name, developer) values (?, ?)""".trimIndent()
+        val query = """insert into games(game_name, developer) values (?, ?)"""
         val statement =
             prepareStatement(query, Statement.RETURN_GENERATED_KEYS).apply {
                 setString(1, name)
@@ -83,10 +83,8 @@ class GamesPostgres(private val conn: () -> Connection) : GamesData {
     }
 
     private fun Connection.insertGamesGenres(gameId: Int, genres: Set<Genre>) {
-        val query =
-            """
-            INSERT INTO games_genres(game_id, genre_id) VALUES ${genres.joinToString(", ") { "(?, ?)" }}
-            """.trimIndent()
+
+        val query = """INSERT INTO games_genres(game_id, genre_id) VALUES ${genres.joinToString(", ") { "(?, ?)" }}"""
 
         val statement =
             prepareStatement(query, Statement.RETURN_GENERATED_KEYS).apply {
@@ -107,8 +105,8 @@ class GamesPostgres(private val conn: () -> Connection) : GamesData {
             val query =
                 """
                 SELECT * FROM games 
-                INNER JOIN games_genres ON games.game_id = games_genres.game
-                INNER JOIN genres ON games_genres.genre = genres.genre_id
+                INNER JOIN games_genres USING (game_id)
+                INNER JOIN genres USING (genre_id)
                 WHERE $identifier = ?
                 """.trimIndent()
 
@@ -138,8 +136,8 @@ class GamesPostgres(private val conn: () -> Connection) : GamesData {
         return (
             """
             SELECT * FROM games 
-            JOIN games_genres ON games.game_id = games_genres.game 
-            JOIN genres ON games_genres.genre = genres.genre_id
+            INNER JOIN games_genres USING (game_id) 
+            INNER JOIN genres USING (genre_id)
             WHERE 1 = 1 $genreCondition $developerCondition $nameCondition
             """.trimIndent()
             )
