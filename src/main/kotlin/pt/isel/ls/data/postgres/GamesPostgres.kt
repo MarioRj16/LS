@@ -85,7 +85,7 @@ class GamesPostgres(private val conn: () -> Connection) : GamesData {
     private fun Connection.insertGamesGenres(gameId: Int, genres: Set<Genre>) {
         val query =
             """
-            INSERT INTO games_genres(game, genre) VALUES ${genres.joinToString(", ") { "(?, ?)" }}
+            INSERT INTO games_genres(game_id, genre_id) VALUES ${genres.joinToString(", ") { "(?, ?)" }}
             """.trimIndent()
 
         val statement =
