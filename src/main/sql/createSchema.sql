@@ -30,30 +30,30 @@ CREATE TABLE gaming_sessions
 (
     gaming_session_id serial,
     capacity          integer   NOT NULL CHECK (capacity > 1),
-    creator           integer,
+    host           integer,
     starting_date     timestamp NOT NULL,
-    game              integer,
+    game_id              integer,
     PRIMARY KEY (gaming_session_id),
-    FOREIGN KEY (game) REFERENCES games (game_id),
-    FOREIGN KEY (creator) REFERENCES players (player_id)
+    FOREIGN KEY (game_id) REFERENCES games (game_id),
+    FOREIGN KEY (host) REFERENCES players (player_id)
 );
 
 CREATE TABLE games_genres
 (
-    game  integer,
-    genre integer,
-    FOREIGN KEY (game) REFERENCES games (game_id),
-    FOREIGN KEY (genre) REFERENCES genres (genre_id),
-    PRIMARY KEY (game, genre)
+    game_id  integer,
+    genre_id integer,
+    FOREIGN KEY (game_id) REFERENCES games (game_id),
+    FOREIGN KEY (genre_id) REFERENCES genres (genre_id),
+    PRIMARY KEY (game_id, genre_id)
 );
 
 CREATE TABLE players_sessions
 (
-    player         integer,
-    gaming_session integer,
-    FOREIGN KEY (player) REFERENCES players (player_id),
-    FOREIGN KEY (gaming_session) REFERENCES gaming_sessions (gaming_session_id) ON DELETE CASCADE,
-    PRIMARY KEY (player, gaming_session)
+    player_id         integer,
+    gaming_session_id integer,
+    FOREIGN KEY (player_id) REFERENCES players (player_id),
+    FOREIGN KEY (gaming_session_id) REFERENCES gaming_sessions (gaming_session_id) ON DELETE CASCADE,
+    PRIMARY KEY (player_id, gaming_session_id)
 );
 
 commit;

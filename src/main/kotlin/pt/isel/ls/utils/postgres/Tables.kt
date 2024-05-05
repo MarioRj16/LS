@@ -54,8 +54,8 @@ fun ResultSet.toGame(genres: Set<Genre>, game: Int = getInt("game_id")): Game =
 fun ResultSet.toGamingSession(players: Set<Player>): Session =
     Session(
         id = getInt("gaming_session_id"),
-        gameId = getInt("game"),
-        hostId = getInt("creator"),
+        gameId = getInt("game_id"),
+        hostId = getInt("host"),
         maxCapacity = getInt("capacity"),
         startingDate = getTimestamp("starting_date").toLocalDateTime().toKotlinLocalDateTime(),
         players = players,

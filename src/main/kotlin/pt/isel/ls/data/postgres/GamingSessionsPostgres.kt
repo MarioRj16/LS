@@ -25,7 +25,7 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
         conn().useWithRollback {
             val statement =
                 it.prepareStatement(
-                    """insert into gaming_sessions(capacity, starting_date, game, creator) values (?, ?, ?, ?)""",
+                    """insert into gaming_sessions(capacity, starting_date, game_id, host) values (?, ?, ?, ?)""",
                     Statement.RETURN_GENERATED_KEYS,
                 ).apply {
                     setInt(1, capacity)
@@ -53,9 +53,9 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
                     """
                     select * from gaming_sessions 
                     full outer join players_sessions 
-                    on gaming_sessions.gaming_session_id = players_sessions.gaming_session
+                    using (gaming_session_id)
                     full outer join players
-                    on players_sessions.player = players.player_id
+                    using (player_id)
                     where gaming_session_id = ?
                     """.trimIndent(),
                 ).apply {
@@ -83,19 +83,19 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
                 """
                 select * from gaming_sessions
                 full outer join 
-                (select gaming_session, count(player) player_count from players_sessions group by gaming_session) as gspc 
-                on gaming_session_id = gspc.gaming_session
+                (select gaming_session_id, count(player_id) player_count from players_sessions group by gaming_session_id) as gsipc
+                using (gaming_session_id)
                 ${if (playerEmail != null) 
-                    " full outer join players_sessions on gaming_session_id = gspc.gaming_session"
+                    " full outer join players_sessions using (gaming_session_id)"
                 else 
                     ""
                 }
-                ${if (playerEmail != null) " full outer join players on player = player_id" else ""}
+                ${if (playerEmail != null) " full outer join players using (player_id)" else ""}
                 where 1 = 1
-                ${if (game != null) " and game = ?" else ""}
+                ${if (game != null) " and game_id = ?" else ""}
                 ${if (date != null) " and starting_date = ?" else ""}
                 ${if (playerEmail != null) " and email = ?" else ""}
-                ${if(hostId != null) " and creator = ?" else ""}
+                ${if(hostId != null) " and host = ?" else ""}
                 ${
                     if (isOpen != null) {
                         if (isOpen) {
@@ -166,7 +166,7 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
     ) = conn().useWithRollback {
         val stm =
             it.prepareStatement(
-                """insert into players_sessions(player, gaming_session) values (?, ?)""",
+                """insert into players_sessions(player_id, gaming_session_id) values (?, ?)""",
                 Statement.RETURN_GENERATED_KEYS,
             ).apply {
                 setInt(1, player)
@@ -183,7 +183,7 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
         playerId: Int,
     ) = conn().useWithRollback {
         val stm = it.prepareStatement(
-            """delete from players_sessions where gaming_session = ? and player = ?""",
+            """delete from players_sessions where gaming_session_id = ? and player_id = ?""",
         ).apply {
             setInt(1, sessionId)
             setInt(2, playerId)

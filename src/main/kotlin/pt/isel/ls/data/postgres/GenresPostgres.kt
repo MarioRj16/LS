@@ -23,9 +23,7 @@ class GenresPostgres(private val conn: () -> Connection): GenresData {
 
     override fun getAllGenres(): Set<Genre> {
         conn().useWithRollback {
-            val query = """
-                SELECT * FROM genres
-            """.trimIndent()
+            val query = """SELECT * FROM genres"""
             val statement = it.prepareStatement(query)
 
             val resultSet = statement.executeQuery()
