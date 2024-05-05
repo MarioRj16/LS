@@ -30,6 +30,7 @@ class SessionsAPI(private val services: SessionServices) : APISchema() {
             }
             val state = request.query("state")?.toBoolean()
             val playerEmail = request.query("player")?.let { Email(it) }
+            println(playerEmail)
             val hostId = request.query("host")?.toIntOrNull()
             val sessionSearch = SessionSearch(gameId, date, state, playerEmail, hostId)
             val skip = request.query("skip")?.toInt().validateInt(DEFAULT_SKIP) { it.isNotNegative() }
