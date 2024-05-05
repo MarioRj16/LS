@@ -28,7 +28,7 @@ class SessionResponse private constructor(
         if (game != other.game) return false
         if (capacity != other.capacity) return false
         if (date != other.date) return false
-        if(isOpen != other.isOpen) return false
+        if (isOpen != other.isOpen) return false
 
         return true
     }
