@@ -34,10 +34,10 @@ export async function SessionsCreatePage(state) {
             startingDate: new Date(dateInput).getTime(),
             capacity: capacity
         };
-        console.log(params)
         const create = await FetchAPI(`/sessions`, 'POST', params)
-        console.log(create)
-
+        if(create.id)alert("Session created successfully");
+        else alert(`${create.message}`);
+        window.location.reload()
     }
 
     const submitButton = await button({ class: "btn btn-primary", type: "submit" }, "Create");
