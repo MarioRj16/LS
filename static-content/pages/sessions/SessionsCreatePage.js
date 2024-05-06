@@ -1,4 +1,4 @@
-import { button, div, form, h1, input, label, select } from "../../utils/Elements.js";
+import { button, div, h1, input, label} from "../../utils/Elements.js";
 import { FetchAPI } from "../../utils/FetchAPI.js";
 import {OptionsGames} from "../../components/games/OptionsGames.js";
 
@@ -47,39 +47,29 @@ export async function SessionsCreatePage(state) {
         window.location.reload()
     }
 
-
     return div(
         { class: "card mx-auto justify-content-center w-50 maxH-50" },
+        h1({class: "card-header"}, "Create a Session"),
         div(
-            { class: "card-header" },
-            h1({}, "Create a Session")
-        ),
-        div(
-            { class: "card-body" },
-            form(
-                {
-                    class: "sessions-create-container d-flex flex-column gap-4",
-                    onsubmit: handleFormSubmit
-                },
-                div(
-                    {},
-                    label({ class: "form-label", for: "gameInput" }, "Game"),
-                    games
-                ),
-                div(
-                    {},
-                    label({ class: "form-label", for: "dateInput" }, "Date and Time"),
-                    input({ class: "form-control", type: "datetime-local", id: "dateInput", required: true })
-                ),
-                div(
-                    {},
-                    label({ class: "form-label", for: "capacityInput" }, "Capacity"),
-                    input({ class: "form-control", type: "number", placeholder:"(required)",id: "capacityInput", min: 1, required: true })
-                ),
-                div(
-                    { class: "mx-auto" },
-                    submitButton
-                )
+        { class: "card-body d-flex flex-column gap-4" },
+            div(
+                {},
+                label({ class: "form-label", for: "gameInput" }, "Game"),
+                games
+            ),
+            div(
+                {},
+                label({ class: "form-label", for: "dateInput" }, "Date and Time"),
+                input({ class: "form-control", type: "datetime-local", id: "dateInput", required: true })
+            ),
+            div(
+                {},
+                label({ class: "form-label", for: "capacityInput" }, "Capacity"),
+                input({ class: "form-control", type: "number", placeholder:"(required)",id: "capacityInput", min: 1, required: true })
+            ),
+            div(
+                { class: "mx-auto" },
+                submitButton
             )
         )
     );

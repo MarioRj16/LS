@@ -1,8 +1,6 @@
 import {API_URL} from "./Configs.js";
 import {USER_TOKEN} from "./Configs.js";
 
-
-
 export async function FetchAPI(path, method = 'GET', bodyData = null) {
     try {
         const token = USER_TOKEN
@@ -11,7 +9,6 @@ export async function FetchAPI(path, method = 'GET', bodyData = null) {
             'Content-Type': 'application/json' // Set content type if needed
         };
         let init ={}
-        console.log(bodyData)
         if(bodyData == null){
             init= {
                 method: method,

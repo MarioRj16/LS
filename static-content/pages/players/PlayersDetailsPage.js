@@ -1,15 +1,13 @@
 import {FetchAPI} from "../../utils/FetchAPI.js";
 import {GetPlayer} from "../../components/players/GetPlayer.js";
-import {button, div, form, h1, hr, spacer, sub} from "../../utils/Elements.js";
+import {button, div, h1} from "../../utils/Elements.js";
 
 export async function PlayersDetailsPage(state){
 
-    //TODO(how are we suposed to search for game session, do we have to give gameid?)
     const id = state.params.id;
     const player = await FetchAPI(`/players/${id}`)
     const hostButton = button({ class: "btn btn-primary ", type: "submit" }, "Hosted Sessions");
     (await hostButton).addEventListener('click', SearchSessionsHost);
-
 
     const playerButton = button({ class: "btn btn-primary ", type: "submit" }, "Participant Sessions");
     (await playerButton).addEventListener('click', SearchSessionsParticipations);
@@ -27,7 +25,6 @@ export async function PlayersDetailsPage(state){
         h1({ class: "card-header text-center mb-4" }, `${player.name}'s details`),
         div(
             { class: "card-body" },
-
             div(
             { class: "d-flex flex-column align-items-center" },
             GetPlayer(player),
