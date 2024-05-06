@@ -3,6 +3,7 @@ package pt.isel.ls.utils
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 
 /**
@@ -84,3 +85,6 @@ fun Long.toLocalDateTime():LocalDateTime{
     val instant = Instant.fromEpochMilliseconds(this)
     return instant.toLocalDateTime(TimeZone.UTC)
 }
+
+fun LocalDateTime.toLong():Long=
+    this.toInstant(TimeZone.UTC).toEpochMilliseconds()

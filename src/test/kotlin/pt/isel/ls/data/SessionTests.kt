@@ -11,6 +11,7 @@ import pt.isel.ls.SESSION_MIN_CAPACITY
 import pt.isel.ls.api.models.sessions.SessionSearch
 import pt.isel.ls.api.models.sessions.SessionUpdate
 import pt.isel.ls.utils.plusDaysToCurrentDateTime
+import pt.isel.ls.utils.toLong
 import kotlin.random.Random
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
@@ -86,9 +87,15 @@ class SessionTests : AbstractDataTests() {
         val newCapacity: Int =
             Random.nextInt(maxOf(SESSION_MIN_CAPACITY, session.maxCapacity), SESSION_MAX_CAPACITY+1)
         val expected = session.copy(startingDate = newDate, maxCapacity = newCapacity)
-        val sessionUpdate = SessionUpdate(newCapacity, newDate)
+        val sessionUpdate = SessionUpdate(newCapacity, newDate.toLong())
         gamingSessions.update(session.id, sessionUpdate)
-        assertEquals(expected, gamingSessions.get(session.id))
+        val result = gamingSessions.get(session.id)
+        assertEquals(expected.id, result!!.id)
+        assertEquals(expected.gameId, result.gameId)
+        assertEquals(expected.maxCapacity, result.maxCapacity)
+        assertEquals(expected.startingDate.toLong(), result.startingDate.toLong())
+        assertEquals(expected.players, result.players)
+
     }
 
     @Test

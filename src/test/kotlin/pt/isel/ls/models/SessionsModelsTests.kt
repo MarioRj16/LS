@@ -7,6 +7,7 @@ import pt.isel.ls.api.models.sessions.SessionCreate
 import pt.isel.ls.api.models.sessions.SessionUpdate
 import pt.isel.ls.utils.minusDaysToCurrentDateTime
 import pt.isel.ls.utils.plusDaysToCurrentDateTime
+import pt.isel.ls.utils.toLong
 
 class SessionsModelsTests {
 
@@ -16,10 +17,10 @@ class SessionsModelsTests {
         val capacity = 2
         val startingDate = plusDaysToCurrentDateTime()
 
-        val sessionCreate = SessionCreate(gameId, capacity, startingDate)
+        val sessionCreate = SessionCreate(gameId, capacity, startingDate.toLong())
 
         assertEquals(gameId, sessionCreate.gameId)
-        assertEquals(startingDate, sessionCreate.startingDate)
+        assertEquals(startingDate.toLong(), sessionCreate.startingDateFormatted.toLong())
     }
 
     @Test
@@ -27,10 +28,10 @@ class SessionsModelsTests {
         val capacity = 2
         val startingDate = plusDaysToCurrentDateTime()
 
-        val sessionUpdate = SessionUpdate(capacity, startingDate)
+        val sessionUpdate = SessionUpdate(capacity, startingDate.toLong())
 
         assertEquals(capacity, sessionUpdate.capacity)
-        assertEquals(startingDate, sessionUpdate.startingDate)
+        assertEquals(startingDate.toLong(), sessionUpdate.startingDateFormatted.toLong())
     }
 
     @Test
@@ -39,7 +40,7 @@ class SessionsModelsTests {
         val startingDate = plusDaysToCurrentDateTime()
 
         val exception = assertThrows<IllegalArgumentException> {
-            SessionUpdate(capacity, startingDate)
+            SessionUpdate(capacity, startingDate.toLong())
         }
 
         assertEquals("Capacity must be greater than 1", exception.message)
@@ -51,7 +52,7 @@ class SessionsModelsTests {
         val startingDate = minusDaysToCurrentDateTime(1)
 
         val exception = assertThrows<IllegalArgumentException> {
-            SessionUpdate(capacity, startingDate)
+            SessionUpdate(capacity, startingDate.toLong()).startingDateFormatted
         }
 
         assertEquals("Starting date must be in the future", exception.message)

@@ -1,6 +1,5 @@
 package pt.isel.ls.services
 
-import java.util.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -19,6 +18,8 @@ import pt.isel.ls.utils.factories.GameFactory
 import pt.isel.ls.utils.factories.GamingSessionFactory
 import pt.isel.ls.utils.factories.PlayerFactory
 import pt.isel.ls.utils.plusDaysToCurrentDateTime
+import pt.isel.ls.utils.toLong
+import java.util.*
 import kotlin.random.Random
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
@@ -43,7 +44,7 @@ class SessionsServicesTests : SessionServices(DataMem()) {
         val game = gameFactory.createRandomGame()
         val capacity = 2
         val startingDate = plusDaysToCurrentDateTime(1L)
-        val sessionCreate = SessionCreate(game.id, capacity, startingDate)
+        val sessionCreate = SessionCreate(game.id, capacity, startingDate.toLong())
         val sessionResponse = createSession(sessionCreate, token)
         val expectedId = 1
         assertEquals(expectedId, sessionResponse.id)
@@ -54,7 +55,7 @@ class SessionsServicesTests : SessionServices(DataMem()) {
         val game = gameFactory.createRandomGame()
         val capacity = 2
         val startingDate = plusDaysToCurrentDateTime(1L)
-        val sessionCreate = SessionCreate(game.id + 1, capacity, startingDate)
+        val sessionCreate = SessionCreate(game.id + 1, capacity, startingDate.toLong())
         assertThrows<IllegalArgumentException> {
             createSession(sessionCreate, token)
         }
@@ -90,7 +91,7 @@ class SessionsServicesTests : SessionServices(DataMem()) {
                 Random.nextInt(session.capacity, 10)
             }
 
-        val sessionUpdate = SessionUpdate(capacity, plusDaysToCurrentDateTime(600))
+        val sessionUpdate = SessionUpdate(capacity, plusDaysToCurrentDateTime(600).toLong())
         updateSession(session.id, sessionUpdate, token)
 
         val updatedSession = getSession(session.id, token)
@@ -100,7 +101,7 @@ class SessionsServicesTests : SessionServices(DataMem()) {
         assertEquals(updatedSession.game, session.game)
         assertEquals(updatedSession.host, session.host)
         assertEquals(updatedSession.capacity, sessionUpdate.capacity)
-        assertEquals(updatedSession.date, sessionUpdate.startingDate)
+        assertEquals(updatedSession.date.toLong(), sessionUpdate.startingDate)
     }
 
     @Test
@@ -117,7 +118,7 @@ class SessionsServicesTests : SessionServices(DataMem()) {
             return@run session
         }
         val capacity = Random.nextInt(2, players.size)
-        val sessionUpdate = SessionUpdate(capacity, plusDaysToCurrentDateTime(600))
+        val sessionUpdate = SessionUpdate(capacity, plusDaysToCurrentDateTime(600).toLong())
         assertThrows<IllegalArgumentException> {
             updateSession(session.id, sessionUpdate, token)
         }
@@ -138,7 +139,7 @@ class SessionsServicesTests : SessionServices(DataMem()) {
             } else {
                 Random.nextInt(session.maxCapacity, 10)
             }
-        val sessionUpdate = SessionUpdate(capacity, plusDaysToCurrentDateTime(600))
+        val sessionUpdate = SessionUpdate(capacity, plusDaysToCurrentDateTime(600).toLong())
         assertThrows<ForbiddenException> {
             updateSession(session.id, sessionUpdate, token)
         }
@@ -154,7 +155,7 @@ class SessionsServicesTests : SessionServices(DataMem()) {
             } else {
                 Random.nextInt(session.maxCapacity, 10)
             }
-        val sessionUpdate = SessionUpdate(capacity, plusDaysToCurrentDateTime(600))
+        val sessionUpdate = SessionUpdate(capacity, plusDaysToCurrentDateTime(600).toLong())
         assertThrows<ForbiddenException> {
             updateSession(session.id, sessionUpdate, playerFactory.createRandomPlayer().token)
         }
