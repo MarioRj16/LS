@@ -16,6 +16,8 @@ import pt.isel.ls.utils.factories.GameFactory
 import pt.isel.ls.utils.factories.GamingSessionFactory
 import pt.isel.ls.utils.factories.PlayerFactory
 import pt.isel.ls.utils.plusDaysToCurrentDateTime
+import pt.isel.ls.utils.toLocalDateTime
+import pt.isel.ls.utils.toLong
 import kotlin.random.Random
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -35,7 +37,7 @@ class SessionsTests : IntegrationTests() {
 
     @Test
     fun createSession() {
-        val requestBody = SessionCreate(game.id, 4, plusDaysToCurrentDateTime(1L))
+        val requestBody = SessionCreate(game.id, 4, plusDaysToCurrentDateTime(1L).toLong())
         val request =
             Request(Method.POST, "$URI_PREFIX/sessions")
                 .json(requestBody)
@@ -101,7 +103,7 @@ class SessionsTests : IntegrationTests() {
             session = GamingSessionFactory(db.gamingSessions, db.games, db.genres, db.players).createRandomGamingSession(game.id, user!!.playerId)
         }
         val requestBody =
-            SessionUpdate(Random.nextInt(2, session.maxCapacity), plusDaysToCurrentDateTime(1))
+            SessionUpdate(Random.nextInt(2, session.maxCapacity), plusDaysToCurrentDateTime(1).toLong())
         val request =
             Request(Method.PUT, "$URI_PREFIX/sessions/${session.id}").json(requestBody).token(user!!.token)
         client(request).apply {
@@ -109,7 +111,7 @@ class SessionsTests : IntegrationTests() {
             val response = Json.decodeFromString<SessionUpdate>(bodyString())
             val expectedSession =
                 SessionUpdate(
-                    session.copy(maxCapacity = requestBody.capacity, startingDate = requestBody.startingDate),
+                    session.copy(maxCapacity = requestBody.capacity, startingDate = requestBody.startingDate.toLocalDateTime()),
                 )
             assertEquals(expectedSession, response)
         }

@@ -48,9 +48,13 @@ export async function GetSession(session, players, host , user) {
     }
 
     async function leaveSession(){
-        await FetchAPI(`/sessions/${session.id}/players/${user}`,`DELETE`)
-        alert("Left Session Successfully")
-        window.location.reload()
+        const request= await FetchAPI(`/sessions/${session.id}/players/${user}`,`DELETE`)
+        if(request.message==="Cannot remove player from closed session"){
+            alert("Cannot remove player from closed session")
+        } else{
+            alert("Left Session Successfully")
+            window.location.reload()
+        }
     }
 
     async function joinSession(){

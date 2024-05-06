@@ -65,7 +65,8 @@ class GamingSessionsMem(
     }
 
     override fun update(sessionId: Int, sessionUpdate: SessionUpdate) {
-        val (capacity, startingDate) = sessionUpdate
+       val capacity = sessionUpdate.capacity
+        val startingDate = sessionUpdate.startingDateFormatted
         val session =
             sessions.table[sessionId]!!.copy(maxCapacity = capacity, startingDate = startingDate)
         sessions.table[sessionId] = session
