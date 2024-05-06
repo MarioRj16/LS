@@ -1,5 +1,10 @@
 package pt.isel.ls.utils
 
+import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
+
 /**
  * Paginates a list by skipping a certain number of elements and limiting the size of the result.
  *
@@ -74,4 +79,8 @@ fun Int?.validateInt(defaultValue: Int? = null, function: (Int) -> Boolean): Int
         throw IllegalArgumentException("Invalid argument: Int is not valid\nInt=$this")
     }
     return this
+}
+fun Long.toLocalDateTime():LocalDateTime{
+    val instant = Instant.fromEpochMilliseconds(this)
+    return instant.toLocalDateTime(TimeZone.UTC)
 }

@@ -1,6 +1,5 @@
 package pt.isel.ls.services
 
-import java.util.*
 import pt.isel.ls.api.models.sessions.SessionCreate
 import pt.isel.ls.api.models.sessions.SessionCreateResponse
 import pt.isel.ls.api.models.sessions.SessionDetails
@@ -10,6 +9,7 @@ import pt.isel.ls.api.models.sessions.SessionUpdate
 import pt.isel.ls.data.Data
 import pt.isel.ls.utils.exceptions.ForbiddenException
 import pt.isel.ls.utils.isPast
+import java.util.*
 
 open class SessionServices(internal val db: Data) : ServicesSchema(db) {
     fun searchSessions(
@@ -27,11 +27,12 @@ open class SessionServices(internal val db: Data) : ServicesSchema(db) {
         token: UUID,
     ): SessionCreateResponse = withAuthorization(token) { user ->
         require(db.games.get(sessionInput.gameId) != null) { "The provided game does not exist" }
+        println(sessionInput.startingDateFormatted)
         val session =
             db.gamingSessions.create(
                 sessionInput.capacity,
                 sessionInput.gameId,
-                sessionInput.startingDate,
+                sessionInput.startingDateFormatted,
                 user.id,
             )
         return@withAuthorization SessionCreateResponse(session.id)
