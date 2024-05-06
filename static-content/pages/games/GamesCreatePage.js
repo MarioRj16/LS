@@ -1,6 +1,6 @@
-import {div, h1, input, select, option, button, form, label} from "../../utils/Elements.js";
-import { FetchAPI } from "../../utils/FetchAPI.js";
-import { GenresOptions } from "../../components/GenresOptions.js";
+import {button, div, form, h1, input, label} from "../../utils/Elements.js";
+import {FetchAPI} from "../../utils/FetchAPI.js";
+import {GenresOptions} from "../../components/GenresOptions.js";
 
 export async function GamesCreatePage(state) {
     const genres = (await FetchAPI(`/genres`)).genres;

@@ -1,4 +1,4 @@
-import { button, div, h1, h2, h3, h4, h5, label } from "../../utils/Elements.js";
+import {button, div, h1, h2, label} from "../../utils/Elements.js";
 
 export async function GetGame(game) {
     const submitButton = button({ class: "btn btn-primary", type: "submit" }, "Search");

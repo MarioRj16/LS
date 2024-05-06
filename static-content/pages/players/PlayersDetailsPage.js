@@ -1,6 +1,6 @@
 import {FetchAPI} from "../../utils/FetchAPI.js";
 import {GetPlayer} from "../../components/players/GetPlayer.js";
-import {button, div, form, h1, hr, spacer, sub} from "../../utils/Elements.js";
+import {button, div, h1} from "../../utils/Elements.js";
 
 export async function PlayersDetailsPage(state){
 

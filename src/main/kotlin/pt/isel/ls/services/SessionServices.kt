@@ -1,6 +1,8 @@
 package pt.isel.ls.services
 
 import java.util.*
+import pt.isel.ls.SESSION_MAX_CAPACITY
+import pt.isel.ls.SESSION_MIN_CAPACITY
 import pt.isel.ls.api.models.sessions.SessionCreate
 import pt.isel.ls.api.models.sessions.SessionCreateResponse
 import pt.isel.ls.api.models.sessions.SessionDetails
@@ -9,6 +11,7 @@ import pt.isel.ls.api.models.sessions.SessionSearch
 import pt.isel.ls.api.models.sessions.SessionUpdate
 import pt.isel.ls.data.Data
 import pt.isel.ls.utils.exceptions.ForbiddenException
+import pt.isel.ls.utils.isFuture
 import pt.isel.ls.utils.isPast
 
 open class SessionServices(internal val db: Data) : ServicesSchema(db) {
@@ -26,6 +29,10 @@ open class SessionServices(internal val db: Data) : ServicesSchema(db) {
         sessionInput: SessionCreate,
         token: UUID,
     ): SessionCreateResponse = withAuthorization(token) { user ->
+        require(sessionInput.capacity in SESSION_MIN_CAPACITY..SESSION_MAX_CAPACITY) {
+            "Capacity must be between $SESSION_MIN_CAPACITY and $SESSION_MAX_CAPACITY"
+        }
+        require(sessionInput.startingDate.isFuture()) { "Starting date must be in the future" }
         require(db.games.get(sessionInput.gameId) != null) { "The provided game does not exist" }
         val session =
             db.gamingSessions.create(
@@ -56,10 +63,10 @@ open class SessionServices(internal val db: Data) : ServicesSchema(db) {
         val session = db.gamingSessions.get(sessionId)
             ?: throw NoSuchElementException("No session $sessionId was found")
         if (!session.state) {
-            throw ForbiddenException("Cannot update a closed session")
+            throw IllegalArgumentException("Cannot update a closed session")
         }
         if (session.startingDate.isPast()) {
-            throw ForbiddenException("Cannot update a session that has already started")
+            throw IllegalArgumentException("Cannot update a session that has already started")
         }
         if (user.id != session.hostId) {
             throw ForbiddenException("Changes can only be made by the creator of the session")
@@ -107,7 +114,9 @@ open class SessionServices(internal val db: Data) : ServicesSchema(db) {
     ) = withAuthorization(token) { user ->
         val session = db.gamingSessions.get(sessionId)
             ?: throw NoSuchElementException("No session $sessionId was found")
-        if (session.players.none { it.id == playerId }) {
+        val playerToRemove = db.players.get(playerId)
+            ?: throw NoSuchElementException("No player $playerId was found")
+        if (session.players.none { it.id == playerToRemove.id }) {
             throw IllegalArgumentException("Player is not in session")
         }
         if (session.hostId != user.id && session.players.none { it.id == user.id }) {

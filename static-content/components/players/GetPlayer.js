@@ -1,4 +1,4 @@
-import {div, h1, h2} from "../../utils/Elements.js";
+import {div, h2} from "../../utils/Elements.js";
 
 export async function GetPlayer(state){
     return div(
