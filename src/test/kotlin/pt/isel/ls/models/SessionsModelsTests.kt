@@ -2,10 +2,8 @@ package pt.isel.ls.models
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import pt.isel.ls.api.models.sessions.SessionCreate
 import pt.isel.ls.api.models.sessions.SessionUpdate
-import pt.isel.ls.utils.minusDaysToCurrentDateTime
 import pt.isel.ls.utils.plusDaysToCurrentDateTime
 import pt.isel.ls.utils.toLong
 
@@ -17,10 +15,10 @@ class SessionsModelsTests {
         val capacity = 2
         val startingDate = plusDaysToCurrentDateTime()
 
-        val sessionCreate = SessionCreate(gameId, capacity, startingDate)
+        val sessionCreate = SessionCreate(gameId, capacity, startingDate.toLong())
 
         assertEquals(gameId, sessionCreate.gameId)
-        assertEquals(startingDate, sessionCreate.startingDate)
+        assertEquals(startingDate.toLong(), sessionCreate.startingDate)
     }
 
     @Test
@@ -28,9 +26,9 @@ class SessionsModelsTests {
         val capacity = 2
         val startingDate = plusDaysToCurrentDateTime()
 
-        val sessionUpdate = SessionUpdate(capacity, startingDate)
+        val sessionUpdate = SessionUpdate(capacity, startingDate.toLong())
 
         assertEquals(capacity, sessionUpdate.capacity)
-        assertEquals(startingDate, sessionUpdate.startingDate)
+        assertEquals(startingDate.toLong(), sessionUpdate.startingDate)
     }
 }

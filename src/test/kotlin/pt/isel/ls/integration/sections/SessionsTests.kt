@@ -48,7 +48,7 @@ class SessionsTests : IntegrationTests() {
     @Test
     fun `createSession returns 400 for non existing game`() {
         val player = playerFactory.createRandomPlayer()
-        val requestBody = SessionCreate(999999, 4, plusDaysToCurrentDateTime())
+        val requestBody = SessionCreate(999999, 4, plusDaysToCurrentDateTime().toLong())
         val request = Request(Method.POST, "$URI_PREFIX/sessions")
             .json(requestBody)
             .token(player.token)
@@ -62,7 +62,7 @@ class SessionsTests : IntegrationTests() {
     fun `createSession returns 400 for invalid capacity`() {
         val player = playerFactory.createRandomPlayer()
         val game = gameFactory.createRandomGame()
-        val requestBody = SessionCreate(game.id, SESSION_MAX_CAPACITY+1, plusDaysToCurrentDateTime())
+        val requestBody = SessionCreate(game.id, SESSION_MAX_CAPACITY+1, plusDaysToCurrentDateTime().toLong())
         val request = Request(Method.POST, "$URI_PREFIX/sessions")
             .json(requestBody)
             .token(player.token)
@@ -76,7 +76,7 @@ class SessionsTests : IntegrationTests() {
     fun `createSession returns 400 for past starting date`() {
         val player = playerFactory.createRandomPlayer()
         val game = gameFactory.createRandomGame()
-        val requestBody = SessionCreate(game.id, 4, minusDaysToCurrentDateTime(1L))
+        val requestBody = SessionCreate(game.id, 4, minusDaysToCurrentDateTime(1L).toLong())
         val request = Request(Method.POST, "$URI_PREFIX/sessions")
             .json(requestBody)
             .token(player.token)
@@ -278,14 +278,14 @@ class SessionsTests : IntegrationTests() {
     fun `updateSession returns 400 for bad request`() {
         val player = playerFactory.createRandomPlayer()
         val session = sessionFactory.createRandomGamingSession(hostId = player.id, players = emptySet())
-        val requestBody = SessionUpdate(session.maxCapacity, minusDaysToCurrentDateTime(1L))
+        val requestBody = SessionUpdate(session.maxCapacity, minusDaysToCurrentDateTime(1L).toLong())
         val request = Request(Method.PUT, "$URI_PREFIX/sessions/${session.id}")
             .json(requestBody)
             .token(player.token)
         client(request).apply {
             val response = Json.decodeFromString<SessionUpdate>(bodyString())
             val expectedSession =
-                SessionUpdate(session.copy(maxCapacity = requestBody.capacity, startingDate = requestBody.startingDate))
+                SessionUpdate(session.copy(maxCapacity = requestBody.capacity, startingDate = requestBody.startingDateFormatted))
             assertEquals(Status.OK, status)
             assertEquals(expectedSession, response)
         }
@@ -300,7 +300,7 @@ class SessionsTests : IntegrationTests() {
                 hostId = player.id,
                 players = playersInSession
             )
-        val requestBody = SessionUpdate(session.maxCapacity+1, plusDaysToCurrentDateTime(1L))
+        val requestBody = SessionUpdate(session.maxCapacity+1, plusDaysToCurrentDateTime(1L).toLong())
         val request = Request(Method.PUT, "$URI_PREFIX/sessions/${session.id}")
             .json(requestBody)
             .token(player.token)
@@ -317,7 +317,7 @@ class SessionsTests : IntegrationTests() {
             date = plusMillisecondsToCurrentDateTime(ms),
             hostId = player.id,
         )
-        val requestBody = SessionUpdate(session.maxCapacity+1, session.startingDate)
+        val requestBody = SessionUpdate(session.maxCapacity+1, session.startingDate.toLong())
         val request = Request(Method.PUT, "$URI_PREFIX/sessions/${session.id}")
             .json(requestBody)
             .token(player.token)
@@ -332,7 +332,7 @@ class SessionsTests : IntegrationTests() {
         val player = playerFactory.createRandomPlayer()
         val playersIsSession = List(10){ playerFactory.createRandomPlayer() }.toSet()
         val session = sessionFactory.createRandomGamingSession(hostId = player.id, players = playersIsSession)
-        val requestBody = SessionUpdate(SESSION_MIN_CAPACITY, session.startingDate)
+        val requestBody = SessionUpdate(SESSION_MIN_CAPACITY, session.startingDate.toLong())
         val request = Request(Method.PUT, "$URI_PREFIX/sessions/${session.id}")
             .json(requestBody)
             .token(player.token)
@@ -345,7 +345,7 @@ class SessionsTests : IntegrationTests() {
     fun `updateSession returns 403 for non-host`() {
         val player = playerFactory.createRandomPlayer()
         val session = sessionFactory.createRandomGamingSession()
-        val requestBody = SessionUpdate(session.maxCapacity, plusDaysToCurrentDateTime(365L*2))
+        val requestBody = SessionUpdate(session.maxCapacity, plusDaysToCurrentDateTime(365L*2).toLong())
         val request = Request(Method.PUT, "$URI_PREFIX/sessions/${session.id}")
             .json(requestBody)
             .token(player.token)
@@ -357,7 +357,7 @@ class SessionsTests : IntegrationTests() {
     @Test
     fun `updateSession returns 404 for non-existing session`() {
         val player = playerFactory.createRandomPlayer()
-        val requestBody = SessionUpdate(SESSION_MIN_CAPACITY, plusDaysToCurrentDateTime(1L))
+        val requestBody = SessionUpdate(SESSION_MIN_CAPACITY, plusDaysToCurrentDateTime(1L).toLong())
         val request = Request(Method.PUT, "$URI_PREFIX/sessions/999999")
             .json(requestBody)
             .token(player.token)
