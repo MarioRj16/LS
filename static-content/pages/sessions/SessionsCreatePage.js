@@ -1,11 +1,18 @@
 import { button, div, form, h1, input, label, select } from "../../utils/Elements.js";
 import { FetchAPI } from "../../utils/FetchAPI.js";
+import {OptionsGames} from "../../components/games/OptionsGames.js";
 
 export async function SessionsCreatePage(state) {
+
+    const submitButton = await button({ class: "btn btn-primary", type: "submit" }, "Create");
+    submitButton.addEventListener('click', handleFormSubmit);
+
+    const games=await OptionsGames()
+
     async function handleFormSubmit(event) {
         event.preventDefault();
-
-        const gameInput = document.getElementById('gameInput').value;
+        let gameInput = document.getElementById('gameInput').value;
+        if (gameInput!=null && gameInput!=="") gameInput=document.getElementById(gameInput).accessKey;
         const dateInput = document.getElementById('dateInput').value;
         const capacityInput = document.getElementById('capacityInput').value;
 
@@ -40,25 +47,6 @@ export async function SessionsCreatePage(state) {
         window.location.reload()
     }
 
-    const submitButton = await button({ class: "btn btn-primary", type: "submit" }, "Create");
-    submitButton.addEventListener('click', handleFormSubmit);
-
-    const games = (await FetchAPI(`/games`)).games;
-
-    const selectElement = document.createElement('select');
-    selectElement.id = "gameInput";
-    selectElement.classList.add("form-control");
-    const defaultOption = document.createElement('option');
-    defaultOption.textContent = "Select a game";
-    defaultOption.selected = true;
-    selectElement.appendChild(defaultOption);
-
-    games.forEach(game => {
-        const optionElement = document.createElement('option');
-        optionElement.value = game.id;
-        optionElement.textContent = game.name;
-        selectElement.appendChild(optionElement);
-    });
 
     return div(
         { class: "card mx-auto justify-content-center w-50 maxH-50" },
@@ -76,7 +64,7 @@ export async function SessionsCreatePage(state) {
                 div(
                     {},
                     label({ class: "form-label", for: "gameInput" }, "Game"),
-                    selectElement
+                    games
                 ),
                 div(
                     {},

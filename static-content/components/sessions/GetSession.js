@@ -3,7 +3,7 @@ import {FetchAPI} from "../../utils/FetchAPI.js";
 
 export async function GetSession(session, players, host , user) {
     const renderPlayerLinks = await PlayerLinks();
-    console.log(session)
+
     async function PlayerLinks() {
         const playerLinks = players.map(player => {
             return a(
