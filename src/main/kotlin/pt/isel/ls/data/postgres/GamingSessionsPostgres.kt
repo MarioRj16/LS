@@ -1,8 +1,5 @@
 package pt.isel.ls.data.postgres
 
-import java.sql.Connection
-import java.sql.SQLException
-import java.sql.Statement
 import kotlinx.datetime.LocalDateTime
 import pt.isel.ls.api.models.sessions.SessionSearch
 import pt.isel.ls.api.models.sessions.SessionUpdate
@@ -14,6 +11,9 @@ import pt.isel.ls.utils.postgres.toGamingSession
 import pt.isel.ls.utils.postgres.toPlayer
 import pt.isel.ls.utils.postgres.useWithRollback
 import pt.isel.ls.utils.toTimeStamp
+import java.sql.Connection
+import java.sql.SQLException
+import java.sql.Statement
 
 class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSessionsData {
     override fun create(
@@ -132,8 +132,8 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
 
     override fun update(sessionId: Int, sessionUpdate: SessionUpdate) =
         conn().useWithRollback {
-            val (capacity, startingDate) = sessionUpdate
-
+            val capacity = sessionUpdate.capacity
+            val startingDate = sessionUpdate.startingDateFormatted
             val stm =
                 it.prepareStatement(
                     """update gaming_sessions set capacity = ?, starting_date = ? where gaming_session_id = ?""",

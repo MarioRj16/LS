@@ -83,6 +83,7 @@ class GamesPostgres(private val conn: () -> Connection) : GamesData {
     }
 
     private fun Connection.insertGamesGenres(gameId: Int, genres: Set<Genre>) {
+
         val query = """INSERT INTO games_genres(game_id, genre_id) VALUES ${genres.joinToString(", ") { "(?, ?)" }}"""
 
         val statement =
@@ -130,7 +131,7 @@ class GamesPostgres(private val conn: () -> Connection) : GamesData {
         val genreParams = genres.joinToString(", ") { "?" }
         val genreCondition = if (genres.isEmpty()) "" else " AND genre_id IN ($genreParams)"
         val developerCondition = if (developer.isNullOrEmpty()) "" else " AND developer = ?"
-        val nameCondition = if (name.isNullOrEmpty()) "" else " AND game_name LIKE ?"
+        val nameCondition = if (name.isNullOrEmpty()) "" else " AND game_name ILIKE ?"
 
         return (
             """

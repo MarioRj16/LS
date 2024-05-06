@@ -30,7 +30,7 @@ class GamesMem(
         val (name, developer, genres) = searchParams
         val list =
             gamesDB.table.values.filter {
-                (name.isNullOrBlank() || it.name.contains(name)) &&
+                (name.isNullOrBlank() || it.name.contains(name, ignoreCase = true)) &&
                     (developer.isNullOrBlank() || it.developer == developer) &&
                     (genres.isEmpty() || it.genres.map { i -> i.genreId }.intersect(genres).isNotEmpty())
             }

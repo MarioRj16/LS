@@ -1,6 +1,5 @@
 package pt.isel.ls.services
 
-import java.util.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -20,6 +19,8 @@ import pt.isel.ls.utils.factories.GameFactory
 import pt.isel.ls.utils.factories.GamingSessionFactory
 import pt.isel.ls.utils.factories.PlayerFactory
 import pt.isel.ls.utils.plusDaysToCurrentDateTime
+import pt.isel.ls.utils.toLong
+import java.util.*
 import kotlin.random.Random
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
@@ -44,7 +45,7 @@ class SessionsServicesTests : SessionServices(DataMem()) {
         val game = gameFactory.createRandomGame()
         val capacity = 2
         val startingDate = plusDaysToCurrentDateTime(1L)
-        val sessionCreate = SessionCreate(game.id, capacity, startingDate)
+        val sessionCreate = SessionCreate(game.id, capacity, startingDate.toLong())
         val sessionResponse = createSession(sessionCreate, token)
         val expectedId = 1
         assertEquals(expectedId, sessionResponse.id)
@@ -55,7 +56,7 @@ class SessionsServicesTests : SessionServices(DataMem()) {
         val game = gameFactory.createRandomGame()
         val capacity = 2
         val startingDate = plusDaysToCurrentDateTime(1L)
-        val sessionCreate = SessionCreate(game.id + 1, capacity, startingDate)
+        val sessionCreate = SessionCreate(game.id + 1, capacity, startingDate.toLong())
         assertThrows<IllegalArgumentException> {
             createSession(sessionCreate, token)
         }
@@ -65,7 +66,7 @@ class SessionsServicesTests : SessionServices(DataMem()) {
     fun `getSession() returns gaming session successfully`() {
         val player = playerFactory.createRandomPlayer()
         val game = gameFactory.createRandomGame()
-        val expected = SessionDetails(gamingSessionFactory.createRandomGamingSession(game.id, player.id,), game)
+        val expected = SessionDetails(gamingSessionFactory.createRandomGamingSession(game.id, player.id), game)
         val returnedSession = getSession(expected.id, token)
         assertEquals(expected, returnedSession)
     }
@@ -81,7 +82,7 @@ class SessionsServicesTests : SessionServices(DataMem()) {
     fun `updateSession() updates gaming session successfully`() {
         val game = gameFactory.createRandomGame()
         val session = SessionDetails(
-            gamingSessionFactory.createRandomGamingSession(game.id, user.id,),
+            gamingSessionFactory.createRandomGamingSession(game.id, user.id),
             game
         )
         val capacity =
@@ -91,7 +92,7 @@ class SessionsServicesTests : SessionServices(DataMem()) {
                 Random.nextInt(session.capacity, 10)
             }
 
-        val sessionUpdate = SessionUpdate(capacity, plusDaysToCurrentDateTime(600))
+        val sessionUpdate = SessionUpdate(capacity, plusDaysToCurrentDateTime(600).toLong())
         updateSession(session.id, sessionUpdate, token)
 
         val updatedSession = getSession(session.id, token)
@@ -101,7 +102,7 @@ class SessionsServicesTests : SessionServices(DataMem()) {
         assertEquals(updatedSession.game, session.game)
         assertEquals(updatedSession.host, session.host)
         assertEquals(updatedSession.capacity, sessionUpdate.capacity)
-        assertEquals(updatedSession.date, sessionUpdate.startingDate)
+        assertEquals(updatedSession.date.toLong(), sessionUpdate.startingDate)
     }
 
     @Test
@@ -111,14 +112,14 @@ class SessionsServicesTests : SessionServices(DataMem()) {
         }.toSet()
         val game = gameFactory.createRandomGame()
         val session = run {
-            var session = gamingSessionFactory.createRandomGamingSession(game.id, user.id, players,)
+            var session = gamingSessionFactory.createRandomGamingSession(game.id, user.id, players)
             while (session.maxCapacity == players.size) {
-                session = gamingSessionFactory.createRandomGamingSession(game.id, user.id, players,)
+                session = gamingSessionFactory.createRandomGamingSession(game.id, user.id, players)
             }
             return@run session
         }
         val capacity = Random.nextInt(2, players.size)
-        val sessionUpdate = SessionUpdate(capacity, plusDaysToCurrentDateTime(600))
+        val sessionUpdate = SessionUpdate(capacity, plusDaysToCurrentDateTime(600).toLong())
         assertThrows<IllegalArgumentException> {
             updateSession(session.id, sessionUpdate, token)
         }
@@ -142,7 +143,7 @@ class SessionsServicesTests : SessionServices(DataMem()) {
                 SESSION_MAX_CAPACITY - 1
             else
                 SESSION_MAX_CAPACITY
-        val sessionUpdate = SessionUpdate(capacity, plusDaysToCurrentDateTime(600))
+        val sessionUpdate = SessionUpdate(capacity, plusDaysToCurrentDateTime(600).toLong())
         assertThrows<IllegalArgumentException> {
             updateSession(session.id, sessionUpdate, token)
         }
@@ -151,14 +152,14 @@ class SessionsServicesTests : SessionServices(DataMem()) {
     @Test
     fun `updateSession() throws exception for non host user`() {
         val game = gameFactory.createRandomGame()
-        val session = gamingSessionFactory.createRandomGamingSession(game.id, user.id,)
+        val session = gamingSessionFactory.createRandomGamingSession(game.id, user.id)
         val capacity =
             if (session.maxCapacity > 3) {
                 Random.nextInt(2, session.maxCapacity)
             } else {
                 Random.nextInt(session.maxCapacity, 10)
             }
-        val sessionUpdate = SessionUpdate(capacity, plusDaysToCurrentDateTime(600))
+        val sessionUpdate = SessionUpdate(capacity, plusDaysToCurrentDateTime(600).toLong())
         assertThrows<ForbiddenException> {
             updateSession(session.id, sessionUpdate, playerFactory.createRandomPlayer().token)
         }
@@ -167,7 +168,7 @@ class SessionsServicesTests : SessionServices(DataMem()) {
     @Test
     fun `deleteSession() deletes gaming session successfully`() {
         val game = gameFactory.createRandomGame()
-        val session = gamingSessionFactory.createRandomGamingSession(game.id, user.id,)
+        val session = gamingSessionFactory.createRandomGamingSession(game.id, user.id)
         deleteSession(session.id, token)
     }
 
@@ -181,7 +182,7 @@ class SessionsServicesTests : SessionServices(DataMem()) {
     @Test
     fun `deleteSession() throws exception for non host user`() {
         val game = gameFactory.createRandomGame()
-        val session = gamingSessionFactory.createRandomGamingSession(game.id, user.id,)
+        val session = gamingSessionFactory.createRandomGamingSession(game.id, user.id)
         assertThrows<ForbiddenException> {
             deleteSession(session.id, playerFactory.createRandomPlayer().token)
         }
@@ -191,8 +192,8 @@ class SessionsServicesTests : SessionServices(DataMem()) {
     fun `searchSessions() returns gaming sessions successfully`() {
         val player = playerFactory.createRandomPlayer()
         val game = gameFactory.createRandomGame()
-        val session1 = gamingSessionFactory.createRandomGamingSession(game.id, player.id,)
-        val session2 = gamingSessionFactory.createRandomGamingSession(game.id, player.id,)
+        val session1 = gamingSessionFactory.createRandomGamingSession(game.id, player.id)
+        val session2 = gamingSessionFactory.createRandomGamingSession(game.id, player.id)
         val searchParameters = SessionSearch(game.id)
 
         val gamingSessions = searchSessions(searchParameters, token, DEFAULT_SKIP, DEFAULT_LIMIT)
@@ -206,7 +207,7 @@ class SessionsServicesTests : SessionServices(DataMem()) {
     fun `addPlayerToSession() returns id of added player successfully`() {
         val player = playerFactory.createRandomPlayer()
         val game = gameFactory.createRandomGame()
-        val session = gamingSessionFactory.createRandomGamingSession(game.id, player.id,)
+        val session = gamingSessionFactory.createRandomGamingSession(game.id, player.id)
         val returnedPlayerId = addPlayerToSession(session.id, token)
         assertEquals(user.id, returnedPlayerId)
     }
@@ -231,7 +232,7 @@ class SessionsServicesTests : SessionServices(DataMem()) {
     @Test
     fun `addPlayerToSession() throws exception for user already in session`() {
         val game = gameFactory.createRandomGame()
-        val session = gamingSessionFactory.createRandomGamingSession(game.id, user.id,)
+        val session = gamingSessionFactory.createRandomGamingSession(game.id, user.id)
         addPlayerToSession(session.id, token)
         assertThrows<IllegalArgumentException> {
             addPlayerToSession(session.id, token)
@@ -308,7 +309,7 @@ class SessionsServicesTests : SessionServices(DataMem()) {
     fun `removePlayerFromSession() throws exception for closed session`() {
         val game = gameFactory.createRandomGame()
         val player = playerFactory.createRandomPlayer()
-        val session = gamingSessionFactory.createRandomGamingSession(game.id, user.id, setOf(player),)
+        val session = gamingSessionFactory.createRandomGamingSession(game.id, user.id, setOf(player))
         repeat(session.maxCapacity - 1) {
             db.gamingSessions.addPlayer(session.id, playerFactory.createRandomPlayer().id)
         }

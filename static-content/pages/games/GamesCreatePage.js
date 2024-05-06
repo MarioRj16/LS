@@ -36,9 +36,11 @@ export async function GamesCreatePage(state) {
             developer : developerInput.trim(),
             genres : genreInput
         }
-        console.log(params)
         const create = await FetchAPI(`/games`, 'POST', params)
-        console.log(create)
+        console.log(create.message)
+        if(create.id)alert("Game created successfully");
+        else alert(`${create.message}`);
+        window.location.reload()
     };
 
     const genresOptions = await GenresOptions(genres);

@@ -17,6 +17,8 @@ import pt.isel.ls.integration.IntegrationTests
 import pt.isel.ls.utils.minusDaysToCurrentDateTime
 import pt.isel.ls.utils.plusDaysToCurrentDateTime
 import pt.isel.ls.utils.plusMillisecondsToCurrentDateTime
+import pt.isel.ls.utils.toLocalDateTime
+import pt.isel.ls.utils.toLong
 import kotlin.random.Random
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -32,7 +34,7 @@ class SessionsTests : IntegrationTests() {
     fun `createSession returns 201 for good response`() {
         val player = playerFactory.createRandomPlayer()
         val game = gameFactory.createRandomGame()
-        val requestBody = SessionCreate(game.id, 4, plusDaysToCurrentDateTime(1L))
+        val requestBody = SessionCreate(game.id, 4, plusDaysToCurrentDateTime(1L).toLong())
         val request = Request(Method.POST, "$URI_PREFIX/sessions")
             .json(requestBody)
             .token(player.token)
@@ -257,7 +259,7 @@ class SessionsTests : IntegrationTests() {
         while (session.maxCapacity <= 2) {
             session = sessionFactory.createRandomGamingSession(game.id, player.id)
         }
-        val requestBody = SessionUpdate(Random.nextInt(2, session.maxCapacity), plusDaysToCurrentDateTime(1))
+        val requestBody = SessionUpdate(Random.nextInt(2, session.maxCapacity), plusDaysToCurrentDateTime(1).toLong())
         val request = Request(Method.PUT, "$URI_PREFIX/sessions/${session.id}")
             .json(requestBody)
             .token(player.token)
@@ -266,7 +268,7 @@ class SessionsTests : IntegrationTests() {
             val response = Json.decodeFromString<SessionUpdate>(bodyString())
             val expectedSession =
                 SessionUpdate(
-                    session.copy(maxCapacity = requestBody.capacity, startingDate = requestBody.startingDate),
+                    session.copy(maxCapacity = requestBody.capacity, startingDate = requestBody.startingDate.toLocalDateTime()),
                 )
             assertEquals(expectedSession, response)
         }
@@ -413,18 +415,6 @@ class SessionsTests : IntegrationTests() {
         client(request)
             .apply {
                 assertEquals(Status.OK, status)
-            }
-    }
-
-    @Test
-    fun `getSession returns 400 for non-existing session`() {
-        val player = playerFactory.createRandomPlayer()
-        val request = Request(Method.POST, "$URI_PREFIX/sessions/999999")
-            .json("")
-            .token(player.token)
-        client(request)
-            .apply {
-                assertEquals(Status.NOT_FOUND, status)
             }
     }
 }

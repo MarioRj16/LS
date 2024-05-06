@@ -13,6 +13,7 @@ import pt.isel.ls.data.Data
 import pt.isel.ls.utils.exceptions.ForbiddenException
 import pt.isel.ls.utils.isFuture
 import pt.isel.ls.utils.isPast
+import java.util.*
 
 open class SessionServices(internal val db: Data) : ServicesSchema(db) {
     fun searchSessions(
@@ -38,7 +39,7 @@ open class SessionServices(internal val db: Data) : ServicesSchema(db) {
             db.gamingSessions.create(
                 sessionInput.capacity,
                 sessionInput.gameId,
-                sessionInput.startingDate,
+                sessionInput.startingDateFormatted,
                 user.id,
             )
         return@withAuthorization SessionCreateResponse(session.id)

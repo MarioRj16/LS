@@ -81,6 +81,16 @@ class GamesTests : AbstractDataTests() {
     }
 
     @Test
+    fun `search() by case-insensitive name returns games successfully`() {
+        val game = gameFactory.createRandomGame()
+        val searchParams = GameSearch(game.name.uppercase(), null, emptySet())
+        val searchResults = games.search(searchParams, DEFAULT_LIMIT, DEFAULT_SKIP)
+
+        assertEquals(1, searchResults.size)
+        assertContains(searchResults, game)
+    }
+
+    @Test
     fun `search() by partial name returns games successfully`() {
         val game = gameFactory.createRandomGame()
         val searchParams = GameSearch(game.name.take(1), null, emptySet())

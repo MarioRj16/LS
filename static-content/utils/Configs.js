@@ -1,6 +1,6 @@
-export const USER_ID= 11
+export const USER_ID= 1
 
-export const USER_TOKEN = '17b66abc-3057-48ac-9ef4-cc4c4f111c62'
+export const USER_TOKEN = 'a372ad74-0d9b-49c6-aad8-32a877f239a3'
 
 export const API_URL=`http://localhost:8000`
 

@@ -31,7 +31,7 @@ export async function SessionsSearchPage(state) {
             searchCriteria.state = stateInput === "true";
         }
         if (playerEmailInput) {
-            searchCriteria.playerEmail = playerEmailInput;
+            searchCriteria.player = playerEmailInput;
         }
 
 
