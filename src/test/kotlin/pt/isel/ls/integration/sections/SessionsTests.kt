@@ -6,6 +6,7 @@ import org.http4k.core.Status
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
 import pt.isel.ls.SESSION_MAX_CAPACITY
+import pt.isel.ls.SESSION_MIN_CAPACITY
 import pt.isel.ls.api.models.sessions.SessionCreate
 import pt.isel.ls.api.models.sessions.SessionCreateResponse
 import pt.isel.ls.api.models.sessions.SessionListResponse
@@ -18,7 +19,9 @@ import pt.isel.ls.utils.factories.GamingSessionFactory
 import pt.isel.ls.utils.factories.PlayerFactory
 import pt.isel.ls.utils.minusDaysToCurrentDateTime
 import pt.isel.ls.utils.plusDaysToCurrentDateTime
+import pt.isel.ls.utils.plusMillisecondsToCurrentDateTime
 import kotlin.random.Random
+import kotlin.test.assertContains
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
@@ -241,6 +244,35 @@ class SessionsTests : IntegrationTests() {
     }
 
     @Test
+    fun `searchSessions with params returns 200 for good request`() {
+        val session  = sessionFactory.createRandomGamingSession()
+        val request =
+            Request(Method.GET, "$URI_PREFIX/sessions")
+                .query("gameId", game.id.toString())
+                .token(user!!.token)
+        client(request)
+            .apply {
+                val response = Json.decodeFromString<SessionListResponse>(bodyString()).sessions
+                assertEquals(Status.OK, status)
+                assertContains(response, SessionResponse(session))
+            }
+    }
+
+    @Test
+    fun `searchSessions with params returns 200 for no search results`() {
+        val request =
+            Request(Method.GET, "$URI_PREFIX/sessions")
+                .query("state", false.toString())
+                .token(user!!.token)
+        client(request)
+            .apply {
+                val response = Json.decodeFromString<SessionListResponse>(bodyString()).sessions
+                assertEquals(Status.OK, status)
+                assertEquals(0, response.size)
+            }
+    }
+
+    @Test
     fun `updateSession returns 200 for good request`() {
         var session = GamingSessionFactory(db.gamingSessions, db.games, db.genres, db.players).createRandomGamingSession(game.id, user!!.playerId)
         while (session.maxCapacity <= 2) {
@@ -249,7 +281,9 @@ class SessionsTests : IntegrationTests() {
         val requestBody =
             SessionUpdate(Random.nextInt(2, session.maxCapacity), plusDaysToCurrentDateTime(1))
         val request =
-            Request(Method.PUT, "$URI_PREFIX/sessions/${session.id}").json(requestBody).token(user!!.token)
+            Request(Method.PUT, "$URI_PREFIX/sessions/${session.id}")
+                .json(requestBody)
+                .token(user!!.token)
         client(request).apply {
             assertEquals(Status.OK, status)
             val response = Json.decodeFromString<SessionUpdate>(bodyString())
@@ -258,6 +292,99 @@ class SessionsTests : IntegrationTests() {
                     session.copy(maxCapacity = requestBody.capacity, startingDate = requestBody.startingDate),
                 )
             assertEquals(expectedSession, response)
+        }
+    }
+
+    @Test
+    fun `updateSession returns 400 for bad request`() {
+        val session = sessionFactory.createRandomGamingSession(hostId = user!!.playerId, players = emptySet())
+        val requestBody = SessionUpdate(session.maxCapacity, minusDaysToCurrentDateTime(1L))
+        val request =
+            Request(Method.PUT, "$URI_PREFIX/sessions/${session.id}")
+                .json(requestBody)
+                .token(user!!.token)
+        client(request).apply {
+            val response = Json.decodeFromString<SessionUpdate>(bodyString())
+            val expectedSession =
+                SessionUpdate(session.copy(maxCapacity = requestBody.capacity, startingDate = requestBody.startingDate))
+            assertEquals(Status.OK, status)
+            assertEquals(expectedSession, response)
+        }
+    }
+
+    @Test
+    fun `updateSession returns 400 for closed session`() {
+        val playersInSession = List(10){ playerFactory.createRandomPlayer() }.toSet()
+        val session = sessionFactory.createRandomGamingSession(
+                isOpen = false,
+                hostId = user!!.playerId,
+                players = playersInSession
+            )
+        val requestBody = SessionUpdate(session.maxCapacity+1, plusDaysToCurrentDateTime(1L))
+        val request =
+            Request(Method.PUT, "$URI_PREFIX/sessions/${session.id}")
+                .json(requestBody)
+                .token(user!!.token)
+        client(request).apply {
+            assertEquals(Status.BAD_REQUEST, status)
+        }
+    }
+
+    @Test
+    fun `updateSession returns 400 for past date`() {
+        val ms = 1L
+        val session = sessionFactory.createRandomGamingSession(
+            date = plusMillisecondsToCurrentDateTime(ms),
+            hostId = user!!.playerId,
+        )
+        Thread.sleep(2*ms)
+        val requestBody = SessionUpdate(session.maxCapacity+1, session.startingDate)
+        val request =
+            Request(Method.PUT, "$URI_PREFIX/sessions/${session.id}")
+                .json(requestBody)
+                .token(user!!.token)
+        client(request).apply {
+            assertEquals(Status.BAD_REQUEST, status)
+        }
+    }
+
+    @Test
+    fun `updateSession returns 400 for lower than allowed capacity`() {
+        val playersIsSession = List(10){ playerFactory.createRandomPlayer() }.toSet()
+        val session = sessionFactory.createRandomGamingSession(hostId = user!!.playerId, players = playersIsSession)
+        val requestBody = SessionUpdate(SESSION_MIN_CAPACITY, session.startingDate)
+        val request =
+            Request(Method.PUT, "$URI_PREFIX/sessions/${session.id}")
+                .json(requestBody)
+                .token(user!!.token)
+        client(request).apply {
+            assertEquals(Status.BAD_REQUEST, status)
+        }
+    }
+
+    @Test
+    fun `updateSession returns 403 for non-host`() {
+        val player = playerFactory.createRandomPlayer()
+        val session = sessionFactory.createRandomGamingSession()
+        val requestBody = SessionUpdate(session.maxCapacity, plusDaysToCurrentDateTime(365L*2))
+        val request =
+            Request(Method.PUT, "$URI_PREFIX/sessions/${session.id}")
+                .json(requestBody)
+                .token(player.token)
+        client(request).apply {
+            assertEquals(Status.FORBIDDEN, status)
+        }
+    }
+
+    @Test
+    fun `updateSession returns 404 for non-existing session`() {
+        val requestBody = SessionUpdate(SESSION_MIN_CAPACITY, plusDaysToCurrentDateTime(1L))
+        val request =
+            Request(Method.PUT, "$URI_PREFIX/sessions/999999")
+                .json(requestBody)
+                .token(user!!.token)
+        client(request).apply {
+            assertEquals(Status.NOT_FOUND, status)
         }
     }
 
@@ -274,6 +401,30 @@ class SessionsTests : IntegrationTests() {
     }
 
     @Test
+    fun `deleteSession returns 403 for non-host`() {
+        val player = playerFactory.createRandomPlayer()
+        val session = sessionFactory.createRandomGamingSession(hostId = user!!.playerId)
+        val request =
+            Request(Method.DELETE, "$URI_PREFIX/sessions/${session.id}")
+                .json("")
+                .token(player.token)
+        client(request).apply {
+            assertEquals(Status.FORBIDDEN, status)
+        }
+    }
+
+    @Test
+    fun `deleteSession returns 404 for non-existing session`() {
+        val request =
+            Request(Method.DELETE, "$URI_PREFIX/sessions/999999")
+                .json("")
+                .token(user!!.token)
+        client(request).apply {
+            assertEquals(Status.NOT_FOUND, status)
+        }
+    }
+
+    @Test
     fun `getSession returns 200 for good request`() {
         val newSession = GamingSessionFactory(db.gamingSessions, db.games, db.genres, db.players).createRandomGamingSession(game.id, player.id)
         val request =
@@ -283,6 +434,18 @@ class SessionsTests : IntegrationTests() {
         client(request)
             .apply {
                 assertEquals(Status.OK, status)
+            }
+    }
+
+    @Test
+    fun `getSession returns 400 for non-existing session`() {
+        val request =
+            Request(Method.POST, "$URI_PREFIX/sessions/999999")
+                .json("")
+                .token(user!!.token)
+        client(request)
+            .apply {
+                assertEquals(Status.NOT_FOUND, status)
             }
     }
 }

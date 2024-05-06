@@ -1,6 +1,6 @@
 package pt.isel.ls.utils.factories
 
-import java.util.UUID
+import java.util.*
 import pt.isel.ls.data.GamesData
 import pt.isel.ls.data.GenresData
 import pt.isel.ls.domain.Game
