@@ -6,23 +6,11 @@ import {CardSession} from "../../components/sessions/CardSession.js";
 import {AllCards} from "../../components/AllCards.js";
 
 export async function SessionsPage(state) {
-    const sessionsResponse = await FetchAPI(`/sessions${objectToQueryString(state.query)}`);
-    const sessions= sessionsResponse.sessions;
+    const sessions = (await FetchAPI(`/sessions${objectToQueryString(state.query)}`)).sessions;
 
     const cards = sessions.map(session => CardSession(session));
 
-    const paginatedCards = await AllCards(cards);
-
     const paginate = Paginate(state.query)
 
-    return div(
-        {class:"card"},
-        h1({ class: "card-header d-flex justify-content-center"}, `Sessions`),
-        div(
-            { class: "session-list" },
-            paginatedCards
-        ),
-        paginate
-    );
-
+    return AllCards(cards,paginate,"Sessions");
 }

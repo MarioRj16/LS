@@ -1,10 +1,10 @@
 import {FetchAPI} from "../../utils/FetchAPI.js";
-import {UpdatePlayer} from "../../components/players/UpdatePlayer.js";
+import {UpdateSession} from "../../components/sessions/UpdateSession.js";
 
 export async function SessionsUpdatePage(state){
     const id = state.params.id;
 
     const session = await FetchAPI(`/sessions/${id}`)
 
-    return UpdatePlayer(session);
+    return UpdateSession(session);
 }

@@ -1,8 +1,8 @@
 import {a, button, div, h2, input, label} from "../../utils/Elements.js";
 import {FetchAPI} from "../../utils/FetchAPI.js";
-import {ShowPlayers} from "./ShowPlayers.js";
+import {ShowPlayers} from "../players/ShowPlayers.js";
 
-export async function UpdatePlayer(session){
+export async function UpdateSession(session){
     const removeFromButton = button({class: "btn btn-primary ", type: "submit"}, "Remove from Session");
     (await removeFromButton).addEventListener('click', removeFromSession);
 

@@ -4,6 +4,7 @@ import {USER_ID} from "../../utils/Configs.js";
 
 export async function SessionsDetailsPage(state){
     const id = state.params.id;
+
     const session = await FetchAPI(`/sessions/${id}`)
 
     const host = await FetchAPI(`/players/${session.host}`);
