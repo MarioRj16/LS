@@ -1,4 +1,4 @@
-import {div, h1, h2, a, label, button, input} from "../../utils/Elements.js";
+import {a, button, div, h1, h2, label} from "../../utils/Elements.js";
 import {FetchAPI} from "../../utils/FetchAPI.js";
 
 export async function GetSession(session, players, host , user) {

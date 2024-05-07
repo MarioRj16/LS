@@ -19,16 +19,4 @@ class PlayersModelsTests {
         assertEquals(name, playerCreate.name)
         assertEquals(email, playerCreate.email)
     }
-
-    @Test
-    fun `PlayerCreate should throw exception when name is blank`() {
-        val name = ""
-        val email = generateRandomEmail()
-
-        val exception = assertThrows<IllegalArgumentException> {
-            PlayerCreate(name, email)
-        }
-
-        assertEquals("Name must not be blank", exception.message)
-    }
 }

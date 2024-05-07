@@ -1,5 +1,5 @@
-import { button, div, form, h1, input, label, select } from "../../utils/Elements.js";
-import { FetchAPI } from "../../utils/FetchAPI.js";
+import {button, div, form, h1, input, label, select} from "../../utils/Elements.js";
+import {FetchAPI} from "../../utils/FetchAPI.js";
 
 export async function SessionsCreatePage(state) {
     async function handleFormSubmit(event) {

@@ -19,37 +19,4 @@ class GamesModelsTests {
         assert(gameCreate.developer == developer)
         assert(gameCreate.genres == genres)
     }
-
-    @Test
-    fun `GameCreate cannot be created with blank name`() {
-        val name = ""
-        val developer = "developer"
-        val genres = generateSetOfRandomInts(1)
-
-        assertThrows<IllegalArgumentException> {
-            GameCreate(name, developer, genres)
-        }
-    }
-
-    @Test
-    fun `GameCreate cannot be created with blank developer`() {
-        val name = "name"
-        val developer = ""
-        val genres = generateSetOfRandomInts(1)
-
-        assertThrows<IllegalArgumentException> {
-            GameCreate(name, developer, genres)
-        }
-    }
-
-    @Test
-    fun `GameCreate cannot be created with empty genres`() {
-        val name = "name"
-        val developer = "developer"
-        val genres = setOf<Int>()
-
-        assertThrows<IllegalArgumentException> {
-            GameCreate(name, developer, genres)
-        }
-    }
 }

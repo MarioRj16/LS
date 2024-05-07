@@ -1,6 +1,5 @@
-import { div, h1, a, h2, h3, button, form, label, input } from "../../utils/Elements.js";
-import { FetchAPI } from "../../utils/FetchAPI.js";
-import {objectToQueryString} from "../../utils/FetchAPI.js";
+import {button, div, h1, h3} from "../../utils/Elements.js";
+import {FetchAPI, objectToQueryString} from "../../utils/FetchAPI.js";
 import {changePage} from "../../components/Paginate.js";
 
 export async function GamesPage(state) {
