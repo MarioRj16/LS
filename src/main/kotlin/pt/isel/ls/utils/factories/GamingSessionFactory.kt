@@ -1,5 +1,6 @@
 package pt.isel.ls.utils.factories
 
+import kotlinx.datetime.LocalDateTime
 import pt.isel.ls.SESSION_MAX_CAPACITY
 import pt.isel.ls.SESSION_MIN_CAPACITY
 import pt.isel.ls.data.GamesData
@@ -8,6 +9,7 @@ import pt.isel.ls.data.GenresData
 import pt.isel.ls.data.PlayersData
 import pt.isel.ls.domain.Player
 import pt.isel.ls.domain.Session
+import pt.isel.ls.utils.isPast
 import pt.isel.ls.utils.plusDaysToCurrentDateTime
 import kotlin.random.Random
 
@@ -24,24 +26,28 @@ class GamingSessionFactory(
         gameId: Int? = null,
         hostId: Int? = null,
         players: Set<Player>? = null,
-        isOpen: Boolean = true
+        isOpen: Boolean = true,
+        date: LocalDateTime? = null
     ): Session {
         if(players != null && players.size > SESSION_MAX_CAPACITY)
-            throw IllegalArgumentException(
-                "The number of players in a session must not exceed $SESSION_MAX_CAPACITY"
-            )
+            throw IllegalArgumentException("The number of players in a session must not exceed $SESSION_MAX_CAPACITY")
 
-        if(players != null && players.size == SESSION_MAX_CAPACITY && isOpen){
+        if (date != null && date.isPast())
+            throw IllegalArgumentException("The date must be in the future")
+
+
+        if(players != null && players.size == SESSION_MAX_CAPACITY && isOpen)
             throw IllegalStateException("Session cannot be open and at max capacity at the same time")
-        }
+
 
         val sessionCapacity = when{
+            !players.isNullOrEmpty() && !isOpen -> players.size
             players.isNullOrEmpty() && isOpen -> Random.nextInt(SESSION_MIN_CAPACITY, SESSION_MAX_CAPACITY)
             players.isNullOrEmpty() -> Random.nextInt(SESSION_MIN_CAPACITY, SESSION_MAX_CAPACITY+1)
             else -> Random.nextInt(maxOf(players.size, SESSION_MIN_CAPACITY), SESSION_MAX_CAPACITY)
         }
 
-        val sessionDate = plusDaysToCurrentDateTime(Random.nextInt(1, 366).toLong())
+        val sessionDate = date ?: plusDaysToCurrentDateTime(Random.nextInt(1, 366).toLong())
         val sessionGame = gameId ?: gameFactory.createRandomGame().id
         val sessionHost = hostId ?: playerFactory.createRandomPlayer().id
         val sessionPlayers = when{

@@ -1,4 +1,3 @@
-
 import {parseUrl, render} from "./utils/Render.js";
 import {Consistent} from "./pages/Consistent.js";
 

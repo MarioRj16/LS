@@ -1,5 +1,5 @@
-import {API_URL} from "./Configs.js";
-import {USER_TOKEN} from "./Configs.js";
+import {API_URL, USER_TOKEN} from "./Configs.js";
+
 
 export async function FetchAPI(path, method = 'GET', bodyData = null) {
     try {

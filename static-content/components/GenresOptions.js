@@ -1,4 +1,4 @@
-import { div, select, option, input, label } from "../utils/Elements.js";
+import {div, input, label, option, select} from "../utils/Elements.js";
 
 export async function GenresOptions(genres) {
     const container = document.createElement('div');
