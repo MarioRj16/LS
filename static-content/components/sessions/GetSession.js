@@ -1,26 +1,12 @@
 import {a, button, div, h1, h2, label} from "../../utils/Elements.js";
 import {FetchAPI} from "../../utils/FetchAPI.js";
+import {ShowPlayers} from "../players/ShowPlayers.js";
 
 export async function GetSession(session, players, host , user) {
-    const renderPlayerLinks = await PlayerLinks();
-    console.log(session)
-    async function PlayerLinks() {
-        const playerLinks = players.map(player => {
-            return a(
-                    {href: `#players/${player.id}`, class: "h2"},
-                    `${player.name}`
-                )
-        });
+    const renderPlayerLinks = await ShowPlayers(session, redirectToPlayer, "" );
 
-        const joinedPlayerLinks = playerLinks.reduce((accumulator, currentValue, index) => {
-            if (index === 0) {
-                return [currentValue];
-            } else {
-                return [...accumulator, ", ", currentValue];
-            }
-        }, []);
-
-        return div({ class: "h2 player-list" }, ...joinedPlayerLinks);
+    function redirectToPlayer(player){
+        window.location.href=`#players/${player}`
     }
 
     const hostLink = a(
@@ -37,7 +23,7 @@ export async function GetSession(session, players, host , user) {
     const playerButtons = await getPlayerButtons()
     async function getHostButtons(){
         if (user === host.id){
-            const updateButton = button({ class: "btn btn-primary ", type: "submit" }, "Update Session");
+            const updateButton = button({ class: "mb-2 btn btn-primary  ", type: "submit" }, "Update Session");
             (await updateButton).addEventListener('click', updateSession);
             return updateButton
         }else return div()

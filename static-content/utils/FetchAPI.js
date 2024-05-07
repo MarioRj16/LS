@@ -9,7 +9,6 @@ export async function FetchAPI(path, method = 'GET', bodyData = null) {
             'Content-Type': 'application/json' // Set content type if needed
         };
         let init ={}
-        console.log(bodyData)
         if(bodyData == null){
             init= {
                 method: method,
