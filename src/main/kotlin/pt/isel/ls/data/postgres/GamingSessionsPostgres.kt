@@ -102,7 +102,7 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
                         if (isOpen) {
                             " and starting_date > CURRENT_TIMESTAMP and player_count < capacity"
                         } else {
-                            " and starting_date <= CURRENT_TIMESTAMP or player_count > capacity"
+                            " and starting_date < CURRENT_TIMESTAMP or player_count >= capacity"
                         }
                     } else {
                         ""

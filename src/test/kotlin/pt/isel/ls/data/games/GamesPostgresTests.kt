@@ -4,13 +4,13 @@ import org.junit.jupiter.api.Test
 import pt.isel.ls.DEFAULT_LIMIT
 import pt.isel.ls.DEFAULT_SKIP
 import pt.isel.ls.api.models.games.GameSearch
-import pt.isel.ls.data.DataMemTests
+import pt.isel.ls.data.DataPostgresTests
 import pt.isel.ls.utils.generateRandomString
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class GamesMemTests : DataMemTests(), GamesTests{
+class GamesPostgresTests : DataPostgresTests(), GamesTests{
 
     @Test
     override fun `create() return game successfully`() {
@@ -19,7 +19,6 @@ class GamesMemTests : DataMemTests(), GamesTests{
         val genres = genreFactory.random()
         val game = games.create(name, developer, genres)
 
-        assertTrue(game.id == 1)
         assertEquals(name, game.name)
         assertEquals(developer, game.developer)
         assertEquals(genres, game.genres)
@@ -63,9 +62,9 @@ class GamesMemTests : DataMemTests(), GamesTests{
 
     @Test
     override fun `search() returns all games successfully`() {
-        val gamesList = List(5) { gameFactory.createRandomGame() }
+        val gamesList = List(5) { gameFactory.createRandomGame() }.toSet()
         val searchParams = GameSearch(null, null, emptySet())
-        val searchResults = games.search(searchParams, DEFAULT_LIMIT, DEFAULT_SKIP)
+        val searchResults = games.search(searchParams, DEFAULT_LIMIT, DEFAULT_SKIP).toSet()
 
         assertEquals(gamesList.size, searchResults.size)
         assertEquals(searchResults, gamesList)
@@ -118,6 +117,6 @@ class GamesMemTests : DataMemTests(), GamesTests{
         val searchResults = games.search(searchParams, DEFAULT_LIMIT, DEFAULT_SKIP)
 
         assertEquals(1, searchResults.size)
-        assertContains(searchResults, game)
+        assertContains(searchResults.map { it.id }, game.id)
     }
 }

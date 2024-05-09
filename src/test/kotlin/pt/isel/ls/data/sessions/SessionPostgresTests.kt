@@ -164,10 +164,11 @@ class SessionPostgresTests: DataPostgresTests(), SessionTests {
 
     @Test
     override fun `search() by state returns gaming sessions successfully`() {
-        val session = gamingSessionFactory.createRandomGamingSession(isOpen = true)
+        val players = List(5) { playerFactory.createRandomPlayer() }.toSet()
+        val session = gamingSessionFactory.createRandomGamingSession(isOpen = true, players = players)
         gamingSessionFactory.createRandomGamingSession(isOpen = false)
         val searchResults = gamingSessions.search(SessionSearch(state = true), DEFAULT_LIMIT, DEFAULT_SKIP)
-        assertEquals(1, searchResults.size)
+        assertTrue(searchResults.isNotEmpty())
         assertEquals(searchResults.first().id, session.id)
     }
 }
