@@ -1,6 +1,5 @@
 package pt.isel.ls.services
 
-import java.util.*
 import pt.isel.ls.SESSION_MAX_CAPACITY
 import pt.isel.ls.SESSION_MIN_CAPACITY
 import pt.isel.ls.api.models.sessions.SessionCreate
@@ -13,6 +12,7 @@ import pt.isel.ls.data.Data
 import pt.isel.ls.utils.exceptions.ForbiddenException
 import pt.isel.ls.utils.isFuture
 import pt.isel.ls.utils.isPast
+import java.util.*
 
 open class SessionServices(internal val db: Data) : ServicesSchema(db) {
     fun searchSessions(

@@ -11,7 +11,7 @@ data class SessionCreate(val gameId: Int, val capacity: Int, val startingDate: L
         require(capacity >= 2) { "The session capacity has to be at least 2" }
     }
     val startingDateFormatted: LocalDateTime
-        get(){
+        get() {
             val final = startingDate.toLocalDateTime()
             require(final.isFuture()) { "Starting date must be in the future" }
             return final

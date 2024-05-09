@@ -47,7 +47,8 @@ class GamingSessionsMem(
         }
         if (playerEmail != null) {
             sessions = sessions.filter {
-                    session -> session.players.any { p -> p.email.email == playerEmail.email }
+                    session ->
+                session.players.any { p -> p.email.email == playerEmail.email }
             }
         }
         if (hostId != null) {
@@ -65,7 +66,7 @@ class GamingSessionsMem(
     }
 
     override fun update(sessionId: Int, sessionUpdate: SessionUpdate) {
-       val capacity = sessionUpdate.capacity
+        val capacity = sessionUpdate.capacity
         val startingDate = sessionUpdate.startingDateFormatted
         val session =
             sessions.table[sessionId]!!.copy(maxCapacity = capacity, startingDate = startingDate)

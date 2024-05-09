@@ -10,7 +10,7 @@ class SessionResponse private constructor(
     val game: Int,
     val capacity: Int,
     val date: LocalDateTime,
-    val isOpen: Boolean
+    val isOpen: Boolean,
 ) {
     companion object {
         operator fun invoke(session: Session): SessionResponse {

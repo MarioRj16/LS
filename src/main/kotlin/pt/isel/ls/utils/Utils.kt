@@ -81,10 +81,10 @@ fun Int?.validateInt(defaultValue: Int? = null, function: (Int) -> Boolean): Int
     }
     return this
 }
-fun Long.toLocalDateTime():LocalDateTime{
+fun Long.toLocalDateTime(): LocalDateTime {
     val instant = Instant.fromEpochMilliseconds(this)
     return instant.toLocalDateTime(TimeZone.UTC)
 }
 
-fun LocalDateTime.toLong():Long=
+fun LocalDateTime.toLong(): Long =
     this.toInstant(TimeZone.UTC).toEpochMilliseconds()

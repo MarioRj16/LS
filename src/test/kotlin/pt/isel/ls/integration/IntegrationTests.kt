@@ -23,13 +23,13 @@ abstract class IntegrationTests {
         const val URI_PREFIX = "http://localhost:$TEST_PORT"
         val client = JavaHttpClient()
         val db = DataMem()
-        //val db = DataPostgres(System.getenv(CONN_NAME))
+
+        // val db = DataPostgres(System.getenv(CONN_NAME))
         var api = API(Services(db))
         val genresFactory = GenresFactory(db.genres)
         val playerFactory = PlayerFactory(db.players)
         val gameFactory = GameFactory(db.games, db.genres)
         val sessionFactory = GamingSessionFactory(db.gamingSessions, db.games, db.genres, db.players)
-
 
         private var jettyServer = Routes(api).app.asServer(Jetty(TEST_PORT))
 
