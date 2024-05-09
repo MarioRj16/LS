@@ -8,13 +8,14 @@ import pt.isel.ls.domain.Session
 class SessionResponse private constructor(
     val id: Int,
     val game: Int,
+    val curcapacity:Int,
     val capacity: Int,
     val date: LocalDateTime,
     val isOpen: Boolean
 ) {
     companion object {
         operator fun invoke(session: Session): SessionResponse {
-            return SessionResponse(session.id, session.gameId, session.maxCapacity, session.startingDate, session.state)
+            return SessionResponse(session.id, session.gameId,session.players.count(),session.maxCapacity, session.startingDate, session.state)
         }
     }
 

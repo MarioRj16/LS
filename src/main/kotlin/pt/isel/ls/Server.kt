@@ -12,7 +12,7 @@ fun main() {
      **/
     val db = DataPostgres(System.getenv(CONN_NAME))
     // val db = DataMem()
-    // db.reset()
+    //db.reset()
     //db.delete()
     //db.create()
     //db.populate()

@@ -6,6 +6,7 @@ import pt.isel.ls.api.models.sessions.SessionUpdate
 import pt.isel.ls.data.GamingSessionsData
 import pt.isel.ls.domain.Player
 import pt.isel.ls.domain.Session
+import pt.isel.ls.utils.factories.PlayerFactory
 import pt.isel.ls.utils.paginate
 import pt.isel.ls.utils.postgres.toGamingSession
 import pt.isel.ls.utils.postgres.toPlayer
@@ -14,6 +15,9 @@ import pt.isel.ls.utils.toTimeStamp
 import java.sql.Connection
 import java.sql.SQLException
 import java.sql.Statement
+import pt.isel.ls.data.PlayersData
+import pt.isel.ls.utils.isPositive
+import pt.isel.ls.utils.validateInt
 
 class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSessionsData {
     override fun create(
@@ -124,7 +128,16 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
             val sessions = mutableListOf<Session>()
 
             while (resultSet.next()) {
-                sessions += resultSet.toGamingSession(emptySet())
+                val x = resultSet.getInt(6)
+                val cap= resultSet.getInt(2)
+                val sessionplayers= mutableListOf<Player>()
+                var i = 0
+                while(i < x && sessionplayers.size < cap){
+                    val y = PlayerFactory(null).createRandomPlayer()
+                    sessionplayers += y
+                    i++
+                }
+                sessions += resultSet.toGamingSession(sessionplayers.toSet())
             }
 
             return sessions.distinct().paginate(skip, limit)
