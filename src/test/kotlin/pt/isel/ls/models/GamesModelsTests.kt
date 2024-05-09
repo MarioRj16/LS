@@ -1,7 +1,6 @@
 package pt.isel.ls.models
 
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import pt.isel.ls.api.models.games.GameCreate
 import pt.isel.ls.utils.generateRandomString
 import pt.isel.ls.utils.generateSetOfRandomInts

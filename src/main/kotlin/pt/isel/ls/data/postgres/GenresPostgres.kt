@@ -1,12 +1,12 @@
 package pt.isel.ls.data.postgres
 
-import java.sql.Connection
 import pt.isel.ls.data.GenresData
 import pt.isel.ls.domain.Genre
 import pt.isel.ls.utils.postgres.toGenre
 import pt.isel.ls.utils.postgres.useWithRollback
+import java.sql.Connection
 
-class GenresPostgres(private val conn: () -> Connection): GenresData {
+class GenresPostgres(private val conn: () -> Connection) : GenresData {
 
     override fun getGenres(genreIds: Set<Int>): Set<Genre> = conn().useWithRollback {
         val query = """SELECT * FROM genres WHERE genre_id IN (${genreIds.joinToString(", ")})"""

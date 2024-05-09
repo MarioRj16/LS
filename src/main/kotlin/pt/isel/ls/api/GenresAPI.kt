@@ -5,7 +5,7 @@ import org.http4k.core.Response
 import org.http4k.core.Status
 import pt.isel.ls.services.GenresServices
 
-class GenresAPI(private val services: GenresServices): APISchema() {
+class GenresAPI(private val services: GenresServices) : APISchema() {
 
     fun getGenres(request: Request): Response =
         request.useWithException { token ->

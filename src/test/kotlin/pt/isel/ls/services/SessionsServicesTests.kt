@@ -83,7 +83,7 @@ class SessionsServicesTests : SessionServices(DataMem()) {
         val game = gameFactory.createRandomGame()
         val session = SessionDetails(
             gamingSessionFactory.createRandomGamingSession(game.id, user.id),
-            game
+            game,
         )
         val capacity =
             if (session.capacity > 3) {
@@ -139,10 +139,11 @@ class SessionsServicesTests : SessionServices(DataMem()) {
         )
 
         val capacity =
-            if (session.maxCapacity == SESSION_MAX_CAPACITY)
+            if (session.maxCapacity == SESSION_MAX_CAPACITY) {
                 SESSION_MAX_CAPACITY - 1
-            else
+            } else {
                 SESSION_MAX_CAPACITY
+            }
         val sessionUpdate = SessionUpdate(capacity, plusDaysToCurrentDateTime(600).toLong())
         assertThrows<IllegalArgumentException> {
             updateSession(session.id, sessionUpdate, token)
@@ -252,7 +253,7 @@ class SessionsServicesTests : SessionServices(DataMem()) {
         val player = playerFactory.createRandomPlayer()
         val session = SessionDetails(
             gamingSessionFactory.createRandomGamingSession(gameId = game.id, hostId = user.id, players = setOf(player)),
-            game
+            game,
         )
         removePlayerFromSession(session.id, token, player.id)
         val updatedSession = getSession(session.id, token)
@@ -272,7 +273,7 @@ class SessionsServicesTests : SessionServices(DataMem()) {
                 user.id,
                 setOf(player),
             ),
-            game
+            game,
         )
         removePlayerFromSession(session.id, player.token, player.id)
         val updatedSession = getSession(session.id, token)

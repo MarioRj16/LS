@@ -1,13 +1,13 @@
 package pt.isel.ls.utils.postgres
 
-import java.sql.ResultSet
-import java.util.*
 import kotlinx.datetime.toKotlinLocalDateTime
 import pt.isel.ls.domain.Game
 import pt.isel.ls.domain.Genre
 import pt.isel.ls.domain.Player
 import pt.isel.ls.domain.Session
 import pt.isel.ls.utils.Email
+import java.sql.ResultSet
+import java.util.*
 
 /**
  * Converts a [ResultSet] into a [Player] object.

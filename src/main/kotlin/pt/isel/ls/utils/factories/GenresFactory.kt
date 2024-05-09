@@ -11,7 +11,7 @@ class GenresFactory(private val genresDB: GenresData) {
      */
     fun random(): Set<Genre> {
         val genres = genresDB.getAllGenres()
-        val listSize = Random.nextInt(1, genres.size+1)
+        val listSize = Random.nextInt(1, genres.size + 1)
         return List(listSize) { genres.random() }.toSet()
     }
 }

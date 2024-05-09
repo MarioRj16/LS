@@ -85,17 +85,18 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
                 full outer join 
                 (select gaming_session_id, count(player_id) player_count from players_sessions group by gaming_session_id) as gsipc
                 using (gaming_session_id)
-                ${if (playerEmail != null) 
+                ${if (playerEmail != null) {
                     " full outer join players_sessions using (gaming_session_id)"
-                else 
+                } else {
                     ""
+                }
                 }
                 ${if (playerEmail != null) " full outer join players using (player_id)" else ""}
                 where 1 = 1
                 ${if (game != null) " and game_id = ?" else ""}
                 ${if (date != null) " and starting_date = ?" else ""}
                 ${if (playerEmail != null) " and email = ?" else ""}
-                ${if(hostId != null) " and host = ?" else ""}
+                ${if (hostId != null) " and host = ?" else ""}
                 ${
                     if (isOpen != null) {
                         if (isOpen) {

@@ -15,9 +15,12 @@ export async function UpdateSession(session){
     const renderPlayerRemoveLinks = await ShowPlayers(session,removeFromSession,"text-danger");
 
     async function removeFromSession(playerId){
-        await FetchAPI(`/sessions/${session.id}/players/${playerId}`,`DELETE`)
-        alert("Removed from Session Successfully")
-        window.location.reload()
+        const response = await FetchAPI(`/sessions/${session.id}/players/${playerId}`,`DELETE`)
+        if(response.ok) {
+            alert("Removed from Session Successfully")
+            window.location.reload()
+        }
+        else alert(response.message)
     }
 
 
@@ -32,10 +35,19 @@ export async function UpdateSession(session){
         const dateInput = document.getElementById('dateInput').value;
         console.log(capacityInput)
         const params = {};
+        if (capacityInput==null) {
+            alert("Must fill capacity")
+            return
+        }
         params.capacity= parseInt(capacityInput);
+        if (dateInput==null){
+            alert("Must fill date")
+            return
+        }
         params.startingDate= new Date(dateInput).getTime();
-        await FetchAPI(`/sessions/${session.id}`,`PUT`, params);
-        alert("Session Updated Successfully")
+        const response = await FetchAPI(`/sessions/${session.id}`,`PUT`, params);
+        if(response.ok) alert("Session Updated Successfully")
+        else alert(response.message)
         window.location.href= `#sessions/${session.id}`;
     }
 
