@@ -1,27 +1,27 @@
 package pt.isel.ls.data.sessions
 
 interface SessionTests {
-    fun `create() returns gaming session successfully`()
+    fun createReturnsGamingSessionSuccessfully()
 
-    fun `get() returns gaming session successfully`()
+    fun getReturnsGamingSessionSuccessfully()
 
-    fun `get() returns null for non existing gaming session`()
+    fun getReturnsNullForNonExistingGamingSession()
 
-    fun `addPlayer() adds player to gaming session successfully`()
+    fun addPlayerAddsPlayerToGamingSessionSuccessfully()
 
-    fun `removePlayer() removes player from session successfully`()
+    fun removePlayerRemovesPlayerFromSessionSuccessfully()
 
-    fun `update() updates gaming session successfully`()
+    fun updateUpdatesGamingSessionSuccessfully()
 
-    fun `delete() deletes gaming session successfully`()
+    fun deleteDeletesGamingSessionSuccessfully()
 
-    fun `isOwner() checks if player is owner successfully`()
+    fun isOwnerChecksIfPlayerIsOwnerSuccessfully()
 
-    fun `search() by game returns gaming sessions successfully`()
+    fun searchByGameReturnsGamingSessionsSuccessfully()
 
-    fun `search() by player email returns gaming sessions successfully`()
+    fun searchByPlayerEmailReturnsGamingSessionsSuccessfully()
 
-    fun `search() by date returns gaming sessions successfully`()
+    fun searchByDateReturnsGamingSessionsSuccessfully()
 
-    fun `search() by state returns gaming sessions successfully`()
+    fun searchByStateReturnsGamingSessionsSuccessfully()
 }

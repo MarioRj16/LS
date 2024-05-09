@@ -1,17 +1,15 @@
 package pt.isel.ls.data.players
 
-import org.junit.jupiter.api.Test
-
 interface PlayersTests {
-    fun `create() creates player successfully`()
+    fun createCreatesPlayerSuccessfully()
 
-    fun `get() returns player successfully`()
+    fun getReturnsPlayerSuccessfully()
 
-    fun `get() returns null for non existing player`()
+    fun getReturnsNullForNonExistingPlayer()
 
-    fun `search() returns players successfully`()
+    fun searchReturnsPlayersSuccessfully()
 
-    fun `search() by name returns players successfully`()
+    fun searchByNameReturnsPlayersSuccessfully()
 
-    fun `search() by partial name returns players successfully`()
+    fun searchByPartialNameReturnsPlayersSuccessfully()
 }

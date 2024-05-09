@@ -6,10 +6,9 @@ import pt.isel.ls.data.DataMemTests
 import pt.isel.ls.data.mem.GenresMem
 import pt.isel.ls.domain.Genre
 
-
-class GenresMemTests: DataMemTests(), GenresTests {
+class GenresMemTests : DataMemTests(), GenresTests {
     @Test
-    override fun `test getAllGenres`() {
+    override fun testGetAllGenres() {
         val gamesMem = GenresMem()
         val expectedGenres = setOf(
             Genre(1, "Action"),

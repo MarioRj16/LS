@@ -12,9 +12,9 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
-class PlayerPostgresTests: DataPostgresTests(), PlayersTests{
+class PlayerPostgresTests : DataPostgresTests(), PlayersTests {
     @Test
-    override fun `create() creates player successfully`() {
+    override fun createCreatesPlayerSuccessfully() {
         val name = "testName"
         val email = Email("test@email.com")
         val playerCreate = PlayerCreate(name, email)
@@ -27,19 +27,19 @@ class PlayerPostgresTests: DataPostgresTests(), PlayersTests{
     }
 
     @Test
-    override fun `get() returns player successfully`() {
+    override fun getReturnsPlayerSuccessfully() {
         val player = playerFactory.createRandomPlayer()
 
         assertEquals(player, players.get(player.id))
     }
 
     @Test
-    override fun `get() returns null for non existing player`() {
+    override fun getReturnsNullForNonExistingPlayer() {
         assertNull(players.get(1))
     }
 
     @Test
-    override fun `search() returns players successfully`() {
+    override fun searchReturnsPlayersSuccessfully() {
         val player1 = playerFactory.createRandomPlayer()
         val player2 = playerFactory.createRandomPlayer()
         val player3 = playerFactory.createRandomPlayer()
@@ -53,7 +53,7 @@ class PlayerPostgresTests: DataPostgresTests(), PlayersTests{
     }
 
     @Test
-    override fun `search() by name returns players successfully`() {
+    override fun searchByNameReturnsPlayersSuccessfully() {
         val player = playerFactory.createRandomPlayer()
 
         val searchResult = players.search(PlayerSearch(player.name), DEFAULT_SKIP, DEFAULT_LIMIT)
@@ -63,7 +63,7 @@ class PlayerPostgresTests: DataPostgresTests(), PlayersTests{
     }
 
     @Test
-    override fun `search() by partial name returns players successfully`() {
+    override fun searchByPartialNameReturnsPlayersSuccessfully() {
         val player = playerFactory.createRandomPlayer()
 
         val searchResult = players.search(PlayerSearch(player.name.substring(0, 3)), DEFAULT_SKIP, DEFAULT_LIMIT)

@@ -1,27 +1,27 @@
 package pt.isel.ls.data.games
 
 interface GamesTests {
-    fun `create() return game successfully`()
+    fun createReturnGameSuccessfully()
 
-    fun `get() returns game successfully`()
+    fun getReturnsGameSuccessfully()
 
-    fun `get() returns null for non existing game`()
+    fun getReturnsNullForNonExistingGame()
 
-    fun `getById() returns game successfully`()
+    fun getByIdReturnsGameSuccessfully()
 
-    fun `getById() returns null for non existing game`()
+    fun getByIdReturnsNullForNonExistingGame()
 
-    fun `search() with no games returns empty list`()
+    fun searchWithNoGamesReturnsEmptyList()
 
-    fun `search() returns all games successfully`()
+    fun searchReturnsAllGamesSuccessfully()
 
-    fun `search() by name returns games successfully`()
+    fun searchByNameReturnsGamesSuccessfully()
 
-    fun `search() by case-insensitive name returns games successfully`()
+    fun searchByCaseInsensitiveNameReturnsGamesSuccessfully()
 
-    fun `search() by partial name returns games successfully`()
+    fun searchByPartialNameReturnsGamesSuccessfully()
 
-    fun `search() by developer returns games successfully`()
+    fun searchByDeveloperReturnsGamesSuccessfully()
 
-    fun `search() by genre returns games successfully`()
+    fun searchByGenreReturnsGamesSuccessfully()
 }

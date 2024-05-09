@@ -22,7 +22,7 @@ sealed class AbstractDataTests(private val db: Data) {
     @BeforeEach
     fun setUp() {
         db.reset()
-        if(db is DataPostgres){
+        if (db is DataPostgres) {
             db.create()
         }
     }

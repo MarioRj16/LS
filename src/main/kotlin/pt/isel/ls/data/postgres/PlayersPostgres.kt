@@ -117,7 +117,7 @@ class PlayersPostgres(private val conn: () -> Connection) : PlayersData {
                 it.prepareStatement(
                     """select * from players ${if (username.isNullOrBlank()) "" else "where player_name like ?"}""",
                 ).apply {
-                    username?.let{
+                    username?.let {
                         setString(1, "$username%")
                     }
                 }

@@ -10,10 +10,10 @@ import kotlin.test.assertContains
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class GamesMemTests : DataMemTests(), GamesTests{
+class GamesMemTests : DataMemTests(), GamesTests {
 
     @Test
-    override fun `create() return game successfully`() {
+    override fun createReturnGameSuccessfully() {
         val name = generateRandomString()
         val developer = generateRandomString()
         val genres = genreFactory.random()
@@ -26,35 +26,35 @@ class GamesMemTests : DataMemTests(), GamesTests{
     }
 
     @Test
-    override fun `get() returns game successfully`() {
+    override fun getReturnsGameSuccessfully() {
         val game = gameFactory.createRandomGame()
 
         assertEquals(game, games.get(game.name))
     }
 
     @Test
-    override fun `get() returns null for non existing game`() {
+    override fun getReturnsNullForNonExistingGame() {
         val game = games.get(generateRandomString())
 
         assertTrue(game == null)
     }
 
     @Test
-    override fun `getById() returns game successfully`() {
+    override fun getByIdReturnsGameSuccessfully() {
         val game = gameFactory.createRandomGame()
 
         assertEquals(game, games.get(game.id))
     }
 
     @Test
-    override fun `getById() returns null for non existing game`() {
+    override fun getByIdReturnsNullForNonExistingGame() {
         val game = games.get(1)
 
         assertTrue(game == null)
     }
 
     @Test
-    override fun `search() with no games returns empty list`() {
+    override fun searchWithNoGamesReturnsEmptyList() {
         val searchParams = GameSearch(null, null, emptySet())
         val searchResults = games.search(searchParams, DEFAULT_LIMIT, DEFAULT_SKIP)
 
@@ -62,7 +62,7 @@ class GamesMemTests : DataMemTests(), GamesTests{
     }
 
     @Test
-    override fun `search() returns all games successfully`() {
+    override fun searchReturnsAllGamesSuccessfully() {
         val gamesList = List(5) { gameFactory.createRandomGame() }
         val searchParams = GameSearch(null, null, emptySet())
         val searchResults = games.search(searchParams, DEFAULT_LIMIT, DEFAULT_SKIP)
@@ -72,7 +72,7 @@ class GamesMemTests : DataMemTests(), GamesTests{
     }
 
     @Test
-    override fun `search() by name returns games successfully`() {
+    override fun searchByNameReturnsGamesSuccessfully() {
         val game = gameFactory.createRandomGame()
         val searchParams = GameSearch(game.name, null, emptySet())
         val searchResults = games.search(searchParams, DEFAULT_LIMIT, DEFAULT_SKIP)
@@ -82,7 +82,7 @@ class GamesMemTests : DataMemTests(), GamesTests{
     }
 
     @Test
-    override fun `search() by case-insensitive name returns games successfully`() {
+    override fun searchByCaseInsensitiveNameReturnsGamesSuccessfully() {
         val game = gameFactory.createRandomGame()
         val searchParams = GameSearch(game.name.uppercase(), null, emptySet())
         val searchResults = games.search(searchParams, DEFAULT_LIMIT, DEFAULT_SKIP)
@@ -92,7 +92,7 @@ class GamesMemTests : DataMemTests(), GamesTests{
     }
 
     @Test
-    override fun `search() by partial name returns games successfully`() {
+    override fun searchByPartialNameReturnsGamesSuccessfully() {
         val game = gameFactory.createRandomGame()
         val searchParams = GameSearch(game.name.take(1), null, emptySet())
         val searchResults = games.search(searchParams, DEFAULT_LIMIT, DEFAULT_SKIP)
@@ -102,7 +102,7 @@ class GamesMemTests : DataMemTests(), GamesTests{
     }
 
     @Test
-    override fun `search() by developer returns games successfully`() {
+    override fun searchByDeveloperReturnsGamesSuccessfully() {
         val game = gameFactory.createRandomGame()
         val searchParams = GameSearch(null, game.developer, emptySet())
         val searchResults = games.search(searchParams, DEFAULT_LIMIT, DEFAULT_SKIP)
@@ -112,7 +112,7 @@ class GamesMemTests : DataMemTests(), GamesTests{
     }
 
     @Test
-    override fun `search() by genre returns games successfully`() {
+    override fun searchByGenreReturnsGamesSuccessfully() {
         val game = gameFactory.createRandomGame()
         val searchParams = GameSearch(null, null, setOf(game.genres.random().genreId))
         val searchResults = games.search(searchParams, DEFAULT_LIMIT, DEFAULT_SKIP)
