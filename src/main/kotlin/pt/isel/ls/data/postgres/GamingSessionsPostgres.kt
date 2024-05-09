@@ -15,9 +15,6 @@ import pt.isel.ls.utils.toTimeStamp
 import java.sql.Connection
 import java.sql.SQLException
 import java.sql.Statement
-import pt.isel.ls.data.PlayersData
-import pt.isel.ls.utils.isPositive
-import pt.isel.ls.utils.validateInt
 
 class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSessionsData {
     override fun create(
@@ -129,16 +126,9 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
             val sessions = mutableListOf<Session>()
 
             while (resultSet.next()) {
-                val x = resultSet.getInt(6)
-                val cap= resultSet.getInt(2)
-                val sessionplayers= mutableListOf<Player>()
-                var i = 0
-                while(i < x && sessionplayers.size < cap){
-                    val y = PlayerFactory(null).createRandomPlayer()
-                    sessionplayers += y
-                    i++
-                }
-                sessions += resultSet.toGamingSession(sessionplayers.toSet())
+                val playerCount = resultSet.getInt("player_count")
+                val sessionPlayers = (1..playerCount).map{ PlayerFactory(null).createRandomPlayer()}
+                sessions += resultSet.toGamingSession(sessionPlayers.toSet())
             }
 
             return sessions.distinct().paginate(skip, limit)
