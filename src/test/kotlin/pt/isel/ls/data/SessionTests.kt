@@ -149,7 +149,7 @@ class SessionTests : AbstractDataTests() {
         val session = gamingSessionFactory.createRandomGamingSession(players = setOf(player))
         gamingSessionFactory.createRandomGamingSession(players = setOf(player2))
 
-        val searchResults = gamingSessions.search(SessionSearch(playerEmail = player.email), DEFAULT_LIMIT, DEFAULT_SKIP)
+        val searchResults = gamingSessions.search(SessionSearch(playerName = player.name), DEFAULT_LIMIT, DEFAULT_SKIP)
         assertEquals(1, searchResults.size)
         assertContains(searchResults, session)
     }

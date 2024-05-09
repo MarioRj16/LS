@@ -1,6 +1,6 @@
 import {button, div, h1, input, label, option, select} from "../../utils/Elements.js";
 
-export async function SearchSessions(games){
+export async function SearchSessions(games,players){
 
     const submitButton = button({ class: "btn btn-primary", type: "submit" }, "Search");
     (await submitButton).addEventListener('click', handleFormSubmit);
@@ -17,7 +17,7 @@ export async function SearchSessions(games){
         }
         const dateInput = document.getElementById('dateInput').value;
         const stateInput = document.getElementById('stateInput').value;
-        const playerEmailInput = document.getElementById('playerEmailInput').value;
+        const playerInput = document.getElementById('playerInput').value;
 
         const enteredDate = new Date(dateInput);
         const earliestDate = new Date("1970-01-01T00:00:00");
@@ -37,8 +37,8 @@ export async function SearchSessions(games){
         if (stateInput !== "") {
             searchCriteria.state = stateInput === "true";
         }
-        if (playerEmailInput) {
-            searchCriteria.player = playerEmailInput;
+        if (playerInput) {
+            searchCriteria.player = playerInput;
         }
 
         const queryString = new URLSearchParams(searchCriteria).toString();
@@ -65,8 +65,8 @@ export async function SearchSessions(games){
             ),
             div(
                 {},
-                label({ class: "form-label", for: "playerEmail" }, "Player Email"),
-                input({ class: "form-control", id: "playerEmailInput", placeholder: "(optional)" })
+                label({ class: "form-label", for: "player" }, "Player Name"),
+                players
             ),
             div(
                 {},

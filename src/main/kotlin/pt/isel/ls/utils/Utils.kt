@@ -22,7 +22,7 @@ fun <T> List<T>.paginate(
     require(limit >= 0) { "Limit must be a non negative integer\nlimit=$limit" }
     if (this.isEmpty() || skip >= size)
         return emptyList()
-    val lastIndex: Int = if (limit > size) size else limit + skip
+    val lastIndex: Int = if (limit + skip > size) size else limit + skip
     return subList(skip, lastIndex)
 }
 

@@ -329,7 +329,7 @@ class SessionsTests : IntegrationTests() {
 
     @Test
     fun `updateSession returns 400 for past date`() {
-        val ms = 1L
+        val ms = 10L
         val player = playerFactory.createRandomPlayer()
         val session = sessionFactory.createRandomGamingSession(
             date = plusMillisecondsToCurrentDateTime(ms),
