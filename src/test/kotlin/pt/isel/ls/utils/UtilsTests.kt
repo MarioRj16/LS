@@ -2,6 +2,7 @@ package pt.isel.ls.utils
 
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import pt.isel.ls.DEFAULT_LIMIT
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
@@ -28,6 +29,12 @@ class UtilsTests {
         assertThrows<IllegalArgumentException> {
             l.paginate(-1, -2)
         }
+    }
+
+    @Test
+    fun `paginate() returns empty list if skip is greater than list size`() {
+        val l = List(10) { it }
+        assertTrue(l.paginate(20, DEFAULT_LIMIT).isEmpty())
     }
 
     @Test
