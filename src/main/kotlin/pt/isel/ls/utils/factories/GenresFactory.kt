@@ -11,6 +11,7 @@ class GenresFactory(private val genresDB: GenresData) {
      */
     fun random(): Set<Genre> {
         val genres = genresDB.getAllGenres()
+        require(genres.isNotEmpty()){ "No genres in the database" }
         val listSize = Random.nextInt(1, genres.size + 1)
         return List(listSize) { genres.random() }.toSet()
     }

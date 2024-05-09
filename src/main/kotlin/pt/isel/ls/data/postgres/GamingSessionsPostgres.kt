@@ -201,17 +201,13 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
     ): Boolean =
         conn().useWithRollback {
             val stm =
-                it.prepareStatement("""select * from gaming_sessions where gaming_session_id = ?""")
+                it.prepareStatement("""select * from gaming_sessions where gaming_session_id = ? and host = ?""")
                     .apply {
                         setInt(1, sessionId)
                         setInt(2, playerId)
                     }
 
             val resultSet = stm.executeQuery()
-
-            if (resultSet.next()) {
-                return resultSet.toGamingSession(emptySet()).hostId == playerId
-            }
-            return false
+            return resultSet.next()
         }
 }
