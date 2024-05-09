@@ -1,5 +1,4 @@
 package pt.isel.ls.integration.sections
-import java.util.*
 import kotlinx.serialization.json.Json
 import org.http4k.core.Method
 import org.http4k.core.Request
@@ -17,6 +16,7 @@ import pt.isel.ls.domain.Genre
 import pt.isel.ls.integration.IntegrationTests
 import pt.isel.ls.utils.generateRandomGameSearch
 import pt.isel.ls.utils.generateRandomString
+import java.util.*
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
@@ -143,8 +143,13 @@ class GamesTests : IntegrationTests() {
                 assertEquals(Status.OK, status)
                 val response = Json.decodeFromString<GameListResponse>(bodyString())
                 assertTrue {
-                    games.filter { it -> it.developer == search.developer && it.genres.containsAll(search.genres.map {
-                        Genre(it, "") }) }
+                    games.filter { it ->
+                        it.developer == search.developer && it.genres.containsAll(
+                            search.genres.map {
+                                Genre(it, "")
+                            },
+                        )
+                    }
                         .map { GameResponse(it) }
                         .all { x ->
                             response.games.contains(x)

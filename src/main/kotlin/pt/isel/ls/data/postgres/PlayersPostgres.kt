@@ -1,9 +1,5 @@
 package pt.isel.ls.data.postgres
 
-import java.sql.Connection
-import java.sql.SQLException
-import java.sql.Statement
-import java.util.*
 import pt.isel.ls.api.models.players.PlayerCreate
 import pt.isel.ls.api.models.players.PlayerSearch
 import pt.isel.ls.data.PlayersData
@@ -11,6 +7,10 @@ import pt.isel.ls.domain.Player
 import pt.isel.ls.utils.Email
 import pt.isel.ls.utils.postgres.toPlayer
 import pt.isel.ls.utils.postgres.useWithRollback
+import java.sql.Connection
+import java.sql.SQLException
+import java.sql.Statement
+import java.util.*
 
 class PlayersPostgres(private val conn: () -> Connection) : PlayersData {
     override fun create(

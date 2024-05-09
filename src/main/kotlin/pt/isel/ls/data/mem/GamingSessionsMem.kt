@@ -39,15 +39,16 @@ class GamingSessionsMem(
         limit: Int,
         skip: Int,
     ): List<Session> {
-        val (game, date, state, playerEmail, hostId) = sessionParameters
+        val (game, date, state, player, hostId) = sessionParameters
         var sessions = sessions.table.values.toList()
 
         if (game != null) {
             sessions = sessions.filter { it.gameId == game }
         }
-        if (playerEmail != null) {
+        if (player != null) {
             sessions = sessions.filter {
-                    session -> session.players.any { p -> p.email.email == playerEmail.email }
+                    session ->
+                session.players.any { p -> p.name == player }
             }
         }
         if (hostId != null) {
@@ -65,7 +66,7 @@ class GamingSessionsMem(
     }
 
     override fun update(sessionId: Int, sessionUpdate: SessionUpdate) {
-       val capacity = sessionUpdate.capacity
+        val capacity = sessionUpdate.capacity
         val startingDate = sessionUpdate.startingDateFormatted
         val session =
             sessions.table[sessionId]!!.copy(maxCapacity = capacity, startingDate = startingDate)

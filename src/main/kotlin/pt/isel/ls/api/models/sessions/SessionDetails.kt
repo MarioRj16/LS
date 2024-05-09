@@ -16,7 +16,7 @@ class SessionDetails private constructor(
     val capacity: Int,
     val date: LocalDateTime,
     val players: Set<PlayerDetails>,
-    val isOpen: Boolean
+    val isOpen: Boolean,
 ) {
     companion object {
         operator fun invoke(session: Session, game: Game): SessionDetails {
@@ -28,7 +28,7 @@ class SessionDetails private constructor(
                 session.maxCapacity,
                 session.startingDate,
                 session.players.map { PlayerDetails(it) }.toSet(),
-                session.state
+                session.state,
             )
         }
     }
@@ -43,7 +43,7 @@ class SessionDetails private constructor(
         if (capacity != other.capacity) return false
         if (date != other.date) return false
         if (players != other.players) return false
-        if(isOpen != other.isOpen) return false
+        if (isOpen != other.isOpen) return false
 
         return true
     }

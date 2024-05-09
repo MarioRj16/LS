@@ -11,5 +11,5 @@ router.addRouteHandler('/search',GamesSearchPage)
 router.addRouteHandler('/create',GamesCreatePage)
 router.addRouteHandler('/',GamesPage)
 router.addRouteHandler('/:id',GamesDetailsPage)
-router.addDefaultNotFoundRouteHandler(NotFoundPage)
+
 export default router

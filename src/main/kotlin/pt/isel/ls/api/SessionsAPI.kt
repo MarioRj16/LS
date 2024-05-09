@@ -11,7 +11,6 @@ import pt.isel.ls.api.models.sessions.SessionCreate
 import pt.isel.ls.api.models.sessions.SessionSearch
 import pt.isel.ls.api.models.sessions.SessionUpdate
 import pt.isel.ls.services.SessionServices
-import pt.isel.ls.utils.Email
 import pt.isel.ls.utils.isNotNegative
 import pt.isel.ls.utils.isPositive
 import pt.isel.ls.utils.toLocalDateTime
@@ -24,10 +23,9 @@ class SessionsAPI(private val services: SessionServices) : APISchema() {
             val query = request.query("date")?.toLong()
             val date = query?.toLocalDateTime()
             val state = request.query("state")?.toBoolean()
-            val playerEmail = request.query("player")?.let { Email(it) }
-            println(playerEmail)
+            val player = request.query("player")
             val hostId = request.query("host")?.toIntOrNull()
-            val sessionSearch = SessionSearch(gameId, date, state, playerEmail, hostId)
+            val sessionSearch = SessionSearch(gameId, date, state, player, hostId)
             val skip = request.query("skip")?.toInt().validateInt(DEFAULT_SKIP) { it.isNotNegative() }
             val limit = request.query("limit")?.toInt().validateInt(DEFAULT_LIMIT) { it.isNotNegative() }
             Response(Status.OK)

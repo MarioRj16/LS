@@ -1,5 +1,6 @@
 import {DEFAULT_LIMIT, DEFAULT_SKIP} from "../utils/Configs.js";
 import {button, div} from "../utils/Elements.js";
+import {FetchAPI} from "../utils/FetchAPI.js";
 
 async function changePage(jump, path, query) {
     const queryParams = new URLSearchParams(query);
@@ -18,7 +19,9 @@ async function changePage(jump, path, query) {
 
     queryParams.set("skip", newSkip);
 
-    window.location.href = `#${path}?${queryParams.toString()}`;
+    const response = await FetchAPI(`/${path}?${queryParams.toString()}`)
+    if(response.total==0) alert("There's no more pages")
+    else window.location.href = `#${path}?${queryParams.toString()}`;
 }
 
 export async function Paginate(query){

@@ -85,7 +85,7 @@ class SessionTests : AbstractDataTests() {
         val session = gamingSessionFactory.createRandomGamingSession()
         val newDate = plusDaysToCurrentDateTime()
         val newCapacity: Int =
-            Random.nextInt(maxOf(SESSION_MIN_CAPACITY, session.maxCapacity), SESSION_MAX_CAPACITY+1)
+            Random.nextInt(maxOf(SESSION_MIN_CAPACITY, session.maxCapacity), SESSION_MAX_CAPACITY + 1)
         val expected = session.copy(startingDate = newDate, maxCapacity = newCapacity)
         val sessionUpdate = SessionUpdate(newCapacity, newDate.toLong())
         gamingSessions.update(session.id, sessionUpdate)
@@ -95,7 +95,6 @@ class SessionTests : AbstractDataTests() {
         assertEquals(expected.maxCapacity, result.maxCapacity)
         assertEquals(expected.startingDate.toLong(), result.startingDate.toLong())
         assertEquals(expected.players, result.players)
-
     }
 
     @Test
@@ -150,7 +149,7 @@ class SessionTests : AbstractDataTests() {
         val session = gamingSessionFactory.createRandomGamingSession(players = setOf(player))
         gamingSessionFactory.createRandomGamingSession(players = setOf(player2))
 
-        val searchResults = gamingSessions.search(SessionSearch(playerEmail = player.email), DEFAULT_LIMIT, DEFAULT_SKIP)
+        val searchResults = gamingSessions.search(SessionSearch(playerName = player.name), DEFAULT_LIMIT, DEFAULT_SKIP)
         assertEquals(1, searchResults.size)
         assertContains(searchResults, session)
     }

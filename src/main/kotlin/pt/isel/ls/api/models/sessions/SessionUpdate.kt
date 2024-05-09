@@ -8,8 +8,8 @@ import pt.isel.ls.utils.toLong
 
 @Serializable
 data class SessionUpdate(val capacity: Int, val startingDate: Long) {
-    val startingDateFormatted:LocalDateTime
-        get(){
+    val startingDateFormatted: LocalDateTime
+        get() {
             return startingDate.toLocalDateTime()
         }
 

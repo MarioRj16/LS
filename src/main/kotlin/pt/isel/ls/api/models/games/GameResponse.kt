@@ -7,14 +7,14 @@ import pt.isel.ls.domain.Game
 class GameResponse private constructor(
     val id: Int,
     val name: String,
-    val developer: String
+    val developer: String,
 ) {
     companion object {
         operator fun invoke(game: Game): GameResponse {
             return GameResponse(
                 game.id,
                 game.name,
-                game.developer
+                game.developer,
             )
         }
     }

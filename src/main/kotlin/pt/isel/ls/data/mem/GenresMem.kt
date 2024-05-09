@@ -4,8 +4,8 @@ import pt.isel.ls.data.GenresData
 import pt.isel.ls.domain.Genre
 
 class GenresMem(
-    private val genreDB: DataMemTable<Genre> = DataMemTable()
-): GenresData {
+    private val genreDB: DataMemTable<Genre> = DataMemTable(),
+) : GenresData {
     init {
         setOf(
             Genre(1, "Action"),
@@ -13,7 +13,7 @@ class GenresMem(
             Genre(3, "RPG"),
             Genre(4, "Simulation"),
             Genre(5, "Strategy"),
-        ).forEach{ genreDB.table[genreDB.nextId.get()] = it }
+        ).forEach { genreDB.table[genreDB.nextId.get()] = it }
     }
 
     override fun getGenres(genreIds: Set<Int>): Set<Genre> =
@@ -22,5 +22,4 @@ class GenresMem(
     override fun getAllGenres(): Set<Genre> = genreDB.table.values.toSet()
 
     override fun genresExist(genreIds: Set<Int>): Boolean = genreIds.all { genreDB.table.containsKey(it) }
-
 }

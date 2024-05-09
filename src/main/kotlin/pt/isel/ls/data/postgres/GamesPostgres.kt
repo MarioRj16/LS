@@ -1,9 +1,5 @@
 package pt.isel.ls.data.postgres
 
-import java.sql.Connection
-import java.sql.PreparedStatement
-import java.sql.SQLException
-import java.sql.Statement
 import pt.isel.ls.api.models.games.GameSearch
 import pt.isel.ls.data.GamesData
 import pt.isel.ls.domain.Game
@@ -12,6 +8,10 @@ import pt.isel.ls.utils.paginate
 import pt.isel.ls.utils.postgres.toGame
 import pt.isel.ls.utils.postgres.toGenre
 import pt.isel.ls.utils.postgres.useWithRollback
+import java.sql.Connection
+import java.sql.PreparedStatement
+import java.sql.SQLException
+import java.sql.Statement
 
 class GamesPostgres(private val conn: () -> Connection) : GamesData {
     override fun create(
@@ -83,7 +83,6 @@ class GamesPostgres(private val conn: () -> Connection) : GamesData {
     }
 
     private fun Connection.insertGamesGenres(gameId: Int, genres: Set<Genre>) {
-
         val query = """INSERT INTO games_genres(game_id, genre_id) VALUES ${genres.joinToString(", ") { "(?, ?)" }}"""
 
         val statement =

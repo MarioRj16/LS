@@ -1,9 +1,9 @@
 package pt.isel.ls.api.models.players
 
-import java.util.*
 import kotlinx.serialization.Serializable
 import pt.isel.ls.domain.Player
 import pt.isel.ls.utils.serializers.UUIDSerializer
+import java.util.*
 
 @Serializable
 class PlayerResponse private constructor(

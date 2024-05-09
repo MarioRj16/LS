@@ -10,7 +10,7 @@ import pt.isel.ls.api.models.genres.GenreListResponse
 import pt.isel.ls.integration.IntegrationTests
 import kotlin.test.assertEquals
 
-class GenresTests: IntegrationTests() {
+class GenresTests : IntegrationTests() {
 
     @BeforeEach
     fun setUp() {
@@ -31,6 +31,5 @@ class GenresTests: IntegrationTests() {
                 assertEquals(Status.OK, status)
                 assertEquals(nrOfGenres, Json.decodeFromString<GenreListResponse>(bodyString()).total)
             }
-
     }
 }

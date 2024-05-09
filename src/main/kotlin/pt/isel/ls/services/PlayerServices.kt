@@ -1,6 +1,5 @@
 package pt.isel.ls.services
 
-import java.util.*
 import pt.isel.ls.api.models.players.PlayerCreate
 import pt.isel.ls.api.models.players.PlayerDetails
 import pt.isel.ls.api.models.players.PlayerListResponse
@@ -8,6 +7,7 @@ import pt.isel.ls.api.models.players.PlayerResponse
 import pt.isel.ls.api.models.players.PlayerSearch
 import pt.isel.ls.data.Data
 import pt.isel.ls.utils.exceptions.BadRequestException
+import java.util.*
 
 open class PlayerServices(internal val db: Data) : ServicesSchema(db) {
     fun createPlayer(playerCreate: PlayerCreate): PlayerResponse {
