@@ -1,11 +1,12 @@
-package pt.isel.ls.data
+package pt.isel.ls.data.genres
 
 import org.junit.jupiter.api.Assertions.assertEquals
+import pt.isel.ls.data.DataMemTests
 import pt.isel.ls.data.mem.GenresMem
 import pt.isel.ls.domain.Genre
 import kotlin.test.Test
 
-class GenresTest {
+class GenresMemTest: DataMemTests() {
     @Test
     fun `test getAllGenres`() {
         val gamesMem = GenresMem()

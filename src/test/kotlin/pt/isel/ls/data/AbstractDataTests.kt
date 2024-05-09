@@ -1,14 +1,13 @@
 package pt.isel.ls.data
 
 import org.junit.jupiter.api.BeforeEach
-import pt.isel.ls.data.mem.DataMem
+import pt.isel.ls.data.postgres.DataPostgres
 import pt.isel.ls.utils.factories.GameFactory
 import pt.isel.ls.utils.factories.GamingSessionFactory
 import pt.isel.ls.utils.factories.GenresFactory
 import pt.isel.ls.utils.factories.PlayerFactory
 
-abstract class AbstractDataTests {
-    private val db = DataMem()
+sealed class AbstractDataTests(private val db: Data) {
 
     protected val players = db.players
     protected val games = db.games
@@ -23,5 +22,8 @@ abstract class AbstractDataTests {
     @BeforeEach
     fun setUp() {
         db.reset()
+        if(db is DataPostgres){
+            db.create()
+        }
     }
 }

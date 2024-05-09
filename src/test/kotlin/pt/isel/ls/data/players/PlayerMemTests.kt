@@ -1,4 +1,4 @@
-package pt.isel.ls.data
+package pt.isel.ls.data.players
 
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
@@ -6,12 +6,13 @@ import pt.isel.ls.DEFAULT_LIMIT
 import pt.isel.ls.DEFAULT_SKIP
 import pt.isel.ls.api.models.players.PlayerCreate
 import pt.isel.ls.api.models.players.PlayerSearch
+import pt.isel.ls.data.DataMemTests
 import pt.isel.ls.utils.Email
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
-class PlayerTests : AbstractDataTests() {
+class PlayerMemTests : DataMemTests() {
     @Test
     fun `create() creates player successfully`() {
         val name = "testName"

@@ -1,15 +1,16 @@
-package pt.isel.ls.data
+package pt.isel.ls.data.games
 
 import org.junit.jupiter.api.Test
 import pt.isel.ls.DEFAULT_LIMIT
 import pt.isel.ls.DEFAULT_SKIP
 import pt.isel.ls.api.models.games.GameSearch
+import pt.isel.ls.data.DataMemTests
 import pt.isel.ls.utils.generateRandomString
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class GamesTests : AbstractDataTests() {
+class GamesMemTests : DataMemTests(){
 
     @Test
     fun `create() return game successfully`() {
