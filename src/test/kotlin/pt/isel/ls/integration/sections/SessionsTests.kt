@@ -6,6 +6,7 @@ import org.http4k.core.Status
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
+import pt.isel.ls.DEFAULT_LIMIT
 import pt.isel.ls.SESSION_MAX_CAPACITY
 import pt.isel.ls.SESSION_MIN_CAPACITY
 import pt.isel.ls.api.models.sessions.SessionCreate
@@ -241,6 +242,23 @@ class SessionsTests : IntegrationTests() {
     fun `searchSessions with params returns 200 for no search results`() {
         val player = playerFactory.createRandomPlayer()
         val request = Request(Method.GET, "$URI_PREFIX/sessions")
+            .query("state", false.toString())
+            .token(player.token)
+        client(request)
+            .apply {
+                val response = Json.decodeFromString<SessionListResponse>(bodyString())
+                assertEquals(Status.OK, status)
+                assertEquals(0, response.total)
+            }
+    }
+
+    @Test
+    fun `searchSessions returns 200 for skip higher than results size`() {
+        val player = playerFactory.createRandomPlayer()
+        sessionFactory.createRandomGamingSession()
+        val skip = 10
+        val limit = DEFAULT_LIMIT
+        val request = Request(Method.GET, "$URI_PREFIX/sessions?skip=$skip&limit=$limit")
             .query("state", false.toString())
             .token(player.token)
         client(request)
