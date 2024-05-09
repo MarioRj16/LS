@@ -6,13 +6,13 @@ import pt.isel.ls.DEFAULT_LIMIT
 import pt.isel.ls.DEFAULT_SKIP
 import pt.isel.ls.api.models.players.PlayerCreate
 import pt.isel.ls.api.models.players.PlayerSearch
-import pt.isel.ls.data.DataMemTests
+import pt.isel.ls.data.DataPostgresTests
 import pt.isel.ls.utils.Email
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
-class PlayerMemTests : DataMemTests(), PlayersTests {
+class PlayerPostgresTests: DataPostgresTests(), PlayersTests{
     @Test
     override fun `create() creates player successfully`() {
         val name = "testName"
