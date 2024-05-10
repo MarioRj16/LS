@@ -19,7 +19,6 @@ jobs:
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: password
-          POSTGRES_DB: testdb
         ports:
           - 5432:5432
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
@@ -36,7 +35,7 @@ jobs:
           distribution: 'temurin'
 
       - name: Set up PostgreSQL environment variables
-        run: set JDBC_CONN="postgresql://localhost:5432/testdb?user=postgres&password=password&sslmode=disable"
+        run: export JDBC_CONN="postgresql://localhost:5432/postgres?user=postgres&password=password&sslmode=disable"
 
 
       - name: Run ktlint

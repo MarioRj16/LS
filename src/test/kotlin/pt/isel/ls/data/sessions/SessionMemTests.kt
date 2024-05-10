@@ -152,7 +152,7 @@ class SessionMemTests : DataMemTests(), SessionTests {
         gamingSessionFactory.createRandomGamingSession(players = setOf(player2))
 
         val searchResults =
-            gamingSessions.search(SessionSearch(playerEmail = player.email), DEFAULT_LIMIT, DEFAULT_SKIP)
+            gamingSessions.search(SessionSearch(playerName = player.name), DEFAULT_LIMIT, DEFAULT_SKIP)
         assertEquals(1, searchResults.size)
         assertContains(searchResults, session)
     }
