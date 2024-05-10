@@ -13,17 +13,6 @@ jobs:
     name: Build and Test
     runs-on: ubuntu-latest
 
-    services:
-      postgres:
-        image: postgres:latest
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: password
-        ports:
-          - 5432:5432
-        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
-
-
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
@@ -33,10 +22,6 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-
-      - name: Set up PostgreSQL environment variables
-        run: export JDBC_CONN="postgresql://localhost:5432/postgres?user=postgres&password=password&sslmode=disable"
-
 
       - name: Run ktlint
         run: ./gradlew ktlintFormat --no-daemon

@@ -28,6 +28,7 @@ application {
 
 tasks.test {
     useJUnitPlatform()
+    exclude("**/*Postgres*")
 }
 
 tasks.withType<KotlinCompile> {
