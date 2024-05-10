@@ -1,4 +1,5 @@
 package pt.isel.ls.integration.sections
+
 import kotlinx.serialization.json.Json
 import org.http4k.core.Method
 import org.http4k.core.Request
@@ -74,7 +75,8 @@ class GamesTests : IntegrationTests() {
     fun `createGames returns 400 for non-unique name`() {
         val player = playerFactory.createRandomPlayer()
         val game = gameFactory.createRandomGame()
-        val requestBody = GameCreate(game.name, generateRandomString(), genresFactory.random().map { it.genreId }.toSet())
+        val requestBody =
+            GameCreate(game.name, generateRandomString(), genresFactory.random().map { it.genreId }.toSet())
         val request =
             Request(Method.POST, "$URI_PREFIX/games")
                 .json(requestBody)
@@ -135,7 +137,10 @@ class GamesTests : IntegrationTests() {
         val games = List(5) { gameFactory.createRandomGame() }
         val search = generateRandomGameSearch()
         val request =
-            Request(Method.GET, "$URI_PREFIX/games?developer=${search.developer}&genres=${search.genres.joinToString(",")}")
+            Request(
+                Method.GET,
+                "$URI_PREFIX/games?developer=${search.developer}&genres=${search.genres.joinToString(",")}"
+            )
                 .json("")
                 .token(player.token)
         client(request)
@@ -163,7 +168,10 @@ class GamesTests : IntegrationTests() {
         val player = playerFactory.createRandomPlayer()
         val search = GameSearch(UUID.randomUUID().toString(), UUID.randomUUID().toString(), setOf(1))
         val request =
-            Request(Method.GET, "$URI_PREFIX/games?developer=${search.developer}&genres=${search.genres.joinToString(",")}")
+            Request(
+                Method.GET,
+                "$URI_PREFIX/games?developer=${search.developer}&genres=${search.genres.joinToString(",")}"
+            )
                 .json("")
                 .token(player.token)
         client(request)
