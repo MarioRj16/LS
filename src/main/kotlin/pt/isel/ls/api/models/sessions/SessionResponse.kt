@@ -8,13 +8,14 @@ import pt.isel.ls.domain.Session
 class SessionResponse private constructor(
     val id: Int,
     val game: Int,
+    val currentCapacity:Int,
     val capacity: Int,
     val date: LocalDateTime,
     val isOpen: Boolean,
 ) {
     companion object {
         operator fun invoke(session: Session): SessionResponse {
-            return SessionResponse(session.id, session.gameId, session.maxCapacity, session.startingDate, session.state)
+            return SessionResponse(session.id, session.gameId,session.players.count(),session.maxCapacity, session.startingDate, session.state)
         }
     }
 
@@ -26,6 +27,7 @@ class SessionResponse private constructor(
 
         if (id != other.id) return false
         if (game != other.game) return false
+        if (currentCapacity != other.currentCapacity) return false
         if (capacity != other.capacity) return false
         if (date != other.date) return false
         if (isOpen != other.isOpen) return false
@@ -37,6 +39,7 @@ class SessionResponse private constructor(
         var result = id
         result = 31 * result + game
         result = 31 * result + capacity
+        result = 31 * result + currentCapacity
         result = 31 * result + date.hashCode()
         return result
     }

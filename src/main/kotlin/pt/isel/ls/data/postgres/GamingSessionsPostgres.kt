@@ -6,6 +6,7 @@ import pt.isel.ls.api.models.sessions.SessionUpdate
 import pt.isel.ls.data.GamingSessionsData
 import pt.isel.ls.domain.Player
 import pt.isel.ls.domain.Session
+import pt.isel.ls.utils.factories.PlayerFactory
 import pt.isel.ls.utils.paginate
 import pt.isel.ls.utils.postgres.toGamingSession
 import pt.isel.ls.utils.postgres.toPlayer
@@ -125,7 +126,9 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
             val sessions = mutableListOf<Session>()
 
             while (resultSet.next()) {
-                sessions += resultSet.toGamingSession(emptySet())
+                val playerCount = resultSet.getInt("player_count")
+                val sessionPlayers = (1..playerCount).map{ PlayerFactory(null).createRandomPlayer()}
+                sessions += resultSet.toGamingSession(sessionPlayers.toSet())
             }
 
             return sessions.distinct().paginate(skip, limit)
