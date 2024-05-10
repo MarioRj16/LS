@@ -20,8 +20,9 @@ fun <T> List<T>.paginate(
 ): List<T> {
     require(skip >= 0) { "skip must be a non negative integer\nskip=$skip" }
     require(limit >= 0) { "Limit must be a non negative integer\nlimit=$limit" }
-    if (this.isEmpty()) return emptyList()
-    val lastIndex: Int = if (limit > size) size else limit + skip
+    if (this.isEmpty() || skip >= size)
+        return emptyList()
+    val lastIndex: Int = if (limit + skip > size) size else limit + skip
     return subList(skip, lastIndex)
 }
 

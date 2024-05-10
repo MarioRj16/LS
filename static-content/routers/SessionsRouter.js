@@ -14,6 +14,4 @@ router.addRouteHandler('/',SessionsPage)
 router.addRouteHandler('/:id/update',SessionsUpdatePage)
 router.addRouteHandler('/:id',SessionsDetailsPage)
 
-router.addDefaultNotFoundRouteHandler(NotFoundPage)
-
 export default router

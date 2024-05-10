@@ -6,6 +6,7 @@ import pt.isel.ls.api.models.sessions.SessionUpdate
 import pt.isel.ls.data.GamingSessionsData
 import pt.isel.ls.domain.Player
 import pt.isel.ls.domain.Session
+import pt.isel.ls.utils.factories.PlayerFactory
 import pt.isel.ls.utils.paginate
 import pt.isel.ls.utils.postgres.toGamingSession
 import pt.isel.ls.utils.postgres.toPlayer
@@ -78,24 +79,24 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
 
     override fun search(sessionParameters: SessionSearch, limit: Int, skip: Int): List<Session> =
         conn().useWithRollback {
-            val (game, date, isOpen, playerEmail, hostId) = sessionParameters
+            val (game, date, isOpen, player, hostId) = sessionParameters
             val query =
                 """
                 select * from gaming_sessions
                 full outer join 
                 (select gaming_session_id, count(player_id) player_count from players_sessions group by gaming_session_id) as gsipc
                 using (gaming_session_id)
-                ${if (playerEmail != null) {
+                ${if (player != null) {
                     " full outer join players_sessions using (gaming_session_id)"
                 } else {
                     ""
                 }
                 }
-                ${if (playerEmail != null) " full outer join players using (player_id)" else ""}
+                ${if (player != null) " full outer join players using (player_id)" else ""}
                 where 1 = 1
                 ${if (game != null) " and game_id = ?" else ""}
                 ${if (date != null) " and starting_date = ?" else ""}
-                ${if (playerEmail != null) " and email = ?" else ""}
+                ${if (player != null) " and player_name = ?" else ""}
                 ${if (hostId != null) " and host = ?" else ""}
                 ${
                     if (isOpen != null) {
@@ -116,7 +117,7 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
                     var parameterIndex = 1
                     game?.let { setInt(parameterIndex++, game) }
                     date?.let { setTimestamp(parameterIndex++, date.toTimeStamp()) }
-                    playerEmail?.let { setString(parameterIndex++, playerEmail.email) }
+                    player?.let { setString(parameterIndex++, player) }
                     hostId?.let { setInt(parameterIndex++, hostId) }
                 }
 
@@ -125,7 +126,9 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
             val sessions = mutableListOf<Session>()
 
             while (resultSet.next()) {
-                sessions += resultSet.toGamingSession(emptySet())
+                val playerCount = resultSet.getInt("player_count")
+                val sessionPlayers = (1..playerCount).map{ PlayerFactory(null).createRandomPlayer()}
+                sessions += resultSet.toGamingSession(sessionPlayers.toSet())
             }
 
             return sessions.distinct().paginate(skip, limit)
