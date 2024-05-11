@@ -1,18 +1,19 @@
-package pt.isel.ls.data
+package pt.isel.ls.data.games
 
 import org.junit.jupiter.api.Test
 import pt.isel.ls.DEFAULT_LIMIT
 import pt.isel.ls.DEFAULT_SKIP
 import pt.isel.ls.api.models.games.GameSearch
+import pt.isel.ls.data.DataMemTests
 import pt.isel.ls.utils.generateRandomString
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class GamesTests : AbstractDataTests() {
+class GamesMemTests : DataMemTests(), GamesTests {
 
     @Test
-    fun `create() return game successfully`() {
+    override fun createReturnGameSuccessfully() {
         val name = generateRandomString()
         val developer = generateRandomString()
         val genres = genreFactory.random()
@@ -25,35 +26,35 @@ class GamesTests : AbstractDataTests() {
     }
 
     @Test
-    fun `get() returns game successfully`() {
+    override fun getReturnsGameSuccessfully() {
         val game = gameFactory.createRandomGame()
 
         assertEquals(game, games.get(game.name))
     }
 
     @Test
-    fun `get() returns null for non existing game`() {
+    override fun getReturnsNullForNonExistingGame() {
         val game = games.get(generateRandomString())
 
         assertTrue(game == null)
     }
 
     @Test
-    fun `getById() returns game successfully`() {
+    override fun getByIdReturnsGameSuccessfully() {
         val game = gameFactory.createRandomGame()
 
         assertEquals(game, games.get(game.id))
     }
 
     @Test
-    fun `getById() returns null for non existing game`() {
+    override fun getByIdReturnsNullForNonExistingGame() {
         val game = games.get(1)
 
         assertTrue(game == null)
     }
 
     @Test
-    fun `search() with no games returns empty list`() {
+    override fun searchWithNoGamesReturnsEmptyList() {
         val searchParams = GameSearch(null, null, emptySet())
         val searchResults = games.search(searchParams, DEFAULT_LIMIT, DEFAULT_SKIP)
 
@@ -61,7 +62,7 @@ class GamesTests : AbstractDataTests() {
     }
 
     @Test
-    fun `search() returns all games successfully`() {
+    override fun searchReturnsAllGamesSuccessfully() {
         val gamesList = List(5) { gameFactory.createRandomGame() }
         val searchParams = GameSearch(null, null, emptySet())
         val searchResults = games.search(searchParams, DEFAULT_LIMIT, DEFAULT_SKIP)
@@ -71,7 +72,7 @@ class GamesTests : AbstractDataTests() {
     }
 
     @Test
-    fun `search() by name returns games successfully`() {
+    override fun searchByNameReturnsGamesSuccessfully() {
         val game = gameFactory.createRandomGame()
         val searchParams = GameSearch(game.name, null, emptySet())
         val searchResults = games.search(searchParams, DEFAULT_LIMIT, DEFAULT_SKIP)
@@ -81,7 +82,7 @@ class GamesTests : AbstractDataTests() {
     }
 
     @Test
-    fun `search() by case-insensitive name returns games successfully`() {
+    override fun searchByCaseInsensitiveNameReturnsGamesSuccessfully() {
         val game = gameFactory.createRandomGame()
         val searchParams = GameSearch(game.name.uppercase(), null, emptySet())
         val searchResults = games.search(searchParams, DEFAULT_LIMIT, DEFAULT_SKIP)
@@ -91,7 +92,7 @@ class GamesTests : AbstractDataTests() {
     }
 
     @Test
-    fun `search() by partial name returns games successfully`() {
+    override fun searchByPartialNameReturnsGamesSuccessfully() {
         val game = gameFactory.createRandomGame()
         val searchParams = GameSearch(game.name.take(1), null, emptySet())
         val searchResults = games.search(searchParams, DEFAULT_LIMIT, DEFAULT_SKIP)
@@ -101,7 +102,7 @@ class GamesTests : AbstractDataTests() {
     }
 
     @Test
-    fun `search() by developer returns games successfully`() {
+    override fun searchByDeveloperReturnsGamesSuccessfully() {
         val game = gameFactory.createRandomGame()
         val searchParams = GameSearch(null, game.developer, emptySet())
         val searchResults = games.search(searchParams, DEFAULT_LIMIT, DEFAULT_SKIP)
@@ -111,7 +112,7 @@ class GamesTests : AbstractDataTests() {
     }
 
     @Test
-    fun `search() by genre returns games successfully`() {
+    override fun searchByGenreReturnsGamesSuccessfully() {
         val game = gameFactory.createRandomGame()
         val searchParams = GameSearch(null, null, setOf(game.genres.random().genreId))
         val searchResults = games.search(searchParams, DEFAULT_LIMIT, DEFAULT_SKIP)

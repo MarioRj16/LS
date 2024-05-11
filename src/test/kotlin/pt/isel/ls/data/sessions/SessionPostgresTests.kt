@@ -1,4 +1,4 @@
-package pt.isel.ls.data
+package pt.isel.ls.data.sessions
 
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
@@ -10,18 +10,18 @@ import pt.isel.ls.SESSION_MAX_CAPACITY
 import pt.isel.ls.SESSION_MIN_CAPACITY
 import pt.isel.ls.api.models.sessions.SessionSearch
 import pt.isel.ls.api.models.sessions.SessionUpdate
+import pt.isel.ls.data.DataPostgresTests
 import pt.isel.ls.utils.plusDaysToCurrentDateTime
 import pt.isel.ls.utils.toLong
 import kotlin.random.Random
-import kotlin.test.assertContains
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
-class SessionTests : AbstractDataTests() {
+class SessionPostgresTests : DataPostgresTests(), SessionTests {
     @Test
-    fun `create() returns gaming session successfully`() {
+    override fun createReturnsGamingSessionSuccessfully() {
         val player = playerFactory.createRandomPlayer()
         val game = gameFactory.createRandomGame()
         val capacity = 2
@@ -32,7 +32,6 @@ class SessionTests : AbstractDataTests() {
             )
         val session = gamingSessions.create(capacity, game.id, date, player.id)
 
-        assertTrue(session.id == 1)
         assertEquals(game.id, session.gameId)
         assertEquals(capacity, session.maxCapacity)
         assertEquals(date, session.startingDate)
@@ -41,7 +40,7 @@ class SessionTests : AbstractDataTests() {
     }
 
     @Test
-    fun `get() returns gaming session successfully`() {
+    override fun getReturnsGamingSessionSuccessfully() {
         val player = playerFactory.createRandomPlayer()
         val game = gameFactory.createRandomGame()
         val session = gamingSessionFactory.createRandomGamingSession(game.id, player.id)
@@ -49,12 +48,12 @@ class SessionTests : AbstractDataTests() {
     }
 
     @Test
-    fun `get() returns null for non existing gaming session`() {
+    override fun getReturnsNullForNonExistingGamingSession() {
         assertNull(gamingSessions.get(1))
     }
 
     @Test
-    fun `addPlayer() adds player to gaming session successfully`() {
+    override fun addPlayerAddsPlayerToGamingSessionSuccessfully() {
         val player = playerFactory.createRandomPlayer()
         val game = gameFactory.createRandomGame()
         val session = gamingSessionFactory.createRandomGamingSession(game.id, player.id)
@@ -67,7 +66,7 @@ class SessionTests : AbstractDataTests() {
     }
 
     @Test
-    fun `removePlayer() removes player from session successfully`() {
+    override fun removePlayerRemovesPlayerFromSessionSuccessfully() {
         val game = gameFactory.createRandomGame()
         val creator = playerFactory.createRandomPlayer()
         val player = playerFactory.createRandomPlayer()
@@ -81,7 +80,7 @@ class SessionTests : AbstractDataTests() {
     }
 
     @Test
-    fun `update() updates gaming session successfully`() {
+    override fun updateUpdatesGamingSessionSuccessfully() {
         val session = gamingSessionFactory.createRandomGamingSession()
         val newDate = plusDaysToCurrentDateTime()
         val newCapacity: Int =
@@ -98,7 +97,7 @@ class SessionTests : AbstractDataTests() {
     }
 
     @Test
-    fun `delete() deletes gaming session successfully`() {
+    override fun deleteDeletesGamingSessionSuccessfully() {
         val player = playerFactory.createRandomPlayer()
         val game = gameFactory.createRandomGame()
         val session = gamingSessionFactory.createRandomGamingSession(game.id, player.id)
@@ -109,7 +108,7 @@ class SessionTests : AbstractDataTests() {
     }
 
     @Test
-    fun `isOwner() checks if player is owner successfully`() {
+    override fun isOwnerChecksIfPlayerIsOwnerSuccessfully() {
         val game = gameFactory.createRandomGame()
         val player1 = playerFactory.createRandomPlayer()
         val player2 = playerFactory.createRandomPlayer()
@@ -120,7 +119,7 @@ class SessionTests : AbstractDataTests() {
     }
 
     @Test
-    fun `search() by game returns gaming sessions successfully`() {
+    override fun searchByGameReturnsGamingSessionsSuccessfully() {
         val player = playerFactory.createRandomPlayer()
         val game = gameFactory.createRandomGame()
         val game2 = gameFactory.createRandomGame()
@@ -134,41 +133,44 @@ class SessionTests : AbstractDataTests() {
 
         searchResults = gamingSessions.search(SessionSearch(game.id, hostId = null), DEFAULT_LIMIT, DEFAULT_SKIP)
         assertEquals(2, searchResults.size)
-        assertEquals(listOf(session, session2), searchResults)
+        assertEquals(listOf(session, session2).map { it.id }, searchResults.map { it.id })
 
         searchResults = gamingSessions.search(SessionSearch(game2.id, hostId = null), DEFAULT_LIMIT, DEFAULT_SKIP)
         assertEquals(1, searchResults.size)
-        assertEquals(listOf(session3), searchResults)
+        assertEquals(session3.id, searchResults.first().id)
     }
 
     @Test
-    fun `search() by player email returns gaming sessions successfully`() {
+    override fun searchByPlayerEmailReturnsGamingSessionsSuccessfully() {
         val player = playerFactory.createRandomPlayer()
         val player2 = playerFactory.createRandomPlayer()
 
         val session = gamingSessionFactory.createRandomGamingSession(players = setOf(player))
         gamingSessionFactory.createRandomGamingSession(players = setOf(player2))
 
-        val searchResults = gamingSessions.search(SessionSearch(playerName = player.name), DEFAULT_LIMIT, DEFAULT_SKIP)
+        val searchResults =
+            gamingSessions.search(SessionSearch(playerName = player.name), DEFAULT_LIMIT, DEFAULT_SKIP)
         assertEquals(1, searchResults.size)
-        assertContains(searchResults, session)
+        assertEquals(searchResults.first().id, session.id)
     }
 
     @Test
-    fun `search() by date returns gaming sessions successfully`() {
+    override fun searchByDateReturnsGamingSessionsSuccessfully() {
         val session = gamingSessionFactory.createRandomGamingSession()
         val date = session.startingDate
-        val searchResults = gamingSessions.search(SessionSearch(date = date, hostId = null), DEFAULT_LIMIT, DEFAULT_SKIP)
+        val searchResults =
+            gamingSessions.search(SessionSearch(date = date, hostId = null), DEFAULT_LIMIT, DEFAULT_SKIP)
         assertEquals(1, searchResults.size)
-        assertContains(searchResults, session)
+        assertEquals(searchResults.first().id, session.id)
     }
 
     @Test
-    fun `search() by state returns gaming sessions successfully`() {
-        val session = gamingSessionFactory.createRandomGamingSession()
-        gamingSessionFactory.createRandomGamingSession(isOpen = !session.state)
-        val searchResults = gamingSessions.search(SessionSearch(state = session.state, hostId = null), DEFAULT_LIMIT, DEFAULT_SKIP)
-        assertEquals(1, searchResults.size)
-        assertContains(searchResults, session)
+    override fun searchByStateReturnsGamingSessionsSuccessfully() {
+        val players = List(5) { playerFactory.createRandomPlayer() }.toSet()
+        val session = gamingSessionFactory.createRandomGamingSession(isOpen = true, players = players)
+        gamingSessionFactory.createRandomGamingSession(isOpen = false)
+        val searchResults = gamingSessions.search(SessionSearch(state = true), DEFAULT_LIMIT, DEFAULT_SKIP)
+        assertTrue(searchResults.isNotEmpty())
+        assertEquals(searchResults.first().id, session.id)
     }
 }

@@ -1,4 +1,4 @@
-package pt.isel.ls.data
+package pt.isel.ls.data.players
 
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
@@ -6,14 +6,15 @@ import pt.isel.ls.DEFAULT_LIMIT
 import pt.isel.ls.DEFAULT_SKIP
 import pt.isel.ls.api.models.players.PlayerCreate
 import pt.isel.ls.api.models.players.PlayerSearch
+import pt.isel.ls.data.DataPostgresTests
 import pt.isel.ls.utils.Email
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
-class PlayerTests : AbstractDataTests() {
+class PlayerPostgresTests : DataPostgresTests(), PlayersTests {
     @Test
-    fun `create() creates player successfully`() {
+    override fun createCreatesPlayerSuccessfully() {
         val name = "testName"
         val email = Email("test@email.com")
         val playerCreate = PlayerCreate(name, email)
@@ -26,19 +27,19 @@ class PlayerTests : AbstractDataTests() {
     }
 
     @Test
-    fun `get() returns player successfully`() {
+    override fun getReturnsPlayerSuccessfully() {
         val player = playerFactory.createRandomPlayer()
 
         assertEquals(player, players.get(player.id))
     }
 
     @Test
-    fun `get() returns null for non existing player`() {
+    override fun getReturnsNullForNonExistingPlayer() {
         assertNull(players.get(1))
     }
 
     @Test
-    fun `search() returns players successfully`() {
+    override fun searchReturnsPlayersSuccessfully() {
         val player1 = playerFactory.createRandomPlayer()
         val player2 = playerFactory.createRandomPlayer()
         val player3 = playerFactory.createRandomPlayer()
@@ -52,7 +53,7 @@ class PlayerTests : AbstractDataTests() {
     }
 
     @Test
-    fun `search() by name returns players successfully`() {
+    override fun searchByNameReturnsPlayersSuccessfully() {
         val player = playerFactory.createRandomPlayer()
 
         val searchResult = players.search(PlayerSearch(player.name), DEFAULT_SKIP, DEFAULT_LIMIT)
@@ -62,7 +63,7 @@ class PlayerTests : AbstractDataTests() {
     }
 
     @Test
-    fun `search() by partial name returns players successfully`() {
+    override fun searchByPartialNameReturnsPlayersSuccessfully() {
         val player = playerFactory.createRandomPlayer()
 
         val searchResult = players.search(PlayerSearch(player.name.substring(0, 3)), DEFAULT_SKIP, DEFAULT_LIMIT)

@@ -103,7 +103,7 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
                         if (isOpen) {
                             " and starting_date > CURRENT_TIMESTAMP and player_count < capacity"
                         } else {
-                            " and starting_date <= CURRENT_TIMESTAMP or player_count > capacity"
+                            " and starting_date < CURRENT_TIMESTAMP or player_count >= capacity"
                         }
                     } else {
                         ""
@@ -204,17 +204,13 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
     ): Boolean =
         conn().useWithRollback {
             val stm =
-                it.prepareStatement("""select * from gaming_sessions where gaming_session_id = ?""")
+                it.prepareStatement("""select * from gaming_sessions where gaming_session_id = ? and host = ?""")
                     .apply {
                         setInt(1, sessionId)
                         setInt(2, playerId)
                     }
 
             val resultSet = stm.executeQuery()
-
-            if (resultSet.next()) {
-                return resultSet.toGamingSession(emptySet()).hostId == playerId
-            }
-            return false
+            return resultSet.next()
         }
 }

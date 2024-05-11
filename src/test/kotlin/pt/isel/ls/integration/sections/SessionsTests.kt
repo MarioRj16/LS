@@ -1,4 +1,5 @@
 package pt.isel.ls.integration.sections
+
 import kotlinx.serialization.json.Json
 import org.http4k.core.Method
 import org.http4k.core.Request
@@ -286,7 +287,10 @@ class SessionsTests : IntegrationTests() {
             val response = Json.decodeFromString<SessionUpdate>(bodyString())
             val expectedSession =
                 SessionUpdate(
-                    session.copy(maxCapacity = requestBody.capacity, startingDate = requestBody.startingDate.toLocalDateTime()),
+                    session.copy(
+                        maxCapacity = requestBody.capacity,
+                        startingDate = requestBody.startingDate.toLocalDateTime()
+                    ),
                 )
             assertEquals(expectedSession, response)
         }
@@ -303,7 +307,12 @@ class SessionsTests : IntegrationTests() {
         client(request).apply {
             val response = Json.decodeFromString<SessionUpdate>(bodyString())
             val expectedSession =
-                SessionUpdate(session.copy(maxCapacity = requestBody.capacity, startingDate = requestBody.startingDateFormatted))
+                SessionUpdate(
+                    session.copy(
+                        maxCapacity = requestBody.capacity,
+                        startingDate = requestBody.startingDateFormatted
+                    )
+                )
             assertEquals(Status.OK, status)
             assertEquals(expectedSession, response)
         }

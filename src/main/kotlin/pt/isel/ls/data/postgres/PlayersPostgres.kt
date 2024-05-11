@@ -115,9 +115,11 @@ class PlayersPostgres(private val conn: () -> Connection) : PlayersData {
             val username = searchParameters.username
             val statement =
                 it.prepareStatement(
-                    """select * from players where player_name like ?""",
+                    """select * from players ${if (username.isNullOrBlank()) "" else "where player_name like ?"}""",
                 ).apply {
-                    setString(1, "$username%")
+                    username?.let {
+                        setString(1, "$username%")
+                    }
                 }
 
             val resultSet = statement.executeQuery()

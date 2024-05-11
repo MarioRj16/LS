@@ -2,7 +2,7 @@ begin;
 
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
-CREATE TABLE players
+CREATE TABLE IF NOT EXISTS players
 (
     player_id   serial,
     player_name varchar(50) NOT NULL,
@@ -11,14 +11,14 @@ CREATE TABLE players
     PRIMARY KEY (player_id)
 );
 
-CREATE TABLE genres
+CREATE TABLE IF NOT EXISTS genres
 (
     genre_id serial,
     genre_name    varchar(100),
     PRIMARY KEY (genre_id)
 );
 
-CREATE TABLE games
+CREATE TABLE IF NOT EXISTS games
 (
     game_id   serial,
     game_name varchar(50)  NOT NULL UNIQUE,
@@ -26,7 +26,7 @@ CREATE TABLE games
     PRIMARY KEY (game_id)
 );
 
-CREATE TABLE gaming_sessions
+CREATE TABLE IF NOT EXISTS gaming_sessions
 (
     gaming_session_id serial,
     capacity          integer   NOT NULL CHECK (capacity > 1),
@@ -38,7 +38,7 @@ CREATE TABLE gaming_sessions
     FOREIGN KEY (host) REFERENCES players (player_id)
 );
 
-CREATE TABLE games_genres
+CREATE TABLE IF NOT EXISTS games_genres
 (
     game_id  integer,
     genre_id integer,
@@ -47,7 +47,7 @@ CREATE TABLE games_genres
     PRIMARY KEY (game_id, genre_id)
 );
 
-CREATE TABLE players_sessions
+CREATE TABLE IF NOT EXISTS players_sessions
 (
     player_id         integer,
     gaming_session_id integer,
