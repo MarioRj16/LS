@@ -12,6 +12,8 @@ import {SessionsDetailsPage} from "../pages/sessions/SessionsDetailsPage.js";
 import {GamesCreatePage} from "../pages/games/GamesCreatePage.js";
 import {SessionsUpdatePage} from "../pages/sessions/SessionsUpdatePage.js";
 import {SessionsCreatePage} from "../pages/sessions/SessionsCreatePage.js";
+import {p} from "../utils/Elements.js";
+import {NotFoundPage} from "../pages/errors/NotFoundPage.js";
 
 
 describe('router', function () {
@@ -95,6 +97,17 @@ describe('router', function () {
                     throw new Error("Should throw error")
 
             })
+
+            it('with valid path is routed properly', async () => {
+                const router = Router();
+
+                router.addRouteHandler('/',NotFoundPage);
+
+                const generatedElement = await router({path: '/',query: {}});
+
+                chai.assert.isDefined(generatedElement);
+                chai.assert.strictEqual(generatedElement.tagName, 'H1');
+            });
 
         })
 
