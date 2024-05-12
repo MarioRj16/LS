@@ -46,5 +46,10 @@ class Routes(api: API) {
             singlePageApp(
                 ResourceLoader.Directory("static-content"),
             ),
+            /*
+            singlePageApp(
+                ResourceLoader.Directory("static-content/test"),
+            )
+             */
         )
 }

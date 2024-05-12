@@ -1,13 +1,17 @@
 package pt.isel.ls.data.postgres
 
 import kotlinx.datetime.LocalDateTime
+import pt.isel.ls.api.models.sessions.SessionListResponse
+import pt.isel.ls.api.models.sessions.SessionResponse
 import pt.isel.ls.api.models.sessions.SessionSearch
 import pt.isel.ls.api.models.sessions.SessionUpdate
 import pt.isel.ls.data.GamingSessionsData
+import pt.isel.ls.domain.Genre
 import pt.isel.ls.domain.Player
 import pt.isel.ls.domain.Session
 import pt.isel.ls.utils.factories.PlayerFactory
 import pt.isel.ls.utils.paginate
+import pt.isel.ls.utils.postgres.toGame
 import pt.isel.ls.utils.postgres.toGamingSession
 import pt.isel.ls.utils.postgres.toPlayer
 import pt.isel.ls.utils.postgres.useWithRollback
@@ -15,10 +19,6 @@ import pt.isel.ls.utils.toTimeStamp
 import java.sql.Connection
 import java.sql.SQLException
 import java.sql.Statement
-import pt.isel.ls.api.models.sessions.SessionListResponse
-import pt.isel.ls.api.models.sessions.SessionResponse
-import pt.isel.ls.domain.Genre
-import pt.isel.ls.utils.postgres.toGame
 
 class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSessionsData {
     override fun create(
@@ -92,7 +92,7 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
                 full outer join 
                 (select gaming_session_id, count(player_id) player_count from players_sessions group by gaming_session_id) as gsipc
                 using (gaming_session_id)
-                full join public.games using (game_id)
+                join public.games using (game_id)
                 ${if (player != null) {
                     " full outer join players_sessions using (gaming_session_id)"
                 } else {
@@ -102,7 +102,7 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
                 ${if (player != null) " full outer join players using (player_id)" else ""}
                 where 1 = 1
                 ${if (game != null) " and game_id = ?" else ""}
-                ${if (date != null) " and starting_date = ?" else ""}
+                ${if (date != null) " and starting_date >= ?" else ""}
                 ${if (player != null) " and player_name = ?" else ""}
                 ${if (hostId != null) " and host = ?" else ""}
                 ${
@@ -118,6 +118,7 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
                 }
                 order by gaming_sessions.gaming_session_id
                 """.trimIndent()
+            println(query)
 
             val statement =
                 it.prepareStatement(query).apply {

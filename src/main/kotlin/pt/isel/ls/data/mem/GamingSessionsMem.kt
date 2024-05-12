@@ -63,7 +63,7 @@ class GamingSessionsMem(
             sessions = sessions.filter { it.state == state }
         }
         if (date != null) {
-            sessions = sessions.filter { it.startingDate == date }
+            sessions = sessions.filter { it.startingDate >= date }
         }
 
         return SessionListResponse(
