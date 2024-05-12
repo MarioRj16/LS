@@ -2,14 +2,14 @@ package pt.isel.ls.api.models.sessions
 
 import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.Serializable
-import pt.isel.ls.api.models.games.GameResponse
+import pt.isel.ls.api.models.games.GameResponseMinimized
 import pt.isel.ls.domain.Game
 import pt.isel.ls.domain.Session
 
 @Serializable
 class SessionResponse private constructor(
     val id: Int,
-    val game: GameResponse,
+    val game: GameResponseMinimized,
     val currentCapacity:Int,
     val capacity: Int,
     val date: LocalDateTime,
@@ -19,7 +19,7 @@ class SessionResponse private constructor(
         operator fun invoke(session: Session, game: Game): SessionResponse {
             return SessionResponse(
                 session.id,
-                GameResponse(game),
+                GameResponseMinimized(game),
                 session.players.count(),
                 session.maxCapacity,
                 session.startingDate,
