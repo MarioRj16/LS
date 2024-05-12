@@ -108,9 +108,9 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
                 ${
                     if (isOpen != null) {
                         if (isOpen) {
-                            " and starting_date > CURRENT_TIMESTAMP and player_count < capacity"
+                            " and starting_date > CURRENT_TIMESTAMP and (player_count is null or player_count < capacity)"
                         } else {
-                            " and starting_date < CURRENT_TIMESTAMP or player_count >= capacity"
+                            " and starting_date < CURRENT_TIMESTAMP or (player_count is not null and player_count >= capacity)"
                         }
                     } else {
                         ""
@@ -133,8 +133,8 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
             val sessions = mutableListOf<SessionResponse>()
 
             while (resultSet.next()) {
-                val playerCount = resultSet.getInt("player_count")
-                val sessionPlayers = (1..playerCount).map{ PlayerFactory().createRandomPlayer()}
+                val playerCount = resultSet.getInt("player_count") ?: 1
+                val sessionPlayers = List(playerCount){ PlayerFactory().createRandomPlayer() }
 
                 sessions +=
                     SessionResponse(
