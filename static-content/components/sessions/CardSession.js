@@ -12,7 +12,7 @@ export async function CardSession(session){
         {class: "card mx-auto justify-content-center w-50 maxH-50 m-2"},
         div(
             { class: "session-details" },
-            h3({class:"card-header  text-center"}, `${session.game} Session`),
+            h3({class:"card-header  text-center"}, `${session.game.name} Session`),
             div(
                 { class: "card-body text-center"},
                 h3({},`StartDate: ${session.date}`),
