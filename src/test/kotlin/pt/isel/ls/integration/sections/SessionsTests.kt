@@ -217,8 +217,8 @@ class SessionsTests : IntegrationTests() {
                 assertEquals(Status.OK, status)
                 val response = Json.decodeFromString<SessionListResponse>(bodyString()).sessions
                 assertTrue {
-                    sessions.all { x ->
-                        response.contains(SessionResponse(x))
+                    sessions.all { session ->
+                        response.any { it.id == session.id }
                     }
                 }
             }
@@ -228,8 +228,13 @@ class SessionsTests : IntegrationTests() {
     fun `searchSessions with params returns 200 for good request`() {
         val player = playerFactory.createRandomPlayer()
         val game = gameFactory.createRandomGame()
-        sessionFactory.createRandomGamingSession(gameId = game.id)
-        val request = Request(Method.GET, "$URI_PREFIX/sessions?gameId=${game.id}")
+        sessionFactory.createRandomGamingSession(
+            gameId = game.id,
+            hostId = player.id,
+            isOpen = true,
+            players = emptySet()
+        )
+        val request = Request(Method.GET, "$URI_PREFIX/sessions?game=${game.id}")
             .token(player.token)
         client(request)
             .apply {

@@ -1,6 +1,7 @@
 package pt.isel.ls.data
 
 import kotlinx.datetime.LocalDateTime
+import pt.isel.ls.api.models.sessions.SessionListResponse
 import pt.isel.ls.api.models.sessions.SessionSearch
 import pt.isel.ls.api.models.sessions.SessionUpdate
 import pt.isel.ls.domain.Session
@@ -19,7 +20,7 @@ interface GamingSessionsData {
         sessionParameters: SessionSearch,
         limit: Int,
         skip: Int,
-    ): List<Session>
+    ): SessionListResponse
 
     fun update(sessionId: Int, sessionUpdate: SessionUpdate)
 

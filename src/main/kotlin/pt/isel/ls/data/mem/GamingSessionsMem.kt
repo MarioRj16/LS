@@ -1,15 +1,19 @@
 package pt.isel.ls.data.mem
 
 import kotlinx.datetime.LocalDateTime
+import pt.isel.ls.api.models.sessions.SessionListResponse
+import pt.isel.ls.api.models.sessions.SessionResponse
 import pt.isel.ls.api.models.sessions.SessionSearch
 import pt.isel.ls.api.models.sessions.SessionUpdate
 import pt.isel.ls.data.GamingSessionsData
+import pt.isel.ls.domain.Game
 import pt.isel.ls.domain.Player
 import pt.isel.ls.domain.Session
 import pt.isel.ls.utils.paginate
 
 class GamingSessionsMem(
     private val sessions: DataMemTable<Session> = DataMemTable(),
+    private val games: DataMemTable<Game> = DataMemTable(),
     private val players: DataMemTable<Player> = DataMemTable(),
 ) : GamingSessionsData {
 
@@ -38,7 +42,7 @@ class GamingSessionsMem(
         sessionParameters: SessionSearch,
         limit: Int,
         skip: Int,
-    ): List<Session> {
+    ): SessionListResponse {
         val (game, date, state, player, hostId) = sessionParameters
         var sessions = sessions.table.values.toList()
 
@@ -62,7 +66,11 @@ class GamingSessionsMem(
             sessions = sessions.filter { it.startingDate == date }
         }
 
-        return sessions.paginate(skip, limit)
+        return SessionListResponse(
+            sessions.paginate(skip, limit).map { session ->
+                SessionResponse(session, games.table[session.gameId]!!)
+            }
+        )
     }
 
     override fun update(sessionId: Int, sessionUpdate: SessionUpdate) {

@@ -128,19 +128,21 @@ class SessionMemTests : DataMemTests(), SessionTests {
         val game2 = gameFactory.createRandomGame()
         val searchParameters1 = SessionSearch(game.id, hostId = null)
         var searchResults = gamingSessions.search(searchParameters1, DEFAULT_LIMIT, DEFAULT_SKIP)
-        assertTrue(searchResults.isEmpty())
+        assertEquals(0, searchResults.total)
 
         val session = gamingSessionFactory.createRandomGamingSession(game.id, player.id)
         val session2 = gamingSessionFactory.createRandomGamingSession(game.id, player.id)
         val session3 = gamingSessionFactory.createRandomGamingSession(game2.id, player.id)
 
         searchResults = gamingSessions.search(SessionSearch(game.id, hostId = null), DEFAULT_LIMIT, DEFAULT_SKIP)
-        assertEquals(2, searchResults.size)
-        assertEquals(listOf(session, session2), searchResults)
+        assertEquals(2, searchResults.total)
+        assertTrue {
+            searchResults.sessions.all { it.id == session.id || it.id == session2.id }
+        }
 
         searchResults = gamingSessions.search(SessionSearch(game2.id, hostId = null), DEFAULT_LIMIT, DEFAULT_SKIP)
-        assertEquals(1, searchResults.size)
-        assertEquals(listOf(session3), searchResults)
+        assertEquals(1, searchResults.total)
+        assertEquals(session3.id, searchResults.sessions[0].id)
     }
 
     @Test
@@ -153,8 +155,8 @@ class SessionMemTests : DataMemTests(), SessionTests {
 
         val searchResults =
             gamingSessions.search(SessionSearch(playerName = player.name), DEFAULT_LIMIT, DEFAULT_SKIP)
-        assertEquals(1, searchResults.size)
-        assertContains(searchResults, session)
+        assertEquals(1, searchResults.total)
+        assertEquals(session.id, searchResults.sessions[0].id)
     }
 
     @Test
@@ -163,8 +165,8 @@ class SessionMemTests : DataMemTests(), SessionTests {
         val date = session.startingDate
         val searchResults =
             gamingSessions.search(SessionSearch(date = date, hostId = null), DEFAULT_LIMIT, DEFAULT_SKIP)
-        assertEquals(1, searchResults.size)
-        assertContains(searchResults, session)
+        assertEquals(1, searchResults.total)
+        assertEquals(session.id, searchResults.sessions[0].id)
     }
 
     @Test
@@ -173,7 +175,7 @@ class SessionMemTests : DataMemTests(), SessionTests {
         gamingSessionFactory.createRandomGamingSession(isOpen = !session.state)
         val searchResults =
             gamingSessions.search(SessionSearch(state = session.state, hostId = null), DEFAULT_LIMIT, DEFAULT_SKIP)
-        assertEquals(1, searchResults.size)
-        assertContains(searchResults, session)
+        assertEquals(1, searchResults.total)
+        assertEquals(searchResults.sessions[0].id, session.id)
     }
 }
