@@ -17,6 +17,7 @@ import java.sql.SQLException
 import java.sql.Statement
 import pt.isel.ls.api.models.sessions.SessionListResponse
 import pt.isel.ls.api.models.sessions.SessionResponse
+import pt.isel.ls.domain.Genre
 import pt.isel.ls.utils.postgres.toGame
 
 class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSessionsData {
@@ -83,13 +84,15 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
     override fun search(sessionParameters: SessionSearch, limit: Int, skip: Int): SessionListResponse =
         conn().useWithRollback {
             val (game, date, isOpen, player, hostId) = sessionParameters
+            val dummyGenre = Genre(0, "dummy")
+            // dummy genre used just so we can use the toGame method
             val query =
                 """
                 select * from gaming_sessions
                 full outer join 
                 (select gaming_session_id, count(player_id) player_count from players_sessions group by gaming_session_id) as gsipc
                 using (gaming_session_id)
-                full join games on using (game_id)
+                full join public.games using (game_id)
                 ${if (player != null) {
                     " full outer join players_sessions using (gaming_session_id)"
                 } else {
@@ -131,9 +134,13 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
 
             while (resultSet.next()) {
                 val playerCount = resultSet.getInt("player_count")
-                val sessionPlayers = (1..playerCount).map{ PlayerFactory(null).createRandomPlayer()}
+                val sessionPlayers = (1..playerCount).map{ PlayerFactory().createRandomPlayer()}
 
-                sessions += SessionResponse(resultSet.toGamingSession(sessionPlayers.toSet()), resultSet.toGame(emptySet()))
+                sessions +=
+                    SessionResponse(
+                        resultSet.toGamingSession(sessionPlayers.toSet()),
+                        resultSet.toGame(setOf(dummyGenre))
+                    )
             }
             return SessionListResponse(sessions.distinct().paginate(skip, limit))
         }
