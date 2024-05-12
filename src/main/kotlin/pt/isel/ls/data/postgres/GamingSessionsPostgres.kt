@@ -15,6 +15,9 @@ import pt.isel.ls.utils.toTimeStamp
 import java.sql.Connection
 import java.sql.SQLException
 import java.sql.Statement
+import pt.isel.ls.api.models.sessions.SessionListResponse
+import pt.isel.ls.api.models.sessions.SessionResponse
+import pt.isel.ls.utils.postgres.toGame
 
 class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSessionsData {
     override fun create(
@@ -77,7 +80,7 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
             return null
         }
 
-    override fun search(sessionParameters: SessionSearch, limit: Int, skip: Int): List<Session> =
+    override fun search(sessionParameters: SessionSearch, limit: Int, skip: Int): SessionListResponse =
         conn().useWithRollback {
             val (game, date, isOpen, player, hostId) = sessionParameters
             val query =
@@ -86,6 +89,7 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
                 full outer join 
                 (select gaming_session_id, count(player_id) player_count from players_sessions group by gaming_session_id) as gsipc
                 using (gaming_session_id)
+                full join games on using (game_id)
                 ${if (player != null) {
                     " full outer join players_sessions using (gaming_session_id)"
                 } else {
@@ -123,15 +127,15 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
 
             val resultSet = statement.executeQuery()
 
-            val sessions = mutableListOf<Session>()
+            val sessions = mutableListOf<SessionResponse>()
 
             while (resultSet.next()) {
                 val playerCount = resultSet.getInt("player_count")
                 val sessionPlayers = (1..playerCount).map{ PlayerFactory(null).createRandomPlayer()}
-                sessions += resultSet.toGamingSession(sessionPlayers.toSet())
-            }
 
-            return sessions.distinct().paginate(skip, limit)
+                sessions += SessionResponse(resultSet.toGamingSession(sessionPlayers.toSet()), resultSet.toGame(emptySet()))
+            }
+            return SessionListResponse(sessions.distinct().paginate(skip, limit))
         }
 
     override fun update(sessionId: Int, sessionUpdate: SessionUpdate) =

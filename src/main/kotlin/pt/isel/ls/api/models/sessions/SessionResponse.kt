@@ -2,20 +2,29 @@ package pt.isel.ls.api.models.sessions
 
 import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.Serializable
+import pt.isel.ls.api.models.games.GameResponse
+import pt.isel.ls.domain.Game
 import pt.isel.ls.domain.Session
 
 @Serializable
 class SessionResponse private constructor(
     val id: Int,
-    val game: Int,
+    val game: GameResponse,
     val currentCapacity:Int,
     val capacity: Int,
     val date: LocalDateTime,
     val isOpen: Boolean,
 ) {
     companion object {
-        operator fun invoke(session: Session): SessionResponse {
-            return SessionResponse(session.id, session.gameId,session.players.count(),session.maxCapacity, session.startingDate, session.state)
+        operator fun invoke(session: Session, game: Game): SessionResponse {
+            return SessionResponse(
+                session.id,
+                GameResponse(game),
+                session.players.count(),
+                session.maxCapacity,
+                session.startingDate,
+                session.state
+            )
         }
     }
 
@@ -37,7 +46,7 @@ class SessionResponse private constructor(
 
     override fun hashCode(): Int {
         var result = id
-        result = 31 * result + game
+        result = 31 * result + game.hashCode()
         result = 31 * result + capacity
         result = 31 * result + currentCapacity
         result = 31 * result + date.hashCode()

@@ -21,6 +21,7 @@ import pt.isel.ls.utils.factories.PlayerFactory
 import pt.isel.ls.utils.plusDaysToCurrentDateTime
 import pt.isel.ls.utils.toLong
 import java.util.*
+import kotlin.NoSuchElementException
 import kotlin.random.Random
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
@@ -200,8 +201,7 @@ class SessionsServicesTests : SessionServices(DataMem()) {
         val gamingSessions = searchSessions(searchParameters, token, DEFAULT_SKIP, DEFAULT_LIMIT)
 
         assertTrue(gamingSessions.total == 2)
-        assertContains(gamingSessions.sessions, SessionResponse(session1))
-        assertContains(gamingSessions.sessions, SessionResponse(session2))
+        assertTrue { gamingSessions.sessions.all { it.id == session1.id || it.id == session2.id } }
     }
 
     @Test

@@ -125,19 +125,19 @@ class SessionPostgresTests : DataPostgresTests(), SessionTests {
         val game2 = gameFactory.createRandomGame()
         val searchParameters1 = SessionSearch(game.id, hostId = null)
         var searchResults = gamingSessions.search(searchParameters1, DEFAULT_LIMIT, DEFAULT_SKIP)
-        assertTrue(searchResults.isEmpty())
+        assertEquals(0, searchResults.total)
 
         val session = gamingSessionFactory.createRandomGamingSession(game.id, player.id)
         val session2 = gamingSessionFactory.createRandomGamingSession(game.id, player.id)
         val session3 = gamingSessionFactory.createRandomGamingSession(game2.id, player.id)
 
         searchResults = gamingSessions.search(SessionSearch(game.id, hostId = null), DEFAULT_LIMIT, DEFAULT_SKIP)
-        assertEquals(2, searchResults.size)
-        assertEquals(listOf(session, session2).map { it.id }, searchResults.map { it.id })
+        assertEquals(2, searchResults.total)
+        assertEquals(listOf(session, session2).map { it.id }, searchResults.sessions.map { it.id })
 
         searchResults = gamingSessions.search(SessionSearch(game2.id, hostId = null), DEFAULT_LIMIT, DEFAULT_SKIP)
-        assertEquals(1, searchResults.size)
-        assertEquals(session3.id, searchResults.first().id)
+        assertEquals(1, searchResults.total)
+        assertEquals(session3.id, searchResults.sessions.first().id)
     }
 
     @Test
@@ -150,8 +150,8 @@ class SessionPostgresTests : DataPostgresTests(), SessionTests {
 
         val searchResults =
             gamingSessions.search(SessionSearch(playerName = player.name), DEFAULT_LIMIT, DEFAULT_SKIP)
-        assertEquals(1, searchResults.size)
-        assertEquals(searchResults.first().id, session.id)
+        assertEquals(1, searchResults.total)
+        assertEquals(searchResults.sessions.first().id, session.id)
     }
 
     @Test
@@ -160,8 +160,8 @@ class SessionPostgresTests : DataPostgresTests(), SessionTests {
         val date = session.startingDate
         val searchResults =
             gamingSessions.search(SessionSearch(date = date, hostId = null), DEFAULT_LIMIT, DEFAULT_SKIP)
-        assertEquals(1, searchResults.size)
-        assertEquals(searchResults.first().id, session.id)
+        assertEquals(1, searchResults.total)
+        assertEquals(searchResults.sessions.first().id, session.id)
     }
 
     @Test
@@ -170,7 +170,7 @@ class SessionPostgresTests : DataPostgresTests(), SessionTests {
         val session = gamingSessionFactory.createRandomGamingSession(isOpen = true, players = players)
         gamingSessionFactory.createRandomGamingSession(isOpen = false)
         val searchResults = gamingSessions.search(SessionSearch(state = true), DEFAULT_LIMIT, DEFAULT_SKIP)
-        assertTrue(searchResults.isNotEmpty())
-        assertEquals(searchResults.first().id, session.id)
+        assertEquals(0, searchResults.total)
+        assertEquals(searchResults.sessions.first().id, session.id)
     }
 }
