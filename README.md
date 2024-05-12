@@ -3,11 +3,11 @@
 - Rafael Nicolau - 50546
 - Mário Carvalho - 50561
 
-## Phase 2
+## Phase 3
 
 ### Introduction
 
-This document contains the relevant design and implementation aspects of LS project's second phase.
+This document contains the relevant design and implementation aspects of LS project's third phase.
 
 ## Modeling the database
 

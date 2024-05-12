@@ -12,9 +12,10 @@ servers:
 security:
   - bearerAuth: []
 tags:
-  - name: Player
+  - name: Players
   - name: Games
   - name: Sessions
+  - name: Genres
 
 paths:
   /players:
@@ -45,7 +46,7 @@ paths:
           $ref: "#/components/responses/400BadRequest"
     post:
       tags:
-        - Player
+        - Players
       summary: Resource that creates a new player.
       description: Creates a new player.
       operationId: createPlayer
@@ -96,7 +97,7 @@ paths:
   /players/{playerID}:
     get:
       tags:
-        - Player
+        - Players
       summary: Resource that gets a player info through its identifier.
       description: Get a player info through its identifier.
       security:
@@ -447,6 +448,23 @@ paths:
           $ref: "#/components/responses/401Unauthorized"
         404:
           $ref: "#/components/responses/404NotFound"
+
+  /genres:
+    get:
+      tags:
+        - Genres
+      summary: Returns all genres
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Got all genres successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Genres"
+        401:
+          $ref: "#/components/responses/401Unauthorized"
 components:
   securitySchemes:
     bearerAuth:
@@ -465,14 +483,6 @@ components:
         email:
           type: string
           example: examplename@gmail.com
-        id:
-          type: integer
-          minimum: 0
-          example: 1
-        token:
-          type: object
-          minimum: 0
-          example: 550e8400-e29b-41d4-a716-446655440000
     Game:
       required:
         - name
@@ -514,6 +524,28 @@ components:
         pid:
           type: integer
           example: 1
+    Genres:
+      required:
+        - genres
+      type: object
+      properties:
+        genres:
+          type: array
+          items:
+            $ref: "#/components/schemas/Genre"
+
+    Genre:
+      required:
+        - genreid
+        - genrename
+      type: object
+      properties:
+        genreid:
+          type: integer
+          example: 1
+        genrename:
+          type: string
+          example: Action
     AlreadyExists:
       type: object
       properties:
@@ -630,9 +662,6 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/Gateway"
-
-
-
 
 
 
