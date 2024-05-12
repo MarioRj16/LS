@@ -8,7 +8,7 @@ import pt.isel.ls.utils.generateRandomEmail
 import pt.isel.ls.utils.generateRandomString
 import java.util.*
 
-class PlayerFactory(private val players: PlayersData?) {
+class PlayerFactory(private val players: PlayersData? = null) {
     fun createRandomPlayer(name: String? = null, email: Email? = null): Player {
         if(players != null) {
             val playerName = name ?: generateRandomString()
