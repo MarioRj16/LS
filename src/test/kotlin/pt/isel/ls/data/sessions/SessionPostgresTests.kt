@@ -8,6 +8,7 @@ import pt.isel.ls.DEFAULT_LIMIT
 import pt.isel.ls.DEFAULT_SKIP
 import pt.isel.ls.SESSION_MAX_CAPACITY
 import pt.isel.ls.SESSION_MIN_CAPACITY
+import pt.isel.ls.api.models.sessions.SessionCreate
 import pt.isel.ls.api.models.sessions.SessionSearch
 import pt.isel.ls.api.models.sessions.SessionUpdate
 import pt.isel.ls.data.DataPostgresTests
@@ -30,7 +31,8 @@ class SessionPostgresTests : DataPostgresTests(), SessionTests {
                 LocalDate(2050, 3, 3),
                 LocalTime(1, 1, 1, 1),
             )
-        val session = gamingSessions.create(capacity, game.id, date, player.id)
+        val sessionCreate = SessionCreate(game.id, capacity, date.toLong())
+        val session = gamingSessions.create(sessionCreate, player.id)
 
         assertEquals(game.id, session.gameId)
         assertEquals(capacity, session.maxCapacity)

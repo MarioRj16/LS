@@ -1,9 +1,9 @@
 package pt.isel.ls.utils
 
-import kotlinx.datetime.toJavaLocalDateTime
-import kotlinx.datetime.toKotlinLocalDateTime
 import java.sql.Timestamp
 import java.time.LocalDateTime
+import kotlinx.datetime.toJavaLocalDateTime
+import kotlinx.datetime.toKotlinLocalDateTime
 
 /**
  * Adds the specified number of days to the current date and time.
@@ -67,3 +67,21 @@ fun kotlinx.datetime.LocalDateTime.isFuture(): Boolean = this > currentLocalDate
  * @return The equivalent Timestamp object.
  */
 fun kotlinx.datetime.LocalDateTime.toTimeStamp(): Timestamp = Timestamp.valueOf(toJavaLocalDateTime())
+
+/**
+ * Checks if the given timestamp represents a future time.
+ *
+ * @return `true` if the timestamp is in the future, `false` otherwise.
+ */
+fun Long.isFuture(): Boolean {
+    return this > System.currentTimeMillis()
+}
+
+/**
+ * Checks if the given timestamp represents a past time.
+ *
+ * @return `true` if the timestamp is in the past, `false` otherwise.
+ */
+fun Long.isPast(): Boolean {
+    return this < System.currentTimeMillis()
+}

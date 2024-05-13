@@ -2,8 +2,8 @@ package pt.isel.ls.data.mem
 
 import pt.isel.ls.data.Data
 import pt.isel.ls.data.GamesData
-import pt.isel.ls.data.GamingSessionsData
 import pt.isel.ls.data.PlayersData
+import pt.isel.ls.data.SessionsData
 
 open class DataMem : Data, DataMemSchema() {
 
@@ -15,7 +15,7 @@ open class DataMem : Data, DataMemSchema() {
 
     override val players: PlayersData = PlayersMem(playersDB)
 
-    override val gamingSessions: GamingSessionsData = GamingSessionsMem(sessionsDB, gamesDB, playersDB)
+    override val gamingSessions: SessionsData = SessionsMem(sessionsDB, gamesDB, playersDB)
 
     override val games: GamesData = GamesMem(gamesDB)
 

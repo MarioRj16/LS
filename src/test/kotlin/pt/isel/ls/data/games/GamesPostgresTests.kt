@@ -3,6 +3,7 @@ package pt.isel.ls.data.games
 import org.junit.jupiter.api.Test
 import pt.isel.ls.DEFAULT_LIMIT
 import pt.isel.ls.DEFAULT_SKIP
+import pt.isel.ls.api.models.games.GameCreate
 import pt.isel.ls.api.models.games.GameSearch
 import pt.isel.ls.data.DataPostgresTests
 import pt.isel.ls.utils.generateRandomString
@@ -18,7 +19,8 @@ class GamesPostgresTests : DataPostgresTests(), GamesTests {
         val name = generateRandomString()
         val developer = generateRandomString()
         val genres = genreFactory.random()
-        val game = games.create(name, developer, genres)
+        val gameCreate = GameCreate(name, developer, genres.map { it.genreId }.toSet())
+        val game = games.create(gameCreate, genres)
 
         assertEquals(name, game.name)
         assertEquals(developer, game.developer)

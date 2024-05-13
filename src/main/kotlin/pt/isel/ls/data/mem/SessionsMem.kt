@@ -1,28 +1,28 @@
 package pt.isel.ls.data.mem
 
-import kotlinx.datetime.LocalDateTime
+import pt.isel.ls.api.models.sessions.SessionCreate
 import pt.isel.ls.api.models.sessions.SessionListResponse
 import pt.isel.ls.api.models.sessions.SessionResponse
 import pt.isel.ls.api.models.sessions.SessionSearch
 import pt.isel.ls.api.models.sessions.SessionUpdate
-import pt.isel.ls.data.GamingSessionsData
+import pt.isel.ls.data.SessionsData
 import pt.isel.ls.domain.Game
 import pt.isel.ls.domain.Player
 import pt.isel.ls.domain.Session
 import pt.isel.ls.utils.PaginateResponse
 
-class GamingSessionsMem(
+class SessionsMem(
     private val sessions: DataMemTable<Session> = DataMemTable(),
     private val games: DataMemTable<Game> = DataMemTable(),
     private val players: DataMemTable<Player> = DataMemTable(),
-) : GamingSessionsData {
+) : SessionsData {
 
     override fun create(
-        capacity: Int,
-        game: Int,
-        date: LocalDateTime,
+        sessionInput: SessionCreate,
         hostId: Int,
     ): Session {
+        val (game, capacity, _) = sessionInput
+        val date = sessionInput.startingDateFormatted
         val obj =
             Session(
                 sessions.nextId.get(),

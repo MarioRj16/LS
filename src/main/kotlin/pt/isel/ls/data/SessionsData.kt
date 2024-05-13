@@ -1,16 +1,14 @@
 package pt.isel.ls.data
 
-import kotlinx.datetime.LocalDateTime
+import pt.isel.ls.api.models.sessions.SessionCreate
 import pt.isel.ls.api.models.sessions.SessionListResponse
 import pt.isel.ls.api.models.sessions.SessionSearch
 import pt.isel.ls.api.models.sessions.SessionUpdate
 import pt.isel.ls.domain.Session
 
-interface GamingSessionsData {
+interface SessionsData {
     fun create(
-        capacity: Int,
-        game: Int,
-        date: LocalDateTime,
+        sessionInput: SessionCreate,
         hostId: Int,
     ): Session
 

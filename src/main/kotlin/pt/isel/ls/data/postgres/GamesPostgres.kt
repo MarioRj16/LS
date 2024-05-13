@@ -1,25 +1,26 @@
 package pt.isel.ls.data.postgres
 
-import pt.isel.ls.api.models.games.GameSearch
-import pt.isel.ls.data.GamesData
-import pt.isel.ls.domain.Game
-import pt.isel.ls.domain.Genre
-import pt.isel.ls.utils.postgres.toGame
-import pt.isel.ls.utils.postgres.toGenre
-import pt.isel.ls.utils.postgres.useWithRollback
 import java.sql.Connection
 import java.sql.PreparedStatement
 import java.sql.SQLException
 import java.sql.Statement
+import pt.isel.ls.api.models.games.GameCreate
+import pt.isel.ls.api.models.games.GameSearch
+import pt.isel.ls.data.GamesData
+import pt.isel.ls.domain.Game
+import pt.isel.ls.domain.Genre
 import pt.isel.ls.utils.PaginateResponse
+import pt.isel.ls.utils.postgres.toGame
+import pt.isel.ls.utils.postgres.toGenre
+import pt.isel.ls.utils.postgres.useWithRollback
 
 class GamesPostgres(private val conn: () -> Connection) : GamesData {
     override fun create(
-        name: String,
-        developer: String,
-        genres: Set<Genre>,
+        gameInput: GameCreate,
+        genres: Set<Genre>
     ): Game =
         conn().useWithRollback {
+            val (name, developer, _) = gameInput
             val game: Game
             val gameId = it.insertGame(name, developer)
 
