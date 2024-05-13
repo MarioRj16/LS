@@ -17,6 +17,7 @@ import pt.isel.ls.utils.generateRandomGameSearch
 import pt.isel.ls.utils.generateRandomString
 import java.util.*
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class GamesServicesTests : GamesServices(DataMem()) {
@@ -75,5 +76,26 @@ class GamesServicesTests : GamesServices(DataMem()) {
         val searchResults = searchGames(generateRandomGameSearch(true), token, DEFAULT_SKIP, DEFAULT_LIMIT)
         assertEquals(searchResults.games.size, games.size)
         assertTrue(games.all { game -> searchResults.games.contains(GameResponse(game)) })
+        assertFalse(searchResults.hasNext)
+        assertFalse(searchResults.hasPrevious)
+    }
+
+    @Test
+    fun `searchGames() returns games with the right hasNext value`() {
+        val listSize = 3
+        val games = List(listSize) { gameFactory.createRandomGame() }
+        val searchResults = searchGames(generateRandomGameSearch(true), token, DEFAULT_SKIP, (listSize - 1))
+        assertEquals(2, searchResults.games.size)
+        assertFalse(games.all { game -> searchResults.games.contains(GameResponse(game)) })
+        assertTrue(searchResults.hasNext)
+    }
+
+    @Test
+    fun `searchGames() returns games with the right hasPrevious value`() {
+        val games = List(3) { gameFactory.createRandomGame() }
+        val searchResults = searchGames(generateRandomGameSearch(true), token, 1, DEFAULT_LIMIT)
+        assertEquals(2, searchResults.games.size)
+        assertFalse(games.all { game -> searchResults.games.contains(GameResponse(game)) })
+        assertTrue(searchResults.hasPrevious)
     }
 }
