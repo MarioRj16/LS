@@ -56,7 +56,7 @@ class GamesMemTests : DataMemTests(), GamesTests {
     @Test
     override fun searchWithNoGamesReturnsEmptyList() {
         val searchParams = GameSearch(null, null, emptySet())
-        val searchResults = games.search(searchParams, DEFAULT_LIMIT, DEFAULT_SKIP)
+        val searchResults = games.search(searchParams, DEFAULT_LIMIT, DEFAULT_SKIP).element
 
         assertTrue(searchResults.isEmpty())
     }
@@ -65,7 +65,7 @@ class GamesMemTests : DataMemTests(), GamesTests {
     override fun searchReturnsAllGamesSuccessfully() {
         val gamesList = List(5) { gameFactory.createRandomGame() }
         val searchParams = GameSearch(null, null, emptySet())
-        val searchResults = games.search(searchParams, DEFAULT_LIMIT, DEFAULT_SKIP)
+        val searchResults = games.search(searchParams, DEFAULT_LIMIT, DEFAULT_SKIP).element
 
         assertEquals(gamesList.size, searchResults.size)
         assertEquals(searchResults, gamesList)
@@ -75,7 +75,7 @@ class GamesMemTests : DataMemTests(), GamesTests {
     override fun searchByNameReturnsGamesSuccessfully() {
         val game = gameFactory.createRandomGame()
         val searchParams = GameSearch(game.name, null, emptySet())
-        val searchResults = games.search(searchParams, DEFAULT_LIMIT, DEFAULT_SKIP)
+        val searchResults = games.search(searchParams, DEFAULT_LIMIT, DEFAULT_SKIP).element
 
         assertEquals(1, searchResults.size)
         assertContains(searchResults, game)
@@ -85,7 +85,7 @@ class GamesMemTests : DataMemTests(), GamesTests {
     override fun searchByCaseInsensitiveNameReturnsGamesSuccessfully() {
         val game = gameFactory.createRandomGame()
         val searchParams = GameSearch(game.name.uppercase(), null, emptySet())
-        val searchResults = games.search(searchParams, DEFAULT_LIMIT, DEFAULT_SKIP)
+        val searchResults = games.search(searchParams, DEFAULT_LIMIT, DEFAULT_SKIP).element
 
         assertEquals(1, searchResults.size)
         assertContains(searchResults, game)
@@ -95,7 +95,7 @@ class GamesMemTests : DataMemTests(), GamesTests {
     override fun searchByPartialNameReturnsGamesSuccessfully() {
         val game = gameFactory.createRandomGame()
         val searchParams = GameSearch(game.name.take(1), null, emptySet())
-        val searchResults = games.search(searchParams, DEFAULT_LIMIT, DEFAULT_SKIP)
+        val searchResults = games.search(searchParams, DEFAULT_LIMIT, DEFAULT_SKIP).element
 
         assertEquals(1, searchResults.size)
         assertContains(searchResults, game)
@@ -105,7 +105,7 @@ class GamesMemTests : DataMemTests(), GamesTests {
     override fun searchByDeveloperReturnsGamesSuccessfully() {
         val game = gameFactory.createRandomGame()
         val searchParams = GameSearch(null, game.developer, emptySet())
-        val searchResults = games.search(searchParams, DEFAULT_LIMIT, DEFAULT_SKIP)
+        val searchResults = games.search(searchParams, DEFAULT_LIMIT, DEFAULT_SKIP).element
 
         assertEquals(1, searchResults.size)
         assertContains(searchResults, game)
@@ -115,8 +115,7 @@ class GamesMemTests : DataMemTests(), GamesTests {
     override fun searchByGenreReturnsGamesSuccessfully() {
         val game = gameFactory.createRandomGame()
         val searchParams = GameSearch(null, null, setOf(game.genres.random().genreId))
-        val searchResults = games.search(searchParams, DEFAULT_LIMIT, DEFAULT_SKIP)
-
+        val searchResults = games.search(searchParams, DEFAULT_LIMIT, DEFAULT_SKIP).element
         assertEquals(1, searchResults.size)
         assertContains(searchResults, game)
     }

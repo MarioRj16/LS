@@ -19,6 +19,7 @@ import pt.isel.ls.utils.toTimeStamp
 import java.sql.Connection
 import java.sql.SQLException
 import java.sql.Statement
+import pt.isel.ls.utils.PaginateResponse
 
 class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSessionsData {
     override fun create(
@@ -143,7 +144,10 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
                         resultSet.toGame(setOf(dummyGenre))
                     )
             }
-            return SessionListResponse(sessions.distinct().paginate(skip, limit))
+
+            val list = sessions.distinct()
+
+            return SessionListResponse(PaginateResponse.fromList(list, limit, skip))
         }
 
     override fun update(sessionId: Int, sessionUpdate: SessionUpdate) =

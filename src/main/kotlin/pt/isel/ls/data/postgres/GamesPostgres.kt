@@ -4,7 +4,6 @@ import pt.isel.ls.api.models.games.GameSearch
 import pt.isel.ls.data.GamesData
 import pt.isel.ls.domain.Game
 import pt.isel.ls.domain.Genre
-import pt.isel.ls.utils.paginate
 import pt.isel.ls.utils.postgres.toGame
 import pt.isel.ls.utils.postgres.toGenre
 import pt.isel.ls.utils.postgres.useWithRollback
@@ -12,6 +11,7 @@ import java.sql.Connection
 import java.sql.PreparedStatement
 import java.sql.SQLException
 import java.sql.Statement
+import pt.isel.ls.utils.PaginateResponse
 
 class GamesPostgres(private val conn: () -> Connection) : GamesData {
     override fun create(
@@ -40,7 +40,7 @@ class GamesPostgres(private val conn: () -> Connection) : GamesData {
         searchParams: GameSearch,
         limit: Int,
         skip: Int,
-    ): List<Game> =
+    ): PaginateResponse<Game> =
         conn().useWithRollback { it ->
             val query = buildSearchQuery(searchParams)
             val statement = it.prepareStatement(query)
@@ -53,12 +53,13 @@ class GamesPostgres(private val conn: () -> Connection) : GamesData {
                 val currentGameId = resultSet.getInt("game_id")
                 games += resultSet.toGame(setOf(resultSet.toGenre()), currentGameId)
             }
-            val final = games.groupBy { it.id }.map { (_, gameList) ->
+
+            val list = games.groupBy { it.id }.map { (_, gameList) ->
                 val game = gameList.first()
                 game.copy(genres = gameList.flatMap { it.genres }.toSet())
             }
 
-            return final.paginate(skip, limit)
+            return PaginateResponse.fromList(list, skip, limit)
         }
 
     private fun Connection.insertGame(name: String, developer: String): Int {
