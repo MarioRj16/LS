@@ -33,7 +33,6 @@ export async function UpdateSession(session){
     async function updateSession(){
         const capacityInput = document.getElementById('capacityInput').value;
         const dateInput = document.getElementById('dateInput').value;
-        console.log(capacityInput)
         const params = {};
         if (capacityInput==null) {
             alert("Must fill capacity")

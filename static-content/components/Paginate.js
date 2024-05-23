@@ -12,44 +12,35 @@ async function changePage(jump, path, query) {
 
     const newSkip = currentSkip + (jump * limit);
 
-    if (newSkip < 0) {
-        alert("You are on the first page");
-        return;
-    }
-
     queryParams.set("skip", newSkip);
-
-    const response = await FetchAPI(`/${path}?${queryParams.toString()}`)
-    if(response.total==0) alert("There's no more pages")
-    else window.location.href = `#${path}?${queryParams.toString()}`;
+     window.location.href = `#${path}?${queryParams.toString()}`;
 }
 
-export async function Paginate(query){
+export async function Paginate(query, path, hasPrevious, hasNext) {
 
     const previousButton = button(
-        { class: "btn btn-primary", type: "button" },
+        { class: "btn btn-primary", type: "button", ...(hasPrevious ? {} : { disabled: true }) },
         "Previous"
     );
-    (await previousButton).addEventListener('click', previousPage)
+    (await previousButton).addEventListener('click', previousPage);
 
     const nextButton = button(
-        { class: "btn btn-primary", type: "button" },
+        { class: "btn btn-primary", type: "button", ...(hasNext ? {} : { disabled: true }) },
         "Next"
     );
-    (await nextButton).addEventListener('click', nextPage)
+    (await nextButton).addEventListener('click', nextPage);
 
-
-    function previousPage(){
-        changePage(-1, "games", query)
+    function previousPage() {
+        changePage(-1, path, query);
     }
 
-    function nextPage(){
-        changePage(1, "games", query)
+    function nextPage() {
+        changePage(1, path, query);
     }
 
     return div(
-        {class: "d-flex justify-content-center gap-4"},
+        { class: "d-flex justify-content-center gap-4" },
         previousButton,
         nextButton
-    )
+    );
 }
