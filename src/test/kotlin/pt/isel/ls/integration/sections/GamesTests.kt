@@ -1,5 +1,6 @@
 package pt.isel.ls.integration.sections
 
+import java.util.*
 import kotlinx.serialization.json.Json
 import org.http4k.core.Method
 import org.http4k.core.Request
@@ -16,8 +17,6 @@ import pt.isel.ls.api.models.games.GameSearch
 import pt.isel.ls.domain.Genre
 import pt.isel.ls.integration.IntegrationTests
 import pt.isel.ls.utils.generateRandomGameSearch
-import pt.isel.ls.utils.generateRandomString
-import java.util.*
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
@@ -59,7 +58,7 @@ class GamesTests : IntegrationTests() {
     @Test
     fun `createGames returns 201 for good request`() {
         val player = playerFactory.createRandomPlayer()
-        val requestBody = GameCreate("Test", "developer1", setOf(1))
+        val requestBody = GameCreate.create(genres = setOf(1))
         val request =
             Request(Method.POST, "$URI_PREFIX/games")
                 .json(requestBody)
@@ -76,7 +75,8 @@ class GamesTests : IntegrationTests() {
         val player = playerFactory.createRandomPlayer()
         val game = gameFactory.createRandomGame()
         val requestBody =
-            GameCreate(game.name, generateRandomString(), genresFactory.random().map { it.genreId }.toSet())
+            GameCreate.create(name = game.name, genres = genresFactory.random().map { it.genreId }
+                .toSet())
         val request =
             Request(Method.POST, "$URI_PREFIX/games")
                 .json(requestBody)
@@ -91,7 +91,7 @@ class GamesTests : IntegrationTests() {
     fun `createGames returns 400 for blank name`() {
         val player = playerFactory.createRandomPlayer()
         val genres = genresFactory.random().map { it.genreId }.toSet()
-        val requestBody = GameCreate("", generateRandomString(), genres)
+        val requestBody = GameCreate.create(name = "", genres = genres)
         val request =
             Request(Method.POST, "$URI_PREFIX/games")
                 .json(requestBody)
@@ -106,7 +106,7 @@ class GamesTests : IntegrationTests() {
     fun `createGames returns 400 for blank developer`() {
         val player = playerFactory.createRandomPlayer()
         val genres = genresFactory.random().map { it.genreId }.toSet()
-        val requestBody = GameCreate(generateRandomString(), "", genres)
+        val requestBody = GameCreate.create(developer = "", genres = genres)
         val request =
             Request(Method.POST, "$URI_PREFIX/games")
                 .json(requestBody)
@@ -120,7 +120,7 @@ class GamesTests : IntegrationTests() {
     @Test
     fun `createGames returns 400 for empty set of genres`() {
         val player = playerFactory.createRandomPlayer()
-        val requestBody = GameCreate(generateRandomString(), generateRandomString(), emptySet())
+        val requestBody = GameCreate.create(genres = emptySet())
         val request =
             Request(Method.POST, "$URI_PREFIX/games")
                 .json(requestBody)
@@ -139,7 +139,7 @@ class GamesTests : IntegrationTests() {
         val request =
             Request(
                 Method.GET,
-                "$URI_PREFIX/games?developer=${search.developer}&genres=${search.genres.joinToString(",")}"
+                "$URI_PREFIX/games?developer=${search.developer}&genres=${search.genres.joinToString(",")}",
             )
                 .json("")
                 .token(player.token)
@@ -170,7 +170,7 @@ class GamesTests : IntegrationTests() {
         val request =
             Request(
                 Method.GET,
-                "$URI_PREFIX/games?developer=${search.developer}&genres=${search.genres.joinToString(",")}"
+                "$URI_PREFIX/games?developer=${search.developer}&genres=${search.genres.joinToString(",")}",
             )
                 .json("")
                 .token(player.token)

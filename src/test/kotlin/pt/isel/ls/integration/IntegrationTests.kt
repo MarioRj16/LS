@@ -8,12 +8,10 @@ import org.http4k.server.Jetty
 import org.http4k.server.asServer
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
-import pt.isel.ls.CONN_NAME
 import pt.isel.ls.Routes
 import pt.isel.ls.TEST_PORT
 import pt.isel.ls.api.API
 import pt.isel.ls.data.mem.DataMem
-import pt.isel.ls.data.postgres.DataPostgres
 import pt.isel.ls.services.Services
 import pt.isel.ls.utils.factories.GameFactory
 import pt.isel.ls.utils.factories.GamingSessionFactory
@@ -26,7 +24,7 @@ abstract class IntegrationTests {
         val client = JavaHttpClient()
         val db = DataMem()
 
-        //val db = DataPostgres(System.getenv(CONN_NAME))
+        // val db = DataPostgres(System.getenv(CONN_NAME))
         var api = API(Services(db))
         val genresFactory = GenresFactory(db.genres)
         val playerFactory = PlayerFactory(db.players)

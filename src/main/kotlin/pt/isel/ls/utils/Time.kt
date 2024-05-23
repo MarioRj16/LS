@@ -78,7 +78,7 @@ fun Long.isFuture(): Boolean {
 }
 
 /**
- * Checks if the given timestamp represents a past time.
+ * Checks if the given timestamp represents a time in the past.
  *
  * @return `true` if the timestamp is in the past, `false` otherwise.
  */

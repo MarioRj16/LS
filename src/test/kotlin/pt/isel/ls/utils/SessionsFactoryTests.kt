@@ -12,13 +12,11 @@ class SessionsFactoryTests {
     @Test
     fun `createRandomGamingSession() creates gaming session successfully`() {
         val db = DataMem()
-        val name = generateRandomString()
-        val developer = generateRandomString()
         val genres = setOf(Genre(1, "FPS"))
 
-        val gameCreate = GameCreate(name, developer, genres.map { it.genreId }.toSet())
+        val gameCreate = GameCreate.create(genres = genres.map { it.genreId }.toSet())
         val game = db.games.create(gameCreate, genres)
-        val playerCreate = PlayerCreate(generateRandomString(), generateRandomEmail())
+        val playerCreate = PlayerCreate.create()
         val player = db.players.create(playerCreate)
         val gamingSessionFactory = GamingSessionFactory(db.gamingSessions, db.games, db.genres, db.players)
         val session = gamingSessionFactory.createRandomGamingSession(game.id, player.id)

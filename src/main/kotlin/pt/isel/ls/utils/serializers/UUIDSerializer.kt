@@ -1,5 +1,6 @@
 package pt.isel.ls.utils.serializers
 
+import java.util.*
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
@@ -7,7 +8,6 @@ import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import pt.isel.ls.utils.serializers.UUIDSerializer.descriptor
-import java.util.*
 
 /**
  * Serializer for UUID objects.

@@ -13,7 +13,6 @@ import pt.isel.ls.SESSION_MIN_CAPACITY
 import pt.isel.ls.api.models.sessions.SessionCreate
 import pt.isel.ls.api.models.sessions.SessionCreateResponse
 import pt.isel.ls.api.models.sessions.SessionListResponse
-import pt.isel.ls.api.models.sessions.SessionResponse
 import pt.isel.ls.api.models.sessions.SessionUpdate
 import pt.isel.ls.integration.IntegrationTests
 import pt.isel.ls.utils.minusDaysToCurrentDateTime
@@ -232,7 +231,7 @@ class SessionsTests : IntegrationTests() {
             gameId = game.id,
             hostId = player.id,
             isOpen = true,
-            players = emptySet()
+            players = emptySet(),
         )
         val request = Request(Method.GET, "$URI_PREFIX/sessions?game=${game.id}")
             .token(player.token)
@@ -294,7 +293,7 @@ class SessionsTests : IntegrationTests() {
                 SessionUpdate(
                     session.copy(
                         maxCapacity = requestBody.capacity,
-                        startingDate = requestBody.startingDate.toLocalDateTime()
+                        startingDate = requestBody.startingDate.toLocalDateTime(),
                     ),
                 )
             assertEquals(expectedSession, response)
@@ -315,8 +314,8 @@ class SessionsTests : IntegrationTests() {
                 SessionUpdate(
                     session.copy(
                         maxCapacity = requestBody.capacity,
-                        startingDate = requestBody.startingDateFormatted
-                    )
+                        startingDate = requestBody.startingDateFormatted,
+                    ),
                 )
             assertEquals(Status.OK, status)
             assertEquals(expectedSession, response)

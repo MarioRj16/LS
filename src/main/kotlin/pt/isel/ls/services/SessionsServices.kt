@@ -22,7 +22,7 @@ open class SessionsServices(internal val db: Data) : ServicesSchema(db) {
         limit: Int,
     ): SessionListResponse = withAuthorization(token) {
         val sessions = db.gamingSessions.search(sessionSearch, limit, skip)
-        return@withAuthorization sessions
+        return@withAuthorization SessionListResponse(sessions)
     }
 
     fun createSession(

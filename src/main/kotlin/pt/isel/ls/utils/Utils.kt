@@ -7,26 +7,6 @@ import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 
 /**
- * Paginates a list by skipping a certain number of elements and limiting the size of the result.
- *
- * @param skip The number of elements to skip from the start of the list.
- * @param limit The maximum number of elements to include in the result.
- * @return A list containing the paginated elements.
- * @throws IllegalArgumentException If either `skip` or `limit` is negative.
- */
-fun <T> List<T>.paginate(
-    skip: Int,
-    limit: Int,
-): List<T> {
-    require(skip >= 0) { "skip must be a non negative integer\nskip=$skip" }
-    require(limit >= 0) { "Limit must be a non negative integer\nlimit=$limit" }
-    if (this.isEmpty() || skip >= size)
-        return emptyList()
-    val lastIndex: Int = if (limit + skip > size) size else limit + skip
-    return subList(skip, lastIndex)
-}
-
-/**
  * Checks if an integer is positive.
  *
  * @return `true` if the integer is positive, `false` otherwise.
