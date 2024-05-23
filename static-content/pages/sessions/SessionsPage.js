@@ -6,11 +6,9 @@ import {CardSession} from "../../components/sessions/CardSession.js";
 import {AllCards} from "../../components/AllCards.js";
 
 export async function SessionsPage(state) {
-    const sessions = (await FetchAPI(`/sessions${objectToQueryString(state.query)}`)).sessions;
-
-    const cards = sessions.map(session => CardSession(session));
-
-    const paginate = Paginate(state.query)
+    const sessions = (await FetchAPI(`/sessions${objectToQueryString(state.query)}`));
+    const cards = sessions.sessions.map(session => CardSession(session));
+    const paginate = Paginate(state.query,"sessions",sessions.hasPrevious,sessions.hasNext)
 
     return AllCards(cards,paginate,"Sessions");
 }

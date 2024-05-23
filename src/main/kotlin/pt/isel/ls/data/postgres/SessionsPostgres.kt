@@ -1,8 +1,5 @@
 package pt.isel.ls.data.postgres
 
-import java.sql.Connection
-import java.sql.SQLException
-import java.sql.Statement
 import pt.isel.ls.api.models.sessions.SessionCreate
 import pt.isel.ls.api.models.sessions.SessionListResponse
 import pt.isel.ls.api.models.sessions.SessionResponse
@@ -19,6 +16,9 @@ import pt.isel.ls.utils.postgres.toGamingSession
 import pt.isel.ls.utils.postgres.toPlayer
 import pt.isel.ls.utils.postgres.useWithRollback
 import pt.isel.ls.utils.toTimeStamp
+import java.sql.Connection
+import java.sql.SQLException
+import java.sql.Statement
 
 class SessionsPostgres(private val conn: () -> Connection) : SessionsData {
     override fun create(
@@ -118,8 +118,6 @@ class SessionsPostgres(private val conn: () -> Connection) : SessionsData {
                 }
                 order by gaming_sessions.gaming_session_id
                 """.trimIndent()
-            println(query)
-
             val statement =
                 it.prepareStatement(query).apply {
                     var parameterIndex = 1
@@ -146,7 +144,7 @@ class SessionsPostgres(private val conn: () -> Connection) : SessionsData {
 
             val list = sessions.distinct()
 
-            return SessionListResponse(PaginateResponse.fromList(list, limit, skip))
+            return SessionListResponse(PaginateResponse.fromList(list,skip,limit))
         }
 
     override fun update(sessionId: Int, sessionUpdate: SessionUpdate) =

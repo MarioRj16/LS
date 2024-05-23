@@ -6,11 +6,11 @@ import {CardGame} from "../../components/games/CardGame.js";
 import {AllCards} from "../../components/AllCards.js";
 
 export async function GamesPage(state) {
-    const games = (await FetchAPI(`/games${objectToQueryString(state.query)}`)).games;
+    const games = (await FetchAPI(`/games${objectToQueryString(state.query)}`));
 
-    const cards = games.map(game => CardGame(game));
+    const cards = games.games.map(game => CardGame(game));
 
-    const paginate = Paginate(state.query)
+    const paginate = Paginate(state.query,"games",games.hasPrevious,games.hasNext)
 
     return AllCards(cards,paginate,"Games");
 }
