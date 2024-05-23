@@ -24,7 +24,6 @@ export async function CardGame(game) {
 
 function handleClick(gameId) {
     return () => {
-        console.log(gameId);
         window.location.href = `#games/${gameId}`;
     };
 }

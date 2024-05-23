@@ -9,7 +9,7 @@ class PaginateResponse<T> private constructor(
         fun <T> fromList(list: List<T>, skip: Int, limit: Int): PaginateResponse<T> {
             val hasNext = skip + limit < list.size
             val hasPrevious = skip > 0
-            val sublist = list.paginate(skip, limit)
+            val sublist = list.paginate(skip,limit)
             return PaginateResponse(sublist, hasNext, hasPrevious)
         }
     }
