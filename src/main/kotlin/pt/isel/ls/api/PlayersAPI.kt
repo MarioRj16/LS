@@ -9,12 +9,12 @@ import pt.isel.ls.DEFAULT_LIMIT
 import pt.isel.ls.DEFAULT_SKIP
 import pt.isel.ls.api.models.players.PlayerCreate
 import pt.isel.ls.api.models.players.PlayerSearch
-import pt.isel.ls.services.PlayerServices
+import pt.isel.ls.services.PlayersServices
 import pt.isel.ls.utils.isNotNegative
 import pt.isel.ls.utils.isPositive
 import pt.isel.ls.utils.validateInt
 
-class PlayersAPI(val services: PlayerServices) : APISchema() {
+class PlayersAPI(val services: PlayersServices) : APISchema() {
     fun createPlayer(request: Request): Response =
         request.useWithExceptionNoToken {
             val input = Json.decodeFromString<PlayerCreate>(request.bodyString())

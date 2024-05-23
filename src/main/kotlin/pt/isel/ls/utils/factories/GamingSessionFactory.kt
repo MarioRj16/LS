@@ -3,18 +3,20 @@ package pt.isel.ls.utils.factories
 import kotlinx.datetime.LocalDateTime
 import pt.isel.ls.SESSION_MAX_CAPACITY
 import pt.isel.ls.SESSION_MIN_CAPACITY
+import pt.isel.ls.api.models.sessions.SessionCreate
 import pt.isel.ls.data.GamesData
-import pt.isel.ls.data.GamingSessionsData
 import pt.isel.ls.data.GenresData
 import pt.isel.ls.data.PlayersData
+import pt.isel.ls.data.SessionsData
 import pt.isel.ls.domain.Player
 import pt.isel.ls.domain.Session
 import pt.isel.ls.utils.isPast
 import pt.isel.ls.utils.plusDaysToCurrentDateTime
+import pt.isel.ls.utils.toLong
 import kotlin.random.Random
 
 class GamingSessionFactory(
-    private val gamingSessions: GamingSessionsData,
+    private val gamingSessions: SessionsData,
     gamesDB: GamesData,
     genresDB: GenresData,
     playersDB: PlayersData,
@@ -56,7 +58,8 @@ class GamingSessionFactory(
             isOpen -> List(Random.nextInt(0, minOf(sessionCapacity, SESSION_MIN_CAPACITY))) { playerFactory.createRandomPlayer() }.toSet()
             else -> List(sessionCapacity) { playerFactory.createRandomPlayer() }.toSet()
         }
-        val session = gamingSessions.create(sessionCapacity, sessionGame, sessionDate, sessionHost)
+        val sessionCreate = SessionCreate(sessionGame, sessionCapacity, sessionDate.toLong())
+        val session = gamingSessions.create(sessionCreate, sessionHost)
         for (player in sessionPlayers)
             gamingSessions.addPlayer(session.id, player.id)
         return gamingSessions.get(session.id)!!

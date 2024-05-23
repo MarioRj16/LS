@@ -10,13 +10,13 @@ import pt.isel.ls.DEFAULT_SKIP
 import pt.isel.ls.api.models.sessions.SessionCreate
 import pt.isel.ls.api.models.sessions.SessionSearch
 import pt.isel.ls.api.models.sessions.SessionUpdate
-import pt.isel.ls.services.SessionServices
+import pt.isel.ls.services.SessionsServices
 import pt.isel.ls.utils.isNotNegative
 import pt.isel.ls.utils.isPositive
 import pt.isel.ls.utils.toLocalDateTime
 import pt.isel.ls.utils.validateInt
 
-class SessionsAPI(private val services: SessionServices) : APISchema() {
+class SessionsAPI(private val services: SessionsServices) : APISchema() {
     fun searchSessions(request: Request): Response =
         request.useWithException { token ->
             val gameId = request.query("gameId")?.toIntOrNull()

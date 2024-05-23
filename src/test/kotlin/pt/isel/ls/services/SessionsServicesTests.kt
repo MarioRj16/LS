@@ -1,5 +1,6 @@
 package pt.isel.ls.services
 
+import java.util.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -9,7 +10,6 @@ import pt.isel.ls.SESSION_MAX_CAPACITY
 import pt.isel.ls.api.models.players.PlayerDetails
 import pt.isel.ls.api.models.sessions.SessionCreate
 import pt.isel.ls.api.models.sessions.SessionDetails
-import pt.isel.ls.api.models.sessions.SessionResponse
 import pt.isel.ls.api.models.sessions.SessionSearch
 import pt.isel.ls.api.models.sessions.SessionUpdate
 import pt.isel.ls.data.mem.DataMem
@@ -20,14 +20,11 @@ import pt.isel.ls.utils.factories.GamingSessionFactory
 import pt.isel.ls.utils.factories.PlayerFactory
 import pt.isel.ls.utils.plusDaysToCurrentDateTime
 import pt.isel.ls.utils.toLong
-import java.util.*
-import kotlin.NoSuchElementException
 import kotlin.random.Random
-import kotlin.test.assertContains
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class SessionsServicesTests : SessionServices(DataMem()) {
+class SessionsServicesTests : SessionsServices(DataMem()) {
     private lateinit var token: UUID
     private lateinit var user: Player
     private val playerFactory = PlayerFactory(db.players)

@@ -8,13 +8,13 @@ import pt.isel.ls.DEFAULT_LIMIT
 import pt.isel.ls.DEFAULT_SKIP
 import pt.isel.ls.SESSION_MAX_CAPACITY
 import pt.isel.ls.SESSION_MIN_CAPACITY
+import pt.isel.ls.api.models.sessions.SessionCreate
 import pt.isel.ls.api.models.sessions.SessionSearch
 import pt.isel.ls.api.models.sessions.SessionUpdate
 import pt.isel.ls.data.DataMemTests
 import pt.isel.ls.utils.plusDaysToCurrentDateTime
 import pt.isel.ls.utils.toLong
 import kotlin.random.Random
-import kotlin.test.assertContains
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNull
@@ -30,9 +30,10 @@ class SessionMemTests : DataMemTests(), SessionTests {
         val date =
             LocalDateTime(
                 LocalDate(2050, 3, 3),
-                LocalTime(1, 1, 1, 1),
+                LocalTime(1, 1, 1),
             )
-        val session = gamingSessions.create(capacity, game.id, date, player.id)
+        val sessionCreate = SessionCreate(game.id, capacity, date.toLong())
+        val session = gamingSessions.create(sessionCreate, player.id)
 
         assertTrue(session.id == 1)
         assertEquals(game.id, session.gameId)

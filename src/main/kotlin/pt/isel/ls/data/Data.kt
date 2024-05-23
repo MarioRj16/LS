@@ -4,7 +4,7 @@ interface Data {
     fun reset()
 
     val players: PlayersData
-    val gamingSessions: GamingSessionsData
+    val gamingSessions: SessionsData
     val games: GamesData
     val genres: GenresData
 }

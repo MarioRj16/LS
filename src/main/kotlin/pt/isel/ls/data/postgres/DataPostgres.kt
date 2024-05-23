@@ -5,8 +5,8 @@ package pt.isel.ls.data.postgres
 import org.postgresql.ds.PGSimpleDataSource
 import pt.isel.ls.data.Data
 import pt.isel.ls.data.GamesData
-import pt.isel.ls.data.GamingSessionsData
 import pt.isel.ls.data.PlayersData
+import pt.isel.ls.data.SessionsData
 import pt.isel.ls.utils.postgres.runSQLScript
 
 @Suppress("unused")
@@ -37,7 +37,7 @@ class DataPostgres(connectionString: String) : Data {
 
     override val players: PlayersData = PlayersPostgres(::conn)
 
-    override val gamingSessions: GamingSessionsData = GamingSessionsPostgres(::conn)
+    override val gamingSessions: SessionsData = SessionsPostgres(::conn)
 
     override val games: GamesData = GamesPostgres(::conn)
 

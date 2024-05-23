@@ -1,33 +1,33 @@
 package pt.isel.ls.data.postgres
 
-import kotlinx.datetime.LocalDateTime
+import java.sql.Connection
+import java.sql.SQLException
+import java.sql.Statement
+import pt.isel.ls.api.models.sessions.SessionCreate
 import pt.isel.ls.api.models.sessions.SessionListResponse
 import pt.isel.ls.api.models.sessions.SessionResponse
 import pt.isel.ls.api.models.sessions.SessionSearch
 import pt.isel.ls.api.models.sessions.SessionUpdate
-import pt.isel.ls.data.GamingSessionsData
+import pt.isel.ls.data.SessionsData
 import pt.isel.ls.domain.Genre
 import pt.isel.ls.domain.Player
 import pt.isel.ls.domain.Session
+import pt.isel.ls.utils.PaginateResponse
 import pt.isel.ls.utils.factories.PlayerFactory
-import pt.isel.ls.utils.paginate
 import pt.isel.ls.utils.postgres.toGame
 import pt.isel.ls.utils.postgres.toGamingSession
 import pt.isel.ls.utils.postgres.toPlayer
 import pt.isel.ls.utils.postgres.useWithRollback
 import pt.isel.ls.utils.toTimeStamp
-import java.sql.Connection
-import java.sql.SQLException
-import java.sql.Statement
 
-class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSessionsData {
+class SessionsPostgres(private val conn: () -> Connection) : SessionsData {
     override fun create(
-        capacity: Int,
-        game: Int,
-        date: LocalDateTime,
+        sessionInput: SessionCreate,
         hostId: Int,
     ): Session =
         conn().useWithRollback {
+            val (game, capacity, _) = sessionInput
+            val date = sessionInput.startingDateFormatted
             val statement =
                 it.prepareStatement(
                     """insert into gaming_sessions(capacity, starting_date, game_id, host) values (?, ?, ?, ?)""",
@@ -134,7 +134,7 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
             val sessions = mutableListOf<SessionResponse>()
 
             while (resultSet.next()) {
-                val playerCount = resultSet.getInt("player_count") ?: 1
+                val playerCount = resultSet.getInt("player_count")
                 val sessionPlayers = List(playerCount){ PlayerFactory().createRandomPlayer() }
 
                 sessions +=
@@ -143,7 +143,10 @@ class GamingSessionsPostgres(private val conn: () -> Connection) : GamingSession
                         resultSet.toGame(setOf(dummyGenre))
                     )
             }
-            return SessionListResponse(sessions.distinct().paginate(skip, limit))
+
+            val list = sessions.distinct()
+
+            return SessionListResponse(PaginateResponse.fromList(list, limit, skip))
         }
 
     override fun update(sessionId: Int, sessionUpdate: SessionUpdate) =

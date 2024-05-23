@@ -1,5 +1,6 @@
 package pt.isel.ls.services
 
+import java.util.*
 import pt.isel.ls.SESSION_MAX_CAPACITY
 import pt.isel.ls.SESSION_MIN_CAPACITY
 import pt.isel.ls.api.models.sessions.SessionCreate
@@ -12,9 +13,8 @@ import pt.isel.ls.data.Data
 import pt.isel.ls.utils.exceptions.ForbiddenException
 import pt.isel.ls.utils.isFuture
 import pt.isel.ls.utils.isPast
-import java.util.*
 
-open class SessionServices(internal val db: Data) : ServicesSchema(db) {
+open class SessionsServices(internal val db: Data) : ServicesSchema(db) {
     fun searchSessions(
         sessionSearch: SessionSearch,
         token: UUID,
@@ -32,15 +32,9 @@ open class SessionServices(internal val db: Data) : ServicesSchema(db) {
         require(sessionInput.capacity in SESSION_MIN_CAPACITY..SESSION_MAX_CAPACITY) {
             "Capacity must be between $SESSION_MIN_CAPACITY and $SESSION_MAX_CAPACITY"
         }
-        require(sessionInput.startingDateFormatted.isFuture()) { "Starting date must be in the future" }
+        require(sessionInput.startingDate.isFuture()) { "Starting date must be in the future" }
         require(db.games.get(sessionInput.gameId) != null) { "The provided game does not exist" }
-        val session =
-            db.gamingSessions.create(
-                sessionInput.capacity,
-                sessionInput.gameId,
-                sessionInput.startingDateFormatted,
-                user.id,
-            )
+        val session = db.gamingSessions.create(sessionInput, user.id)
         return@withAuthorization SessionCreateResponse(session.id)
     }
 

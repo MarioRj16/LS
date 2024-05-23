@@ -1,28 +1,28 @@
 package pt.isel.ls.data.mem
 
-import kotlinx.datetime.LocalDateTime
+import pt.isel.ls.api.models.sessions.SessionCreate
 import pt.isel.ls.api.models.sessions.SessionListResponse
 import pt.isel.ls.api.models.sessions.SessionResponse
 import pt.isel.ls.api.models.sessions.SessionSearch
 import pt.isel.ls.api.models.sessions.SessionUpdate
-import pt.isel.ls.data.GamingSessionsData
+import pt.isel.ls.data.SessionsData
 import pt.isel.ls.domain.Game
 import pt.isel.ls.domain.Player
 import pt.isel.ls.domain.Session
-import pt.isel.ls.utils.paginate
+import pt.isel.ls.utils.PaginateResponse
 
-class GamingSessionsMem(
+class SessionsMem(
     private val sessions: DataMemTable<Session> = DataMemTable(),
     private val games: DataMemTable<Game> = DataMemTable(),
     private val players: DataMemTable<Player> = DataMemTable(),
-) : GamingSessionsData {
+) : SessionsData {
 
     override fun create(
-        capacity: Int,
-        game: Int,
-        date: LocalDateTime,
+        sessionInput: SessionCreate,
         hostId: Int,
     ): Session {
+        val (game, capacity, _) = sessionInput
+        val date = sessionInput.startingDateFormatted
         val obj =
             Session(
                 sessions.nextId.get(),
@@ -44,7 +44,7 @@ class GamingSessionsMem(
         skip: Int,
     ): SessionListResponse {
         val (game, date, state, player, hostId) = sessionParameters
-        var sessions = sessions.table.values.toList()
+        var sessions: List<Session> = sessions.table.values.toList()
 
         if (game != null) {
             sessions = sessions.filter { it.gameId == game }
@@ -66,11 +66,9 @@ class GamingSessionsMem(
             sessions = sessions.filter { it.startingDate >= date }
         }
 
-        return SessionListResponse(
-            sessions.paginate(skip, limit).map { session ->
-                SessionResponse(session, games.table[session.gameId]!!)
-            }
-        )
+        val list = sessions.map { session -> SessionResponse(session, games.table[session.gameId]!!)}
+
+        return SessionListResponse(PaginateResponse.fromList(list, skip, limit))
     }
 
     override fun update(sessionId: Int, sessionUpdate: SessionUpdate) {

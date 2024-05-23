@@ -3,11 +3,13 @@ package pt.isel.ls.data.games
 import org.junit.jupiter.api.Test
 import pt.isel.ls.DEFAULT_LIMIT
 import pt.isel.ls.DEFAULT_SKIP
+import pt.isel.ls.api.models.games.GameCreate
 import pt.isel.ls.api.models.games.GameSearch
 import pt.isel.ls.data.DataPostgresTests
 import pt.isel.ls.utils.generateRandomString
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class GamesPostgresTests : DataPostgresTests(), GamesTests {
@@ -17,7 +19,8 @@ class GamesPostgresTests : DataPostgresTests(), GamesTests {
         val name = generateRandomString()
         val developer = generateRandomString()
         val genres = genreFactory.random()
-        val game = games.create(name, developer, genres)
+        val gameCreate = GameCreate(name, developer, genres.map { it.genreId }.toSet())
+        val game = games.create(gameCreate, genres)
 
         assertEquals(name, game.name)
         assertEquals(developer, game.developer)
@@ -55,18 +58,22 @@ class GamesPostgresTests : DataPostgresTests(), GamesTests {
     @Test
     override fun searchWithNoGamesReturnsEmptyList() {
         val searchParams = GameSearch(null, null, emptySet())
-        val searchResults = games.search(searchParams, DEFAULT_LIMIT, DEFAULT_SKIP)
+        val (searchResults, hasNext, hasPrevious) =  games.search(searchParams, DEFAULT_LIMIT, DEFAULT_SKIP)
 
         assertTrue(searchResults.isEmpty())
+        assertFalse(hasNext)
+        assertFalse(hasPrevious)
     }
 
     @Test
     override fun searchReturnsAllGamesSuccessfully() {
-        val gamesList = List(5) { gameFactory.createRandomGame() }.toSet()
+        val gamesList = List(5) { gameFactory.createRandomGame() }
         val searchParams = GameSearch(null, null, emptySet())
-        val searchResults = games.search(searchParams, DEFAULT_LIMIT, DEFAULT_SKIP).toSet()
+        val (searchResults, hasNext, hasPrevious) = games.search(searchParams, DEFAULT_LIMIT, DEFAULT_SKIP)
 
         assertEquals(gamesList.size, searchResults.size)
+        assertFalse(hasNext)
+        assertFalse(hasPrevious)
         assertEquals(searchResults, gamesList)
     }
 
@@ -74,9 +81,11 @@ class GamesPostgresTests : DataPostgresTests(), GamesTests {
     override fun searchByNameReturnsGamesSuccessfully() {
         val game = gameFactory.createRandomGame()
         val searchParams = GameSearch(game.name, null, emptySet())
-        val searchResults = games.search(searchParams, DEFAULT_LIMIT, DEFAULT_SKIP)
+        val (searchResults, hasNext, hasPrevious) = games.search(searchParams, DEFAULT_LIMIT, DEFAULT_SKIP)
 
         assertEquals(1, searchResults.size)
+        assertFalse(hasNext)
+        assertFalse(hasPrevious)
         assertContains(searchResults, game)
     }
 
@@ -84,9 +93,11 @@ class GamesPostgresTests : DataPostgresTests(), GamesTests {
     override fun searchByCaseInsensitiveNameReturnsGamesSuccessfully() {
         val game = gameFactory.createRandomGame()
         val searchParams = GameSearch(game.name.uppercase(), null, emptySet())
-        val searchResults = games.search(searchParams, DEFAULT_LIMIT, DEFAULT_SKIP)
+        val (searchResults, hasNext, hasPrevious) = games.search(searchParams, DEFAULT_LIMIT, DEFAULT_SKIP)
 
         assertEquals(1, searchResults.size)
+        assertFalse(hasNext)
+        assertFalse(hasPrevious)
         assertContains(searchResults, game)
     }
 
@@ -94,9 +105,11 @@ class GamesPostgresTests : DataPostgresTests(), GamesTests {
     override fun searchByPartialNameReturnsGamesSuccessfully() {
         val game = gameFactory.createRandomGame()
         val searchParams = GameSearch(game.name.take(1), null, emptySet())
-        val searchResults = games.search(searchParams, DEFAULT_LIMIT, DEFAULT_SKIP)
+        val (searchResults, hasNext, hasPrevious) = games.search(searchParams, DEFAULT_LIMIT, DEFAULT_SKIP)
 
         assertEquals(1, searchResults.size)
+        assertFalse(hasNext)
+        assertFalse(hasPrevious)
         assertContains(searchResults, game)
     }
 
@@ -104,9 +117,11 @@ class GamesPostgresTests : DataPostgresTests(), GamesTests {
     override fun searchByDeveloperReturnsGamesSuccessfully() {
         val game = gameFactory.createRandomGame()
         val searchParams = GameSearch(null, game.developer, emptySet())
-        val searchResults = games.search(searchParams, DEFAULT_LIMIT, DEFAULT_SKIP)
+        val (searchResults, hasNext, hasPrevious) = games.search(searchParams, DEFAULT_LIMIT, DEFAULT_SKIP)
 
         assertEquals(1, searchResults.size)
+        assertFalse(hasNext)
+        assertFalse(hasPrevious)
         assertContains(searchResults, game)
     }
 
@@ -114,9 +129,10 @@ class GamesPostgresTests : DataPostgresTests(), GamesTests {
     override fun searchByGenreReturnsGamesSuccessfully() {
         val game = gameFactory.createRandomGame()
         val searchParams = GameSearch(null, null, setOf(game.genres.random().genreId))
-        val searchResults = games.search(searchParams, DEFAULT_LIMIT, DEFAULT_SKIP)
-
+        val (searchResults, hasNext, hasPrevious) = games.search(searchParams, DEFAULT_LIMIT, DEFAULT_SKIP)
         assertEquals(1, searchResults.size)
-        assertContains(searchResults.map { it.id }, game.id)
+        assertFalse(hasNext)
+        assertFalse(hasPrevious)
+        assertContains(searchResults, game)
     }
 }
