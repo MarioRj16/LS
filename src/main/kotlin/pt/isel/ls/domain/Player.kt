@@ -2,8 +2,8 @@ package pt.isel.ls.domain
 
 import java.util.*
 import kotlinx.serialization.Serializable
-import pt.isel.ls.utils.values.Email
 import pt.isel.ls.utils.serializers.UUIDSerializer
+import pt.isel.ls.utils.values.Email
 import pt.isel.ls.utils.values.Password
 
 data class Player(

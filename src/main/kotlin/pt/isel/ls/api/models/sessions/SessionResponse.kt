@@ -10,7 +10,7 @@ import pt.isel.ls.domain.Session
 class SessionResponse private constructor(
     val id: Int,
     val game: GameResponseMinimized,
-    val currentCapacity:Int,
+    val currentCapacity: Int,
     val capacity: Int,
     val date: LocalDateTime,
     val isOpen: Boolean,
@@ -23,7 +23,7 @@ class SessionResponse private constructor(
                 session.players.count(),
                 session.maxCapacity,
                 session.startingDate,
-                session.state
+                session.state,
             )
         }
     }

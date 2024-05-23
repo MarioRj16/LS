@@ -15,7 +15,6 @@ import pt.isel.ls.utils.exceptions.BadRequestException
 import pt.isel.ls.utils.factories.GameFactory
 import pt.isel.ls.utils.factories.PlayerFactory
 import pt.isel.ls.utils.generateRandomGameSearch
-import pt.isel.ls.utils.generateRandomString
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
@@ -35,18 +34,14 @@ class GamesServicesTests : GamesServices(DataMem()) {
 
     @Test
     fun `createGame() returns created game id successfully`() {
-        val name = generateRandomString()
-        val developer = generateRandomString()
-        val gameCreate = GameCreate(name, developer, setOf(1))
+        val gameCreate = GameCreate.create(genres = setOf(1))
         val gameId = createGame(gameCreate, token)
         assertTrue(gameId.id == 1)
     }
 
     @Test
     fun `createGame() throws exception for non unique name`() {
-        val name = generateRandomString()
-        val developer = generateRandomString()
-        val gameCreate = GameCreate(name, developer, setOf(1))
+        val gameCreate = GameCreate.create(genres = setOf(1))
         createGame(gameCreate, token)
         assertThrows<BadRequestException> {
             createGame(gameCreate, token)
@@ -55,9 +50,7 @@ class GamesServicesTests : GamesServices(DataMem()) {
 
     @Test
     fun `createGame() throws exception for non existing genre`() {
-        val name = generateRandomString()
-        val developer = generateRandomString()
-        val gameCreate = GameCreate(name, developer, setOf(20))
+        val gameCreate = GameCreate.create(genres = setOf(20))
         assertThrows<IllegalArgumentException> {
             createGame(gameCreate, token)
         }

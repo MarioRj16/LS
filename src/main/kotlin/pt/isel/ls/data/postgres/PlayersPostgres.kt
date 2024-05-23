@@ -5,12 +5,14 @@ import java.sql.SQLException
 import java.sql.Statement
 import java.util.*
 import pt.isel.ls.api.models.players.PlayerCreate
+import pt.isel.ls.api.models.players.PlayerListElement
 import pt.isel.ls.api.models.players.PlayerSearch
 import pt.isel.ls.data.PlayersData
 import pt.isel.ls.domain.Player
-import pt.isel.ls.utils.values.Email
+import pt.isel.ls.utils.PaginatedResponse
 import pt.isel.ls.utils.postgres.toPlayer
 import pt.isel.ls.utils.postgres.useWithRollback
+import pt.isel.ls.utils.values.Email
 
 class PlayersPostgres(private val conn: () -> Connection) : PlayersData {
     override fun create(
@@ -111,7 +113,7 @@ class PlayersPostgres(private val conn: () -> Connection) : PlayersData {
             return null
         }
 
-    override fun search(searchParameters: PlayerSearch, skip: Int, limit: Int): List<Player> =
+    override fun search(searchParameters: PlayerSearch, skip: Int, limit: Int): PaginatedResponse<PlayerListElement> =
         conn().useWithRollback {
             val username = searchParameters.username
             val statement =
@@ -124,12 +126,12 @@ class PlayersPostgres(private val conn: () -> Connection) : PlayersData {
                 }
 
             val resultSet = statement.executeQuery()
-            val players = mutableListOf<Player>()
+            val players = mutableListOf<PlayerListElement>()
 
             while (resultSet.next()) {
-                players.add(resultSet.toPlayer())
+                players.add(PlayerListElement(resultSet.toPlayer()))
             }
 
-            return players
+            return PaginatedResponse.fromList(players, skip, limit)
         }
 }

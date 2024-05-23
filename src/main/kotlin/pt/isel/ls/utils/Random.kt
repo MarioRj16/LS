@@ -15,7 +15,6 @@ import kotlin.random.Random
  */
 fun generateRandomEmail(): Email = Email("${generateRandomString()}@${generateRandomString()}.com")
 
-
 /**
  * Generates a random strong password.
  *

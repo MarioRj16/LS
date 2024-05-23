@@ -231,7 +231,7 @@ class SessionsTests : IntegrationTests() {
             gameId = game.id,
             hostId = player.id,
             isOpen = true,
-            players = emptySet()
+            players = emptySet(),
         )
         val request = Request(Method.GET, "$URI_PREFIX/sessions?game=${game.id}")
             .token(player.token)
@@ -293,7 +293,7 @@ class SessionsTests : IntegrationTests() {
                 SessionUpdate(
                     session.copy(
                         maxCapacity = requestBody.capacity,
-                        startingDate = requestBody.startingDate.toLocalDateTime()
+                        startingDate = requestBody.startingDate.toLocalDateTime(),
                     ),
                 )
             assertEquals(expectedSession, response)
@@ -314,8 +314,8 @@ class SessionsTests : IntegrationTests() {
                 SessionUpdate(
                     session.copy(
                         maxCapacity = requestBody.capacity,
-                        startingDate = requestBody.startingDateFormatted
-                    )
+                        startingDate = requestBody.startingDateFormatted,
+                    ),
                 )
             assertEquals(Status.OK, status)
             assertEquals(expectedSession, response)

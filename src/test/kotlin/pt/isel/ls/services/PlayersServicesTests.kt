@@ -14,7 +14,6 @@ import pt.isel.ls.data.mem.DataMem
 import pt.isel.ls.domain.Player
 import pt.isel.ls.utils.exceptions.BadRequestException
 import pt.isel.ls.utils.factories.PlayerFactory
-import pt.isel.ls.utils.generateRandomString
 import kotlin.test.assertEquals
 
 class PlayersServicesTests : PlayersServices(DataMem()) {
@@ -31,7 +30,7 @@ class PlayersServicesTests : PlayersServices(DataMem()) {
 
     @Test
     fun `createPlayer() should create a player successfully`() {
-        val playerCreate = PlayerCreate()
+        val playerCreate = PlayerCreate.create()
         val createdPlayer = createPlayer(playerCreate)
         val player = getPlayer(createdPlayer.playerId, createdPlayer.token)
         assertEquals(playerCreate.name, player.name)
@@ -39,17 +38,17 @@ class PlayersServicesTests : PlayersServices(DataMem()) {
     }
 
     @Test
-    fun `createPlayer() throws ConflictException when email is not unique`() {
+    fun `createPlayer() throws BadRequestException when email is not unique`() {
         val exception = assertThrows<BadRequestException> {
-            createPlayer(PlayerCreate(generateRandomString(), user.email))
+            createPlayer(PlayerCreate.create(email = user.email))
         }
         assertEquals("The given email is not unique", exception.message)
     }
 
     @Test
-    fun `createPlayer() throws ConflictException when username is not unique`() {
+    fun `createPlayer() throws BadRequestException when username is not unique`() {
         val exception = assertThrows<BadRequestException> {
-            createPlayer(PlayerCreate(user.name))
+            createPlayer(PlayerCreate.create(name = user.name))
         }
         assertEquals("The given username is not unique", exception.message)
     }
