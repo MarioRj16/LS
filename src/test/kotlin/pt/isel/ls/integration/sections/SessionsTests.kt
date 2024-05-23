@@ -13,7 +13,6 @@ import pt.isel.ls.SESSION_MIN_CAPACITY
 import pt.isel.ls.api.models.sessions.SessionCreate
 import pt.isel.ls.api.models.sessions.SessionCreateResponse
 import pt.isel.ls.api.models.sessions.SessionListResponse
-import pt.isel.ls.api.models.sessions.SessionResponse
 import pt.isel.ls.api.models.sessions.SessionUpdate
 import pt.isel.ls.integration.IntegrationTests
 import pt.isel.ls.utils.minusDaysToCurrentDateTime

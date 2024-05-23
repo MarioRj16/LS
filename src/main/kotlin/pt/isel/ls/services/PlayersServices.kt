@@ -18,6 +18,7 @@ open class PlayersServices(internal val db: Data) : ServicesSchema(db) {
         if (db.players.get(playerCreate.email) != null) {
             throw BadRequestException("The given email is not unique")
         }
+
         val player = db.players.create(playerCreate)
         return PlayerResponse(player)
     }

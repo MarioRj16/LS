@@ -2,7 +2,7 @@ package pt.isel.ls.api.models.players
 
 import kotlinx.serialization.Serializable
 import pt.isel.ls.domain.Player
-import pt.isel.ls.utils.Email
+import pt.isel.ls.utils.values.Email
 
 @Serializable
 class PlayerDetails private constructor(val id: Int, val name: String, val email: Email) {

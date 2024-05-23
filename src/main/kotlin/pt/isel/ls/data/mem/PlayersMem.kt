@@ -1,20 +1,20 @@
 package pt.isel.ls.data.mem
 
+import java.util.*
 import pt.isel.ls.api.models.players.PlayerCreate
 import pt.isel.ls.api.models.players.PlayerSearch
 import pt.isel.ls.data.PlayersData
 import pt.isel.ls.domain.Player
-import pt.isel.ls.utils.Email
+import pt.isel.ls.utils.values.Email
 import pt.isel.ls.utils.paginate
-import java.util.*
 
 class PlayersMem(private val players: DataMemTable<Player> = DataMemTable()) : PlayersData {
 
     override fun create(
         playerCreate: PlayerCreate,
     ): Player {
-        val (name, email) = playerCreate
-        val player = Player(players.nextId.get(), name, email)
+        val (name, email, password) = playerCreate
+        val player = Player(players.nextId.get(), name, email, password)
         players.table[players.nextId.get()] = player
         return player
     }

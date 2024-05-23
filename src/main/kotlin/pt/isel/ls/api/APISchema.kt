@@ -1,5 +1,7 @@
 package pt.isel.ls.api
 
+import java.sql.Timestamp
+import java.util.*
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.http4k.core.Request
@@ -10,8 +12,6 @@ import pt.isel.ls.logger
 import pt.isel.ls.utils.exceptions.AuthorizationException
 import pt.isel.ls.utils.exceptions.BadRequestException
 import pt.isel.ls.utils.exceptions.ForbiddenException
-import java.sql.Timestamp
-import java.util.*
 
 abstract class APISchema {
 

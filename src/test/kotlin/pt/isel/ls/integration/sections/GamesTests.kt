@@ -1,5 +1,6 @@
 package pt.isel.ls.integration.sections
 
+import java.util.*
 import kotlinx.serialization.json.Json
 import org.http4k.core.Method
 import org.http4k.core.Request
@@ -17,7 +18,6 @@ import pt.isel.ls.domain.Genre
 import pt.isel.ls.integration.IntegrationTests
 import pt.isel.ls.utils.generateRandomGameSearch
 import pt.isel.ls.utils.generateRandomString
-import java.util.*
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 

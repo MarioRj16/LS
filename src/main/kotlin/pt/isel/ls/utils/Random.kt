@@ -1,6 +1,8 @@
 package pt.isel.ls.utils
 
 import pt.isel.ls.api.models.games.GameSearch
+import pt.isel.ls.utils.values.Email
+import pt.isel.ls.utils.values.Password
 import kotlin.random.Random
 
 /**
@@ -12,6 +14,47 @@ import kotlin.random.Random
  * @return A randomly generated email address.
  */
 fun generateRandomEmail(): Email = Email("${generateRandomString()}@${generateRandomString()}.com")
+
+
+/**
+ * Generates a random strong password.
+ *
+ * The generated password meets the following criteria:
+ * - At least 8 characters long.
+ * - Contains at least one uppercase letter.
+ * - Contains at least one lowercase letter.
+ * - Contains at least one digit.
+ * - Contains at least one special character from the set `!@#\$%^&*`.
+ *
+ * @param length The length of the password to generate. Must be at least 8 characters long. Defaults to 12 if not specified.
+ * @return A randomly generated strong password as a [String].
+ * @throws IllegalArgumentException if the specified length is less than 8.
+ *
+ * @sample generateRandomPassword
+ */
+fun generateRandomPassword(length: Int = 12): Password {
+    val uppercaseLetters = ('A'..'Z').toList()
+    val lowercaseLetters = ('a'..'z').toList()
+    val digits = ('0'..'9').toList()
+    val specialCharacters = listOf('!', '@', '#', '$', '%', '^', '&', '*')
+
+    require(length >= 8) { "Password length must be at least 8 characters." }
+
+    val passwordChars = mutableListOf<Char>().apply {
+        add(uppercaseLetters.random())
+        add(lowercaseLetters.random())
+        add(digits.random())
+        add(specialCharacters.random())
+    }
+
+    val allChars = uppercaseLetters + lowercaseLetters + digits + specialCharacters
+
+    repeat(length - 4) {
+        passwordChars.add(allChars.random())
+    }
+
+    return Password(passwordChars.shuffled().joinToString(""))
+}
 
 /**
  * Generates a random string of characters.
