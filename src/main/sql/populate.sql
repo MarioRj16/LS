@@ -1,17 +1,17 @@
 begin;
 
 -- Insert data into the players table
-INSERT INTO players (player_name, email) VALUES
-    ('Alice', 'alice@example.com'),
-    ('Bob', 'bob@example.com'),
-    ('Charlie', 'charlie@example.com'),
-    ('David', 'david@example.com'),
-    ('Eve', 'eve@example.com'),
-    ('Frank', 'frank@example.com'),
-    ('Grace', 'grace@example.com'),
-    ('Hannah', 'hannah@example.com'),
-    ('Isaac', 'isaac@example.com'),
-    ('Jack', 'jack@example.com');
+INSERT INTO players (player_name, email, password) VALUES
+    ('Alice Smith', 'alice@example.com', 'Password123!'),
+    ('Bob Johnson', 'bob@example.com', 'SecurePass456!'),
+    ('Charlie Brown', 'charlie@example.com', 'Charlie789!'),
+    ('Diana Prince', 'diana@example.com', 'WonderWoman$10'),
+    ('Evan Taylor', 'evan@example.com', 'Evan@Pass12'),
+    ('Fiona Chen', 'fiona@example.com', 'Fiona#Pass15'),
+    ('George Martinez', 'george@example.com', 'GeorgePass$1'),
+    ('Hannah Lee', 'hannah@example.com', 'Hannah@Pass23'),
+    ('Ian Wright', 'ian@example.com', 'IanWright789!'),
+    ('Jackie Thompson', 'jackie@example.com', 'JackiePass$78');
 
 -- Insert data into the games table
 INSERT INTO games (game_name, developer) VALUES

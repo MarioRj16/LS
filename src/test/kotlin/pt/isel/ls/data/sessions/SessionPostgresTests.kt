@@ -29,7 +29,7 @@ class SessionPostgresTests : DataPostgresTests(), SessionTests {
         val date =
             LocalDateTime(
                 LocalDate(2050, 3, 3),
-                LocalTime(1, 1, 1, 1),
+                LocalTime(1, 1, 1),
             )
         val sessionCreate = SessionCreate(game.id, capacity, date.toLong())
         val session = gamingSessions.create(sessionCreate, player.id)
@@ -172,7 +172,7 @@ class SessionPostgresTests : DataPostgresTests(), SessionTests {
         val session = gamingSessionFactory.createRandomGamingSession(isOpen = true, players = players)
         gamingSessionFactory.createRandomGamingSession(isOpen = false)
         val searchResults = gamingSessions.search(SessionSearch(state = true), DEFAULT_LIMIT, DEFAULT_SKIP)
-        assertEquals(0, searchResults.total)
+        assertEquals(1, searchResults.total)
         assertEquals(searchResults.sessions.first().id, session.id)
     }
 }

@@ -31,6 +31,10 @@ tasks.test {
     exclude("**/*Postgres*")
 }
 
+tasks.register<Test>("testAll") {
+    useJUnitPlatform()
+}
+
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "17"
 }

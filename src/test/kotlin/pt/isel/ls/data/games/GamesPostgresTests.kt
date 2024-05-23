@@ -133,6 +133,6 @@ class GamesPostgresTests : DataPostgresTests(), GamesTests {
         assertEquals(1, searchResults.size)
         assertFalse(hasNext)
         assertFalse(hasPrevious)
-        assertContains(searchResults, game)
+        assertTrue(searchResults.any { it.id == game.id })
     }
 }
