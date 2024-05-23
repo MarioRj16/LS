@@ -7,9 +7,6 @@ import pt.isel.ls.DEFAULT_SKIP
 import pt.isel.ls.api.models.players.PlayerCreate
 import pt.isel.ls.api.models.players.PlayerSearch
 import pt.isel.ls.data.DataPostgresTests
-import pt.isel.ls.utils.generateRandomEmail
-import pt.isel.ls.utils.generateRandomPassword
-import pt.isel.ls.utils.generateRandomString
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
@@ -17,15 +14,12 @@ import kotlin.test.assertTrue
 class PlayerPostgresTests : DataPostgresTests(), PlayersTests {
     @Test
     override fun createCreatesPlayerSuccessfully() {
-        val name = generateRandomString()
-        val email = generateRandomEmail()
-        val password = generateRandomPassword()
-        val playerCreate = PlayerCreate(name, email, password)
+        val playerCreate = PlayerCreate.create()
         val player = players.create(playerCreate)
 
-        assertEquals(name, player.name)
-        assertEquals(email, player.email)
-        assertEquals(password, player.password)
+        assertEquals(playerCreate.name, player.name)
+        assertEquals(playerCreate.email, player.email)
+        assertTrue(playerCreate.password.verify(player.password))
         assertNotNull(player.token)
         assertTrue(player.id > 0)
     }
@@ -47,32 +41,21 @@ class PlayerPostgresTests : DataPostgresTests(), PlayersTests {
         val player1 = playerFactory.createRandomPlayer()
         val player2 = playerFactory.createRandomPlayer()
         val player3 = playerFactory.createRandomPlayer()
-
-        val players = players.search(PlayerSearch(null), DEFAULT_SKIP, DEFAULT_LIMIT)
-
-        assertEquals(3, players.size)
-        assertTrue(players.contains(player1))
-        assertTrue(players.contains(player2))
-        assertTrue(players.contains(player3))
+        val searchResults = players.search(PlayerSearch(null), DEFAULT_SKIP, DEFAULT_LIMIT)
+        assertEquals(setOf(player1.id, player2.id, player3.id), searchResults.element.map { it.id }.toSet())
     }
 
     @Test
     override fun searchByNameReturnsPlayersSuccessfully() {
         val player = playerFactory.createRandomPlayer()
-
         val searchResult = players.search(PlayerSearch(player.name), DEFAULT_SKIP, DEFAULT_LIMIT)
-
-        assertEquals(1, searchResult.size)
-        assertEquals(player, searchResult[0])
+        assertEquals(setOf(player.id), searchResult.element.map { it.id }.toSet())
     }
 
     @Test
     override fun searchByPartialNameReturnsPlayersSuccessfully() {
         val player = playerFactory.createRandomPlayer()
-
         val searchResult = players.search(PlayerSearch(player.name.substring(0, 3)), DEFAULT_SKIP, DEFAULT_LIMIT)
-
-        assertEquals(1, searchResult.size)
-        assertEquals(player, searchResult[0])
+        assertEquals(setOf(player.id), searchResult.element.map{ it.id }.toSet())
     }
 }

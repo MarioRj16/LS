@@ -4,13 +4,12 @@ import java.util.*
 import kotlinx.serialization.Serializable
 import pt.isel.ls.utils.serializers.UUIDSerializer
 import pt.isel.ls.utils.values.Email
-import pt.isel.ls.utils.values.Password
 
 data class Player(
     val id: Int,
     val name: String,
     val email: Email,
-    val password: Password,
+    val password: String,
     @Serializable(with = UUIDSerializer::class)
     val token: UUID = UUID.randomUUID(),
 ) {

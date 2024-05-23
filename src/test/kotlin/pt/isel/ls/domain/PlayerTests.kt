@@ -12,7 +12,7 @@ class PlayerTests {
     private val validId = 1
     private val validName = generateRandomString()
     private val validEmail = generateRandomEmail()
-    private val validPassword = generateRandomPassword()
+    private val validPassword = generateRandomPassword().hash()
     private val token = UUID.randomUUID()
 
     @Test

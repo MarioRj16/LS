@@ -28,7 +28,7 @@ class SessionsTests {
             Random.nextInt(1, validMaxCapacity),
             generateRandomString(),
             generateRandomEmail(),
-            generateRandomPassword(),
+            generateRandomPassword().hash(),
             UUID.randomUUID(),
         )
 

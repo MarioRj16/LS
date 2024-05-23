@@ -8,7 +8,6 @@ import pt.isel.ls.domain.Genre
 import pt.isel.ls.domain.Player
 import pt.isel.ls.domain.Session
 import pt.isel.ls.utils.values.Email
-import pt.isel.ls.utils.values.Password
 
 /**
  * Converts a [ResultSet] into a [Player] object.
@@ -20,7 +19,7 @@ fun ResultSet.toPlayer(): Player {
         id = getInt("player_id"),
         name = getString("player_name"),
         email = Email(getString("email")),
-        password = Password(getString("password")),
+        password = getString("password"),
         token = UUID.fromString(getString("token")),
     )
 }

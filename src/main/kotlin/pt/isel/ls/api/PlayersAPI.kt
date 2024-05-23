@@ -37,9 +37,6 @@ class PlayersAPI(val services: PlayersServices) : APISchema() {
             val skip = request.query("skip")?.toInt().validateInt(DEFAULT_SKIP) { it.isNotNegative() }
             val limit = request.query("limit")?.toInt().validateInt(DEFAULT_LIMIT) { it.isNotNegative() }
             val searchParams = PlayerSearch(username)
-            Response(Status.OK)
-                .json(
-                    services.searchPlayers(searchParams, token, skip, limit),
-                )
+            Response(Status.OK).json(services.searchPlayers(searchParams, token, skip, limit))
         }
 }

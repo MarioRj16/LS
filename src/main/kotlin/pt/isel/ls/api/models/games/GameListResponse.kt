@@ -1,8 +1,7 @@
 package pt.isel.ls.api.models.games
 
 import kotlinx.serialization.Serializable
-import pt.isel.ls.domain.Game
-import pt.isel.ls.utils.PaginateResponse
+import pt.isel.ls.utils.PaginatedResponse
 
 @Serializable
 class GameListResponse private constructor(
@@ -12,10 +11,10 @@ class GameListResponse private constructor(
     val total: Int,
 ) {
     companion object {
-        operator fun invoke(gamesResponse: PaginateResponse<Game>): GameListResponse {
+        operator fun invoke(gamesResponse: PaginatedResponse<GameResponse>): GameListResponse {
             val (games, hasNext, hasPrevious) = gamesResponse
             return GameListResponse(
-                games.map { game -> GameResponse(game) },
+                games,
                 hasNext,
                 hasPrevious,
                 games.size,

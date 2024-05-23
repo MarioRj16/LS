@@ -23,7 +23,7 @@ class PlayerFactory(private val players: PlayersData? = null) {
             val playerEmail = generateRandomEmail()
             val playerPassword = generateRandomPassword()
             val playerToken = UUID.randomUUID()
-            return Player(playerId, playerName, playerEmail, playerPassword, playerToken)
+            return Player(playerId, playerName, playerEmail, playerPassword.hash(), playerToken)
         }
     }
 }

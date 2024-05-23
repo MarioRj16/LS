@@ -12,10 +12,11 @@ import pt.isel.ls.utils.values.Email
 class PlayersMem(private val players: DataMemTable<Player> = DataMemTable()) : PlayersData {
 
     override fun create(
-        playerCreate: PlayerCreate,
+        playerCreate: PlayerCreate
     ): Player {
         val (name, email, password) = playerCreate
-        val player = Player(players.nextId.get(), name, email, password)
+        val hash = password.hash()
+        val player = Player(players.nextId.get(), name, email, hash)
         players.table[players.nextId.get()] = player
         return player
     }

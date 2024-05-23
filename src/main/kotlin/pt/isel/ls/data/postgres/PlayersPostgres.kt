@@ -16,11 +16,12 @@ import pt.isel.ls.utils.values.Email
 
 class PlayersPostgres(private val conn: () -> Connection) : PlayersData {
     override fun create(
-        playerCreate: PlayerCreate,
+        playerCreate: PlayerCreate
     ): Player =
         conn().useWithRollback {
             val (name, email, password) = playerCreate
             val token = UUID.randomUUID()
+            val hash = password.hash()
             val statement =
                 it.prepareStatement(
                     """INSERT INTO PLAYERS(player_name, email, token, password) VALUES (?, ?, ?, ?)""",
@@ -29,7 +30,7 @@ class PlayersPostgres(private val conn: () -> Connection) : PlayersData {
                     setString(1, name)
                     setString(2, email.value)
                     setObject(3, token)
-                    setString(4, password.value)
+                    setString(4, hash)
                 }
 
             if (statement.executeUpdate() == 0) {
@@ -39,7 +40,7 @@ class PlayersPostgres(private val conn: () -> Connection) : PlayersData {
             val generatedKeys = statement.generatedKeys
 
             if (generatedKeys.next()) {
-                return Player(generatedKeys.getInt(1), name, email, password, token)
+                return Player(generatedKeys.getInt(1), name, email, hash, token)
             }
 
             throw SQLException("Creating user failed, no ID was created")

@@ -2,16 +2,16 @@ begin;
 
 -- Insert data into the players table
 INSERT INTO players (player_name, email, password) VALUES
-    ('Alice Smith', 'alice@example.com', 'Password123!'),
-    ('Bob Johnson', 'bob@example.com', 'SecurePass456!'),
-    ('Charlie Brown', 'charlie@example.com', 'Charlie789!'),
-    ('Diana Prince', 'diana@example.com', 'WonderWoman$10'),
-    ('Evan Taylor', 'evan@example.com', 'Evan@Pass12'),
-    ('Fiona Chen', 'fiona@example.com', 'Fiona#Pass15'),
-    ('George Martinez', 'george@example.com', 'GeorgePass$1'),
-    ('Hannah Lee', 'hannah@example.com', 'Hannah@Pass23'),
-    ('Ian Wright', 'ian@example.com', 'IanWright789!'),
-    ('Jackie Thompson', 'jackie@example.com', 'JackiePass$78');
+    ('Alice Smith', 'alice@example.com', '$2a$10$vI8aWBnW3fID.ZQ4/zo1G.tXaoD/C2dH8lmFfD.Bh0VWf6nWiZt/e'),
+    ('Bob Johnson', 'bob@example.com', '$2a$10$vI8aWBnW3fID.ZQ4/zo1G.tXaoD/C2dH8lmFfD.Bh0VWf6nWiZt/e'),
+    ('Charlie Brown', 'charlie@example.com', '$2a$10$vI8aWBnW3fID.ZQ4/zo1G.tXaoD/C2dH8lmFfD.Bh0VWf6nWiZt/e'),
+    ('Diana Prince', 'diana@example.com', '$2a$10$vI8aWBnW3fID.ZQ4/zo1G.tXaoD/C2dH8lmFfD.Bh0VWf6nWiZt/e'),
+    ('Evan Taylor', 'evan@example.com', '$2a$10$vI8aWBnW3fID.ZQ4/zo1G.tXaoD/C2dH8lmFfD.Bh0VWf6nWiZt/e'),
+    ('Fiona Chen', 'fiona@example.com', '$2a$10$vI8aWBnW3fID.ZQ4/zo1G.tXaoD/C2dH8lmFfD.Bh0VWf6nWiZt/e'),
+    ('George Martinez', 'george@example.com', '$2a$10$vI8aWBnW3fID.ZQ4/zo1G.tXaoD/C2dH8lmFfD.Bh0VWf6nWiZt/e'),
+    ('Hannah Lee', 'hannah@example.com', '$2a$10$vI8aWBnW3fID.ZQ4/zo1G.tXaoD/C2dH8lmFfD.Bh0VWf6nWiZt/e'),
+    ('Ian Wright', 'ian@example.com', '$2a$10$vI8aWBnW3fID.ZQ4/zo1G.tXaoD/C2dH8lmFfD.Bh0VWf6nWiZt/e'),
+    ('Jackie Thompson', 'jackie@example.com', '$2a$10$vI8aWBnW3fID.ZQ4/zo1G.tXaoD/C2dH8lmFfD.Bh0VWf6nWiZt/e');
 
 -- Insert data into the games table
 INSERT INTO games (game_name, developer) VALUES
