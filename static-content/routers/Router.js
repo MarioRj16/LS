@@ -30,6 +30,12 @@ export function Router() {
         if (state.currentPath == null)
             state.currentPath = state.path;
 
+        // If the current path is not '/register', check the session storage
+        if (state.currentPath !== '/register' && sessionStorage.getItem('user') === null) {
+            // Redirect to another route
+            state.currentPath = '/login'; // replace '/login' with your login route
+        }
+
         const handlerData = this.getHandler(state.currentPath);
 
         if (handlerData == null) {
