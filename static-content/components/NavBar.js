@@ -31,7 +31,7 @@ export async function NavBar(state){
     if (logoutLink) {
         logoutLink.addEventListener("click", (event) => {
             event.preventDefault();
-            localStorage.removeItem("user");
+            sessionStorage.removeItem("user");
             window.location.href = `#login`;
         });
     }

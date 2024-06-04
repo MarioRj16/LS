@@ -82,7 +82,7 @@ function isElement(obj) {
 }
 
 export function getStoredUser() {
-    const user = localStorage.getItem("user");
+    const user = sessionStorage.getItem("user");
 
     if (user == null || user === {})
         return null;
@@ -92,5 +92,5 @@ export function getStoredUser() {
 
 
 export function storeUser(user) {
-    localStorage.setItem("user", JSON.stringify(user));
+    sessionStorage.setItem("user", JSON.stringify(user));
 }
