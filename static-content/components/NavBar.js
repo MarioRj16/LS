@@ -1,11 +1,9 @@
 import {a, div, nav} from "../utils/Elements.js";
-import {USER_ID} from "../utils/Configs.js";
 import {getStoredUser} from "../utils/Utils.js";
 
 export async function NavBar(state){
     // Get the stored user
     const user = getStoredUser();
-    console.log(user);
 
     // Create the navbar element
     const navbar = await div(
@@ -16,12 +14,12 @@ export async function NavBar(state){
             a({class: "h4 nav-link", href: "#sessions/search"}, "SessionsSearch"),
             user == null
                 ? div({class: "nav ms-auto"},
-                    a({class: "nav-item nav-link", href: "#register"}, "Register"),
-                    a({class: "nav-item nav-link", href: "#login"}, "Login")
+                    a({class: "h4 nav-item nav-link", href: "#register"}, "Register"),
+                    a({class: "h4 nav-item nav-link", href: "#login"}, "Login")
                 )
                 : div({class: "nav ms-auto"},
-                    a({class: "nav-item nav-link", id: "logout-link", href: "#logout"}, "Logout"),
-                    a({class: "nav-item nav-link", href: `#users/${user.uid}`}, "Profile")
+                    a({class: "h4 nav-item nav-link", id: "logout-link", href: "#logout"}, "Logout"),
+                    a({class: "h4 nav-item nav-link", href: `#players/${user.playerId}`}, "Profile")
                 )
         )
     );

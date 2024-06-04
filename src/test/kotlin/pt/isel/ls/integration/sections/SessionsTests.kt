@@ -35,7 +35,8 @@ class SessionsTests : IntegrationTests() {
     fun `createSession returns 201 for good response`() {
         val player = playerFactory.createRandomPlayer()
         val game = gameFactory.createRandomGame()
-        val requestBody = SessionCreate(game.id, 4, plusDaysToCurrentDateTime(1L).toLong())
+        val requestBody = SessionCreate(game.id, 4, plusDaysToCurrentDateTime(1L))
+
         val request = Request(Method.POST, "$URI_PREFIX/sessions")
             .json(requestBody)
             .token(player.token)

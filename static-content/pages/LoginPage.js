@@ -4,10 +4,10 @@ import {storeUser} from "../utils/Utils.js";
 
 export async function LoginPage(state){
 
-    const submitButton = button({ class: "btn btn-primary", type: "submit" }, "Search");
+    const submitButton = button({ class: "btn btn-primary", type: "submit" }, "Enter");
     (await submitButton).addEventListener('click', handleFormSubmit);
 
-    function handleFormSubmit(event) {
+    async function handleFormSubmit(event) {
         event.preventDefault();
 
         const emailInput = document.getElementById('emailInput').value;
@@ -23,11 +23,13 @@ export async function LoginPage(state){
             return;
         }
 
-        const user= FetchAPI("/login", "POST", {email: emailInput, password: passwordInput})
-
-        //TODO: add if condition for successful login
-        storeUser(user)
-        window.location.href = `#home`;
+        const user= await FetchAPI("/players/login", "POST", {email: emailInput, password: passwordInput})
+        console.log(user)
+        if(user.token) {
+            storeUser(user)
+            window.location.href = `#home`;
+        }
+            else alert("Invalid email or password.");
     }
 
     return div(

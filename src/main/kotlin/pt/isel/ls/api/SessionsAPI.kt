@@ -1,5 +1,6 @@
 package pt.isel.ls.api
 
+import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.json.Json
 import org.http4k.core.Request
 import org.http4k.core.Response
@@ -36,7 +37,28 @@ class SessionsAPI(private val services: SessionsServices) : APISchema() {
 
     fun createSession(request: Request): Response =
         request.useWithException { token ->
-            val sessionInput = Json.decodeFromString<SessionCreate>(request.bodyString())
+            //val sessionInput = Json.decodeFromString<SessionCreate>(request.bodyString())
+            val body = request.bodyString()
+
+            val gameId = "\"gameId\":\\s*(\\d+)".toRegex().find(body)?.groups?.get(1)?.value?.toInt()
+            val capacity = "\"capacity\":\\s*(\\d+)".toRegex().find(body)?.groups?.get(1)?.value?.toInt()
+            var startingDate = "\"startingDate\":\\s*\"([^\"]*)\"".toRegex().find(body)?.groups?.get(1)?.value
+            if (startingDate == null) {
+                startingDate = "\"startingDate\":\\s*(\\d+)".toRegex().find(body)?.groups?.get(1)?.value
+            }
+
+            if (gameId == null || capacity == null || startingDate == null) {
+                throw IllegalArgumentException("Invalid request body")
+            }
+
+            val date = if(startingDate.contains('T')){
+                startingDate.toLocalDateTime()
+            } else {
+                startingDate.toLong().toLocalDateTime()
+            }
+
+            val sessionInput = SessionCreate(gameId, capacity, date)
+
             Response(Status.CREATED)
                 .json(
                     services.createSession(sessionInput, token),

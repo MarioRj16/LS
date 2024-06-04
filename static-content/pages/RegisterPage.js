@@ -6,12 +6,17 @@ export async function RegisterPage(state){
     const submitButton = button({ class: "btn btn-primary", type: "submit" }, "Register");
     (await submitButton).addEventListener('click', handleFormSubmit);
 
-    function handleFormSubmit(event) {
+    async function handleFormSubmit(event) {
         event.preventDefault();
-
+        const usernameInput = document.getElementById('usernameInput').value;
         const emailInput = document.getElementById('emailInput').value;
         const passwordInput = document.getElementById('passwordInput').value;
         const confirmPasswordInput = document.getElementById('confirmPasswordInput').value;
+
+        if (!usernameInput) {
+            alert("Please enter a username.");
+            return;
+        }
 
         if (!emailInput.match(/^[A-Za-z\d+_.-]+@(.+)$/)) {
             alert("Invalid email.");
@@ -28,10 +33,12 @@ export async function RegisterPage(state){
             return;
         }
 
-        FetchAPI("/register", "POST", {email: emailInput, password: passwordInput})
-
-        //TODO: add if condition for successful registration
-        window.location.href = `#login`;
+        const user = await FetchAPI("/players", "POST", {name:usernameInput, email: emailInput, password: passwordInput})
+        if (user.token){
+            alert("Registration successful! Please log in.");
+            window.location.href = `#login`;
+        }
+        else alert(user.message);
     }
 
     return div(
@@ -42,6 +49,11 @@ export async function RegisterPage(state){
         ),
         div(
             { class: "card-body d-flex flex-column gap-4" },
+            div(
+                {},
+                label({ class: "form-label", for: "usernameInput" }, "Username"),
+                input({ class: "form-control", id: "usernameInput" })
+            ),
             div(
                 {},
                 label({ class: "form-label", for: "emailInput" }, "Email"),
