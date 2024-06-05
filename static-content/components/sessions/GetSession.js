@@ -2,7 +2,7 @@ import {a, button, div, h1, h2, label} from "../../utils/Elements.js";
 import {FetchAPI} from "../../utils/FetchAPI.js";
 import {ShowPlayers} from "../players/ShowPlayers.js";
 
-export async function GetSession(session, players, host , user) {
+export async function GetSession(session, players, host , user,updateSession,leaveSession,joinSession) {
     const renderPlayerLinks = await ShowPlayers(session, redirectToPlayer, "" );
 
     function redirectToPlayer(player){
@@ -27,24 +27,6 @@ export async function GetSession(session, players, host , user) {
             (await updateButton).addEventListener('click', updateSession);
             return updateButton
         }else return div()
-    }
-
-    async function updateSession(){
-        window.location.href=`#sessions/${session.id}/update`
-    }
-
-    async function leaveSession(){
-        const request= await FetchAPI(`/sessions/${session.id}/players/${user}`,`DELETE`)
-        if(request==undefined){
-            alert("Left Session Successfully")
-            window.location.reload()
-        }else alert(request.message)
-    }
-
-    async function joinSession(){
-        await FetchAPI(`/sessions/${session.id}`,`POST`)
-        alert("Joined Session Successfully")
-        window.location.reload()
     }
 
     async function getPlayerButtons(){

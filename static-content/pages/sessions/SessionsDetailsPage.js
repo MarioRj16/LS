@@ -9,5 +9,23 @@ export async function SessionsDetailsPage(state){
 
     const host = await FetchAPI(`/players/${session.host}`);
 
-    return GetSession(session, session.players, host, getStoredUser().playerId);
+    async function updateSession(){
+        window.location.href=`#sessions/${session.id}/update`
+    }
+
+    async function leaveSession(){
+        const request= await FetchAPI(`/sessions/${session.id}/players/${user}`,`DELETE`)
+        if(request==undefined){
+            alert("Left Session Successfully")
+            window.location.reload()
+        }else alert(request.message)
+    }
+
+    async function joinSession(){
+        await FetchAPI(`/sessions/${session.id}`,`POST`)
+        alert("Joined Session Successfully")
+        window.location.reload()
+    }
+
+    return GetSession(session, session.players, host, getStoredUser().playerId,updateSession,leaveSession,joinSession)
 }

@@ -1,32 +1,7 @@
 import {GenresOptionsInputs} from "../GenresOptions.js";
 import {button, div, h1, input, label} from "../../utils/Elements.js";
 
-export async function SearchGames(genresOptions) {
-    const formSubmitHandler = async (event) => {
-        event.preventDefault();
-
-        const nameInput = document.getElementById('nameInput').value;
-        const developerInput = document.getElementById('developerInput').value;
-        const genreInput = GenresOptionsInputs();
-
-        const searchCriteria = {};
-
-        if (nameInput.trim() !== "") {
-            searchCriteria.name = nameInput.trim();
-        }
-
-        if (developerInput.trim() !== "") {
-            searchCriteria.developer = developerInput.trim();
-        }
-
-        if (genreInput.length > 0) {
-            searchCriteria.genres = genreInput.join(',');
-        }
-
-        const queryString = new URLSearchParams(searchCriteria).toString();
-
-        window.location.href = `#games?${queryString}`;
-    };
+export async function SearchGames(genresOptions,formSubmitHandler) {
 
     const searchButton = button({class: "mx-auto btn btn-primary", type: "button"}, "Search");
     (await searchButton).addEventListener('click', formSubmitHandler);

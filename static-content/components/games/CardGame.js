@@ -6,7 +6,11 @@ export async function CardGame(game) {
         "Details"
     );
 
-    (await detailsButton).addEventListener('click', handleClick(game.id))
+    function handleClick() {
+       window.location.href = `#games/${game.id}`;
+    }
+
+    (await detailsButton).addEventListener('click', handleClick)
     return div(
         {class: "card mx-auto justify-content-center w-50 maxH-50 m-2"},
         div(
@@ -22,8 +26,3 @@ export async function CardGame(game) {
     )
 }
 
-function handleClick(gameId) {
-    return () => {
-        window.location.href = `#games/${gameId}`;
-    };
-}

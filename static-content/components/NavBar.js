@@ -2,10 +2,8 @@ import {a, div, nav} from "../utils/Elements.js";
 import {getStoredUser} from "../utils/Utils.js";
 
 export async function NavBar(state){
-    // Get the stored user
     const user = getStoredUser();
 
-    // Create the navbar element
     const navbar = await div(
         nav(
             {class: "nav nav-pills"},

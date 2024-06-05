@@ -8,5 +8,37 @@ export async function GamesCreatePage(state) {
 
     const genresOptions = await GenresOptions(genres);
 
-    return CreateGame(genresOptions);
+    async function formSubmitHandler () {
+        event.preventDefault();
+
+        const nameInput = document.getElementById('nameInput').value;
+        const developerInput = document.getElementById('developerInput').value;
+        const genreInput = GenresOptionsInputs();
+
+        if (nameInput.trim() === "") {
+            alert("Please enter a name");
+            return;
+        }
+
+        if (developerInput.trim() === "") {
+            alert("Please enter a developer");
+            return;
+        }
+
+        if (genreInput.length <= 0) {
+            alert("Please select at least one genre");
+            return;
+        }
+        const params={
+            name : nameInput.trim(),
+            developer : developerInput.trim(),
+            genres : genreInput
+        }
+        const create = await FetchAPI(`/games`, 'POST', params)
+        if(create.id)alert("Game created successfully");
+        else alert(`${create.message}`);
+        window.location.reload()
+    };
+
+    return CreateGame(genresOptions,formSubmitHandler);
 }
