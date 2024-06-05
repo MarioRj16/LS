@@ -1,10 +1,11 @@
 package pt.isel.ls.data
 
 import pt.isel.ls.api.models.sessions.SessionCreate
-import pt.isel.ls.api.models.sessions.SessionListResponse
+import pt.isel.ls.api.models.sessions.SessionResponse
 import pt.isel.ls.api.models.sessions.SessionSearch
 import pt.isel.ls.api.models.sessions.SessionUpdate
 import pt.isel.ls.domain.Session
+import pt.isel.ls.utils.PaginatedResponse
 
 interface SessionsData {
     fun create(
@@ -18,7 +19,7 @@ interface SessionsData {
         sessionParameters: SessionSearch,
         limit: Int,
         skip: Int,
-    ): SessionListResponse
+    ): PaginatedResponse<SessionResponse>
 
     fun update(sessionId: Int, sessionUpdate: SessionUpdate)
 

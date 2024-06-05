@@ -38,7 +38,7 @@ export async function SearchSessions(games,players){
             searchCriteria.state = stateInput === "true";
         }
         if (playerInput) {
-            searchCriteria.player = playerInput;
+            searchCriteria.playerName = playerInput;
         }
 
         const queryString = new URLSearchParams(searchCriteria).toString();

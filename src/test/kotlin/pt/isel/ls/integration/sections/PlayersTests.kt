@@ -12,8 +12,6 @@ import pt.isel.ls.api.models.players.PlayerDetails
 import pt.isel.ls.api.models.players.PlayerListResponse
 import pt.isel.ls.api.models.players.PlayerResponse
 import pt.isel.ls.integration.IntegrationTests
-import pt.isel.ls.utils.generateRandomEmail
-import pt.isel.ls.utils.generateRandomString
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
@@ -42,7 +40,7 @@ class PlayersTests : IntegrationTests() {
 
     @Test
     fun `createPlayer returns 201 for good request`() {
-        val requestBody = PlayerCreate(generateRandomString(), generateRandomEmail())
+        val requestBody = PlayerCreate.create()
         val request =
             Request(Method.POST, "$URI_PREFIX/players")
                 .json(requestBody)
@@ -55,7 +53,7 @@ class PlayersTests : IntegrationTests() {
 
     @Test
     fun `createPlayer returns 400 missing name`() {
-        val requestBody = PlayerCreate("", generateRandomEmail())
+        val requestBody = PlayerCreate.create(name = "")
         val request =
             Request(Method.POST, "$URI_PREFIX/players")
                 .json(requestBody)
@@ -68,7 +66,7 @@ class PlayersTests : IntegrationTests() {
     @Test
     fun `createPlayer returns 400 for non-unique name`() {
         val player = playerFactory.createRandomPlayer()
-        val requestBody = PlayerCreate(player.name, generateRandomEmail())
+        val requestBody = PlayerCreate.create(name = player.name)
         val request =
             Request(Method.POST, "$URI_PREFIX/players")
                 .json(requestBody)
@@ -81,7 +79,7 @@ class PlayersTests : IntegrationTests() {
     @Test
     fun `createPlayer returns 400 for non-unique email`() {
         val player = playerFactory.createRandomPlayer()
-        val requestBody = PlayerCreate(generateRandomString(), player.email)
+        val requestBody = PlayerCreate.create(email = player.email)
         val request =
             Request(Method.POST, "$URI_PREFIX/players")
                 .json(requestBody)

@@ -1,7 +1,6 @@
 package pt.isel.ls.data.postgres
 
 import pt.isel.ls.api.models.sessions.SessionCreate
-import pt.isel.ls.api.models.sessions.SessionListResponse
 import pt.isel.ls.api.models.sessions.SessionResponse
 import pt.isel.ls.api.models.sessions.SessionSearch
 import pt.isel.ls.api.models.sessions.SessionUpdate
@@ -9,13 +8,13 @@ import pt.isel.ls.data.SessionsData
 import pt.isel.ls.domain.Genre
 import pt.isel.ls.domain.Player
 import pt.isel.ls.domain.Session
-import pt.isel.ls.utils.PaginateResponse
-import pt.isel.ls.utils.factories.PlayerFactory
+import pt.isel.ls.utils.PaginatedResponse
 import pt.isel.ls.utils.postgres.toGame
 import pt.isel.ls.utils.postgres.toGamingSession
 import pt.isel.ls.utils.postgres.toPlayer
 import pt.isel.ls.utils.postgres.useWithRollback
 import pt.isel.ls.utils.toTimeStamp
+import pt.isel.ls.utils.values.Email
 import java.sql.Connection
 import java.sql.SQLException
 import java.sql.Statement
@@ -27,7 +26,7 @@ class SessionsPostgres(private val conn: () -> Connection) : SessionsData {
     ): Session =
         conn().useWithRollback {
             val (game, capacity, _) = sessionInput
-            val date = sessionInput.startingDateFormatted
+            val date = sessionInput.startingDate
             val statement =
                 it.prepareStatement(
                     """insert into gaming_sessions(capacity, starting_date, game_id, host) values (?, ?, ?, ?)""",
@@ -81,7 +80,7 @@ class SessionsPostgres(private val conn: () -> Connection) : SessionsData {
             return null
         }
 
-    override fun search(sessionParameters: SessionSearch, limit: Int, skip: Int): SessionListResponse =
+    override fun search(sessionParameters: SessionSearch, limit: Int, skip: Int): PaginatedResponse<SessionResponse> =
         conn().useWithRollback {
             val (game, date, isOpen, player, hostId) = sessionParameters
             val dummyGenre = Genre(0, "dummy")
@@ -133,18 +132,18 @@ class SessionsPostgres(private val conn: () -> Connection) : SessionsData {
 
             while (resultSet.next()) {
                 val playerCount = resultSet.getInt("player_count")
-                val sessionPlayers = List(playerCount){ PlayerFactory().createRandomPlayer() }
+                val sessionPlayers = List(playerCount) { Player(1, "Dummy", Email("dummy@gmail.com"), "dummy") }
 
                 sessions +=
                     SessionResponse(
                         resultSet.toGamingSession(sessionPlayers.toSet()),
-                        resultSet.toGame(setOf(dummyGenre))
+                        resultSet.toGame(setOf(dummyGenre)),
                     )
             }
 
             val list = sessions.distinct()
 
-            return SessionListResponse(PaginateResponse.fromList(list,skip,limit))
+            return PaginatedResponse.fromList(list, skip, limit)
         }
 
     override fun update(sessionId: Int, sessionUpdate: SessionUpdate) =

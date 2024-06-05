@@ -1,12 +1,14 @@
 package pt.isel.ls.data.postgres
 
 import pt.isel.ls.api.models.players.PlayerCreate
+import pt.isel.ls.api.models.players.PlayerListElement
 import pt.isel.ls.api.models.players.PlayerSearch
 import pt.isel.ls.data.PlayersData
 import pt.isel.ls.domain.Player
-import pt.isel.ls.utils.Email
+import pt.isel.ls.utils.PaginatedResponse
 import pt.isel.ls.utils.postgres.toPlayer
 import pt.isel.ls.utils.postgres.useWithRollback
+import pt.isel.ls.utils.values.Email
 import java.sql.Connection
 import java.sql.SQLException
 import java.sql.Statement
@@ -17,16 +19,18 @@ class PlayersPostgres(private val conn: () -> Connection) : PlayersData {
         playerCreate: PlayerCreate,
     ): Player =
         conn().useWithRollback {
-            val (name, email) = playerCreate
+            val (name, email, password) = playerCreate
             val token = UUID.randomUUID()
+            val hash = password.hash()
             val statement =
                 it.prepareStatement(
-                    """INSERT INTO PLAYERS(player_name, email, token) VALUES (?, ?, ?)""",
+                    """INSERT INTO PLAYERS(player_name, email, token, password) VALUES (?, ?, ?, ?)""",
                     Statement.RETURN_GENERATED_KEYS,
                 ).apply {
                     setString(1, name)
-                    setString(2, email.email)
+                    setString(2, email.value)
                     setObject(3, token)
+                    setString(4, hash)
                 }
 
             if (statement.executeUpdate() == 0) {
@@ -36,7 +40,7 @@ class PlayersPostgres(private val conn: () -> Connection) : PlayersData {
             val generatedKeys = statement.generatedKeys
 
             if (generatedKeys.next()) {
-                return Player(generatedKeys.getInt(1), name, email, token)
+                return Player(generatedKeys.getInt(1), name, email, hash, token)
             }
 
             throw SQLException("Creating user failed, no ID was created")
@@ -82,7 +86,7 @@ class PlayersPostgres(private val conn: () -> Connection) : PlayersData {
                 it.prepareStatement(
                     """select * from players where email = ?""",
                 ).apply {
-                    setString(1, email.email)
+                    setString(1, email.value)
                 }
 
             val resultSet = statement.executeQuery()
@@ -110,7 +114,7 @@ class PlayersPostgres(private val conn: () -> Connection) : PlayersData {
             return null
         }
 
-    override fun search(searchParameters: PlayerSearch, skip: Int, limit: Int): List<Player> =
+    override fun search(searchParameters: PlayerSearch, skip: Int, limit: Int): PaginatedResponse<PlayerListElement> =
         conn().useWithRollback {
             val username = searchParameters.username
             val statement =
@@ -123,12 +127,12 @@ class PlayersPostgres(private val conn: () -> Connection) : PlayersData {
                 }
 
             val resultSet = statement.executeQuery()
-            val players = mutableListOf<Player>()
+            val players = mutableListOf<PlayerListElement>()
 
             while (resultSet.next()) {
-                players.add(resultSet.toPlayer())
+                players.add(PlayerListElement(resultSet.toPlayer()))
             }
 
-            return players
+            return PaginatedResponse.fromList(players, skip, limit)
         }
 }

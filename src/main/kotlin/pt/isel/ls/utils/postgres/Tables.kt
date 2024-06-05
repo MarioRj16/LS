@@ -5,7 +5,7 @@ import pt.isel.ls.domain.Game
 import pt.isel.ls.domain.Genre
 import pt.isel.ls.domain.Player
 import pt.isel.ls.domain.Session
-import pt.isel.ls.utils.Email
+import pt.isel.ls.utils.values.Email
 import java.sql.ResultSet
 import java.util.*
 
@@ -19,6 +19,7 @@ fun ResultSet.toPlayer(): Player {
         id = getInt("player_id"),
         name = getString("player_name"),
         email = Email(getString("email")),
+        password = getString("password"),
         token = UUID.fromString(getString("token")),
     )
 }

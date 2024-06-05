@@ -12,6 +12,7 @@ class Routes(api: API) {
         routes(
             "players" bind Method.GET to api.playerAPI::searchPlayers,
             "players" bind Method.POST to api.playerAPI::createPlayer,
+            "players/login" bind Method.POST to api.playerAPI::loginPlayer,
             "players/{playerId}" bind Method.GET to api.playerAPI::getPlayer,
         )
     private val gameRoutes =

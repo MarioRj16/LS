@@ -1,11 +1,12 @@
 package pt.isel.ls.data.mem
 
 import pt.isel.ls.api.models.games.GameCreate
+import pt.isel.ls.api.models.games.GameResponse
 import pt.isel.ls.api.models.games.GameSearch
 import pt.isel.ls.data.GamesData
 import pt.isel.ls.domain.Game
 import pt.isel.ls.domain.Genre
-import pt.isel.ls.utils.PaginateResponse
+import pt.isel.ls.utils.PaginatedResponse
 
 class GamesMem(
     private val gamesDB: DataMemTable<Game> = DataMemTable(),
@@ -27,15 +28,14 @@ class GamesMem(
         searchParams: GameSearch,
         limit: Int,
         skip: Int,
-    ): PaginateResponse<Game> {
+    ): PaginatedResponse<GameResponse> {
         val (name, developer, genres) = searchParams
-        val list =
-            gamesDB.table.values.filter {
-                (name.isNullOrBlank() || it.name.contains(name, ignoreCase = true)) &&
-                    (developer.isNullOrBlank() || it.developer == developer) &&
-                    (genres.isEmpty() || it.genres.map { i -> i.genreId }.intersect(genres).isNotEmpty())
-            }
-        return PaginateResponse.fromList(list, skip, limit)
+        val list = gamesDB.table.values.filter {
+            (name.isNullOrBlank() || it.name.contains(name, ignoreCase = true)) &&
+                (developer.isNullOrBlank() || it.developer == developer) &&
+                (genres.isEmpty() || it.genres.map { i -> i.genreId }.intersect(genres).isNotEmpty())
+        }.map { GameResponse(it) }
+        return PaginatedResponse.fromList(list, skip, limit)
     }
 
     override fun get(id: Int): Game? = gamesDB.table.values.find { it.id == id }

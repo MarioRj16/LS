@@ -1,7 +1,6 @@
 package pt.isel.ls.data.mem
 
 import pt.isel.ls.api.models.sessions.SessionCreate
-import pt.isel.ls.api.models.sessions.SessionListResponse
 import pt.isel.ls.api.models.sessions.SessionResponse
 import pt.isel.ls.api.models.sessions.SessionSearch
 import pt.isel.ls.api.models.sessions.SessionUpdate
@@ -9,7 +8,7 @@ import pt.isel.ls.data.SessionsData
 import pt.isel.ls.domain.Game
 import pt.isel.ls.domain.Player
 import pt.isel.ls.domain.Session
-import pt.isel.ls.utils.PaginateResponse
+import pt.isel.ls.utils.PaginatedResponse
 
 class SessionsMem(
     private val sessions: DataMemTable<Session> = DataMemTable(),
@@ -22,7 +21,7 @@ class SessionsMem(
         hostId: Int,
     ): Session {
         val (game, capacity, _) = sessionInput
-        val date = sessionInput.startingDateFormatted
+        val date = sessionInput.startingDate
         val obj =
             Session(
                 sessions.nextId.get(),
@@ -42,7 +41,7 @@ class SessionsMem(
         sessionParameters: SessionSearch,
         limit: Int,
         skip: Int,
-    ): SessionListResponse {
+    ): PaginatedResponse<SessionResponse> {
         val (game, date, state, player, hostId) = sessionParameters
         var sessions: List<Session> = sessions.table.values.toList()
 
@@ -66,9 +65,9 @@ class SessionsMem(
             sessions = sessions.filter { it.startingDate >= date }
         }
 
-        val list = sessions.map { session -> SessionResponse(session, games.table[session.gameId]!!)}
+        val list = sessions.map { session -> SessionResponse(session, games.table[session.gameId]!!) }
 
-        return SessionListResponse(PaginateResponse.fromList(list, skip, limit))
+        return PaginatedResponse.fromList(list, skip, limit)
     }
 
     override fun update(sessionId: Int, sessionUpdate: SessionUpdate) {

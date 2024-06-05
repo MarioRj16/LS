@@ -1,23 +1,24 @@
 package pt.isel.ls.data.postgres
 
-import java.sql.Connection
-import java.sql.PreparedStatement
-import java.sql.SQLException
-import java.sql.Statement
 import pt.isel.ls.api.models.games.GameCreate
+import pt.isel.ls.api.models.games.GameResponse
 import pt.isel.ls.api.models.games.GameSearch
 import pt.isel.ls.data.GamesData
 import pt.isel.ls.domain.Game
 import pt.isel.ls.domain.Genre
-import pt.isel.ls.utils.PaginateResponse
+import pt.isel.ls.utils.PaginatedResponse
 import pt.isel.ls.utils.postgres.toGame
 import pt.isel.ls.utils.postgres.toGenre
 import pt.isel.ls.utils.postgres.useWithRollback
+import java.sql.Connection
+import java.sql.PreparedStatement
+import java.sql.SQLException
+import java.sql.Statement
 
 class GamesPostgres(private val conn: () -> Connection) : GamesData {
     override fun create(
         gameInput: GameCreate,
-        genres: Set<Genre>
+        genres: Set<Genre>,
     ): Game =
         conn().useWithRollback {
             val (name, developer, _) = gameInput
@@ -41,26 +42,21 @@ class GamesPostgres(private val conn: () -> Connection) : GamesData {
         searchParams: GameSearch,
         limit: Int,
         skip: Int,
-    ): PaginateResponse<Game> =
+    ): PaginatedResponse<GameResponse> =
         conn().useWithRollback { it ->
             val query = buildSearchQuery(searchParams)
             val statement = it.prepareStatement(query)
             setStatementParameters(statement, searchParams)
 
             val resultSet = statement.executeQuery()
-            val games = mutableListOf<Game>()
+            val games = mutableSetOf<GameResponse>()
 
             while (resultSet.next()) {
                 val currentGameId = resultSet.getInt("game_id")
-                games += resultSet.toGame(setOf(resultSet.toGenre()), currentGameId)
+                games += GameResponse(resultSet.toGame(setOf(resultSet.toGenre()), currentGameId))
             }
 
-            val list = games.groupBy { it.id }.map { (_, gameList) ->
-                val game = gameList.first()
-                game.copy(genres = gameList.flatMap { it.genres }.toSet())
-            }
-
-            return PaginateResponse.fromList(list, skip, limit)
+            return PaginatedResponse.fromList(games.toList(), skip, limit)
         }
 
     private fun Connection.insertGame(name: String, developer: String): Int {

@@ -8,6 +8,7 @@ import org.http4k.routing.path
 import pt.isel.ls.DEFAULT_LIMIT
 import pt.isel.ls.DEFAULT_SKIP
 import pt.isel.ls.api.models.players.PlayerCreate
+import pt.isel.ls.api.models.players.PlayerLogin
 import pt.isel.ls.api.models.players.PlayerSearch
 import pt.isel.ls.services.PlayersServices
 import pt.isel.ls.utils.isNotNegative
@@ -37,9 +38,13 @@ class PlayersAPI(val services: PlayersServices) : APISchema() {
             val skip = request.query("skip")?.toInt().validateInt(DEFAULT_SKIP) { it.isNotNegative() }
             val limit = request.query("limit")?.toInt().validateInt(DEFAULT_LIMIT) { it.isNotNegative() }
             val searchParams = PlayerSearch(username)
+            Response(Status.OK).json(services.searchPlayers(searchParams, token, skip, limit))
+        }
+
+    fun loginPlayer(request: Request): Response =
+        request.useWithExceptionNoToken {
+            val input = Json.decodeFromString<PlayerLogin>(request.bodyString())
             Response(Status.OK)
-                .json(
-                    services.searchPlayers(searchParams, token, skip, limit),
-                )
+                .json(services.loginPlayer(input))
         }
 }

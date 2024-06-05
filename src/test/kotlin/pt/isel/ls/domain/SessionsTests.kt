@@ -3,6 +3,7 @@ package pt.isel.ls.domain
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import pt.isel.ls.utils.generateRandomEmail
+import pt.isel.ls.utils.generateRandomPassword
 import pt.isel.ls.utils.generateRandomString
 import pt.isel.ls.utils.minusDaysToCurrentDateTime
 import pt.isel.ls.utils.plusDaysToCurrentDateTime
@@ -27,6 +28,7 @@ class SessionsTests {
             Random.nextInt(1, validMaxCapacity),
             generateRandomString(),
             generateRandomEmail(),
+            generateRandomPassword().hash(),
             UUID.randomUUID(),
         )
 

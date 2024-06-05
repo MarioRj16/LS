@@ -1,17 +1,17 @@
 package pt.isel.ls.api.models.sessions
 
 import kotlinx.serialization.Serializable
-import pt.isel.ls.utils.PaginateResponse
+import pt.isel.ls.utils.PaginatedResponse
 
 @Serializable
 class SessionListResponse private constructor(
     val sessions: List<SessionResponse>,
     val hasNext: Boolean,
     val hasPrevious: Boolean,
-    val total: Int
+    val total: Int,
 ) {
     companion object {
-        operator fun invoke(sessionsResponse: PaginateResponse<SessionResponse>): SessionListResponse {
+        operator fun invoke(sessionsResponse: PaginatedResponse<SessionResponse>): SessionListResponse {
             val (session, hasNext, hasPrevious) = sessionsResponse
             return SessionListResponse(session, hasNext, hasPrevious, session.size)
         }

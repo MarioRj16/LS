@@ -1,6 +1,6 @@
 import {FetchAPI} from "../../utils/FetchAPI.js";
 import {GetSession} from "../../components/sessions/GetSession.js";
-import {USER_ID} from "../../utils/Configs.js";
+import {getStoredUser} from "../../utils/Utils.js";
 
 export async function SessionsDetailsPage(state){
     const id = state.params.id;
@@ -9,5 +9,5 @@ export async function SessionsDetailsPage(state){
 
     const host = await FetchAPI(`/players/${session.host}`);
 
-    return GetSession(session, session.players, host, USER_ID);
+    return GetSession(session, session.players, host, getStoredUser().playerId);
 }

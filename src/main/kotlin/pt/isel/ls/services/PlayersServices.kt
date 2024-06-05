@@ -1,13 +1,15 @@
 package pt.isel.ls.services
 
-import java.util.*
 import pt.isel.ls.api.models.players.PlayerCreate
 import pt.isel.ls.api.models.players.PlayerDetails
 import pt.isel.ls.api.models.players.PlayerListResponse
+import pt.isel.ls.api.models.players.PlayerLogin
 import pt.isel.ls.api.models.players.PlayerResponse
 import pt.isel.ls.api.models.players.PlayerSearch
 import pt.isel.ls.data.Data
 import pt.isel.ls.utils.exceptions.BadRequestException
+import pt.isel.ls.utils.values.Password
+import java.util.*
 
 open class PlayersServices(internal val db: Data) : ServicesSchema(db) {
     fun createPlayer(playerCreate: PlayerCreate): PlayerResponse {
@@ -18,6 +20,7 @@ open class PlayersServices(internal val db: Data) : ServicesSchema(db) {
         if (db.players.get(playerCreate.email) != null) {
             throw BadRequestException("The given email is not unique")
         }
+
         val player = db.players.create(playerCreate)
         return PlayerResponse(player)
     }
@@ -39,5 +42,14 @@ open class PlayersServices(internal val db: Data) : ServicesSchema(db) {
     ): PlayerListResponse = withAuthorization(token) {
         val players = db.players.search(searchParameters, skip, limit)
         return@withAuthorization PlayerListResponse(players)
+    }
+
+    fun loginPlayer(playerLogin: PlayerLogin): PlayerResponse {
+        val player = db.players.get(playerLogin.email)
+            ?: throw NoSuchElementException("No player with email ${playerLogin.email} was found")
+        if (!Password(playerLogin.password).verify(player.password)) {
+            throw BadRequestException("The given password is incorrect")
+        }
+        return PlayerResponse(player)
     }
 }

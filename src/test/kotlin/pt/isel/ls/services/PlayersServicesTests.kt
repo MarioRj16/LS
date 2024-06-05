@@ -1,6 +1,5 @@
 package pt.isel.ls.services
 
-import java.util.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -12,11 +11,9 @@ import pt.isel.ls.api.models.players.PlayerListElement
 import pt.isel.ls.api.models.players.PlayerSearch
 import pt.isel.ls.data.mem.DataMem
 import pt.isel.ls.domain.Player
-import pt.isel.ls.utils.Email
 import pt.isel.ls.utils.exceptions.BadRequestException
 import pt.isel.ls.utils.factories.PlayerFactory
-import pt.isel.ls.utils.generateRandomEmail
-import pt.isel.ls.utils.generateRandomString
+import java.util.*
 import kotlin.test.assertEquals
 
 class PlayersServicesTests : PlayersServices(DataMem()) {
@@ -33,27 +30,25 @@ class PlayersServicesTests : PlayersServices(DataMem()) {
 
     @Test
     fun `createPlayer() should create a player successfully`() {
-        val name = "testName"
-        val email = Email("testEmail@gmail.com")
-        val playerInfo = PlayerCreate(name, email)
-        val createdPlayer = createPlayer(playerInfo)
+        val playerCreate = PlayerCreate.create()
+        val createdPlayer = createPlayer(playerCreate)
         val player = getPlayer(createdPlayer.playerId, createdPlayer.token)
-        assertEquals(name, player.name)
-        assertEquals(email, player.email)
+        assertEquals(playerCreate.name, player.name)
+        assertEquals(playerCreate.email, player.email)
     }
 
     @Test
-    fun `createPlayer() throws ConflictException when email is not unique`() {
+    fun `createPlayer() throws BadRequestException when email is not unique`() {
         val exception = assertThrows<BadRequestException> {
-            createPlayer(PlayerCreate(generateRandomString(), user.email))
+            createPlayer(PlayerCreate.create(email = user.email))
         }
         assertEquals("The given email is not unique", exception.message)
     }
 
     @Test
-    fun `createPlayer() throws ConflictException when username is not unique`() {
+    fun `createPlayer() throws BadRequestException when username is not unique`() {
         val exception = assertThrows<BadRequestException> {
-            createPlayer(PlayerCreate(user.name, generateRandomEmail()))
+            createPlayer(PlayerCreate.create(name = user.name))
         }
         assertEquals("The given username is not unique", exception.message)
     }
