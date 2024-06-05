@@ -5,7 +5,6 @@ export async function GenresOptions(genres) {
     container.classList.add("multiselect");
     container.id="genreInput"// Add CSS class for styling
 
-    // Create select box
     const selectBox = document.createElement('div');
     selectBox.classList.add("selectBox");
 

@@ -6,7 +6,12 @@ export async function CardSession(session){
         "Details"
     );
 
-    (await detailsButton).addEventListener('click', handleClick(session.id))
+    (await detailsButton).addEventListener('click', handleClick)
+
+    function handleClick() {
+        window.location.href = `#sessions/${session.id}`;
+    }
+
 
     return div(
         {class: "card mx-auto justify-content-center w-50 maxH-50 m-2"},
@@ -22,8 +27,3 @@ export async function CardSession(session){
         ))
 }
 
-function handleClick(sessionId) {
-    return () => {
-        window.location.href = `#sessions/${sessionId}`;
-    };
-}
