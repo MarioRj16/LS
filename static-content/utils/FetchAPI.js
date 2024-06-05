@@ -27,8 +27,8 @@ export async function FetchAPI(path, method = 'GET', bodyData = null) {
         let json = await response.json()
         return json;
     } catch (e) {
-        console.log(e)
-        //TODO(throw alert or something)
+        //alert(e)
+
     }
 }
 

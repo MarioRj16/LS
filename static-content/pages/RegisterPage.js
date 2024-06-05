@@ -4,7 +4,7 @@ import {RegisterComp} from "../components/RegisterComp.js";
 
 export async function RegisterPage(state){
 
-    async function handleFormSubmit(event) {
+    async function handleFormSubmit() {
         event.preventDefault();
         const usernameInput = document.getElementById('usernameInput').value;
         const emailInput = document.getElementById('emailInput').value;

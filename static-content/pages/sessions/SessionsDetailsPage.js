@@ -14,7 +14,8 @@ export async function SessionsDetailsPage(state){
     }
 
     async function leaveSession(){
-        const request= await FetchAPI(`/sessions/${session.id}/players/${user}`,`DELETE`)
+        console.log("OII")
+        const request= await FetchAPI(`/sessions/${session.id}/players/${session.host}`,`DELETE`)
         if(request==undefined){
             alert("Left Session Successfully")
             window.location.reload()
