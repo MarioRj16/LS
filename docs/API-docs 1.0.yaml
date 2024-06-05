@@ -28,20 +28,29 @@ paths:
         - bearerAuth: [ ]
       parameters:
         - name: username
+          required: true
           in: query
           description: Player username
           schema:
             type: string
             example: exampleusername
+        - name: skip
+          in: query
+          description: Number of players to skip
+          schema:
+            $ref: "#/components/schemas/skip"
+        - name: limit
+          in: query
+          description: Number of players to return
+          schema:
+            $ref: "#/components/schemas/limit"
       responses:
         200:
-          description: Got all players.
+          description: Got all players from database.
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Player"
+                $ref: "#/components/schemas/PlayerListResponse"
         400:
           $ref: "#/components/responses/400BadRequest"
     post:
@@ -49,39 +58,15 @@ paths:
         - Players
       summary: Resource that creates a new player.
       description: Creates a new player.
-      operationId: createPlayer
       security:
         - bearerAuth: []
-      parameters:
-        - name : Name
-          in: query
-          description: Name of the user to be added.
-          required: true
-          schema:
-            type: string
-        - name: Email
-          in: query
-          description: Email of the user to be added.
-          required: true
-          schema:
-            type: string
       requestBody:
-        description: User to be added
+        description: User to be created
+        required: true
         content:
           application/json:
             schema:
-              required:
-                - name
-                - email
-              type: object
-              properties:
-                name:
-                  type: string
-                  example: examplename
-                email:
-                  type: string
-                  example: examplename@gmail.com
-        required: true
+                $ref: "#/components/schemas/PlayerCreate"
       responses:
         201:
           description: Player created.
@@ -90,7 +75,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Player"
+                  $ref: "#/components/schemas/PlayerCreate"
         400:
           $ref: "#/components/responses/400BadRequest"
     description: Resource that handles players.
@@ -98,30 +83,27 @@ paths:
     get:
       tags:
         - Players
-      summary: Resource that gets a player info through its identifier.
-      description: Get a player info through its identifier.
+      summary: Resource that gets a player by ID.
+      description: Get a player by ID.
       security:
         - bearerAuth: []
       parameters:
-        - name: playerID
+        - name: playerId
           in: path
-          description: ID of the player
+          description: Player ID
           required: true
           schema:
             type: integer
-            minimum: 0
+            minimum: 1
       responses:
         200:
           description: Got the player with identifier {PlayerId}
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Player"
+                $ref: "#/components/schemas/PlayerDetail"
         404:
           $ref: "#/components/responses/404NotFound"
-
   /games:
     description: Resources that handles games.
     get:
@@ -137,28 +119,38 @@ paths:
           description: Game name
           schema:
             type: string
-            example: examplegamename
-        - name: genre
+            example: game1
+        - name: genres
           in: query
-          description: Game genre
+          description: Game genres
           schema:
-            type: string
-            example: examplegamegenre
+            type: array
+            items:
+              type: integer
+          example: [genre1, genre2, genre3, ...]
         - name: developer
           in: query
           description: Game developer
           schema:
             type: string
-            example: examplegamedeveloper
+            example: developer1
+        - name: skip
+          in: query
+          description: Number of games to skip
+          schema:
+            $ref: "#/components/schemas/skip"
+        - name: limit
+          in: query
+          description: Number of games to return
+          schema:
+            $ref: "#/components/schemas/limit"
       responses:
         200:
           description: Got all games from database.
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Game"
+                $ref: "#/components/schemas/GameListResponse"
         400:
           $ref: "#/components/responses/400BadRequest"
         404:
@@ -175,14 +167,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Game"
+              $ref: "#/components/schemas/GameCreate"
       responses:
         201:
           description: Game created
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Game'
+                $ref: '#/components/schemas/GameCreateResponse'
         400:
           $ref: "#/components/responses/400BadRequest"
         409:
@@ -208,62 +200,68 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Game"
+                $ref: "#/components/schemas/GameDetails"
         400:
           $ref: "#/components/responses/400BadRequest"
         404:
           $ref: "#/components/responses/404NotFound"
   /sessions:
-    description: Resources that handle sessions
+    description: Resource that handles sessions
     get:
       tags:
         - Sessions
-      summary: Get sessions based on parameters given
+      summary: Get sessions that match the given parameters
       security:
         - bearerAuth: []
       parameters:
-        - name: gid
+        - name: gameId
           in: query
-          description: Game Identifier
-          required: false
+          description: ID of the game in session
+          schema:
+            type: integer
+            example: 1
+        - name: date
+          in: query
+          description: Date(ms since January 1st 1970) of the session
           schema:
             type: integer
             minimum: 0
-            example: 1
-        - name: Date
+            example: 9765643234
+        - name: state
           in: query
-          description: Date
-          required: false
+          description: State of the session
+          schema:
+            type: boolean
+            example: true
+        - name: player
+          in: query
+          description: Username of a player in session
           schema:
             type: string
-            format: YYYY/MM/DD HH:MM:SS
-        - name: State
-          in: query
-          description: State
-          required: false
-          schema:
-            type: string
-        - name: playerEmail
-          in: query
-          description: Email of player in session
-          required: false
-          schema:
-            type: string
-            example: test@test.com
-        - name: hostId
+            example: John_Doe
+        - name: host
           in: query
           description: Host ID
-          required: false
           schema:
             type: integer
             minimum: 1
+        - name: skip
+          in: query
+          description: Number of sessions to skip
+          schema:
+              $ref: "#/components/schemas/skip"
+        - name: limit
+          in: query
+          description: Number of sessions to return
+          schema:
+            $ref: "#/components/schemas/limit"
       responses:
         200:
           description: Got sessions that match the given parameteres
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Session"
+                $ref: "#/components/schemas/SessionListResponse"
         400:
           $ref: "#/components/responses/400BadRequest"
         404:
@@ -274,59 +272,44 @@ paths:
       summary: Create a new session
       security:
         - bearerAuth: []
-      parameters:
-        - name: capacity
-          in: query
-          description: Session maximum capacity
-          required: true
-          schema:
-            type: integer
-            minimum: 0
-        - name: gid
-          in: query
-          description: GameId
-          required: true
-          schema:
-            type: integer
-            minimum: 0
-        - name: date
-          in: query
-          description: Session date
-          required: true
-          schema:
-            type: string
+      requestBody:
+          description: Session to be created
+          content:
+              application/json:
+                schema:
+                  $ref: "#/components/schemas/SessionCreate"
       responses:
         201:
-          description: Session created
+          description: Session created successfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Session"
+                $ref: "#/components/schemas/SessionCreateResponse"
         400:
           $ref: "#/components/responses/400BadRequest"
-  /sessions/{sessionID}:
+  /sessions/{sessionId}:
     description: Resource that handles sessions given their ID
     get:
       tags:
         - Sessions
       summary: Gets a session given its ID
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       parameters:
-        - name: sessionID
+        - name: sessionId
           in: path
           description: ID of the session
           required: true
           schema:
             type: integer
-            minimum: 0
+            minimum: 1
       responses:
         200:
           description: Got session matching the given ID
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Session"
+                $ref: "#/components/schemas/SessionDetails"
         400:
           $ref: "#/components/responses/400BadRequest"
         404:
@@ -334,31 +317,36 @@ paths:
     post:
       tags:
         - Sessions
-      summary: Add player to session
+      summary: Adds a player to a session
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       parameters:
-        - name: sessionID
-          in : path
+        - name: sessionId
+          in: path
           description: ID of the session
           required: true
           schema:
             type: integer
-            minimum: 0
-        - name: playerID
-          in: query
-          description: ID of the player to be added
-          required: true
-          schema:
-            type: integer
-            minimum: 0
+            minimum: 1
+      requestBody:
+        description: Player to be added
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                playerId:
+                  type: integer
+                  minimum: 1
+                  example: 5432
       responses:
         200:
           description: A player was successfully added
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Session"
+                type: string
+                example: "Added player to session successfully"
         400:
           $ref: "#/components/responses/400BadRequest"
         401:
@@ -374,20 +362,26 @@ paths:
       security:
         - bearerAuth: [ ]
       parameters:
-        - name: sessionID
+        - name: sessionId
           in: path
           description: ID of the session
           required: true
           schema:
             type: integer
             minimum: 0
+      requestBody:
+        description: Session to be updated
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SessionUpdate"
       responses:
         200:
           description: Session was updated successfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Session"
+                $ref: "#/components/schemas/SessionUpdate"
         400:
           $ref: "#/components/responses/400BadRequest"
         401:
@@ -399,15 +393,15 @@ paths:
         - Sessions
       summary: Deletes a session
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       parameters:
-        - name: sessionID
+        - name: sessionId
           in: path
           description: ID of the session
           required: true
           schema:
             type: integer
-            minimum: 0
+            minimum: 1
       responses:
         204:
           description: Session was deleted successfully
@@ -417,7 +411,7 @@ paths:
           $ref: "#/components/responses/401Unauthorized"
         404:
           $ref: "#/components/responses/404NotFound"
-  /sessions/{sessionID}/players/{playerID}:
+  /sessions/{sessionId}/players/{playerId}:
     delete:
       tags:
         - Sessions
@@ -425,20 +419,20 @@ paths:
       security:
         - bearerAuth: []
       parameters:
-        - name: sessionID
+        - name: sessionId
           in: path
           description: ID of the session
           required: true
           schema:
             type: integer
-            minimum: 0
-        - name: playerID
+            minimum: 1
+        - name: playerId
           in: path
           description: ID of the player
           required: true
           schema:
             type: integer
-            minimum: 0
+            minimum: 1
       responses:
         204:
           description: Session was deleted successfully
@@ -448,12 +442,11 @@ paths:
           $ref: "#/components/responses/401Unauthorized"
         404:
           $ref: "#/components/responses/404NotFound"
-
   /genres:
     get:
       tags:
         - Genres
-      summary: Returns all genres
+      summary: Get all genres
       security:
         - bearerAuth: []
       responses:
@@ -462,7 +455,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Genres"
+                $ref: "#/components/schemas/GenresListResponse"
         401:
           $ref: "#/components/responses/401Unauthorized"
 components:
@@ -471,81 +464,359 @@ components:
       type: http
       scheme: bearer
   schemas:
-    Player:
+    limit:
+        type: integer
+        minimum: 0
+        example: 30
+    skip:
+        type: integer
+        minimum: 0
+        example: 0
+    PlayerListElement:
       required:
+        - id
+        - name
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: John Doe
+    PlayerListResponse:
+      required:
+        - players
+        - hasNext
+        - hasPrevious
+        - total
+      type: object
+      properties:
+        players:
+          type: array
+          items:
+              $ref: "#/components/schemas/PlayerListElement"
+        hasNext:
+          type: boolean
+          example: true
+        hasPrevious:
+          type: boolean
+          example: false
+        total:
+            type: integer
+            minimum: 0
+            example: 1
+    PlayerResponse:
+      required:
+        - id
+        - token
+      type: object
+      properties:
+        id:
+          type: integer
+          minimum: 1
+          example: 2343
+        token:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+    PlayerCreate:
+      required:
+        - name
+        - email
+        - password
+      type: object
+      properties:
+        name:
+          type: string
+          example: John Doe
+        email:
+          type: string
+          format: email
+          example: johnDoe@gmail.com
+        password:
+            type: string
+            example: john@Doe@123
+    PlayerDetail:
+      required:
+        - id
         - name
         - email
       type: object
       properties:
-        name:
-          type: string
-          example: Example
-        email:
-          type: string
-          example: examplename@gmail.com
-    Game:
-      required:
-        - name
-        - developer
-        - genres
-      type: object
-      properties:
-        name:
-          type: string
-          example: game name
-        developer:
-          type: string
-          example: developer name
-        genres:
-          type: array
-          example: [genre1,genre2,genre3,...]
-          items:
-            type: string
         id:
           type: integer
+          minimum: 1
           example: 1
-    Session:
+        name:
+          type: string
+          example: John Doe
+        email:
+          type: string
+          example: johnDoe@gmail.com
+    GameResponse:
+        required:
+            - id
+            - name
+            - developer
+        type: object
+        properties:
+            id:
+              type: integer
+              minimum: 1
+              example: 1
+            name:
+              type: string
+              example: game1
+            developer:
+              type: string
+              example: developer1
+    GameListResponse:
       required:
-        - gid
-        - date
-        - state
-        - pid
+        - games
+        - hasNext
+        - hasPrevious
+        - total
       type: object
       properties:
-        gid:
+        games:
+          type: array
+          items:
+            $ref: "#/components/schemas/GameResponse"
+        hasNext:
+          type: boolean
+          example: true
+        hasPrevious:
+          type: boolean
+          example: false
+        total:
           type: integer
+          minimum: 0
           example: 1
+    GameCreate:
+        required:
+            - name
+            - developer
+            - genres
+        type: object
+        properties:
+            name:
+              type: string
+              example: game1
+            developer:
+              type: string
+              example: developer1
+            genres:
+              type: array
+              items:
+                  type: integer
+              example: [1, 2, 3]
+    GameCreateResponse:
+        required:
+            - id
+        type: object
+        properties:
+            id:
+              type: integer
+              minimum: 1
+              example: 1
+    GameDetails:
+        required:
+            - id
+            - name
+            - developer
+            - genres
+        type: object
+        properties:
+            id:
+              type: integer
+              minimum: 1
+              example: 1
+            name:
+              type: string
+              example: game1
+            developer:
+              type: string
+              example: developer1
+            genres:
+              type: array
+              items:
+                  $ref: "#/components/schemas/GenreDetail"
+    GameResponseMinimized:
+        required:
+            - id
+            - name
+        type: object
+        properties:
+            id:
+              type: integer
+              minimum: 1
+              example: 1
+            name:
+              type: string
+              example: game1
+    SessionCreate:
+        required:
+            - gameId
+            - capacity
+            - startingDate
+        type: object
+        properties:
+            gameId:
+              type: integer
+              minimum: 1
+              example: 1
+            startingDate:
+              type: string
+              format: date-time
+              example: "07/03/2024 17:48:00"
+            capacity:
+              type: integer
+              minimum: 2
+              maximum: 32
+              example: 31
+    SessionListResponse:
+      required:
+        - sessions
+        - hasNext
+        - hasPrevious
+        - total
+      type: object
+      properties:
+        sessions:
+          type: array
+          items:
+            $ref: "#/components/schemas/SessionResponse"
+        hasNext:
+          type: boolean
+          example: true
+        hasPrevious:
+          type: boolean
+          example: false
+        total:
+          type: integer
+          minimum: 0
+          example: 1
+    SessionResponse:
+      required:
+        - id
+        - game
+        - currentCapacity
+        - capacity
+        - date
+        - isOpen
+      type: object
+      properties:
+        id:
+          type: integer
+          minimum: 1
+          example: 1
+        game:
+          $ref: "#/components/schemas/GameResponseMinimized"
+        currentCapacity:
+          type: integer
+          minimum: 0
+          maximum: 32
+          example: 30
+        capacity:
+          type: integer
+          minimum: 2
+          maximum: 32
+          example: 31
         date:
           type: string
+          format: date-time
           example: "07/03/2024 17:48:00"
-        state:
-          type: string
-          example: state
-        pid:
-          type: integer
-          example: 1
-    Genres:
+        isOpen:
+          type: boolean
+          example: true
+    SessionCreateResponse:
+        required:
+            - id
+        type: object
+        properties:
+            id:
+              type: integer
+              minimum: 1
+              example: 1
+    SessionDetails:
+        required:
+            - id
+            - game
+            - host
+            - capacity
+            - date
+            - players
+            - isOpen
+        type: object
+        properties:
+            id:
+              type: integer
+              minimum: 1
+              example: 75643
+            game:
+              $ref: "#/components/schemas/GameResponseMinimized"
+            host:
+              type: integer
+              minimum: 1
+              example: 432
+            capacity:
+              type: integer
+              minimum: 2
+              maximum: 32
+              example: 23
+            date:
+              type: string
+              format: date-time
+              example: "02/05/2023 11:38:05"
+            players:
+              type: array
+              items:
+                $ref: "#/components/schemas/PlayerDetail"
+            isOpen:
+              type: boolean
+              example: true
+    SessionUpdate:
+        required:
+            - capacity
+            - startingDate
+        type: object
+        properties:
+            capacity:
+              type: integer
+              minimum: 2
+              maximum: 32
+              example: 23
+            startingDate:
+              type: integer
+              example: 6453424623
+    GenresListResponse:
       required:
         - genres
+        - total
       type: object
       properties:
         genres:
           type: array
           items:
-            $ref: "#/components/schemas/Genre"
-
-    Genre:
+            $ref: "#/components/schemas/GenreDetail"
+        total:
+            type: integer
+            minimum: 0
+            example: 1
+    GenreDetail:
       required:
-        - genreid
-        - genrename
+        - genreId
+        - name
       type: object
       properties:
-        genreid:
+        genreId:
           type: integer
-          example: 1
-        genrename:
+          minimum: 1
+          example: 2432
+        name:
           type: string
-          example: Action
+          example: Genre1
     AlreadyExists:
       type: object
       properties:
@@ -662,6 +933,3 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/Gateway"
-
-
-
