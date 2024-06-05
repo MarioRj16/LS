@@ -3,11 +3,11 @@
 - Rafael Nicolau - 50546
 - Mário Carvalho - 50561
 
-## Phase 3
+## Final Report 
 
 ### Introduction
 
-This document contains the relevant design and implementation aspects of LS project's third phase.
+This document contains the relevant design and implementation aspects of LS project's last phase.
 
 ## Modeling the database
 
@@ -101,7 +101,19 @@ Additionally, the UNIQUE constraint guarantees that each email address stored in
 For error handling, we opted to create an inline function that uses try and catch for each function in the API section and whenever there is an error of some kind we send out an exception that is translated to a response (via our function httpException(e)) with the corresponding HTTP error status for each different exception.
 For some errors, we even created new exceptions to correlate to a different HTTP error status.
 
-#### Critical Evaluation
 
-All proposed tasks have been successfully executed by the group. Moving forward, there is a focus on optimizing the management of our project's file structure, improving the clarity of file and function naming, and enhancing the frequency of updates to our project reports.
-For the near future we are expecting to create some neat features like a logger.
+## Deployment
+
+We have successfully deployed our site using Rendeer and Docker. The Dockerfile used for the deployment is located in the root directory of our project. The deployment process involves building a Docker image from our Dockerfile and then deploying that image using Rendeer.
+
+### Docker
+
+Docker is a platform that allows us to automate the deployment, scaling, and management of applications. It uses containerization technology to package up an application with all of its dependencies into a standardized unit for software development.
+
+### Password Encryption
+
+We use bcrypt for password encryption. When a player creates an account or changes their password, we hash the password using bcrypt and store the hash in our database. The `Password` class ensures that passwords meet strength requirements.
+
+During login, the entered password is hashed and compared with the stored hash. If they match, access is granted. This method ensures that even if our database is compromised, the actual passwords remain secure.
+
+Bcrypt is a one-way hash function, making it computationally infeasible to reverse the process and obtain the original password from the hash.

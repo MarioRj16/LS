@@ -23,12 +23,12 @@ export async function FetchAPI(path, method = 'GET', bodyData = null) {
             }
         }
 
-        const response = await fetch(`${API_URL}${path}`, init)
+        const response = await fetch(`${API_WEB_URL}${path}`, init)
         let json = await response.json()
         return json;
     } catch (e) {
-        console.log(e)
-        //TODO(throw alert or something)
+        //alert(e)
+
     }
 }
 

@@ -8,7 +8,8 @@ export async function SessionsUpdatePage(state){
 
     async function removeFromSession(playerId){
         const response = await FetchAPI(`/sessions/${session.id}/players/${playerId}`,`DELETE`)
-        if(response.ok) {
+
+        if(response===undefined){
             alert("Removed from Session Successfully")
             window.location.reload()
         }

@@ -11,7 +11,6 @@ export async function SessionsSearchPage(state) {
     function handleFormSubmit() {
         event.preventDefault();
 
-        //if there's something in the input field but it doesn't correlate to any game
         let gameInput = document.getElementById('gameInput').value;
         try {
             gameInput = document.getElementById(gameInput).accessKey;
