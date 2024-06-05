@@ -117,8 +117,3 @@ We use bcrypt for password encryption. When a player creates an account or chang
 During login, the entered password is hashed and compared with the stored hash. If they match, access is granted. This method ensures that even if our database is compromised, the actual passwords remain secure.
 
 Bcrypt is a one-way hash function, making it computationally infeasible to reverse the process and obtain the original password from the hash.
-
-#### Critical Evaluation
-
-All proposed tasks have been successfully executed by the group. Moving forward, there is a focus on optimizing the management of our project's file structure, improving the clarity of file and function naming, and enhancing the frequency of updates to our project reports.
-For the near future we are expecting to create some neat features like a logger.
