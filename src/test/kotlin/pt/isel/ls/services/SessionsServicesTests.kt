@@ -1,6 +1,5 @@
 package pt.isel.ls.services
 
-import java.util.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -20,6 +19,7 @@ import pt.isel.ls.utils.factories.GamingSessionFactory
 import pt.isel.ls.utils.factories.PlayerFactory
 import pt.isel.ls.utils.plusDaysToCurrentDateTime
 import pt.isel.ls.utils.toLong
+import java.util.*
 import kotlin.random.Random
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue

@@ -13,9 +13,9 @@ fun main() {
     val db = DataPostgres(System.getenv(CONN_NAME))
     // val db = DataMem()
     // db.reset()
-    db.delete()
-    db.create()
-    db.populate()
+    // db.delete()
+    // db.create()
+    // db.populate()
 
     val api = API(Services(db))
     val jettyServer = Routes(api).app.asServer(Jetty(PORT)).start()

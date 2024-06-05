@@ -1,6 +1,5 @@
 package pt.isel.ls.utils.factories
 
-import java.util.*
 import pt.isel.ls.api.models.players.PlayerCreate
 import pt.isel.ls.data.PlayersData
 import pt.isel.ls.domain.Player
@@ -9,8 +8,10 @@ import pt.isel.ls.utils.generateRandomPassword
 import pt.isel.ls.utils.generateRandomString
 import pt.isel.ls.utils.values.Email
 import pt.isel.ls.utils.values.Password
+import java.util.*
 
 class PlayerFactory(private val players: PlayersData? = null) {
+
     fun createRandomPlayer(name: String? = null, email: Email? = null, password: Password? = null): Player {
         if (players != null) {
             val playerName = name ?: generateRandomString()

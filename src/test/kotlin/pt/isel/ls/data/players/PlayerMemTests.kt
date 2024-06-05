@@ -44,7 +44,7 @@ class PlayerMemTests : DataMemTests(), PlayersTests {
 
         val searchResults = players.search(PlayerSearch(null), DEFAULT_SKIP, DEFAULT_LIMIT)
 
-        assertEquals(searchResults.element.map{ it.id }.toSet(), setOf(player1.id, player2.id, player3.id))
+        assertEquals(searchResults.element.map { it.id }.toSet(), setOf(player1.id, player2.id, player3.id))
     }
 
     @Test

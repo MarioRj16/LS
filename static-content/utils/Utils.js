@@ -81,3 +81,16 @@ function isElement(obj) {
     );
 }
 
+export function getStoredUser() {
+    const user = sessionStorage.getItem("user");
+
+    if (user == null || user === {})
+        return null;
+
+    return JSON.parse(user);
+}
+
+
+export function storeUser(user) {
+    sessionStorage.setItem("user", JSON.stringify(user));
+}

@@ -1,9 +1,5 @@
 package pt.isel.ls.data.postgres
 
-import java.sql.Connection
-import java.sql.PreparedStatement
-import java.sql.SQLException
-import java.sql.Statement
 import pt.isel.ls.api.models.games.GameCreate
 import pt.isel.ls.api.models.games.GameResponse
 import pt.isel.ls.api.models.games.GameSearch
@@ -14,6 +10,10 @@ import pt.isel.ls.utils.PaginatedResponse
 import pt.isel.ls.utils.postgres.toGame
 import pt.isel.ls.utils.postgres.toGenre
 import pt.isel.ls.utils.postgres.useWithRollback
+import java.sql.Connection
+import java.sql.PreparedStatement
+import java.sql.SQLException
+import java.sql.Statement
 
 class GamesPostgres(private val conn: () -> Connection) : GamesData {
     override fun create(

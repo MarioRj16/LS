@@ -56,6 +56,6 @@ class PlayerPostgresTests : DataPostgresTests(), PlayersTests {
     override fun searchByPartialNameReturnsPlayersSuccessfully() {
         val player = playerFactory.createRandomPlayer()
         val searchResult = players.search(PlayerSearch(player.name.substring(0, 3)), DEFAULT_SKIP, DEFAULT_LIMIT)
-        assertEquals(setOf(player.id), searchResult.element.map{ it.id }.toSet())
+        assertEquals(setOf(player.id), searchResult.element.map { it.id }.toSet())
     }
 }

@@ -8,13 +8,13 @@ import pt.isel.ls.utils.values.Email
 import pt.isel.ls.utils.values.Password
 
 @Serializable
-data class PlayerCreate(val name: String, val email: Email, val password: Password){
+data class PlayerCreate(val name: String, val email: Email, val password: Password) {
     companion object Factory {
         fun create(
             name: String = generateRandomString(),
             email: Email = generateRandomEmail(),
-            password: Password = generateRandomPassword()
-        ): PlayerCreate{
+            password: Password = generateRandomPassword(),
+        ): PlayerCreate {
             return PlayerCreate(name, email, password)
         }
     }

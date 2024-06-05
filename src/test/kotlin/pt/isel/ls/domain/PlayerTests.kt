@@ -1,12 +1,12 @@
 package pt.isel.ls.domain
 
-import java.util.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
 import pt.isel.ls.utils.generateRandomEmail
 import pt.isel.ls.utils.generateRandomPassword
 import pt.isel.ls.utils.generateRandomString
+import java.util.*
 
 class PlayerTests {
     private val validId = 1

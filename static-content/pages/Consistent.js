@@ -6,10 +6,14 @@ import SessionsRouter from "../routers/SessionsRouter.js";
 import {NotFoundPage} from "./errors/NotFoundPage.js";
 import {div, hr} from "../utils/Elements.js";
 import {NavBar} from "../components/NavBar.js";
+import {LoginPage} from "./LoginPage.js";
+import {RegisterPage} from "./RegisterPage.js";
 
 
 const router = Router()
 
+router.addRouteHandler("/login", LoginPage)
+router.addRouteHandler("/register", RegisterPage)
 router.addRouteHandler("/home", PlayerHomePage)
 router.addRouteHandler("/players", PlayersRouter)
 router.addRouteHandler("/games", GamesRouter)

@@ -30,6 +30,10 @@ export function Router() {
         if (state.currentPath == null)
             state.currentPath = state.path;
 
+        if (state.currentPath !== '/register'&& state.currentPath !== '/login' && sessionStorage.getItem('user') === null) {
+            window.location.href= '#login'
+        }
+
         const handlerData = this.getHandler(state.currentPath);
 
         if (handlerData == null) {

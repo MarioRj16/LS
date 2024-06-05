@@ -1,8 +1,5 @@
 package pt.isel.ls.data.postgres
 
-import java.sql.Connection
-import java.sql.SQLException
-import java.sql.Statement
 import pt.isel.ls.api.models.sessions.SessionCreate
 import pt.isel.ls.api.models.sessions.SessionResponse
 import pt.isel.ls.api.models.sessions.SessionSearch
@@ -12,12 +9,15 @@ import pt.isel.ls.domain.Genre
 import pt.isel.ls.domain.Player
 import pt.isel.ls.domain.Session
 import pt.isel.ls.utils.PaginatedResponse
-import pt.isel.ls.utils.factories.PlayerFactory
 import pt.isel.ls.utils.postgres.toGame
 import pt.isel.ls.utils.postgres.toGamingSession
 import pt.isel.ls.utils.postgres.toPlayer
 import pt.isel.ls.utils.postgres.useWithRollback
 import pt.isel.ls.utils.toTimeStamp
+import pt.isel.ls.utils.values.Email
+import java.sql.Connection
+import java.sql.SQLException
+import java.sql.Statement
 
 class SessionsPostgres(private val conn: () -> Connection) : SessionsData {
     override fun create(
@@ -132,7 +132,7 @@ class SessionsPostgres(private val conn: () -> Connection) : SessionsData {
 
             while (resultSet.next()) {
                 val playerCount = resultSet.getInt("player_count")
-                val sessionPlayers = List(playerCount) { PlayerFactory().createRandomPlayer() }
+                val sessionPlayers = List(playerCount) { Player(1, "Dummy", Email("dummy@gmail.com"), "dummy") }
 
                 sessions +=
                     SessionResponse(

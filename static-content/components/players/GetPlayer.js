@@ -9,7 +9,7 @@ export async function GetPlayer(player){
     (await playerButton).addEventListener('click', SearchSessionsParticipations);
 
     async function SearchSessionsParticipations(){
-        window.location.href = `#sessions?player=${player.name}`;
+        window.location.href = `#sessions?playerName=${player.name}`;
     }
 
     async function SearchSessionsHost(){

@@ -1,9 +1,10 @@
-import {API_URL, USER_TOKEN} from "./Configs.js";
+import {API_URL, API_WEB_URL} from "./Configs.js";
+import {getStoredUser} from "./Utils.js";
 
 
 export async function FetchAPI(path, method = 'GET', bodyData = null) {
     try {
-        const token = USER_TOKEN
+        const token = getStoredUser()?.token
         const headers = {
             'Authorization': `Bearer ${token}`, // Include the bearer token in the Authorization header
             'Content-Type': 'application/json' // Set content type if needed
@@ -22,7 +23,7 @@ export async function FetchAPI(path, method = 'GET', bodyData = null) {
             }
         }
 
-        const response = await fetch(`${API_URL}${path}`, init)
+        const response = await fetch(`${API_WEB_URL}${path}`, init)
         let json = await response.json()
         return json;
     } catch (e) {

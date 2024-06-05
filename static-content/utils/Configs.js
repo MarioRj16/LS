@@ -1,8 +1,6 @@
-export const USER_ID= 1
-
-export const USER_TOKEN = 'a372ad74-0d9b-49c6-aad8-32a877f239a3'
-
 export const API_URL=`http://localhost:8000`
+
+export const API_WEB_URL=`https://service-ls-2324-2-41d-g10.onrender.com`
 
 export const DEFAULT_SKIP = 0
 

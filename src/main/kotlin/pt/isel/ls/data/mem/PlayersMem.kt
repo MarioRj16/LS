@@ -1,6 +1,5 @@
 package pt.isel.ls.data.mem
 
-import java.util.*
 import pt.isel.ls.api.models.players.PlayerCreate
 import pt.isel.ls.api.models.players.PlayerListElement
 import pt.isel.ls.api.models.players.PlayerSearch
@@ -8,11 +7,12 @@ import pt.isel.ls.data.PlayersData
 import pt.isel.ls.domain.Player
 import pt.isel.ls.utils.PaginatedResponse
 import pt.isel.ls.utils.values.Email
+import java.util.*
 
 class PlayersMem(private val players: DataMemTable<Player> = DataMemTable()) : PlayersData {
 
     override fun create(
-        playerCreate: PlayerCreate
+        playerCreate: PlayerCreate,
     ): Player {
         val (name, email, password) = playerCreate
         val hash = password.hash()
