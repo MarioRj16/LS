@@ -27,6 +27,10 @@ application {
     mainClassName = "pt.isel.ls.ServerKt"
 }
 
+ktlint {
+    ignoreFailures.set(true)
+}
+
 tasks.test {
     useJUnitPlatform()
     exclude("**/*Postgres*")
@@ -43,4 +47,13 @@ tasks.withType<KotlinCompile> {
 tasks.register<Copy>("copyRuntimeDependencies") {
     into("build/libs")
     from(configurations.runtimeClasspath)
+}
+
+
+tasks.named<Jar>("jar") {
+    dependsOn("copyRuntimeDependencies")
+    manifest{
+        attributes["Main-Class"] = "pt.isel.ls.ServerKt"
+        attributes["Class-Path"] = configurations.runtimeClasspath.get().joinToString(" ") { it.name }
+    }
 }

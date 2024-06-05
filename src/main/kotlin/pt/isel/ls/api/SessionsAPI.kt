@@ -37,7 +37,7 @@ class SessionsAPI(private val services: SessionsServices) : APISchema() {
 
     fun createSession(request: Request): Response =
         request.useWithException { token ->
-            //val sessionInput = Json.decodeFromString<SessionCreate>(request.bodyString())
+            // val sessionInput = Json.decodeFromString<SessionCreate>(request.bodyString())
             val body = request.bodyString()
 
             val gameId = "\"gameId\":\\s*(\\d+)".toRegex().find(body)?.groups?.get(1)?.value?.toInt()
@@ -51,7 +51,7 @@ class SessionsAPI(private val services: SessionsServices) : APISchema() {
                 throw IllegalArgumentException("Invalid request body")
             }
 
-            val date = if(startingDate.contains('T')){
+            val date = if (startingDate.contains('T')) {
                 startingDate.toLocalDateTime()
             } else {
                 startingDate.toLong().toLocalDateTime()

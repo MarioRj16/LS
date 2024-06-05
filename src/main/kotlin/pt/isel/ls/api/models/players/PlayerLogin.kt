@@ -7,11 +7,11 @@ import pt.isel.ls.utils.values.Email
 @Serializable
 class PlayerLogin private constructor(
     val email: Email,
-    val password: String
-){
+    val password: String,
+) {
     companion object {
         operator fun invoke(player: Player): PlayerLogin {
-            return PlayerLogin( player.email,player.password)
+            return PlayerLogin(player.email, player.password)
         }
     }
 }

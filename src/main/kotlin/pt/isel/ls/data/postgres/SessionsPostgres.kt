@@ -132,7 +132,7 @@ class SessionsPostgres(private val conn: () -> Connection) : SessionsData {
 
             while (resultSet.next()) {
                 val playerCount = resultSet.getInt("player_count")
-                val sessionPlayers = List(playerCount) {Player(1,"Dummy", Email("dummy@gmail.com"),"dummy") }
+                val sessionPlayers = List(playerCount) { Player(1, "Dummy", Email("dummy@gmail.com"), "dummy") }
 
                 sessions +=
                     SessionResponse(

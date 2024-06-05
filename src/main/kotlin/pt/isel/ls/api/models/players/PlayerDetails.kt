@@ -31,5 +31,5 @@ class PlayerDetails private constructor(val id: Int, val name: String, val email
         result = 31 * result + name.hashCode()
         result = 31 * result + email.hashCode()
         return result
-}
+    }
 }

@@ -44,7 +44,6 @@ open class PlayersServices(internal val db: Data) : ServicesSchema(db) {
         return@withAuthorization PlayerListResponse(players)
     }
 
-
     fun loginPlayer(playerLogin: PlayerLogin): PlayerResponse {
         val player = db.players.get(playerLogin.email)
             ?: throw NoSuchElementException("No player with email ${playerLogin.email} was found")

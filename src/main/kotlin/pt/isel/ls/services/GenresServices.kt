@@ -1,8 +1,8 @@
 package pt.isel.ls.services
 
-import java.util.*
 import pt.isel.ls.api.models.genres.GenreListResponse
 import pt.isel.ls.data.Data
+import java.util.*
 
 class GenresServices(data: Data) : ServicesSchema(data) {
     fun getGenres(token: UUID): GenreListResponse =
